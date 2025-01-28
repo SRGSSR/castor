@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0EFEFEF72D4916A1003034F7 /* Castor in Frameworks */ = {isa = PBXBuildFile; productRef = 0EFEFEF62D4916A1003034F7 /* Castor */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		0ECF4A4D2D48E1F400238371 /* Castor-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Castor-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0EFEFEF42D49161A003034F7 /* castor */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = castor; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -56,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0EFEFEF72D4916A1003034F7 /* Castor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +71,7 @@
 		0ECF4A442D48E1F400238371 = {
 			isa = PBXGroup;
 			children = (
+				0EFEFEF32D49161A003034F7 /* Packages */,
 				0ECA4CA72D48E496008A3FA6 /* Preview Content */,
 				0ECF4A4E2D48E1F400238371 /* Products */,
 				0ECA4CA52D48E496008A3FA6 /* Resources */,
@@ -78,6 +85,14 @@
 				0ECF4A4D2D48E1F400238371 /* Castor-demo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		0EFEFEF32D49161A003034F7 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				0EFEFEF42D49161A003034F7 /* castor */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -100,6 +115,7 @@
 			);
 			name = "Castor-demo";
 			packageProductDependencies = (
+				0EFEFEF62D4916A1003034F7 /* Castor */,
 			);
 			productName = "Castor-demo";
 			productReference = 0ECF4A4D2D48E1F400238371 /* Castor-demo.app */;
@@ -361,6 +377,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0EFEFEF62D4916A1003034F7 /* Castor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Castor;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0ECF4A452D48E1F400238371 /* Project object */;
 }
