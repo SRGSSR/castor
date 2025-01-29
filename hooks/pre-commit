@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Quality check
+if Scripts/public/check-quality.sh -c; then
+	echo "✅ Quality checked"
+else
+	echo "❌ Quality check failed"
+	exit 1
+fi

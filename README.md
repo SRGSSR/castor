@@ -1,3 +1,4 @@
+<!-- markdownlint-disable-next-line MD041 -->
 [![Castor logo](docs/README-images/logo.png)](https://github.com/SRGSSR/castor)
 
 # Overview

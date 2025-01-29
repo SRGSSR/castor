@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function install_tools {
+    curl -Ssf https://pkgx.sh | sh &> /dev/null
+    set -a
+    eval "$(pkgx +swiftlint)"
+    set +a
+}
+
+install_tools
+
+echo "Cleaning imports..."
+mkdir -p .build
+xcodebuild -scheme Castor -destination generic/platform=ios > ./.build/xcodebuild.log
+swiftlint analyze --fix --compiler-log-path ./.build/xcodebuild.log
+xcodebuild -scheme Castor-demo -project ./Demo/Castor-demo.xcodeproj -destination generic/platform=iOS > ./.build/xcodebuild.log
+swiftlint analyze --fix --compiler-log-path ./.build/xcodebuild.log
+echo "... done."

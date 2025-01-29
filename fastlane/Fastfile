@@ -1,0 +1,231 @@
+# frozen_string_literal: true
+
+default_platform(:ios)
+
+# -- Global constants
+
+APPLICATION_XCCONFIG_FILEPATH = 'Demo/Xcode/Application.xcconfig'
+
+# -- Platform-specific constants
+
+PLATFORMS = {
+  ios: 'iOS'
+}.freeze
+
+TESTFLIGHT_PLATFORMS = {
+  ios: 'ios'
+}.freeze
+
+DEVICES = {
+  ios: 'iPhone 16'
+}.freeze
+
+ICON_GLOBS = {
+  ios: '/Demo/Resources/Assets.xcassets/AppIcon.appiconset/*.png'
+}.freeze
+
+SHIELD_SCALES = {
+  ios: '0.8'
+}.freeze
+
+# -- Configuration-specific constants
+
+CONFIGURATIONS = {
+  nightly: 'Nightly',
+  release: 'Release'
+}.freeze
+
+APP_IDENTIFIERS = {
+  nightly: 'ch.srgssr.Castor-demo.nightly',
+  release: 'ch.srgssr.Castor-demo'
+}.freeze
+
+# -- External configuration
+
+def api_key_filepath
+  File.expand_path('../Configuration/AppStoreConnect_API_Key.p8')
+end
+
+# -- xcconfig management
+
+def xcconfig_build_number
+  get_xcconfig_value(
+    path: APPLICATION_XCCONFIG_FILEPATH,
+    name: 'CURRENT_PROJECT_VERSION'
+  )
+end
+
+# -- fastlane helpers
+
+def ensure_configuration_availability
+  return if File.directory?('../Configuration')
+
+  UI.user_error!('Use of this lane requires private configuration details to be available.')
+end
+
+# Should be called before any operation requiring authentication (expires after 120 seconds)
+#
+# TODO: If build_app is updated to support a JSON API key path for automatic signing in the future (instead
+#       of manually supplied xargs) we could remove this method and have the JSON passed to all fastlane actions
+#       instead. This would be cleaner but currently we still need to duplicate the key as a .p8 file for build_app,
+#       so there is no advantage in adopting the JSON API approach at the moment. Also see:
+#         https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-hash-option
+#         https://github.com/fastlane/fastlane/discussions/19973
+def login_to_app_store_connect
+  app_store_connect_api_key(
+    key_id: ENV.fetch('KEY_ID'),
+    issuer_id: ENV.fetch('KEY_ISSUER_ID'),
+    key_filepath: api_key_filepath
+  )
+end
+
+def bump_testflight_build_number(platform_id, configuration_id)
+  login_to_app_store_connect
+  build_number = latest_testflight_build_number(
+    app_identifier: APP_IDENTIFIERS[configuration_id],
+    platform: TESTFLIGHT_PLATFORMS[platform_id]
+  ) + 1
+  increment_build_number(
+    build_number: build_number,
+    xcodeproj: 'Demo/Castor-demo.xcodeproj'
+  )
+  build_number
+end
+
+def build_and_sign_app(platform_id, configuration_id)
+  build_app(
+    project: 'Demo/Castor-demo.xcodeproj',
+    configuration: CONFIGURATIONS[configuration_id],
+    scheme: 'Castor-demo',
+    destination: "generic/platform=#{PLATFORMS[platform_id]}",
+    export_team_id: ENV.fetch('TEAM_ID'),
+    output_directory: 'Binaries',
+    xcargs: "-authenticationKeyIssuerID #{ENV.fetch('KEY_ISSUER_ID')} -authenticationKeyID #{ENV.fetch('KEY_ID')} " \
+            "-authenticationKeyPath #{api_key_filepath} -allowProvisioningUpdates"
+  )
+end
+
+def add_version_badge(platform_id, label, message, color)
+  add_badge(
+    no_badge: true,
+    shield: "#{label}-#{message}-#{color}",
+    shield_scale: SHIELD_SCALES[platform_id],
+    shield_gravity: 'South',
+    glob: ICON_GLOBS[platform_id]
+  )
+end
+
+def commit_changelog
+  # Same formatters as git-log: https://git-scm.com/docs/pretty-formats
+  changelog_from_git_commits(
+    commits_count: 10,
+    pretty: '- %s'
+  )
+end
+
+def upload_app_to_testflight
+  login_to_app_store_connect
+  upload_to_testflight
+end
+
+# Requires `Beta App Information` and `Beta App Review Information` to have been properly filled once in TestFlight
+def distribute_app_to_testers(platform_id, configuration_id, build_number)
+  login_to_app_store_connect
+  upload_to_testflight(
+    app_identifier: APP_IDENTIFIERS[configuration_id],
+    distribute_only: true,
+    app_platform: TESTFLIGHT_PLATFORMS[platform_id],
+    build_number: build_number.to_s,
+    distribute_external: true,
+    changelog: commit_changelog,
+    groups: ENV.fetch('TESTFLIGHT_GROUPS'),
+    notify_external_testers: true,
+    demo_account_required: false
+  )
+rescue StandardError => e
+  raise e unless e.message.include?('Another build is in review')
+
+  UI.important('TestFlight external delivery was skipped because a build is already in review')
+end
+
+def archive_demo(platform_id)
+  ensure_configuration_availability
+  build_and_sign_app(platform_id, :nightly)
+  build_and_sign_app(platform_id, :release)
+end
+
+def deliver_demo_nightly(platform_id)
+  ensure_configuration_availability
+  build_number = bump_testflight_build_number(platform_id, :nightly)
+  add_version_badge(platform_id, last_git_tag, build_number, 'orange')
+  build_and_sign_app(platform_id, :nightly)
+  reset_git_repo(skip_clean: true)
+  upload_app_to_testflight
+  distribute_app_to_testers(platform_id, :nightly, build_number)
+end
+
+def deliver_demo_release(platform_id)
+  ensure_configuration_availability
+  add_version_badge(platform_id, 'v.', last_git_tag, 'blue')
+  build_and_sign_app(platform_id, :release)
+  reset_git_repo(skip_clean: true)
+  upload_app_to_testflight
+  distribute_app_to_testers(platform_id, :release, xcconfig_build_number)
+end
+
+def run_package_tests(platform_id, scheme_name)
+  run_tests(
+    scheme: scheme_name,
+    device: DEVICES[platform_id],
+    package_path: '.',
+    result_bundle: true,
+    number_of_retries: 3,
+    clean: true,
+    output_types: 'junit',
+    fail_build: false,
+    parallel_testing: false,
+    xcargs: '-testLanguage en -testRegion en_US'
+  )
+  trainer(
+    path: 'fastlane/test_output',
+    output_remove_retry_attempts: true
+  )
+end
+
+def run_all_tests(platform_id)
+  run_package_tests(platform_id, 'Castor')
+end
+
+# -- Lanes
+
+platform :ios do
+  before_all do
+    ensure_git_status_clean
+    # Use .xcode-version file
+    xcodes(select_for_current_build_only: true)
+  end
+
+  after_all do
+    reset_git_repo(skip_clean: true)
+  end
+
+  desc 'Archive the demo app'
+  lane :archive_demo do
+    archive_demo(:ios)
+  end
+
+  desc 'Deliver a demo app nightly build'
+  lane :deliver_demo_nightly do
+    deliver_demo_nightly(:ios)
+  end
+
+  desc 'Deliver an iOS demo app release build'
+  lane :deliver_demo_release do
+    deliver_demo_release(:ios)
+  end
+
+  desc 'Build and run unit tests'
+  lane :test do
+    run_all_tests(:ios)
+  end
+end
