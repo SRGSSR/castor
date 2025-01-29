@@ -3,7 +3,6 @@
 .PHONY: all
 all: help
 
-
 .PHONY: test
 test:
 	@Scripts/public/test.sh
@@ -40,7 +39,7 @@ help:
 	@echo "  all                            Default target"
 	@echo
 	@echo "Test:"
-	@echo "  test                       	Build & run unit tests"
+	@echo "  test                           Build & run unit tests"
 	@echo
 	@echo "Quality:"
 	@echo "  check-quality                  Run quality checks"
