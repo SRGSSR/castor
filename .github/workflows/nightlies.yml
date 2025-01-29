@@ -1,0 +1,39 @@
+---
+name: Nightlies
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: main
+
+jobs:
+  deliver-demo-nightly:
+    name: 🌙 Nightly
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add Apple certificate
+        run: |
+          Scripts/private/add-apple-certificate.sh \
+          $RUNNER_TEMP \
+          ${{ secrets.KEYCHAIN_PASSWORD }} \
+          ${{ secrets.APPLE_DEV_CERTIFICATE }} \
+          ${{ secrets.APPLE_DEV_CERTIFICATE_PASSWORD }}
+
+      - name: Configure environment
+        run: |
+          Scripts/private/configure-environment.sh \
+          ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+
+      - name: Deliver the demo
+        run: |
+          Scripts/private/deliver-demo.sh -c nightly
+        env:
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ISSUER_ID }}
+          TESTFLIGHT_GROUPS: ${{ vars.TESTFLIGHT_GROUPS }}

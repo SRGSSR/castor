@@ -1,0 +1,64 @@
+---
+name: CI
+
+on:  # yamllint disable-line rule:truthy
+  merge_group:
+  pull_request:
+
+jobs:
+  check-quality:
+    name: 🔎 Check quality
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run the quality check
+        run: make check-quality
+
+  test:
+    name: 🧪 Test
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run test
+        run: make test
+
+      - name: Publish report
+        uses: mikepenz/action-junit-report@v5
+        if: always()
+        with:
+          report_paths: 'fastlane/test_output/*.xml'
+          check_name: 📋 Unit test report
+          fail_on_failure: true
+
+  archive-demos:
+    name: 📦 Archives
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Add Apple certificate
+        run: |
+          Scripts/private/add-apple-certificate.sh \
+          $RUNNER_TEMP \
+          ${{ secrets.KEYCHAIN_PASSWORD }} \
+          ${{ secrets.APPLE_DEV_CERTIFICATE }} \
+          ${{ secrets.APPLE_DEV_CERTIFICATE_PASSWORD }}
+
+      - name: Configure environment
+        run: |
+          Scripts/private/configure-environment.sh \
+          ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+
+      - name: Archive the demo
+        run: Scripts/private/archive-demo.sh
+        env:
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ISSUER_ID }}
+          TESTFLIGHT_GROUPS: ${{ vars.TESTFLIGHT_GROUPS }}
