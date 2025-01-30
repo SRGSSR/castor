@@ -5,6 +5,7 @@
 //
 
 import AVKit
+import Castor
 import SwiftUI
 
 struct StreamsView: View {
@@ -64,6 +65,9 @@ struct StreamsView: View {
                 Image(.logo)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                CastButton()
             }
         }
         .sheet(item: $selectedStream) { stream in
