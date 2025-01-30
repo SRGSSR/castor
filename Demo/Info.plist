@@ -13,5 +13,13 @@
 		<key>UIImageName</key>
 		<string>LaunchScreen_image</string>
 	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_googlecast._tcp</string>
+		<string>_CC1AD845._googlecast._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>$(PRODUCT_NAME) uses the local network to discover Google Cast devices on your WiFi
+network.</string>
 </dict>
 </plist>
