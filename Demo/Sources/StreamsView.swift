@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVKit
 import SwiftUI
 
 struct StreamsView: View {
@@ -48,9 +49,15 @@ struct StreamsView: View {
         )
     ]
 
+    @State private var selectedStream: Stream?
+
     var body: some View {
         List(streams, id: \.self) { stream in
-            Text(stream.title)
+            Button {
+                selectedStream = stream
+            } label: {
+                Text(stream.title)
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -58,6 +65,9 @@ struct StreamsView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             }
+        }
+        .sheet(item: $selectedStream) { stream in
+            PlayerView(url: stream.url)
         }
         .navigationTitle("Castor")
     }

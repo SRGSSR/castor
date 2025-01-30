@@ -6,7 +6,11 @@
 
 import Foundation
 
-struct Stream: Hashable {
+struct Stream: Hashable, Identifiable {
     let title: String
     let url: URL
+
+    var id: URL {
+        url
+    }
 }
