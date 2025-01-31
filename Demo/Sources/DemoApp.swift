@@ -20,6 +20,7 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
         let criteria = GCKDiscoveryCriteria(applicationID: kGCKDefaultMediaReceiverApplicationID)
         let options = GCKCastOptions(discoveryCriteria: criteria)
         GCKCastContext.setSharedInstanceWith(options)
+        GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     }
 }
 
