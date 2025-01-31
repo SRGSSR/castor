@@ -9,6 +9,7 @@ import Foundation
 struct Stream: Hashable, Identifiable {
     let title: String
     let url: URL
+    let imageUrl: URL
 
     var id: URL {
         url

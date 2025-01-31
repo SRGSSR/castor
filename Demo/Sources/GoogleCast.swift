@@ -11,10 +11,18 @@ enum GoogleCast {
         GCKCastContext.sharedInstance().sessionManager.currentCastSession != nil
     }
 
-    static func load(url: URL) {
+    static func load(stream: Stream) {
         let mediaInfoBuilder = GCKMediaInformationBuilder()
-        mediaInfoBuilder.contentURL = url
+        mediaInfoBuilder.contentURL = stream.url
+
+        let metadata = GCKMediaMetadata()
+        metadata.setString(stream.title, forKey: kGCKMetadataKeyTitle)
+        metadata.removeAllMediaImages()
+        metadata.addImage(.init(url: stream.imageUrl, width: 0, height: 0))
+
+        mediaInfoBuilder.metadata = metadata
         let mediaInformation = mediaInfoBuilder.build()
+
         _ = GCKCastContext
             .sharedInstance().sessionManager.currentSession?.remoteMediaClient?
             .loadMedia(mediaInformation)
