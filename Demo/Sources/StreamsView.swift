@@ -29,12 +29,13 @@ struct StreamsView: View {
     ]
 
     @State private var selectedStream: Stream?
+    @StateObject private var googleCast = GoogleCast()
 
     var body: some View {
         VStack(spacing: 0) {
             List(streams, id: \.self) { stream in
                 Button {
-                    if GoogleCast.isActive {
+                    if googleCast.isActive {
                         GoogleCast.load(stream: stream)
                     }
                     else {
@@ -44,9 +45,13 @@ struct StreamsView: View {
                     Text(stream.title)
                 }
             }
-            MiniMediaControlsView()
-                .frame(height: 64)
+            if googleCast.isLoaded {
+                MiniMediaControlsView()
+                    .frame(height: 64)
+                    .transition(.move(edge: .bottom))
+            }
         }
+        .animation(.linear(duration: 0.2), value: googleCast.isLoaded)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image(.logo)
