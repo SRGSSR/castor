@@ -55,7 +55,12 @@ struct StreamsView: View {
     var body: some View {
         List(streams, id: \.self) { stream in
             Button {
-                selectedStream = stream
+                if GoogleCast.isActive {
+                    GoogleCast.load(url: stream.url)
+                }
+                else {
+                    selectedStream = stream
+                }
             } label: {
                 Text(stream.title)
             }
