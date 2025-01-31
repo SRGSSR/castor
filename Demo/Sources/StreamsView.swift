@@ -21,32 +21,6 @@ struct StreamsView: View {
         .init(
             title: "Apple Advanced 16:9 (TS)",
             url: URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8")!
-        ),
-        .init(
-            title: "Apple Advanced 16:9 (fMP4)",
-            url: URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8")!
-        ),
-        .init(
-            title: "Apple Advanced 16:9 (HEVC/H.264)",
-            url: URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")!
-        ),
-        .init(
-            title: "Apple Dolby Atmos",
-            url: URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8")!
-        ),
-        .init(
-            title: "Apple WWDC Keynote 2023",
-            url: URL(string: "https://events-delivery.apple.com/0105cftwpxxsfrpdwklppzjhjocakrsk/m3u8/vod_index-PQsoJoECcKHTYzphNkXohHsQWACugmET.m3u8")!
-        ),
-        .init(
-            title: "The Morning Show - My Way: Season 1",
-            // swiftlint:disable:next line_length
-            url: URL(string: "https://play-edge.itunes.apple.com/WebObjects/MZPlayLocal.woa/hls/subscription/playlist.m3u8?cc=CH&svcId=tvs.vds.4021&a=1522121579&isExternal=true&brandId=tvs.sbd.4000&id=518077009&l=en-GB&aec=UHD")!
-        ),
-        .init(
-            title: "The Morning Show - Change: Season 2",
-            // swiftlint:disable:next line_length
-            url: URL(string: "https://play-edge.itunes.apple.com/WebObjects/MZPlayLocal.woa/hls/subscription/playlist.m3u8?cc=CH&svcId=tvs.vds.4021&a=1568297173&isExternal=true&brandId=tvs.sbd.4000&id=518034010&l=en-GB&aec=UHD")!
         )
     ]
 
