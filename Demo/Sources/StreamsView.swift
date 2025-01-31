@@ -33,7 +33,7 @@ struct StreamsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            List(streams, id: \.self) { stream in
+            List(streams) { stream in
                 Button {
                     if googleCast.isActive {
                         GoogleCast.load(stream: stream)
