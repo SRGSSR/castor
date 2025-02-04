@@ -27,6 +27,15 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
     public func didRemove(_ device: GCKDevice, at index: UInt) {
         devices.remove(at: Int(index))
     }
+
+    public func didUpdate(_ device: GCKDevice, at index: UInt, andMoveTo newIndex: UInt) {
+        devices.move(from: Int(index), to: Int(index))
+    }
+
+    public func didUpdate(_ device: GCKDevice, at index: UInt) {
+        devices.remove(at: Int(index))
+        devices.insert(device, at: Int(index))
+    }
 }
 
 private extension CastDeviceManager {
