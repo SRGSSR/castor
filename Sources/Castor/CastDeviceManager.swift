@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import Combine
 import Foundation
 import GoogleCast
 
@@ -12,6 +13,8 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
 
     @Published public private(set) var devices: [GCKDevice]
+    @Published public private(set) var connectionState: GCKConnectionState
+
     @Published private var currentCastSession: GCKCastSession?
 
     /// The current device.
@@ -23,11 +26,17 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     override public init() {
         devices = Self.devices(from: context.discoveryManager)
         currentCastSession = context.sessionManager.currentCastSession
+        connectionState = context.sessionManager.connectionState
+
         super.init()
+
         context.discoveryManager.add(self)
         context.discoveryManager.startDiscovery()
 
         context.sessionManager.add(self)
+
+        context.sessionManager.publisher(for: \.connectionState)
+            .assign(to: &$connectionState)
     }
 
     /// Starts a new session with the given device.

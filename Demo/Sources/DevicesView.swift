@@ -32,13 +32,18 @@ struct DevicesView: View {
         .animation(.default, value: castDeviceManager.devices)
         .navigationTitle("Devices")
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Image(.logo)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
             ToolbarItem {
-                Button {
-                    castDeviceManager.endSession()
-                } label: {
-                    Text("Disconnect")
-                        .font(.footnote)
-                        .fontWeight(.medium)
+                if castDeviceManager.connectionState != .disconnected {
+                    Button {
+                        castDeviceManager.endSession()
+                    } label: {
+                        Text("Disconnect")
+                    }
                 }
             }
         }
@@ -49,12 +54,25 @@ struct DevicesView: View {
             Button {
                 castDeviceManager.startSession(with: device)
             } label: {
-                VStack(alignment: .leading) {
-                    Text(device.friendlyName ?? "Unknown")
-                        .fontWeight(castDeviceManager.device == device ? .black : .regular)
-                    if let status = device.statusText, !status.isEmpty {
-                        Text(status)
-                            .font(.footnote)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(device.friendlyName ?? "Unknown")
+                            .fontWeight(castDeviceManager.device == device ? .black : .regular)
+                        if let status = device.statusText, !status.isEmpty {
+                            Text(status)
+                                .font(.footnote)
+                        }
+                    }
+                    if castDeviceManager.device == device {
+                        Spacer()
+                        switch castDeviceManager.connectionState {
+                        case .connecting:
+                            ProgressView()
+                        case .connected:
+                            Image(systemName: "checkmark")
+                        default:
+                            EmptyView()
+                        }
                     }
                 }
             }
