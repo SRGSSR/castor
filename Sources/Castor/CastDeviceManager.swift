@@ -18,6 +18,7 @@ public final class CastDeviceManager: NSObject, ObservableObject {
         devices = Self.devices(from: context.discoveryManager)
         super.init()
         context.discoveryManager.add(self)
+        context.discoveryManager.startDiscovery()
     }
 }
 
