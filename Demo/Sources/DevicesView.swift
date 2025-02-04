@@ -31,15 +31,31 @@ struct DevicesView: View {
         }
         .animation(.default, value: castDeviceManager.devices)
         .navigationTitle("Devices")
+        .toolbar {
+            ToolbarItem {
+                Button {
+                    castDeviceManager.endSession()
+                } label: {
+                    Text("Disconnect")
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                }
+            }
+        }
     }
 
     private func devicesView() -> some View {
         List(castDeviceManager.devices, id: \.deviceID) { device in
-            VStack(alignment: .leading) {
-                Text(device.friendlyName ?? "Unknown")
-                if let status = device.statusText, !status.isEmpty {
-                    Text(status)
-                        .font(.footnote)
+            Button {
+                castDeviceManager.startSession(with: device)
+            } label: {
+                VStack(alignment: .leading) {
+                    Text(device.friendlyName ?? "Unknown")
+                        .fontWeight(castDeviceManager.device == device ? .black : .regular)
+                    if let status = device.statusText, !status.isEmpty {
+                        Text(status)
+                            .font(.footnote)
+                    }
                 }
             }
         }

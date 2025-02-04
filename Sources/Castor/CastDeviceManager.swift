@@ -12,13 +12,34 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
 
     @Published public private(set) var devices: [GCKDevice]
+    @Published private var currentCastSession: GCKCastSession?
+
+    /// The current device.
+    public var device: GCKDevice? {
+        currentCastSession?.device
+    }
 
     /// Default initializer.
     override public init() {
         devices = Self.devices(from: context.discoveryManager)
+        currentCastSession = context.sessionManager.currentCastSession
         super.init()
         context.discoveryManager.add(self)
         context.discoveryManager.startDiscovery()
+
+        context.sessionManager.add(self)
+    }
+
+    /// Starts a new session with the given device.
+    /// - Parameter device: The device to use for this session.
+    public func startSession(with device: GCKDevice) {
+        context.sessionManager.startSession(with: device)
+    }
+
+    /// Ends the current session and stops casting if one sender device is connected.
+    /// - Parameter stopCasting: Whether casting on the receiver should stop when the session ends.
+    public func endSession(stopCasting: Bool = false) {
+        context.sessionManager.endSessionAndStopCasting(stopCasting)
     }
 }
 
@@ -38,6 +59,24 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
     public func didUpdate(_ device: GCKDevice, at index: UInt) {
         devices.remove(at: Int(index))
         devices.insert(device, at: Int(index))
+    }
+}
+
+extension CastDeviceManager: GCKSessionManagerListener {
+    public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
+        currentCastSession = session
+    }
+
+    public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
+        currentCastSession = sessionManager.currentCastSession
+    }
+
+    public func sessionManager(
+        _ sessionManager: GCKSessionManager,
+        didFailToStart session: GCKSession,
+        withError error: any Error
+    ) {
+        currentCastSession = sessionManager.currentCastSession
     }
 }
 
