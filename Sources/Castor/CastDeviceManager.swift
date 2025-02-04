@@ -7,11 +7,13 @@
 import Foundation
 import GoogleCast
 
+/// This object handles the discovery of receiver devices.
 public final class CastDeviceManager: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
 
     @Published public private(set) var devices: [GCKDevice]
 
+    /// Default initializer.
     override public init() {
         devices = Self.devices(from: context.discoveryManager)
         super.init()
