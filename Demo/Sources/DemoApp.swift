@@ -30,8 +30,19 @@ struct DemoApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                StreamsView()
+            TabView {
+                NavigationStack {
+                    StreamsView()
+                }
+                .tabItem {
+                    Label("Streams", systemImage: "film.fill")
+                }
+                NavigationStack {
+                    DevicesView()
+                }
+                .tabItem {
+                    Label("Devices", systemImage: "tv.badge.wifi.fill")
+                }
             }
         }
     }
