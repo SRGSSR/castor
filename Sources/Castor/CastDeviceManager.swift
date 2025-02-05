@@ -47,7 +47,14 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     /// Ends the current session and stops casting if one sender device is connected.
     /// - Parameter stopCasting: Whether casting on the receiver should stop when the session ends.
     public func endSession(stopCasting: Bool = false) {
-        context.sessionManager.endSessionAndStopCasting(stopCasting)
+        // It seems that `endSessionAndStopCasting` does not properly end the session if casting should be stopped but
+        // there is no associated `remoteMediaClient`.
+        if context.sessionManager.currentCastSession?.remoteMediaClient == nil {
+            context.sessionManager.endSessionAndStopCasting(false)
+        }
+        else {
+            context.sessionManager.endSessionAndStopCasting(stopCasting)
+        }
     }
 
     /// A binding to read and write the current device selection.
@@ -88,6 +95,7 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
 extension CastDeviceManager: GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentCastSession = session
+        device = session.device
     }
 
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
