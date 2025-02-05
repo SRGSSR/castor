@@ -11,22 +11,27 @@ import GoogleCast
 /// This object handles the discovery of receiver devices.
 public final class CastDeviceManager: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
+    private var currentCastSession: GCKCastSession?
 
     @Published public private(set) var devices: [GCKDevice]
     @Published public private(set) var connectionState: GCKConnectionState
 
-    @Published private var currentCastSession: GCKCastSession?
-
     /// The current device.
-    public var device: GCKDevice? {
-        currentCastSession?.device
+    @Published public var device: GCKDevice? {
+        didSet {
+            if let device, currentCastSession?.device != device {
+                endSession()
+                startSession(with: device)
+            }
+        }
     }
 
     /// Default initializer.
     override public init() {
-        devices = Self.devices(from: context.discoveryManager)
         currentCastSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
+        devices = Self.devices(from: context.discoveryManager)
+        device = currentCastSession?.device
 
         super.init()
 
@@ -78,6 +83,12 @@ extension CastDeviceManager: GCKSessionManagerListener {
 
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentCastSession = sessionManager.currentCastSession
+        if let device, session.device != device {
+            startSession(with: device)
+        }
+        else {
+            device = nil
+        }
     }
 
     public func sessionManager(

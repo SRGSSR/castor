@@ -50,29 +50,25 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(castDeviceManager.devices, id: \.deviceID) { device in
-            Button {
-                castDeviceManager.startSession(with: device)
-            } label: {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(device.friendlyName ?? "Unknown")
-                            .fontWeight(castDeviceManager.device == device ? .black : .regular)
-                        if let status = device.statusText, !status.isEmpty {
-                            Text(status)
-                                .font(.footnote)
-                        }
+        List(castDeviceManager.devices, id: \.self, selection: $castDeviceManager.device) { device in
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(device.friendlyName ?? "Unknown")
+                        .fontWeight(castDeviceManager.device == device ? .black : .regular)
+                    if let status = device.statusText, !status.isEmpty {
+                        Text(status)
+                            .font(.footnote)
                     }
-                    if castDeviceManager.device == device {
-                        Spacer()
-                        switch castDeviceManager.connectionState {
-                        case .connecting:
-                            ProgressView()
-                        case .connected:
-                            Image(systemName: "checkmark")
-                        default:
-                            EmptyView()
-                        }
+                }
+                if castDeviceManager.device == device {
+                    Spacer()
+                    switch castDeviceManager.connectionState {
+                    case .connecting:
+                        ProgressView()
+                    case .connected:
+                        Image(systemName: "checkmark")
+                    default:
+                        EmptyView()
                     }
                 }
             }
