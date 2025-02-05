@@ -7,6 +7,7 @@
 import Combine
 import Foundation
 import GoogleCast
+import SwiftUI
 
 /// This object handles the discovery of receiver devices.
 public final class CastDeviceManager: NSObject, ObservableObject {
@@ -17,14 +18,7 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     @Published public private(set) var connectionState: GCKConnectionState
 
     /// The current device.
-    @Published public var device: GCKDevice? {
-        didSet {
-            if let device, currentCastSession?.device != device {
-                endSession()
-                startSession(with: device)
-            }
-        }
-    }
+    @Published public private(set) var device: GCKDevice?
 
     /// Default initializer.
     override public init() {
@@ -54,6 +48,21 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     /// - Parameter stopCasting: Whether casting on the receiver should stop when the session ends.
     public func endSession(stopCasting: Bool = false) {
         context.sessionManager.endSessionAndStopCasting(stopCasting)
+    }
+
+    /// A binding to read and write the current device selection.
+    /// - Parameter stopCasting: Whether casting on the receiver should stop when the session ends.
+    /// - Returns: The device binding.
+    public func device(stopCasting: Bool = false) -> Binding<GCKDevice?> {
+        .init {
+            self.device
+        } set: { device in
+            if let device, self.device != device {
+                self.device = device
+                self.endSession(stopCasting: stopCasting)
+                self.startSession(with: device)
+            }
+        }
     }
 }
 
