@@ -5,6 +5,7 @@
 //
 
 import Castor
+import GoogleCast
 import SwiftUI
 
 private struct NoDevicesView: View {
@@ -49,15 +50,29 @@ struct DevicesView: View {
         }
     }
 
+    private static func imageName(for device: GCKDevice) -> String {
+        switch device.type {
+        case .TV:
+            "tv"
+        case .speaker:
+            "hifispeaker"
+        case .speakerGroup:
+            "hifispeaker.2"
+        default:
+            "tv.and.hifispeaker.fill"
+        }
+    }
+
     private func devicesView() -> some View {
         List(castDeviceManager.devices, id: \.self, selection: castDeviceManager.device(stopCasting: true)) { device in
             HStack {
+                Image(systemName: Self.imageName(for: device))
                 VStack(alignment: .leading) {
                     Text(device.friendlyName ?? "Unknown")
-                        .fontWeight(castDeviceManager.device == device ? .black : .regular)
                     if let status = device.statusText, !status.isEmpty {
                         Text(status)
                             .font(.footnote)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 if castDeviceManager.device == device {
@@ -66,7 +81,7 @@ struct DevicesView: View {
                     case .connecting:
                         ProgressView()
                     case .connected:
-                        Image(systemName: "checkmark")
+                        Image(systemName: "wifi")
                     default:
                         EmptyView()
                     }
