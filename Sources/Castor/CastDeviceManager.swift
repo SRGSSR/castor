@@ -14,11 +14,10 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
     private var currentCastSession: GCKCastSession?
 
+    @Published private var currentDevice: GCKDevice?
+
     @Published public private(set) var devices: [GCKDevice]
     @Published public private(set) var connectionState: GCKConnectionState
-
-    /// The current device.
-    @Published public private(set) var currentDevice: GCKDevice?
 
     /// Default initializer.
     override public init() {
@@ -62,6 +61,13 @@ public final class CastDeviceManager: NSObject, ObservableObject {
                 self.startSession(with: device)
             }
         }
+    }
+
+    /// Check if the given device if currently casting.
+    /// - Parameter device: The device.
+    /// - Returns: `true` if the given device is casting, `false` otherwise.
+    public func isCasting(on device: GCKDevice) -> Bool {
+        currentDevice?.isSameDevice(as: device) == true
     }
 }
 
