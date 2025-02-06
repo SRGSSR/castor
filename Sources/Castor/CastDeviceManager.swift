@@ -90,6 +90,12 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
         devices.remove(at: Int(index))
         devices.insert(device, at: Int(index))
     }
+
+    public func didUpdateDeviceList() {
+        if let device = devices.first(where: { device?.isSameDevice(as: $0) == true }) {
+            self.device = device
+        }
+    }
 }
 
 extension CastDeviceManager: GCKSessionManagerListener {
