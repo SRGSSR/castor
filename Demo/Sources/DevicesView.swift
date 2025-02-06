@@ -75,7 +75,7 @@ struct DevicesView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                if castDeviceManager.device == device {
+                if castDeviceManager.currentDevice == device {
                     Spacer()
                     switch castDeviceManager.connectionState {
                     case .connecting:

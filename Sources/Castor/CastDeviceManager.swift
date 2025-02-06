@@ -18,14 +18,14 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     @Published public private(set) var connectionState: GCKConnectionState
 
     /// The current device.
-    @Published public private(set) var device: GCKDevice?
+    @Published public private(set) var currentDevice: GCKDevice?
 
     /// Default initializer.
     override public init() {
         currentCastSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
-        device = currentCastSession?.device
+        currentDevice = currentCastSession?.device
 
         super.init()
 
@@ -41,32 +41,24 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: GCKDevice) {
+        guard currentDevice != device else { return }
+        currentDevice = device
+        endSession()
         context.sessionManager.startSession(with: device)
     }
 
     /// Ends the current session and stops casting if one sender device is connected.
-    /// - Parameter stopCasting: Whether casting on the receiver should stop when the session ends.
-    public func endSession(stopCasting: Bool = false) {
-        // It seems that `endSessionAndStopCasting` does not properly end the session if casting should be stopped but
-        // there is no associated `remoteMediaClient`.
-        if context.sessionManager.currentCastSession?.remoteMediaClient == nil {
-            context.sessionManager.endSessionAndStopCasting(false)
-        }
-        else {
-            context.sessionManager.endSessionAndStopCasting(stopCasting)
-        }
+    public func endSession() {
+        context.sessionManager.endSession()
     }
 
     /// A binding to read and write the current device selection.
-    /// - Parameter stopCasting: Whether casting on the receiver should stop when the session ends.
     /// - Returns: The device binding.
-    public func device(stopCasting: Bool = false) -> Binding<GCKDevice?> {
+    public func device() -> Binding<GCKDevice?> {
         .init {
-            self.device
+            self.currentDevice
         } set: { device in
-            if let device, self.device != device {
-                self.device = device
-                self.endSession(stopCasting: stopCasting)
+            if let device {
                 self.startSession(with: device)
             }
         }
@@ -92,8 +84,8 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
     }
 
     public func didUpdateDeviceList() {
-        if let device = devices.first(where: { device?.isSameDevice(as: $0) == true }) {
-            self.device = device
+        if let device = devices.first(where: { currentDevice?.isSameDevice(as: $0) == true }) {
+            currentDevice = device
         }
     }
 }
@@ -101,16 +93,16 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
 extension CastDeviceManager: GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentCastSession = session
-        device = session.device
+        currentDevice = session.device
     }
 
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentCastSession = sessionManager.currentCastSession
-        if let device, session.device != device {
-            startSession(with: device)
+        if let currentDevice, session.device != currentDevice {
+            sessionManager.startSession(with: currentDevice)
         }
         else {
-            device = nil
+            currentDevice = nil
         }
     }
 
