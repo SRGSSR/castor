@@ -53,11 +53,6 @@ struct StreamsView: View {
         }
         .animation(.linear(duration: 0.2), value: googleCast.isLoaded)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image(.logo)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton()
             }

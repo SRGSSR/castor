@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PlayerView: View {
     @State private var player = AVPlayer()
-
     let url: URL
 
     var body: some View {
