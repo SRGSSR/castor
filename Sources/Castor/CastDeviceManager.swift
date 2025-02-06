@@ -114,10 +114,11 @@ extension CastDeviceManager: GCKSessionManagerListener {
 
     public func sessionManager(
         _ sessionManager: GCKSessionManager,
-        didFailToStart session: GCKSession,
+        didFailToStart session: GCKCastSession,
         withError error: any Error
     ) {
         currentCastSession = sessionManager.currentCastSession
+        currentDevice = currentCastSession?.device
     }
 }
 
