@@ -19,34 +19,21 @@ private struct NoDevicesView: View {
 }
 
 struct DevicesView: View {
-    @StateObject private var castDeviceManager = CastDeviceManager()
+    @StateObject private var deviceManager = CastDeviceManager()
 
     var body: some View {
         ZStack {
-            if castDeviceManager.devices.isEmpty {
+            if deviceManager.devices.isEmpty {
                 NoDevicesView()
             }
             else {
                 devicesView()
             }
         }
-        .animation(.default, value: castDeviceManager.devices)
+        .animation(.default, value: deviceManager.devices)
         .navigationTitle("Devices")
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image(.logo)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            }
-            ToolbarItem {
-                if castDeviceManager.connectionState != .disconnected {
-                    Button {
-                        castDeviceManager.endSession()
-                    } label: {
-                        Text("Disconnect")
-                    }
-                }
-            }
+            ToolbarItem(content: disconnectButton)
         }
     }
 
@@ -64,29 +51,49 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(castDeviceManager.devices, id: \.self, selection: castDeviceManager.device()) { device in
+        List(deviceManager.devices, id: \.self, selection: deviceManager.device()) { device in
             HStack {
                 Image(systemName: Self.imageName(for: device))
-                VStack(alignment: .leading) {
-                    Text(device.friendlyName ?? "Unknown")
-                    if let status = device.statusText, !status.isEmpty {
-                        Text(status)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                if castDeviceManager.isCasting(on: device) {
+                descriptionView(for: device)
+                if deviceManager.isCasting(on: device) {
                     Spacer()
-                    switch castDeviceManager.connectionState {
-                    case .connecting:
-                        ProgressView()
-                    case .connected:
-                        Image(systemName: "wifi")
-                    default:
-                        EmptyView()
-                    }
+                    statusView()
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func disconnectButton() -> some View {
+        if deviceManager.connectionState != .disconnected {
+            Button {
+                deviceManager.endSession()
+            } label: {
+                Text("Disconnect")
+            }
+        }
+    }
+
+    private func descriptionView(for device: GCKDevice) -> some View {
+        VStack(alignment: .leading) {
+            Text(device.friendlyName ?? "Unknown")
+            if let status = device.statusText, !status.isEmpty {
+                Text(status)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func statusView() -> some View {
+        switch deviceManager.connectionState {
+        case .connecting:
+            ProgressView()
+        case .connected:
+            Image(systemName: "wifi")
+        default:
+            EmptyView()
         }
     }
 }
