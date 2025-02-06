@@ -64,7 +64,7 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(castDeviceManager.devices, id: \.self, selection: castDeviceManager.device(stopCasting: true)) { device in
+        List(castDeviceManager.devices, id: \.self, selection: castDeviceManager.device()) { device in
             HStack {
                 Image(systemName: Self.imageName(for: device))
                 VStack(alignment: .leading) {
