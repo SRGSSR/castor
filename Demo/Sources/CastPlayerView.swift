@@ -14,12 +14,14 @@ struct CastPlayerView: View {
     var body: some View {
         VStack(spacing: 40) {
             artworkImage()
+            progressView()
             HStack(spacing: 40) {
                 playbackButton()
                 stopButton()
             }
             informationView()
         }
+        .padding()
     }
 
     private var imageName: String {
@@ -33,6 +35,32 @@ struct CastPlayerView: View {
     private var imageUrl: URL? {
         guard let image = player.mediaInformation?.metadata?.images().first as? GCKImage else { return nil }
         return image.url
+    }
+
+    private var progress: Float? {
+        let time = player.time
+        let duration = player.duration
+        guard time.isValid, duration.isValid else { return nil }
+        return Float(time.seconds / duration.seconds)
+    }
+
+    private func artworkImage() -> some View {
+        AsyncImage(url: imageUrl) { image in
+            image
+                .resizable()
+        } placeholder: {
+            Image(systemName: "photo")
+                .resizable()
+        }
+        .aspectRatio(contentMode: .fit)
+        .frame(height: 160)
+    }
+
+    @ViewBuilder
+    private func progressView() -> some View {
+        if let progress {
+            ProgressView(value: progress)
+        }
     }
 
     private func playbackButton() -> some View {
@@ -62,18 +90,6 @@ struct CastPlayerView: View {
                 Text("Connected to \(device.friendlyName ?? "receiver")")
             }
         }
-    }
-
-    private func artworkImage() -> some View {
-        AsyncImage(url: imageUrl) { image in
-            image
-                .resizable()
-        } placeholder: {
-            Image(systemName: "photo")
-                .resizable()
-        }
-        .aspectRatio(contentMode: .fit)
-        .frame(height: 160)
     }
 }
 

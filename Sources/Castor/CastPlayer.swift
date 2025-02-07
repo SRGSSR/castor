@@ -5,6 +5,7 @@
 //
 
 import Combine
+import CoreMedia
 import GoogleCast
 
 public final class CastPlayer: NSObject, ObservableObject {
@@ -56,6 +57,18 @@ public extension CastPlayer {
 public extension CastPlayer {
     var state: GCKMediaPlayerState {
         mediaStatus?.playerState ?? .unknown
+    }
+
+    var time: CMTime {
+        guard let streamPosition = mediaStatus?.streamPosition else { return .invalid }
+        return .init(seconds: streamPosition, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+    }
+
+    var duration: CMTime {
+        guard let mediaInformation else { return .invalid }
+        let streamDuration = mediaInformation.streamDuration
+        guard streamDuration != .infinity && streamDuration != 0 && streamDuration != -1 else { return .invalid }
+        return .init(seconds: streamDuration, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
     }
 
     var mediaInformation: GCKMediaInformation? {
