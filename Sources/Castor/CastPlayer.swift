@@ -85,6 +85,10 @@ extension CastPlayer: GCKSessionManagerListener {
         currentCastSession = session
     }
 
+    public func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
+        currentCastSession = session
+    }
+
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentCastSession = nil
     }
