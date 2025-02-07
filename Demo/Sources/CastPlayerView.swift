@@ -30,13 +30,12 @@ struct CastPlayerView: View {
         VStack(spacing: 40) {
             artworkImage()
             progressView()
-            HStack(spacing: 40) {
-                playbackButton()
-                stopButton()
-            }
+            controls()
             informationView()
         }
         .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
     }
 
     private var imageName: String {
@@ -76,6 +75,7 @@ struct CastPlayerView: View {
         } placeholder: {
             Image(systemName: "photo")
                 .resizable()
+                .foregroundStyle(.white)
         }
         .aspectRatio(contentMode: .fit)
         .frame(height: 160)
@@ -114,6 +114,14 @@ struct CastPlayerView: View {
         }
     }
 
+    private func controls() -> some View {
+        HStack(spacing: 40) {
+            playbackButton()
+            stopButton()
+        }
+        .foregroundStyle(.white)
+    }
+
     private func informationView() -> some View {
         VStack {
             if let title {
@@ -123,6 +131,7 @@ struct CastPlayerView: View {
                 Text("Connected to \(device.friendlyName ?? "receiver")")
             }
         }
+        .foregroundStyle(.white)
     }
 }
 
