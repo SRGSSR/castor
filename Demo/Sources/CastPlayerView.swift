@@ -30,7 +30,10 @@ struct CastPlayerView: View {
         VStack(spacing: 40) {
             informationView()
             Spacer()
-            artworkImage()
+            ZStack {
+                artworkImage()
+                loadingIndicator()
+            }
             Spacer()
             controls()
         }
@@ -80,6 +83,19 @@ struct CastPlayerView: View {
         }
         .aspectRatio(contentMode: .fit)
         .frame(height: 160)
+    }
+
+    @ViewBuilder
+    private func loadingIndicator() -> some View {
+        if player.isBusy {
+            ProgressView()
+                .tint(.white)
+                .padding(10)
+                .background(
+                    Circle()
+                        .fill(Color(white: 0, opacity: 0.4))
+                )
+        }
     }
 
     @ViewBuilder

@@ -80,6 +80,11 @@ public extension CastPlayer {
     var device: GCKDevice? {
         currentCastSession?.device
     }
+    
+    /// Returns if the player is busy.
+    var isBusy: Bool {
+        state == .buffering || state == .loading
+    }
 
     private static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
         GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
