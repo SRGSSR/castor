@@ -5,10 +5,25 @@
 //
 
 import Castor
+import CoreMedia
 import GoogleCast
 import SwiftUI
 
 struct CastPlayerView: View {
+    private static let shortFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.second, .minute]
+        formatter.zeroFormattingBehavior = .pad
+        return formatter
+    }()
+
+    private static let longFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.second, .minute, .hour]
+        formatter.zeroFormattingBehavior = .pad
+        return formatter
+    }()
+
     @StateObject private var player = CastPlayer()
 
     var body: some View {
@@ -44,6 +59,16 @@ struct CastPlayerView: View {
         return Float(time.seconds / duration.seconds)
     }
 
+    private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
+        guard time.isValid, duration.isValid else { return nil }
+        if duration.seconds < 60 * 60 {
+            return shortFormatter.string(from: time.seconds)!
+        }
+        else {
+            return longFormatter.string(from: time.seconds)!
+        }
+    }
+
     private func artworkImage() -> some View {
         AsyncImage(url: imageUrl) { image in
             image
@@ -58,8 +83,16 @@ struct CastPlayerView: View {
 
     @ViewBuilder
     private func progressView() -> some View {
-        if let progress {
-            ProgressView(value: progress)
+        HStack {
+            if let elapsedTime = Self.formattedTime(player.time, duration: player.duration) {
+                Text(elapsedTime)
+            }
+            if let progress {
+                ProgressView(value: progress)
+            }
+            if let totalTime = Self.formattedTime(player.duration, duration: player.duration) {
+                Text(totalTime)
+            }
         }
     }
 
