@@ -9,12 +9,27 @@ import GoogleCast
 
 public final class CastPlayer: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
-    private var remoteMediaClient: GCKRemoteMediaClient?
+
+    @Published private var mediaStatus: GCKMediaStatus?
+
+    private var remoteMediaClient: GCKRemoteMediaClient? {
+        didSet {
+            oldValue?.remove(self)
+            remoteMediaClient?.add(self)
+            mediaStatus = remoteMediaClient?.mediaStatus
+        }
+    }
 
     public override init() {
         remoteMediaClient = context.sessionManager.currentCastSession?.remoteMediaClient
         super.init()
         context.sessionManager.add(self)
+    }
+}
+
+public extension CastPlayer {
+    var mediaInformation: GCKMediaInformation? {
+        mediaStatus?.mediaInformation
     }
 }
 
@@ -29,5 +44,7 @@ extension CastPlayer: GCKSessionManagerListener {
 }
 
 extension CastPlayer: GCKRemoteMediaClientListener {
-
+    public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        self.mediaStatus = mediaStatus
+    }
 }

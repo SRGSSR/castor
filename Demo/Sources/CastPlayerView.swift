@@ -5,13 +5,19 @@
 //
 
 import Castor
+import GoogleCast
 import SwiftUI
 
 struct CastPlayerView: View {
     @StateObject private var player = CastPlayer()
 
     var body: some View {
-        Color.red
-            .ignoresSafeArea()
+        if let title {
+            Text(title)
+        }
+    }
+
+    private var title: String? {
+        player.mediaInformation?.metadata?.string(forKey: kGCKMetadataKeyTitle)
     }
 }
