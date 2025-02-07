@@ -43,6 +43,12 @@ struct DemoApp: App {
                 .tabItem {
                     Label("Devices", systemImage: "tv.badge.wifi.fill")
                 }
+                NavigationStack {
+                    CastPlayerView()
+                }
+                .tabItem {
+                    Label("Player", systemImage: "play.rectangle.fill")
+                }
             }
         }
     }
