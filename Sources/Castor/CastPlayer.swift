@@ -80,7 +80,7 @@ public extension CastPlayer {
     var device: GCKDevice? {
         currentCastSession?.device
     }
-    
+
     /// Returns if the player is busy.
     var isBusy: Bool {
         state == .buffering || state == .loading
