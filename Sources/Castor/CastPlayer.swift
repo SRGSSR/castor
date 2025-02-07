@@ -12,17 +12,21 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
 
-    private var remoteMediaClient: GCKRemoteMediaClient? {
+    private var currentCastSession: GCKCastSession? {
         didSet {
-            oldValue?.remove(self)
-            remoteMediaClient?.add(self)
-            mediaStatus = remoteMediaClient?.mediaStatus
+            oldValue?.remoteMediaClient?.remove(self)
+            currentCastSession?.remoteMediaClient?.add(self)
+            mediaStatus = currentCastSession?.remoteMediaClient?.mediaStatus
         }
     }
 
+    private var remoteMediaClient: GCKRemoteMediaClient? {
+        currentCastSession?.remoteMediaClient
+    }
+
     public override init() {
-        remoteMediaClient = context.sessionManager.currentCastSession?.remoteMediaClient
-        mediaStatus = remoteMediaClient?.mediaStatus
+        currentCastSession = context.sessionManager.currentCastSession
+        mediaStatus = currentCastSession?.remoteMediaClient?.mediaStatus
 
         super.init()
 
@@ -57,15 +61,19 @@ public extension CastPlayer {
     var mediaInformation: GCKMediaInformation? {
         mediaStatus?.mediaInformation
     }
+
+    var device: GCKDevice? {
+        currentCastSession?.device
+    }
 }
 
 extension CastPlayer: GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
-        remoteMediaClient = session.remoteMediaClient
+        currentCastSession = session
     }
 
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
-        remoteMediaClient = nil
+        currentCastSession = nil
     }
 }
 

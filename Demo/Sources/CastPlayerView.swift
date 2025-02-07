@@ -17,9 +17,7 @@ struct CastPlayerView: View {
                 playbackButton()
                 stopButton()
             }
-            if let title {
-                Text(title)
-            }
+            informationView()
         }
     }
 
@@ -46,6 +44,17 @@ struct CastPlayerView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 90)
+        }
+    }
+
+    private func informationView() -> some View {
+        VStack {
+            if let title {
+                Text(title)
+            }
+            if let device = player.device {
+                Text("Connected to \(device.friendlyName ?? "receiver")")
+            }
         }
     }
 }
