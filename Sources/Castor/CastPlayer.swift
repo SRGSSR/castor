@@ -8,6 +8,7 @@ import Combine
 import CoreMedia
 import GoogleCast
 
+/// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
 
@@ -25,7 +26,8 @@ public final class CastPlayer: NSObject, ObservableObject {
         currentCastSession?.remoteMediaClient
     }
 
-    public override init() {
+    /// Creates the player.
+    override public init() {
         currentCastSession = context.sessionManager.currentCastSession
         mediaStatus = currentCastSession?.remoteMediaClient?.mediaStatus
 
@@ -37,32 +39,44 @@ public final class CastPlayer: NSObject, ObservableObject {
 }
 
 public extension CastPlayer {
+    /// Plays.
     func play() {
         remoteMediaClient?.play()
     }
 
+    /// Pauses.
     func pause() {
         remoteMediaClient?.pause()
     }
 
+    /// Toggles between play and pause.
     func togglePlayPause() {
-        state == .playing ? pause() : play()
+        if state == .playing {
+            pause()
+        }
+        else {
+            play()
+        }
     }
 
+    /// Stops.
     func stop() {
         remoteMediaClient?.stop()
     }
 }
 
 public extension CastPlayer {
+    /// Player state.
     var state: GCKMediaPlayerState {
         mediaStatus?.playerState ?? .unknown
     }
 
+    /// Media information.
     var mediaInformation: GCKMediaInformation? {
         mediaStatus?.mediaInformation
     }
 
+    /// Device.
     var device: GCKDevice? {
         currentCastSession?.device
     }
@@ -71,11 +85,13 @@ public extension CastPlayer {
         GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
     }
 
+    /// Time.
     func time() -> CMTime {
         guard let position = remoteMediaClient?.approximateStreamPosition() else { return .invalid }
         return .init(seconds: position, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
     }
 
+    /// Seekable time range.
     func seekableTimeRange() -> CMTimeRange {
         guard let remoteMediaClient else { return .invalid }
         let start = remoteMediaClient.approximateLiveSeekableRangeStart()
