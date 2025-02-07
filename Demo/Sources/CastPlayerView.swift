@@ -53,10 +53,10 @@ struct CastPlayerView: View {
     }
 
     private var progress: Float? {
-        let time = player.time
-        let duration = player.duration
-        guard time.isValid, duration.isValid else { return nil }
-        return Float(time.seconds / duration.seconds)
+        let time = player.time()
+        let timeRange = player.seekableTimeRange()
+        guard time.isValid, timeRange.isValid, !timeRange.isEmpty else { return nil }
+        return Float(time.seconds / timeRange.duration.seconds)
     }
 
     private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
@@ -85,13 +85,13 @@ struct CastPlayerView: View {
     @ViewBuilder
     private func progressView() -> some View {
         HStack {
-            if let elapsedTime = Self.formattedTime(player.time, duration: player.duration) {
+            if let elapsedTime = Self.formattedTime(player.time(), duration: player.seekableTimeRange().duration) {
                 Text(elapsedTime)
             }
             if let progress {
                 ProgressView(value: progress)
             }
-            if let totalTime = Self.formattedTime(player.duration, duration: player.duration) {
+            if let totalTime = Self.formattedTime(player.seekableTimeRange().duration, duration: player.seekableTimeRange().duration) {
                 Text(totalTime)
             }
         }

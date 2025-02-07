@@ -59,24 +59,39 @@ public extension CastPlayer {
         mediaStatus?.playerState ?? .unknown
     }
 
-    var time: CMTime {
-        guard let streamPosition = mediaStatus?.streamPosition else { return .invalid }
-        return .init(seconds: streamPosition, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-    }
-
-    var duration: CMTime {
-        guard let mediaInformation else { return .invalid }
-        let streamDuration = mediaInformation.streamDuration
-        guard streamDuration != .infinity && streamDuration != 0 && streamDuration != -1 else { return .invalid }
-        return .init(seconds: streamDuration, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-    }
-
     var mediaInformation: GCKMediaInformation? {
         mediaStatus?.mediaInformation
     }
 
     var device: GCKDevice? {
         currentCastSession?.device
+    }
+
+    private static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
+        GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
+    }
+
+    func time() -> CMTime {
+        guard let position = remoteMediaClient?.approximateStreamPosition() else { return .invalid }
+        return .init(seconds: position, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+    }
+
+    func seekableTimeRange() -> CMTimeRange {
+        guard let remoteMediaClient else { return .invalid }
+        let start = remoteMediaClient.approximateLiveSeekableRangeStart()
+        let end = remoteMediaClient.approximateLiveSeekableRangeEnd()
+        if Self.isValidTimeInterval(start) && Self.isValidTimeInterval(end) {
+            return .init(
+                start: .init(seconds: start, preferredTimescale: CMTimeScale(NSEC_PER_SEC)),
+                end: .init(seconds: end, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+            )
+        }
+        else if let streamDuration = mediaInformation?.streamDuration, Self.isValidTimeInterval(streamDuration), streamDuration != 0 {
+            return .init(start: .zero, end: .init(seconds: streamDuration, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+        }
+        else {
+            return .invalid
+        }
     }
 }
 
