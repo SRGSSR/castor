@@ -13,6 +13,7 @@ struct CastPlayerView: View {
 
     var body: some View {
         VStack(spacing: 40) {
+            artworkImage()
             HStack(spacing: 40) {
                 playbackButton()
                 stopButton()
@@ -27,6 +28,11 @@ struct CastPlayerView: View {
 
     private var title: String? {
         player.mediaInformation?.metadata?.string(forKey: kGCKMetadataKeyTitle)
+    }
+
+    private var imageUrl: URL? {
+        guard let image = player.mediaInformation?.metadata?.images().first as? GCKImage else { return nil }
+        return image.url
     }
 
     private func playbackButton() -> some View {
@@ -56,6 +62,18 @@ struct CastPlayerView: View {
                 Text("Connected to \(device.friendlyName ?? "receiver")")
             }
         }
+    }
+
+    private func artworkImage() -> some View {
+        AsyncImage(url: imageUrl) { image in
+            image
+                .resizable()
+        } placeholder: {
+            Image(systemName: "photo")
+                .resizable()
+        }
+        .aspectRatio(contentMode: .fit)
+        .frame(height: 160)
     }
 }
 
