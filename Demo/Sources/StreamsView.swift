@@ -25,6 +25,21 @@ struct StreamsView: View {
             title: "Apple Advanced 16:9 (TS)",
             url: URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8")!,
             imageUrl: kAppleImageUrl
+        ),
+        .init(
+            title: "Swiss wheelchair athlete wins top award",
+            url: URL(string: "https://cdn.prod.swi-services.ch/video-projects/94f5f5d1-5d53-4336-afda-9198462c45d9/localised-videos/ENG/renditions/ENG.mp4")!,
+            imageUrl: URL(string: "https://cdn.prod.swi-services.ch/video-delivery/images/94f5f5d1-5d53-4336-afda-9198462c45d9/_.1hAGinujJ.yERGrrGNzBGCNSxmhKZT/16x9")!
+        ),
+        .init(
+            title: "Couleur 3",
+            url: URL(string: "http://stream.srg-ssr.ch/m/couleur3/mp3_128")!,
+            imageUrl: URL(string: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640")!
+        ),
+        .init(
+            title: "Tageschau",
+            url: URL(string: "https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8")!,
+            imageUrl: URL(string: "https://images.tagesschau.de/image/89045d82-5cd5-46ad-8f91-73911add30ee/AAABh3YLLz0/AAABibBx2rU/20x9-1280/tagesschau-logo-100.jpg")!
         )
     ]
 
