@@ -28,10 +28,11 @@ struct CastPlayerView: View {
 
     var body: some View {
         VStack(spacing: 40) {
-            artworkImage()
-            progressView()
-            controls()
             informationView()
+            Spacer()
+            artworkImage()
+            Spacer()
+            controls()
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -39,7 +40,7 @@ struct CastPlayerView: View {
     }
 
     private var imageName: String {
-        player.state == .playing ? "pause.circle.fill" : "play.circle.fill"
+        player.state == .playing ? "pause.fill" : "play.fill"
     }
 
     private var title: String? {
@@ -94,6 +95,7 @@ struct CastPlayerView: View {
                 Text(totalTime)
             }
         }
+        .frame(height: 30)
     }
 
     private func playbackButton() -> some View {
@@ -101,7 +103,6 @@ struct CastPlayerView: View {
             Image(systemName: imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(height: 90)
         }
     }
 
@@ -110,16 +111,23 @@ struct CastPlayerView: View {
             Image(systemName: "stop.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(height: 90)
         }
     }
 
-    private func controls() -> some View {
+    private func buttons() -> some View {
         HStack(spacing: 40) {
             playbackButton()
             stopButton()
         }
         .foregroundStyle(.white)
+        .frame(height: 60)
+    }
+
+    private func controls() -> some View {
+        VStack {
+            progressView()
+            buttons()
+        }
     }
 
     private func informationView() -> some View {
@@ -129,6 +137,8 @@ struct CastPlayerView: View {
             }
             if let device = player.device {
                 Text("Connected to \(device.friendlyName ?? "receiver")")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
         }
         .foregroundStyle(.white)
