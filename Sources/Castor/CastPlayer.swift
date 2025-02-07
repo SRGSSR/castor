@@ -22,12 +22,38 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     public override init() {
         remoteMediaClient = context.sessionManager.currentCastSession?.remoteMediaClient
+        mediaStatus = remoteMediaClient?.mediaStatus
+
         super.init()
+
         context.sessionManager.add(self)
+        remoteMediaClient?.add(self)
     }
 }
 
 public extension CastPlayer {
+    func play() {
+        remoteMediaClient?.play()
+    }
+
+    func pause() {
+        remoteMediaClient?.pause()
+    }
+
+    func togglePlayPause() {
+        state == .playing ? pause() : play()
+    }
+
+    func stop() {
+        remoteMediaClient?.stop()
+    }
+}
+
+public extension CastPlayer {
+    var state: GCKMediaPlayerState {
+        mediaStatus?.playerState ?? .unknown
+    }
+
     var mediaInformation: GCKMediaInformation? {
         mediaStatus?.mediaInformation
     }
