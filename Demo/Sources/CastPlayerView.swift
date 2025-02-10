@@ -40,6 +40,7 @@ struct CastPlayerView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black)
+        .foregroundStyle(.white)
     }
 
     private var imageName: String {
