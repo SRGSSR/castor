@@ -128,6 +128,10 @@ extension CastPlayer: GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentCastSession = nil
     }
+
+    public func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKCastSession, withError error: any Error) {
+        currentCastSession = nil
+    }
 }
 
 extension CastPlayer: GCKRemoteMediaClientListener {

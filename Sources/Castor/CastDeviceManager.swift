@@ -117,8 +117,8 @@ extension CastDeviceManager: GCKSessionManagerListener {
         didFailToStart session: GCKCastSession,
         withError error: any Error
     ) {
-        currentCastSession = sessionManager.currentCastSession
-        currentDevice = currentCastSession?.device
+        currentCastSession = nil
+        currentDevice = nil
     }
 }
 
