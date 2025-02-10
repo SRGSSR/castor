@@ -59,7 +59,7 @@ struct CastPlayerView: View {
         let time = player.time()
         let timeRange = player.seekableTimeRange()
         guard time.isValid, timeRange.isValid, !timeRange.isEmpty else { return nil }
-        return Float(time.seconds / timeRange.duration.seconds)
+        return Float(time.seconds / timeRange.duration.seconds).clamped(to: 0...1)
     }
 
     private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
