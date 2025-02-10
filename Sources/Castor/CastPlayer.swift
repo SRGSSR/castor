@@ -102,10 +102,15 @@ public extension CastPlayer {
         let start = remoteMediaClient.approximateLiveSeekableRangeStart()
         let end = remoteMediaClient.approximateLiveSeekableRangeEnd()
         if Self.isValidTimeInterval(start) && Self.isValidTimeInterval(end) {
-            return .init(
-                start: .init(seconds: start, preferredTimescale: CMTimeScale(NSEC_PER_SEC)),
-                end: .init(seconds: end, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-            )
+            if start != end {
+                return .init(
+                    start: .init(seconds: start, preferredTimescale: CMTimeScale(NSEC_PER_SEC)),
+                    end: .init(seconds: end, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+                )
+            }
+            else {
+                return .invalid
+            }
         }
         else if let streamDuration = mediaInformation?.streamDuration, Self.isValidTimeInterval(streamDuration), streamDuration != 0 {
             return .init(start: .zero, end: .init(seconds: streamDuration, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
