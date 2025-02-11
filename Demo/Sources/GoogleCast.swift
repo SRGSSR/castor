@@ -31,7 +31,7 @@ class GoogleCast: NSObject, ObservableObject {
         mediaStatus = remoteMediaClient?.mediaStatus
     }
 
-    static func load(stream: Stream) {
+    private static func mediaInformation(from stream: Stream) -> GCKMediaInformation {
         let mediaInfoBuilder = GCKMediaInformationBuilder()
         mediaInfoBuilder.contentURL = stream.url
 
@@ -41,11 +41,23 @@ class GoogleCast: NSObject, ObservableObject {
         metadata.addImage(.init(url: stream.imageUrl, width: 0, height: 0))
 
         mediaInfoBuilder.metadata = metadata
-        let mediaInformation = mediaInfoBuilder.build()
+        return mediaInfoBuilder.build()
+    }
 
+    private static func queueItem(from stream: Stream) -> GCKMediaQueueItem {
+        let queueItemBuilder = GCKMediaQueueItemBuilder()
+        queueItemBuilder.mediaInformation = mediaInformation(from: stream)
+        return queueItemBuilder.build()
+    }
+
+    static func load(streams: [Stream]) {
         _ = GCKCastContext
             .sharedInstance().sessionManager.currentSession?.remoteMediaClient?
-            .loadMedia(mediaInformation)
+            .queueLoad(streams.map(queueItem(from:)), with: .init())
+    }
+
+    static func load(stream: Stream) {
+        Self.load(streams: [stream])
     }
 }
 
