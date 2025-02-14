@@ -3,6 +3,10 @@
 .PHONY: all
 all: help
 
+.PHONY: build
+build:
+	@Scripts/public/build-demo.sh
+
 .PHONY: test
 test:
 	@Scripts/public/test.sh
@@ -38,8 +42,11 @@ help:
 	@echo "Default:"
 	@echo "  all                            Default target"
 	@echo
+	@echo "Build:"
+	@echo "  build                      	Build demo app"
+	@echo
 	@echo "Test:"
-	@echo "  test                           Build & run unit tests"
+	@echo "  test                           Build and run unit tests"
 	@echo
 	@echo "Quality:"
 	@echo "  check-quality                  Run quality checks"

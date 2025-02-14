@@ -11,8 +11,8 @@ function install_tools {
 
 install_tools
 
-echo "Archiving demo..."
+echo "Building demo..."
 bundle config set path '.bundle'
 bundle install
-bundle exec fastlane archive_demo
+bundle exec fastlane build_demo
 echo "... done."
