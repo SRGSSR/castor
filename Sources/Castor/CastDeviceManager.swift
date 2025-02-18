@@ -16,7 +16,10 @@ public final class CastDeviceManager: NSObject, ObservableObject {
 
     @Published private var currentDevice: CastDevice?
 
+    /// The devices found in the local network.
     @Published public private(set) var devices: [CastDevice]
+
+    /// The connection state to a device.
     @Published public private(set) var connectionState: GCKConnectionState
 
     /// Default initializer.
@@ -72,18 +75,22 @@ public final class CastDeviceManager: NSObject, ObservableObject {
 }
 
 extension CastDeviceManager: GCKDiscoveryManagerListener {
+    // swiftlint:disable:next missing_docs
     public func didInsert(_ device: GCKDevice, at index: UInt) {
         devices.insert(device.toCastDevice(), at: Int(index))
     }
 
+    // swiftlint:disable:next missing_docs
     public func didRemove(_ device: GCKDevice, at index: UInt) {
         devices.remove(at: Int(index))
     }
 
+    // swiftlint:disable:next missing_docs
     public func didUpdate(_ device: GCKDevice, at index: UInt, andMoveTo newIndex: UInt) {
         devices.move(from: Int(index), to: Int(index))
     }
 
+    // swiftlint:disable:next missing_docs
     public func didUpdate(_ device: GCKDevice, at index: UInt) {
         devices.remove(at: Int(index))
         devices.insert(device.toCastDevice(), at: Int(index))
@@ -91,11 +98,13 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
 }
 
 extension CastDeviceManager: GCKSessionManagerListener {
+    // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentCastSession = session
         currentDevice = session.device.toCastDevice()
     }
 
+    // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentCastSession = sessionManager.currentCastSession
         if let currentDevice, session.device.toCastDevice() != currentDevice {
@@ -106,6 +115,7 @@ extension CastDeviceManager: GCKSessionManagerListener {
         }
     }
 
+    // swiftlint:disable:next missing_docs
     public func sessionManager(
         _ sessionManager: GCKSessionManager,
         didFailToStart session: GCKCastSession,
