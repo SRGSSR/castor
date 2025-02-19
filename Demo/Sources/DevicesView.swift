@@ -37,7 +37,7 @@ struct DevicesView: View {
         }
     }
 
-    private static func imageName(for device: GCKDevice) -> String {
+    private static func imageName(for device: CastDevice) -> String {
         switch device.type {
         case .TV:
             "tv"
@@ -74,10 +74,10 @@ struct DevicesView: View {
         }
     }
 
-    private func descriptionView(for device: GCKDevice) -> some View {
+    private func descriptionView(for device: CastDevice) -> some View {
         VStack(alignment: .leading) {
-            Text(device.friendlyName ?? "Unknown")
-            if let status = device.statusText, !status.isEmpty {
+            Text(device.name ?? "Unknown")
+            if let status = device.status {
                 Text(status)
                     .font(.footnote)
                     .foregroundStyle(.secondary)

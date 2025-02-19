@@ -9,11 +9,14 @@ import SwiftUI
 
 /// A mini media controls view.
 public struct MiniMediaControlsView: UIViewControllerRepresentable {
+    // swiftlint:disable:next missing_docs
     public init() {}
 
+    // swiftlint:disable:next missing_docs
     public func makeUIViewController(context: Context) -> GCKUIMiniMediaControlsViewController {
         GCKCastContext.sharedInstance().createMiniMediaControlsViewController()
     }
 
+    // swiftlint:disable:next missing_docs
     public func updateUIViewController(_ uiViewController: GCKUIMiniMediaControlsViewController, context: Context) {}
 }

@@ -17,10 +17,12 @@ private struct _ExpandedMediaControlsView: UIViewControllerRepresentable {
 
 /// An expanded media controls view.
 public struct ExpandedMediaControlsView: View {
+    // swiftlint:disable:next missing_docs
     public var body: some View {
         _ExpandedMediaControlsView()
             .ignoresSafeArea()
     }
 
+    // swiftlint:disable:next missing_docs
     public init() {}
 }
