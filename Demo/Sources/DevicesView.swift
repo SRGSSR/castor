@@ -19,18 +19,18 @@ private struct NoDevicesView: View {
 }
 
 struct DevicesView: View {
-    @StateObject private var deviceManager = CastDeviceManager()
+    @EnvironmentObject private var cast: Cast
 
     var body: some View {
         ZStack {
-            if deviceManager.devices.isEmpty {
+            if cast.devices.isEmpty {
                 NoDevicesView()
             }
             else {
                 devicesView()
             }
         }
-        .animation(.default, value: deviceManager.devices)
+        .animation(.default, value: cast.devices)
         .navigationTitle("Devices")
         .toolbar {
             ToolbarItem(content: disconnectButton)
@@ -51,11 +51,11 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(deviceManager.devices, id: \.self, selection: deviceManager.device()) { device in
+        List(cast.devices, id: \.self, selection: cast.device()) { device in
             HStack {
                 Image(systemName: Self.imageName(for: device))
                 descriptionView(for: device)
-                if deviceManager.isCasting(on: device) {
+                if cast.isCasting(on: device) {
                     Spacer()
                     statusView()
                 }
@@ -65,9 +65,9 @@ struct DevicesView: View {
 
     @ViewBuilder
     private func disconnectButton() -> some View {
-        if deviceManager.connectionState != .disconnected {
+        if cast.connectionState != .disconnected {
             Button {
-                deviceManager.endSession()
+                cast.endSession()
             } label: {
                 Text("Disconnect")
             }
@@ -87,7 +87,7 @@ struct DevicesView: View {
 
     @ViewBuilder
     private func statusView() -> some View {
-        switch deviceManager.connectionState {
+        switch cast.connectionState {
         case .connecting:
             ProgressView()
         case .connected:
@@ -102,6 +102,7 @@ struct DevicesView: View {
     NavigationStack {
         DevicesView()
     }
+    .environmentObject(Cast())
 }
 
 #Preview("NoDevicesView") {

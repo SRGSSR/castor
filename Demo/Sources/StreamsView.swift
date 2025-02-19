@@ -38,7 +38,7 @@ struct StreamsView: View {
             imageUrl: URL(string: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640")!
         ),
         .init(
-            title: "Tageschau",
+            title: "Tagesschau",
             url: URL(string: "https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8")!,
             // swiftlint:disable:next line_length
             imageUrl: URL(string: "https://images.tagesschau.de/image/89045d82-5cd5-46ad-8f91-73911add30ee/AAABh3YLLz0/AAABibBx2rU/20x9-1280/tagesschau-logo-100.jpg")!

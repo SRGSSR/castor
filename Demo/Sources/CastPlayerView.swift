@@ -9,7 +9,7 @@ import CoreMedia
 import GoogleCast
 import SwiftUI
 
-struct CastPlayerView: View {
+private struct MainView: View {
     private static let shortFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.second, .minute]
@@ -24,7 +24,8 @@ struct CastPlayerView: View {
         return formatter
     }()
 
-    @StateObject private var player = CastPlayer()
+    @ObservedObject var player: CastPlayer
+    let device: CastDevice?
 
     var body: some View {
         VStack(spacing: 40) {
@@ -151,8 +152,8 @@ struct CastPlayerView: View {
             if let title {
                 Text(title)
             }
-            if let device = player.device {
-                Text("Connected to \(device.friendlyName ?? "receiver")")
+            if let device {
+                Text("Connected to \(device.name ?? "receiver")")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -161,6 +162,23 @@ struct CastPlayerView: View {
     }
 }
 
+struct CastPlayerView: View {
+    @EnvironmentObject private var cast: Cast
+
+    var body: some View {
+        if let player = cast.player {
+            MainView(player: player, device: cast.device().wrappedValue)
+        }
+        else if cast.connectionState == .connecting {
+            ProgressView()
+        }
+        else {
+            ContentUnavailableView("Not connected", systemImage: "wifi.slash")
+        }
+    }
+}
+
 #Preview {
     CastPlayerView()
+        .environmentObject(Cast())
 }
