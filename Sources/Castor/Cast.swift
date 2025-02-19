@@ -124,6 +124,15 @@ extension Cast: GCKSessionManagerListener {
     }
 
     // swiftlint:disable:next missing_docs
+    public func sessionManager(
+        _ sessionManager: GCKSessionManager,
+        didSuspend session: GCKCastSession,
+        with reason: GCKConnectionSuspendReason
+    ) {
+        currentSession = nil
+    }
+
+    // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentSession = sessionManager.currentCastSession
 

@@ -166,15 +166,18 @@ struct CastPlayerView: View {
     @EnvironmentObject private var cast: Cast
 
     var body: some View {
-        if let player = cast.player {
-            MainView(player: player, device: cast.device().wrappedValue)
+        ZStack {
+            if let player = cast.player {
+                MainView(player: player, device: cast.device().wrappedValue)
+            }
+            else if cast.connectionState == .connecting {
+                ProgressView()
+            }
+            else {
+                ContentUnavailableView("Not connected", systemImage: "wifi.slash")
+            }
         }
-        else if cast.connectionState == .connecting {
-            ProgressView()
-        }
-        else {
-            ContentUnavailableView("Not connected", systemImage: "wifi.slash")
-        }
+        .animation(.default, value: cast.player)
     }
 }
 
