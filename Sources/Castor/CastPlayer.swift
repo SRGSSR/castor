@@ -14,6 +14,18 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let remoteMediaClient: GCKRemoteMediaClient
 
+    /// The player items.
+    public var items: [CastPlayerItem] {
+        let queue = remoteMediaClient.mediaQueue
+        var items: [CastPlayerItem] = []
+        for index in 0..<queue.itemCount {
+            if let item = queue.item(at: index) {
+                items.append(item.toCastPlayerItem())
+            }
+        }
+        return items
+    }
+
     init?(remoteMediaClient: GCKRemoteMediaClient?) {
         guard let remoteMediaClient else { return nil }
 
