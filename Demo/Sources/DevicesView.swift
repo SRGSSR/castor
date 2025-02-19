@@ -102,6 +102,7 @@ struct DevicesView: View {
     NavigationStack {
         DevicesView()
     }
+    .environmentObject(Cast())
 }
 
 #Preview("NoDevicesView") {
