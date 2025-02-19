@@ -170,11 +170,13 @@ struct CastPlayerView: View {
             if let player = cast.player {
                 MainView(player: player, device: cast.device().wrappedValue)
             }
-            else if cast.connectionState == .connecting {
-                ProgressView()
-            }
             else {
                 ContentUnavailableView("Not connected", systemImage: "wifi.slash")
+                    .overlay(alignment: .topTrailing) {
+                        ProgressView()
+                            .padding()
+                            .opacity(cast.connectionState == .connecting ? 1 : 0)
+                    }
             }
         }
         .animation(.default, value: cast.player)
