@@ -77,7 +77,7 @@ struct DevicesView: View {
     private func descriptionView(for device: CastDevice) -> some View {
         VStack(alignment: .leading) {
             Text(device.name ?? "Unknown")
-            if let status = device.status, !status.isEmpty {
+            if let status = device.status {
                 Text(status)
                     .font(.footnote)
                     .foregroundStyle(.secondary)

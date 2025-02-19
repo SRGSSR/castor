@@ -22,7 +22,8 @@ public struct CastDevice: Hashable {
 
     /// The status text reported by the currently running receiver application.
     public var status: String? {
-        rawDevice.statusText
+        guard let status = rawDevice.statusText, !status.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        return status
     }
 
     fileprivate init(from device: GCKDevice) {
