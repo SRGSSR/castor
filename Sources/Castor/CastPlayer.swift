@@ -10,43 +10,31 @@ import GoogleCast
 
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
-    private let context = GCKCastContext.sharedInstance()
-
     @Published private var mediaStatus: GCKMediaStatus?
 
-    private var currentCastSession: GCKCastSession? {
-        didSet {
-            oldValue?.remoteMediaClient?.remove(self)
-            currentCastSession?.remoteMediaClient?.add(self)
-            mediaStatus = currentCastSession?.remoteMediaClient?.mediaStatus
-        }
-    }
+    private let remoteMediaClient: GCKRemoteMediaClient
 
-    private var remoteMediaClient: GCKRemoteMediaClient? {
-        currentCastSession?.remoteMediaClient
-    }
+    init?(remoteMediaClient: GCKRemoteMediaClient?) {
+        guard let remoteMediaClient else { return nil }
 
-    /// Creates the player.
-    override public init() {
-        currentCastSession = context.sessionManager.currentCastSession
-        mediaStatus = currentCastSession?.remoteMediaClient?.mediaStatus
+        self.remoteMediaClient = remoteMediaClient
+        mediaStatus = remoteMediaClient.mediaStatus
 
         super.init()
 
-        context.sessionManager.add(self)
-        remoteMediaClient?.add(self)
+        remoteMediaClient.add(self)
     }
 }
 
 public extension CastPlayer {
     /// Plays.
     func play() {
-        remoteMediaClient?.play()
+        remoteMediaClient.play()
     }
 
     /// Pauses.
     func pause() {
-        remoteMediaClient?.pause()
+        remoteMediaClient.pause()
     }
 
     /// Toggles between play and pause.
@@ -61,7 +49,7 @@ public extension CastPlayer {
 
     /// Stops.
     func stop() {
-        remoteMediaClient?.stop()
+        remoteMediaClient.stop()
     }
 }
 
@@ -76,11 +64,6 @@ public extension CastPlayer {
         mediaStatus?.mediaInformation
     }
 
-    /// Device.
-    var device: GCKDevice? {
-        currentCastSession?.device
-    }
-
     /// Returns if the player is busy.
     var isBusy: Bool {
         state == .buffering || state == .loading
@@ -92,13 +75,11 @@ public extension CastPlayer {
 
     /// Time.
     func time() -> CMTime {
-        guard let position = remoteMediaClient?.approximateStreamPosition() else { return .invalid }
-        return .init(seconds: position, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        .init(seconds: remoteMediaClient.approximateStreamPosition(), preferredTimescale: CMTimeScale(NSEC_PER_SEC))
     }
 
     /// Seekable time range.
     func seekableTimeRange() -> CMTimeRange {
-        guard let remoteMediaClient else { return .invalid }
         let start = remoteMediaClient.approximateLiveSeekableRangeStart()
         let end = remoteMediaClient.approximateLiveSeekableRangeEnd()
         if Self.isValidTimeInterval(start), Self.isValidTimeInterval(end), start != end {
@@ -113,28 +94,6 @@ public extension CastPlayer {
         else {
             return .invalid
         }
-    }
-}
-
-extension CastPlayer: GCKSessionManagerListener {
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
-        currentCastSession = session
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
-        currentCastSession = session
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
-        currentCastSession = nil
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKCastSession, withError error: any Error) {
-        currentCastSession = nil
     }
 }
 

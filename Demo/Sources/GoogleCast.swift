@@ -47,6 +47,7 @@ class GoogleCast: NSObject, ObservableObject {
     private static func queueItem(from stream: Stream) -> GCKMediaQueueItem {
         let queueItemBuilder = GCKMediaQueueItemBuilder()
         queueItemBuilder.mediaInformation = mediaInformation(from: stream)
+        queueItemBuilder.autoplay = true
         return queueItemBuilder.build()
     }
 

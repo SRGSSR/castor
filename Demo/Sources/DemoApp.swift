@@ -5,6 +5,7 @@
 //
 
 import AVFAudio
+import Castor
 import GoogleCast
 import SwiftUI
 
@@ -51,5 +52,6 @@ struct DemoApp: App {
                 }
             }
         }
+        .environmentObject(Cast())
     }
 }

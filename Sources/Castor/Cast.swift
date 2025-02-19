@@ -9,12 +9,20 @@ import Foundation
 import GoogleCast
 import SwiftUI
 
-/// This object handles the discovery of receiver devices.
-public final class CastDeviceManager: NSObject, ObservableObject {
+/// This object that handles everything related to Google Cast.
+public final class Cast: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
-    private var currentCastSession: GCKCastSession?
+
+    private var currentSession: GCKCastSession? {
+        didSet {
+            player = .init(remoteMediaClient: currentSession?.remoteMediaClient)
+        }
+    }
 
     @Published private var currentDevice: CastDevice?
+
+    /// The player.
+    @Published public private(set) var player: CastPlayer?
 
     /// The devices found in the local network.
     @Published public private(set) var devices: [CastDevice]
@@ -24,10 +32,11 @@ public final class CastDeviceManager: NSObject, ObservableObject {
 
     /// Default initializer.
     override public init() {
-        currentCastSession = context.sessionManager.currentCastSession
+        currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
-        currentDevice = currentCastSession?.device.toCastDevice()
+        currentDevice = currentSession?.device.toCastDevice()
+        player = .init(remoteMediaClient: currentSession?.remoteMediaClient)
 
         super.init()
 
@@ -74,7 +83,7 @@ public final class CastDeviceManager: NSObject, ObservableObject {
     }
 }
 
-extension CastDeviceManager: GCKDiscoveryManagerListener {
+extension Cast: GCKDiscoveryManagerListener {
     // swiftlint:disable:next missing_docs
     public func didInsert(_ device: GCKDevice, at index: UInt) {
         devices.insert(device.toCastDevice(), at: Int(index))
@@ -97,16 +106,27 @@ extension CastDeviceManager: GCKDiscoveryManagerListener {
     }
 }
 
-extension CastDeviceManager: GCKSessionManagerListener {
+extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
-        currentCastSession = session
+        currentSession = session
         currentDevice = session.device.toCastDevice()
     }
 
     // swiftlint:disable:next missing_docs
+    public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
+        currentSession = session
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
+        currentSession = session
+    }
+
+    // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
-        currentCastSession = sessionManager.currentCastSession
+        currentSession = sessionManager.currentCastSession
+
         if let currentDevice, session.device.toCastDevice() != currentDevice {
             sessionManager.startSession(with: currentDevice.rawDevice)
         }
@@ -121,12 +141,12 @@ extension CastDeviceManager: GCKSessionManagerListener {
         didFailToStart session: GCKCastSession,
         withError error: any Error
     ) {
-        currentCastSession = nil
+        currentSession = nil
         currentDevice = nil
     }
 }
 
-private extension CastDeviceManager {
+private extension Cast {
     static func devices(from discoveryManager: GCKDiscoveryManager) -> [CastDevice] {
         var devices: [CastDevice] = []
         for index in 0..<discoveryManager.deviceCount {
