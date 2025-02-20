@@ -18,7 +18,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
 
-    private var request: GCKRequest?
+    private weak var request: GCKRequest?
 
     private var currentItem: CastPlayerItem? {
         didSet {
@@ -164,10 +164,6 @@ extension CastPlayer: GCKRequestDelegate {
             self.request = remoteMediaClient.queueJumpToItem(withID: itemID)
             self.request?.delegate = self
         }
-        else {
-            self.request = nil
-        }
-
     }
 
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
