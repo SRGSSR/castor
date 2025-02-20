@@ -10,31 +10,24 @@ import GoogleCast
 
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
-    @Published private var mediaStatus: GCKMediaStatus?
-
     private let remoteMediaClient: GCKRemoteMediaClient
 
     /// The player items.
-    public var items: [CastPlayerItem] {
-        let queue = remoteMediaClient.mediaQueue
-        var items: [CastPlayerItem] = []
-        for index in 0..<queue.itemCount {
-            if let item = queue.item(at: index) {
-                items.append(item.toCastPlayerItem())
-            }
-        }
-        return items
-    }
+    @Published public private(set) var items: [CastPlayerItem]
+
+    @Published private var mediaStatus: GCKMediaStatus?
 
     init?(remoteMediaClient: GCKRemoteMediaClient?) {
         guard let remoteMediaClient else { return nil }
 
         self.remoteMediaClient = remoteMediaClient
         mediaStatus = remoteMediaClient.mediaStatus
+        items = Self.items(from: remoteMediaClient.mediaQueue)
 
         super.init()
 
         remoteMediaClient.add(self)
+        remoteMediaClient.mediaQueue.add(self)
     }
 }
 
@@ -81,10 +74,6 @@ public extension CastPlayer {
         state == .buffering || state == .loading
     }
 
-    private static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
-        GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
-    }
-
     /// Time.
     func time() -> CMTime {
         .init(seconds: remoteMediaClient.approximateStreamPosition(), preferredTimescale: CMTimeScale(NSEC_PER_SEC))
@@ -113,5 +102,28 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
+    }
+}
+
+extension CastPlayer: GCKMediaQueueDelegate {
+    // swiftlint:disable:next missing_docs
+    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
+        items = Self.items(from: queue)
+    }
+}
+
+private extension CastPlayer {
+    static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
+        GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
+    }
+
+    static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
+        var items: [CastPlayerItem] = []
+        for index in 0..<queue.itemCount {
+            if let item = queue.item(at: index, fetchIfNeeded: true) {
+                items.append(item.toCastPlayerItem())
+            }
+        }
+        return items
     }
 }
