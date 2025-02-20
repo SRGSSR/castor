@@ -18,19 +18,17 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
 
-    var jumpedItemID: UInt?
-    var desiredItemID: UInt?
+    private var request: GCKRequest?
 
     private var currentItem: CastPlayerItem? {
         didSet {
-            desiredItemID = currentItem?.rawItem.itemID
-            print("--> \(desiredItemID)")
-            if let id = currentItem?.rawItem.itemID, currentItem != mediaStatus?.currentQueueItem?.toCastPlayerItem() {
-                if jumpedItemID == nil {
-                    let request = remoteMediaClient.queueJumpToItem(withID: id)
-                    jumpedItemID = id
-                    request.delegate = self
-                }
+            guard oldValue != currentItem, let currentItem else { return }
+            if let request, request.inProgress {
+                return
+            }
+            else {
+                request = remoteMediaClient.queueJumpToItem(withID: currentItem.rawItem.itemID)
+                request?.delegate = self
             }
         }
     }
@@ -97,7 +95,6 @@ public extension CastPlayer {
         .init {
             self.currentItem
         } set: { newValue in
-            // TODO: Implement
             self.currentItem = newValue
         }
     }
@@ -159,25 +156,21 @@ private extension CastPlayer {
 extension CastPlayer: GCKRequestDelegate {
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
         print("--> \(error)")
-        jumpedItemID = nil
     }
 
     public func requestDidComplete(_ request: GCKRequest) {
-        if let desiredItemID {
-            print("--> complete with DIID: \(desiredItemID)")
-            let request = remoteMediaClient.queueJumpToItem(withID: desiredItemID)
-            jumpedItemID = desiredItemID
-            self.desiredItemID = nil
-            request.delegate = self
+        print("--> complete")
+        if let itemID = currentItem?.rawItem.itemID, itemID != remoteMediaClient.mediaStatus?.currentItemID {
+            self.request = remoteMediaClient.queueJumpToItem(withID: itemID)
+            self.request?.delegate = self
         }
         else {
-            print("--> complete")
-            jumpedItemID = nil
+            self.request = nil
         }
+
     }
 
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
         print("--> didAbortWith: \(abortReason)")
-        jumpedItemID = nil
     }
 }
