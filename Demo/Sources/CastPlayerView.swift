@@ -37,11 +37,10 @@ private struct MainView: View {
             }
             Spacer()
             controls()
+            playlist()
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
-        .foregroundStyle(.white)
     }
 
     private var imageName: String {
@@ -81,7 +80,6 @@ private struct MainView: View {
         } placeholder: {
             Image(systemName: "photo")
                 .resizable()
-                .foregroundStyle(.white)
         }
         .aspectRatio(contentMode: .fit)
         .frame(height: 160)
@@ -136,7 +134,6 @@ private struct MainView: View {
             playbackButton()
             stopButton()
         }
-        .foregroundStyle(.white)
         .frame(height: 60)
     }
 
@@ -158,7 +155,12 @@ private struct MainView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .foregroundStyle(.white)
+    }
+
+    private func playlist() -> some View {
+        List(player.items, id: \.self) { item in
+            Text(item.title ?? "Untitled")
+        }
     }
 }
 
