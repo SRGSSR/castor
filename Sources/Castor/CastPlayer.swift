@@ -7,6 +7,7 @@
 import Combine
 import CoreMedia
 import GoogleCast
+import SwiftUI
 
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
@@ -72,6 +73,15 @@ public extension CastPlayer {
     /// Returns if the player is busy.
     var isBusy: Bool {
         state == .buffering || state == .loading
+    }
+
+    /// Current item.
+    func item() -> Binding<CastPlayerItem?> {
+        .init {
+            self.mediaStatus?.currentQueueItem?.toCastPlayerItem()
+        } set: { _ in
+            // TODO: Implement
+        }
     }
 
     /// Time.

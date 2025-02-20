@@ -18,6 +18,11 @@ public struct CastPlayerItem: Hashable {
     fileprivate init(rawItem: GCKMediaQueueItem) {
         self.rawItem = rawItem
     }
+
+    // swiftlint:disable:next missing_docs
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.rawItem.itemID == rhs.rawItem.itemID
+    }
 }
 
 extension GCKMediaQueueItem {
