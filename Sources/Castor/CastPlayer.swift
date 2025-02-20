@@ -16,7 +16,13 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// The player items.
     @Published public private(set) var items: [CastPlayerItem]
 
-    @Published private var mediaStatus: GCKMediaStatus?
+    @Published private var mediaStatus: GCKMediaStatus? {
+        didSet {
+            if let mediaStatus, mediaStatus != oldValue {
+                currentItem = mediaStatus.currentQueueItem?.toCastPlayerItem()
+            }
+        }
+    }
 
     private weak var request: GCKRequest?
 
