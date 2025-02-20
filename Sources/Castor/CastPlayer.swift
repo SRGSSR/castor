@@ -18,6 +18,23 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
 
+    var jumpedItemID: UInt?
+    var desiredItemID: UInt?
+
+    private var currentItem: CastPlayerItem? {
+        didSet {
+            desiredItemID = currentItem?.rawItem.itemID
+            print("--> \(desiredItemID)")
+            if let id = currentItem?.rawItem.itemID, currentItem != mediaStatus?.currentQueueItem?.toCastPlayerItem() {
+                if jumpedItemID == nil {
+                    let request = remoteMediaClient.queueJumpToItem(withID: id)
+                    jumpedItemID = id
+                    request.delegate = self
+                }
+            }
+        }
+    }
+
     init?(remoteMediaClient: GCKRemoteMediaClient?) {
         guard let remoteMediaClient else { return nil }
 
@@ -78,9 +95,10 @@ public extension CastPlayer {
     /// Current item.
     func item() -> Binding<CastPlayerItem?> {
         .init {
-            self.mediaStatus?.currentQueueItem?.toCastPlayerItem()
-        } set: { _ in
+            self.currentItem
+        } set: { newValue in
             // TODO: Implement
+            self.currentItem = newValue
         }
     }
 
@@ -135,5 +153,31 @@ private extension CastPlayer {
             }
         }
         return items
+    }
+}
+
+extension CastPlayer: GCKRequestDelegate {
+    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        print("--> \(error)")
+        jumpedItemID = nil
+    }
+
+    public func requestDidComplete(_ request: GCKRequest) {
+        if let desiredItemID {
+            print("--> complete with DIID: \(desiredItemID)")
+            let request = remoteMediaClient.queueJumpToItem(withID: desiredItemID)
+            jumpedItemID = desiredItemID
+            self.desiredItemID = nil
+            request.delegate = self
+        }
+        else {
+            print("--> complete")
+            jumpedItemID = nil
+        }
+    }
+
+    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        print("--> didAbortWith: \(abortReason)")
+        jumpedItemID = nil
     }
 }
