@@ -175,12 +175,19 @@ private extension CastPlayer {
 }
 
 extension CastPlayer: GCKRequestDelegate {
-    // swiftlint:disable:next missing_docs
+    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        print("--> request did fail with \(error)")
+    }
+
     public func requestDidComplete(_ request: GCKRequest) {
-        print("--> complete)")
+        print("--> request did complete")
         if let itemID = currentItem?.rawItem.itemID, itemID != remoteMediaClient.mediaStatus?.currentItemID {
             self.request = remoteMediaClient.queueJumpToItem(withID: itemID)
             self.request?.delegate = self
         }
+    }
+
+    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        print("--> request did abort with \(abortReason)")
     }
 }
