@@ -158,9 +158,7 @@ private struct MainView: View {
     }
 
     private func playlist() -> some View {
-        List(player.items, id: \.self) { item in
-            Text(item.title ?? "Untitled")
-        }
+        Text("Here shall be a playlist")
     }
 }
 
