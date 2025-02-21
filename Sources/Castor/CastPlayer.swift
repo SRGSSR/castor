@@ -44,7 +44,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         self.remoteMediaClient = remoteMediaClient
         mediaStatus = remoteMediaClient.mediaStatus
-        items = Self.items(from: remoteMediaClient.mediaQueue)
+        items = []          // FIXME:
 
         super.init()
 
@@ -138,24 +138,39 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 
 extension CastPlayer: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
+    public func mediaQueueWillChange(_ queue: GCKMediaQueue) {
+        print("--> MQ will change")
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
+        print("--> MQ did reload")
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
+        print("--> MQ did insert in \(range)")
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
+        print("--> MQ did update at \(indexes)")
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
+        print("--> MQ did remove at \(indexes)")
+    }
+
+    // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        items = Self.items(from: queue)
+        print("--> MQ did change")
     }
 }
 
 private extension CastPlayer {
     static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
         GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
-    }
-
-    static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
-        var items: [CastPlayerItem] = []
-        for index in 0..<queue.itemCount {
-            if let item = queue.item(at: index, fetchIfNeeded: true) {
-                items.append(item.toCastPlayerItem())
-            }
-        }
-        return items
     }
 }
 
