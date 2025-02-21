@@ -10,7 +10,7 @@ import GoogleCast
 public struct CastPlayerItem: Hashable {
     let rawItem: GCKMediaQueueItem
 
-    /// The content title
+    /// The content title.
     public var title: String? {
         rawItem.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
     }
