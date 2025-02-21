@@ -8,7 +8,7 @@ import GoogleCast
 
 /// A cast player item.
 public struct CastPlayerItem: Hashable {
-    private let rawItem: GCKMediaQueueItem
+    let rawItem: GCKMediaQueueItem
 
     /// The content title
     public var title: String? {
