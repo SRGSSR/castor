@@ -139,32 +139,32 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 extension CastPlayer: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueWillChange(_ queue: GCKMediaQueue) {
-        print("--> MQ will change")
+        print("--> MQ will change, count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        print("--> MQ did reload")
+        print("--> MQ did reload, count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        print("--> MQ did insert in \(range)")
+        print("--> MQ did insert in \(range), count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
-        print("--> MQ did update at \(indexes)")
+        print("--> MQ did update at \(indexes), count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        print("--> MQ did remove at \(indexes)")
+        print("--> MQ did remove at \(indexes), count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        print("--> MQ did change")
+        print("--> MQ did change, count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
     }
 }
 
@@ -180,7 +180,7 @@ extension CastPlayer: GCKRequestDelegate {
     }
 
     public func requestDidComplete(_ request: GCKRequest) {
-        print("--> complete")
+        print("--> complete)")
         if let itemID = currentItem?.rawItem.itemID, itemID != remoteMediaClient.mediaStatus?.currentItemID {
             self.request = remoteMediaClient.queueJumpToItem(withID: itemID)
             self.request?.delegate = self
