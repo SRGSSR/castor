@@ -47,5 +47,8 @@ extension MediaQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
         print("--> MQ did change, count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
+        for i in 0..<queue.itemCount {
+            print("--> MQ it at index \(i), id: \(queue.itemID(at: i)): \(queue.item(at: i, fetchIfNeeded: false))")
+        }
     }
 }
