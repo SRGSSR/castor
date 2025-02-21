@@ -13,22 +13,20 @@ import SwiftUI
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    /// The player items.
-    @Published public private(set) var items: [CastPlayerItem]
-
     @Published private var mediaStatus: GCKMediaStatus?
+
+    public var queue: MediaQueue
 
     init?(remoteMediaClient: GCKRemoteMediaClient?) {
         guard let remoteMediaClient else { return nil }
 
         self.remoteMediaClient = remoteMediaClient
         mediaStatus = remoteMediaClient.mediaStatus
-        items = []          // FIXME:
+        queue = .init(from: remoteMediaClient.mediaQueue)
 
         super.init()
 
         remoteMediaClient.add(self)
-        remoteMediaClient.mediaQueue.add(self)
     }
 }
 
@@ -103,38 +101,6 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
-    }
-}
-
-extension CastPlayer: GCKMediaQueueDelegate {
-    // swiftlint:disable:next missing_docs
-    public func mediaQueueWillChange(_ queue: GCKMediaQueue) {
-        print("--> MQ will change, count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        print("--> MQ did reload, count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        print("--> MQ did insert in \(range), count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
-        print("--> MQ did update at \(indexes), count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        print("--> MQ did remove at \(indexes), count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        print("--> MQ did change, count = \(queue.itemCount), cached = \(queue.cachedItemCount), cacheSize = \(queue.cacheSize)")
     }
 }
 
