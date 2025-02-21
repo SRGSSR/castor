@@ -139,7 +139,15 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 extension CastPlayer: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        items = Self.items(from: queue)
+        for item in Self.items(from: queue) where !items.contains(item) {
+            let index = queue.indexOfItem(withID: item.rawItem.itemID)
+            items[insertAt: index] = item
+        }
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
+        self.items = Self.items(from: queue)
     }
 }
 
@@ -151,7 +159,7 @@ private extension CastPlayer {
     static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
         var items: [CastPlayerItem] = []
         for index in 0..<queue.itemCount {
-            if let item = queue.item(at: index, fetchIfNeeded: true) {
+            if let item = queue.item(at: index) {
                 items.append(item.toCastPlayerItem())
             }
         }
