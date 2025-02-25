@@ -27,6 +27,10 @@ public class CastPlayerItem: NSObject {
         }
     }
 
+    override public var hash: Int {
+        Int(id)
+    }
+
     init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
         self.id = id
         self.queue = queue
@@ -39,18 +43,13 @@ public class CastPlayerItem: NSObject {
         cachedRawItem = rawItem
     }
 
-    // swiftlint:disable:next missing_docs
     override public func isEqual(_ object: Any?) -> Bool {
         (object as? Self)?.id == id
-    }
-
-    // swiftlint:disable:next missing_docs
-    override public var hash: Int {
-        Int(id)
     }
 }
 
 extension CastPlayerItem: GCKMediaQueueDelegate {
+    // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
         if let item = queue.item(withID: id, fetchIfNeeded: false) {
             cachedRawItem = item

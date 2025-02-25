@@ -15,6 +15,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
 
+    /// The queue managing player items.
     public var queue: MediaQueue
 
     init?(remoteMediaClient: GCKRemoteMediaClient?) {

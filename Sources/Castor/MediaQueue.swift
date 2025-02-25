@@ -7,6 +7,7 @@
 import GoogleCast
 import SwiftUI
 
+/// A queue managing player items.
 public final class MediaQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
@@ -17,6 +18,7 @@ public final class MediaQueue: NSObject, ObservableObject {
         }
     }
 
+    /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
 
     private weak var request: GCKRequest?
@@ -79,11 +81,12 @@ extension MediaQueue: GCKMediaQueueDelegate {
         )
     }
 
-    // swiftlint:disable:next missing_docs
+    // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 
+    // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
         objectWillChange.send()
     }
