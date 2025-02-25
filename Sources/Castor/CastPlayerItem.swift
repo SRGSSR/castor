@@ -7,27 +7,47 @@
 import GoogleCast
 
 /// A cast player item.
-public struct CastPlayerItem: Hashable {
-    let id: GCKMediaQueueItemID
-    let rawItem: GCKMediaQueueItem?
+public class CastPlayerItem: NSObject {
+    private let id: GCKMediaQueueItemID
+    private let queue: GCKMediaQueue
+    private var cachedRawItem: GCKMediaQueueItem?
 
     /// The content title.
     public var title: String? {
         rawItem?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
     }
 
-    /// Return `true` if item metadata has been loaded
-    public var isLoaded: Bool {
-        rawItem != nil
+    private var rawItem: GCKMediaQueueItem? {
+        if let cachedRawItem {
+            return cachedRawItem
+        }
+        else {
+            return queue.item(withID: id)
+        }
     }
 
-    init(id: GCKMediaQueueItemID, rawItem: GCKMediaQueueItem?) {
+    init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
         self.id = id
-        self.rawItem = rawItem
+        self.queue = queue
+        super.init()
+        queue.add(self)
     }
 
     // swiftlint:disable:next missing_docs
-    public static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: CastPlayerItem, rhs: CastPlayerItem) -> Bool {
         lhs.id == rhs.id
+    }
+
+    // swiftlint:disable:next missing_docs
+    public override var hash: Int {
+        id.hashValue
+    }
+}
+
+extension CastPlayerItem: GCKMediaQueueDelegate {
+    public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
+        if let item = queue.item(withID: id, fetchIfNeeded: false) {
+            cachedRawItem = item
+        }
     }
 }

@@ -158,7 +158,23 @@ private struct MainView: View {
     }
 
     private func playlist() -> some View {
-        Text("Here shall be a playlist")
+        MediaQueueView(mediaQueue: player.queue)
+    }
+}
+
+private struct MediaQueueView: View {
+    @ObservedObject var mediaQueue: MediaQueue
+
+    var body: some View {
+        List(mediaQueue.items, id: \.self) { item in
+            if let title = item.title {
+                Text(title)
+            }
+            else {
+                ProgressView()
+            }
+        }
+        .listStyle(.plain)
     }
 }
 
