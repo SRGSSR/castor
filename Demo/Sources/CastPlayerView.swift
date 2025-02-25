@@ -28,18 +28,10 @@ private struct MainView: View {
     let device: CastDevice?
 
     var body: some View {
-        VStack(spacing: 40) {
-            informationView()
-            Spacer()
-            ZStack {
-                artworkImage()
-                loadingIndicator()
-            }
-            Spacer()
-            controls()
+        VStack {
+            currentItemView()
             playlist()
         }
-        .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
@@ -137,13 +129,6 @@ private struct MainView: View {
         .frame(height: 60)
     }
 
-    private func controls() -> some View {
-        VStack {
-            progressView()
-            buttons()
-        }
-    }
-
     private func informationView() -> some View {
         VStack {
             if let title {
@@ -154,6 +139,30 @@ private struct MainView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+
+    private func visualView() -> some View {
+        ZStack {
+            artworkImage()
+            loadingIndicator()
+        }
+        .padding()
+    }
+
+    private func controls() -> some View {
+        VStack {
+            progressView()
+            buttons()
+        }
+        .padding()
+    }
+
+    private func currentItemView() -> some View {
+        VStack {
+            informationView()
+            visualView()
+            controls()
         }
     }
 
@@ -174,7 +183,6 @@ private struct MediaQueueView: View {
                 ProgressView()
             }
         }
-        .listStyle(.plain)
     }
 }
 
