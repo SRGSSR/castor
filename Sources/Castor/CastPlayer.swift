@@ -22,7 +22,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         self.remoteMediaClient = remoteMediaClient
         mediaStatus = remoteMediaClient.mediaStatus
-        queue = .init(from: remoteMediaClient.mediaQueue)
+        queue = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 

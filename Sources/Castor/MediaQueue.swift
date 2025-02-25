@@ -5,16 +5,59 @@
 //
 
 import GoogleCast
+import SwiftUI
 
 public final class MediaQueue: NSObject, ObservableObject {
-    private let queue: GCKMediaQueue
+    private let remoteMediaClient: GCKRemoteMediaClient
+
+    @Published private var mediaStatus: GCKMediaStatus? {
+        didSet {
+            // TODO: Should likely use ID to locate existing local item before creating a new one
+            if let item = mediaStatus?.currentQueueItem, request == nil {
+                currentItem = CastPlayerItem(id: item.itemID, queue: remoteMediaClient.mediaQueue)
+            }
+        }
+    }
 
     @Published public private(set) var items: [CastPlayerItem] = []
 
-    init(from queue: GCKMediaQueue) {
-        self.queue = queue
+    private weak var request: GCKRequest?
+
+    private var currentItem: CastPlayerItem? {
+        didSet {
+            guard oldValue != currentItem, let currentItem else { return }
+            if let request, request.inProgress {
+                return
+            }
+            else {
+                request = remoteMediaClient.queueJumpToItem(withID: currentItem.id)
+                request?.delegate = self
+            }
+        }
+    }
+
+    init(remoteMediaClient: GCKRemoteMediaClient) {
+        self.remoteMediaClient = remoteMediaClient
+        mediaStatus = remoteMediaClient.mediaStatus
         super.init()
-        queue.add(self)
+        remoteMediaClient.add(self)
+        remoteMediaClient.mediaQueue.add(self)
+    }
+
+    /// Current item.
+    public func item() -> Binding<CastPlayerItem?> {
+        .init {
+            self.currentItem
+        } set: { newValue in
+            self.currentItem = newValue
+        }
+    }
+}
+
+extension MediaQueue: GCKRemoteMediaClientListener {
+    // swiftlint:disable:next missing_docs
+    public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        self.mediaStatus = mediaStatus
     }
 }
 
@@ -46,3 +89,14 @@ extension MediaQueue: GCKMediaQueueDelegate {
         objectWillChange.send()
     }
 }
+
+extension MediaQueue: GCKRequestDelegate {
+    // swiftlint:disable:next missing_docs
+    public func requestDidComplete(_ request: GCKRequest) {
+        if let itemID = currentItem?.id, itemID != remoteMediaClient.mediaStatus?.currentItemID {
+            self.request = remoteMediaClient.queueJumpToItem(withID: itemID)
+            self.request?.delegate = self
+        }
+    }
+}
+

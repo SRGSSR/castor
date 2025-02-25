@@ -175,7 +175,7 @@ private struct MediaQueueView: View {
     @ObservedObject var mediaQueue: MediaQueue
 
     var body: some View {
-        List(mediaQueue.items, id: \.self) { item in
+        List(mediaQueue.items, id: \.self, selection: mediaQueue.item()) { item in
             if let title = item.title {
                 Text(title)
             }
