@@ -18,12 +18,11 @@ public class CastPlayerItem: NSObject {
     }
 
     private var rawItem: GCKMediaQueueItem? {
-        if let cachedRawItem {
-            return cachedRawItem
-        }
-        else {
-            return queue.item(withID: id)
-        }
+        return cachedRawItem
+    }
+
+    public func load() {
+        cachedRawItem = queue.item(withID: id)
     }
 
     init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
