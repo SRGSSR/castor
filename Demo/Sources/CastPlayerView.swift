@@ -167,15 +167,12 @@ private struct MediaQueueView: View {
 
     var body: some View {
         List(mediaQueue.items, id: \.self) { item in
-            Group {
-                if let title = item.title {
-                    Text(title)
-                }
-                else {
-                    ProgressView()
-                }
+            if let title = item.title {
+                Text(title)
             }
-            .onAppear(perform: item.load)
+            else {
+                ProgressView()
+            }
         }
         .listStyle(.plain)
     }
