@@ -60,6 +60,12 @@ class GoogleCast: NSObject, ObservableObject {
     static func load(stream: Stream) {
         Self.load(streams: [stream])
     }
+
+    static func append(stream: Stream) {
+        _ = GCKCastContext
+            .sharedInstance().sessionManager.currentSession?.remoteMediaClient?
+            .queueInsert(queueItem(from: stream), beforeItemWithID: kGCKMediaQueueInvalidItemID)
+    }
 }
 
 extension GoogleCast: GCKSessionManagerListener {
