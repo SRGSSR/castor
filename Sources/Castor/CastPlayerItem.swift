@@ -8,7 +8,7 @@ import GoogleCast
 
 /// A cast player item.
 public class CastPlayerItem: NSObject {
-    public let id: GCKMediaQueueItemID
+    let id: GCKMediaQueueItemID
 
     private let queue: GCKMediaQueue
     private var cachedRawItem: GCKMediaQueueItem?
@@ -34,13 +34,18 @@ public class CastPlayerItem: NSObject {
         queue.add(self)
     }
 
+    convenience init(rawItem: GCKMediaQueueItem, queue: GCKMediaQueue) {
+        self.init(id: rawItem.itemID, queue: queue)
+        cachedRawItem = rawItem
+    }
+
     // swiftlint:disable:next missing_docs
-    public override func isEqual(_ object: Any?) -> Bool {
+    override public func isEqual(_ object: Any?) -> Bool {
         (object as? Self)?.id == id
     }
 
     // swiftlint:disable:next missing_docs
-    public override var hash: Int {
+    override public var hash: Int {
         Int(id)
     }
 }

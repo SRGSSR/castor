@@ -12,10 +12,8 @@ public final class MediaQueue: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus? {
         didSet {
-            // TODO: Should likely use ID to locate existing local item before creating a new one
-            if let item = mediaStatus?.currentQueueItem, request == nil {
-                currentItem = CastPlayerItem(id: item.itemID, queue: remoteMediaClient.mediaQueue)
-            }
+            guard request == nil else { return }
+            currentItem = Self.currentItem(for: remoteMediaClient.mediaStatus, queue: remoteMediaClient.mediaQueue)
         }
     }
 
@@ -25,23 +23,24 @@ public final class MediaQueue: NSObject, ObservableObject {
 
     private var currentItem: CastPlayerItem? {
         didSet {
-            guard oldValue != currentItem, let currentItem else { return }
-            if let request, request.inProgress {
-                return
-            }
-            else {
-                request = remoteMediaClient.queueJumpToItem(withID: currentItem.id)
-                request?.delegate = self
-            }
+            guard request == nil, oldValue != currentItem, let currentItem else { return }
+            request = remoteMediaClient.queueJumpToItem(withID: currentItem.id)
+            request?.delegate = self
         }
     }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
         mediaStatus = remoteMediaClient.mediaStatus
+        currentItem = Self.currentItem(for: remoteMediaClient.mediaStatus, queue: remoteMediaClient.mediaQueue)
         super.init()
         remoteMediaClient.add(self)
         remoteMediaClient.mediaQueue.add(self)
+    }
+
+    private static func currentItem(for mediaStatus: GCKMediaStatus?, queue: GCKMediaQueue) -> CastPlayerItem? {
+        guard let rawItem = mediaStatus?.currentQueueItem else { return nil }
+        return CastPlayerItem(rawItem: rawItem, queue: queue)
     }
 
     /// Current item.
@@ -99,4 +98,3 @@ extension MediaQueue: GCKRequestDelegate {
         }
     }
 }
-
