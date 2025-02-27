@@ -9,6 +9,7 @@
 ## Checklist
 
 - [ ] APIs have been properly documented (if relevant).
+- [ ] The behavior works with both the standard (`CC1AD845`) and DRM-enabled (`A12D4273`) Google Cast receivers.
 - [ ] The documentation has been updated (if relevant).
 - [ ] New unit tests have been written (if relevant).
 - [ ] The demo has been updated (if relevant).
