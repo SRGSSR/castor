@@ -42,11 +42,6 @@ public class CastPlayerItem: NSObject {
         queue.add(self)
     }
 
-    convenience init(rawItem: GCKMediaQueueItem, queue: GCKMediaQueue) {
-        self.init(id: rawItem.itemID, queue: queue)
-        cachedRawItem = rawItem
-    }
-
     override public func isEqual(_ object: Any?) -> Bool {
         (object as? Self)?.id == id
     }

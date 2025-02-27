@@ -42,7 +42,7 @@ public final class MediaQueue: NSObject, ObservableObject {
 
     private static func currentItem(for mediaStatus: GCKMediaStatus?, queue: GCKMediaQueue) -> CastPlayerItem? {
         guard let rawItem = mediaStatus?.currentQueueItem else { return nil }
-        return CastPlayerItem(rawItem: rawItem, queue: queue)
+        return CastPlayerItem(id: rawItem.itemID, queue: queue)
     }
 
     /// Current item.
