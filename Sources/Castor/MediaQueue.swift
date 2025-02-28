@@ -20,7 +20,16 @@ public final class MediaQueue: NSObject, ObservableObject {
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
 
-    private var currentItem: CastPlayerItem?
+    private var currentItem: CastPlayerItem? {
+        didSet {
+            guard oldValue != currentItem else { return }
+            if let itemID = currentItem?.id {
+                request = .init(rawRequest: remoteMediaClient.queueJumpToItem(withID: itemID))
+            }
+        }
+    }
+
+    private var request: CastRequest?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
