@@ -11,11 +11,7 @@ import SwiftUI
 public final class MediaQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    @Published private var mediaStatus: GCKMediaStatus? {
-        didSet {
-            currentItem = Self.currentItem(for: remoteMediaClient.mediaStatus, queue: remoteMediaClient.mediaQueue)
-        }
-    }
+    @Published private var mediaStatus: GCKMediaStatus?
 
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
@@ -88,6 +84,5 @@ extension MediaQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
         objectWillChange.send()
-        print("--> did change")
     }
 }
