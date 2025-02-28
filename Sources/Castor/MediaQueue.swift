@@ -13,7 +13,6 @@ public final class MediaQueue: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus? {
         didSet {
-            guard request == nil else { return }
             currentItem = Self.currentItem(for: remoteMediaClient.mediaStatus, queue: remoteMediaClient.mediaQueue)
         }
     }
@@ -21,20 +20,11 @@ public final class MediaQueue: NSObject, ObservableObject {
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
 
-    private weak var request: GCKRequest?
-
-    private var currentItem: CastPlayerItem? {
-        didSet {
-            guard request == nil, oldValue != currentItem, let currentItem else { return }
-            request = remoteMediaClient.queueJumpToItem(withID: currentItem.id)
-            request?.delegate = self
-        }
-    }
+    private var currentItem: CastPlayerItem?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
         mediaStatus = remoteMediaClient.mediaStatus
-        currentItem = Self.currentItem(for: remoteMediaClient.mediaStatus, queue: remoteMediaClient.mediaQueue)
         super.init()
         remoteMediaClient.add(self)
         remoteMediaClient.mediaQueue.add(self)
@@ -89,15 +79,6 @@ extension MediaQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
         objectWillChange.send()
-    }
-}
-
-extension MediaQueue: GCKRequestDelegate {
-    // swiftlint:disable:next missing_docs
-    public func requestDidComplete(_ request: GCKRequest) {
-        if let itemID = currentItem?.id, itemID != remoteMediaClient.mediaStatus?.currentItemID {
-            self.request = remoteMediaClient.queueJumpToItem(withID: itemID)
-            self.request?.delegate = self
-        }
+        print("--> did change")
     }
 }
