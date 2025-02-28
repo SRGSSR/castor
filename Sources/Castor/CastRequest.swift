@@ -7,10 +7,10 @@
 import GoogleCast
 
 final class CastRequest: NSObject {
-    let rawRequest: GCKRequest
+    private let rawRequest: GCKRequest
 
     init(rawRequest: GCKRequest) {
-        print("--> did start \(rawRequest.requestID)")
+        print("--> [request] did start \(rawRequest.requestID)")
         self.rawRequest = rawRequest
         super.init()
         rawRequest.delegate = self
@@ -27,14 +27,14 @@ final class CastRequest: NSObject {
 
 extension CastRequest: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        print("--> did complete \(request.requestID)")
+        print("--> [request] did complete \(request.requestID)")
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        print("--> did abort \(request.requestID) with \(abortReason)")
+        print("--> [request] did abort \(request.requestID) with \(abortReason)")
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        print("--> did fail \(request.requestID) with \(error)")
+        print("--> [request] did fail \(request.requestID) with \(error)")
     }
 }

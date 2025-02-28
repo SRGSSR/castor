@@ -20,15 +20,16 @@ public final class MediaQueue: NSObject, ObservableObject {
         didSet {
             guard oldValue != currentItem else { return }
             if let itemID = currentItem?.id {
-                request = .init(rawRequest: remoteMediaClient.queueJumpToItem(withID: itemID))
+                jumpRequest.jump(to: itemID)
             }
         }
     }
 
-    private var request: CastRequest?
+    private var jumpRequest: JumpRequest
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
+        jumpRequest = .init(remoteMediaClient: remoteMediaClient)
         mediaStatus = remoteMediaClient.mediaStatus
         super.init()
         remoteMediaClient.add(self)
