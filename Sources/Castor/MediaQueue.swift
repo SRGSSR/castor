@@ -47,10 +47,10 @@ public final class MediaQueue: NSObject, ObservableObject {
 
     /// Current item.
     public func item() -> Binding<CastPlayerItem?> {
-        .init {
-            self.currentItem
-        } set: { newValue in
-            self.currentItem = newValue
+        .init { [weak self] in
+            self?.currentItem
+        } set: { [weak self] newValue in
+            self?.currentItem = newValue
         }
     }
 }
