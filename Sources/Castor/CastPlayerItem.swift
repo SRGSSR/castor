@@ -8,7 +8,7 @@ import GoogleCast
 
 /// A cast player item.
 public class CastPlayerItem: NSObject {
-    public let id: GCKMediaQueueItemID
+    let id: GCKMediaQueueItemID
 
     private let queue: GCKMediaQueue
     private var cachedRawItem: GCKMediaQueueItem?
