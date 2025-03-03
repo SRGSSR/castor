@@ -22,6 +22,10 @@ public class CastPlayerItem: NSObject {
         if let cachedRawItem {
             return cachedRawItem
         }
+        else if let item = queue.item(withID: id, fetchIfNeeded: false) {
+            cachedRawItem = item
+            return item
+        }
         else {
             return nil
         }
