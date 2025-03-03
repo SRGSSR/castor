@@ -176,12 +176,15 @@ private struct MediaQueueView: View {
 
     var body: some View {
         List(mediaQueue.items, id: \.self, selection: mediaQueue.item()) { item in
-            if let title = item.title {
-                Text(title)
+            ZStack {
+                if let title = item.title {
+                    Text("\(title) - \(item.id)")
+                }
+                else {
+                    Text("\(item.id)")
+                }
             }
-            else {
-                ProgressView()
-            }
+            .onAppear(perform: item.load)
         }
     }
 }
