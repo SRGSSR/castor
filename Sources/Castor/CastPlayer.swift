@@ -7,22 +7,31 @@
 import Combine
 import CoreMedia
 import GoogleCast
+import SwiftUI
 
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
+    private let remoteMediaClient: GCKRemoteMediaClient
+
     @Published private var mediaStatus: GCKMediaStatus?
 
-    private let remoteMediaClient: GCKRemoteMediaClient
+    /// The queue managing player items.
+    public var queue: MediaQueue
 
     init?(remoteMediaClient: GCKRemoteMediaClient?) {
         guard let remoteMediaClient else { return nil }
 
         self.remoteMediaClient = remoteMediaClient
         mediaStatus = remoteMediaClient.mediaStatus
+        queue = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
         remoteMediaClient.add(self)
+    }
+
+    deinit {
+        remoteMediaClient.mediaQueue.remove(queue)
     }
 }
 
@@ -69,10 +78,6 @@ public extension CastPlayer {
         state == .buffering || state == .loading
     }
 
-    private static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
-        GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
-    }
-
     /// Time.
     func time() -> CMTime {
         .init(seconds: remoteMediaClient.approximateStreamPosition(), preferredTimescale: CMTimeScale(NSEC_PER_SEC))
@@ -101,5 +106,11 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
+    }
+}
+
+private extension CastPlayer {
+    static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
+        GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
     }
 }

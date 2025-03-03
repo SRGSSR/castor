@@ -28,20 +28,11 @@ private struct MainView: View {
     let device: CastDevice?
 
     var body: some View {
-        VStack(spacing: 40) {
-            informationView()
-            Spacer()
-            ZStack {
-                artworkImage()
-                loadingIndicator()
-            }
-            Spacer()
-            controls()
+        VStack {
+            currentItemView()
+            playlist()
         }
-        .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
-        .foregroundStyle(.white)
     }
 
     private var imageName: String {
@@ -81,7 +72,6 @@ private struct MainView: View {
         } placeholder: {
             Image(systemName: "photo")
                 .resizable()
-                .foregroundStyle(.white)
         }
         .aspectRatio(contentMode: .fit)
         .frame(height: 160)
@@ -136,15 +126,7 @@ private struct MainView: View {
             playbackButton()
             stopButton()
         }
-        .foregroundStyle(.white)
         .frame(height: 60)
-    }
-
-    private func controls() -> some View {
-        VStack {
-            progressView()
-            buttons()
-        }
     }
 
     private func informationView() -> some View {
@@ -158,7 +140,49 @@ private struct MainView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .foregroundStyle(.white)
+    }
+
+    private func visualView() -> some View {
+        ZStack {
+            artworkImage()
+            loadingIndicator()
+        }
+        .padding()
+    }
+
+    private func controls() -> some View {
+        VStack {
+            progressView()
+            buttons()
+        }
+        .padding()
+    }
+
+    private func currentItemView() -> some View {
+        VStack {
+            informationView()
+            visualView()
+            controls()
+        }
+    }
+
+    private func playlist() -> some View {
+        MediaQueueView(mediaQueue: player.queue)
+    }
+}
+
+private struct MediaQueueView: View {
+    @ObservedObject var mediaQueue: MediaQueue
+
+    var body: some View {
+        List(mediaQueue.items, id: \.self, selection: mediaQueue.item()) { item in
+            if let title = item.title {
+                Text(title)
+            }
+            else {
+                ProgressView()
+            }
+        }
     }
 }
 
@@ -170,11 +194,13 @@ struct CastPlayerView: View {
             if let player = cast.player {
                 MainView(player: player, device: cast.device().wrappedValue)
             }
-            else if cast.connectionState == .connecting {
-                ProgressView()
-            }
             else {
                 ContentUnavailableView("Not connected", systemImage: "wifi.slash")
+                    .overlay(alignment: .topTrailing) {
+                        ProgressView()
+                            .padding()
+                            .opacity(cast.connectionState == .connecting ? 1 : 0)
+                    }
             }
         }
         .animation(.default, value: cast.player)

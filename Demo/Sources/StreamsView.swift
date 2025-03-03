@@ -70,6 +70,16 @@ struct StreamsView: View {
         }
         .animation(.linear(duration: 0.2), value: googleCast.isLoaded)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: batchLoad) {
+                    Text("Load > 20")
+                }
+            }
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: append) {
+                    Text("Append")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton()
             }
@@ -78,6 +88,16 @@ struct StreamsView: View {
             PlayerView(url: stream.url)
         }
         .navigationTitle("Castor")
+    }
+
+    private func batchLoad() {
+        guard googleCast.isActive else { return }
+        GoogleCast.load(streams: streams + streams + streams + streams)
+    }
+
+    private func append() {
+        guard googleCast.isActive, let stream = streams.randomElement() else { return }
+        GoogleCast.append(stream: stream)
     }
 }
 
