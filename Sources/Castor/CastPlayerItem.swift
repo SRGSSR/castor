@@ -43,12 +43,8 @@ public class CastPlayerItem: NSObject {
     }
 
     public func load() {
-        if let item = queue.item(withID: id, fetchIfNeeded: false) {
-            cachedRawItem = item
-        }
-        else if let item = queue.item(withID: id) {
-            cachedRawItem = item
-        }
+        guard let item = queue.item(withID: id, fetchIfNeeded: false) ?? queue.item(withID: id) else { return }
+        cachedRawItem = item
     }
 }
 
