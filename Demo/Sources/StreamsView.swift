@@ -92,12 +92,12 @@ struct StreamsView: View {
 
     private func batchLoad() {
         guard googleCast.isActive else { return }
-        GoogleCast.load(streams: streams + streams + streams + streams)
+        GoogleCast.load(streams: Array(repeating: streams.first!, count: 170))
     }
 
     private func append() {
-        guard googleCast.isActive, let stream = streams.randomElement() else { return }
-        GoogleCast.append(stream: stream)
+        guard googleCast.isActive else { return }
+        GoogleCast.append(streams: streams)
     }
 }
 
