@@ -175,14 +175,21 @@ private struct MediaQueueView: View {
     @ObservedObject var mediaQueue: MediaQueue
 
     var body: some View {
-        List(mediaQueue.items, id: \.self, selection: mediaQueue.item()) { item in
-            if let title = item.title {
-                Text(title)
-            }
-            else {
-                ProgressView()
-            }
+        List(mediaQueue.items, id: \.self) { item in
+            MediaQueueCell(item: item)
+                .onAppear {
+                    mediaQueue.load(item)
+                }
         }
+    }
+}
+
+private struct MediaQueueCell: View {
+    let item: CastPlayerItem
+
+    var body: some View {
+        Text(item.title ?? String(repeating: " ", count: .random(in: 20...40)))
+            .redacted(reason: item.title == nil ? .placeholder : [])
     }
 }
 
