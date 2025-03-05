@@ -22,9 +22,9 @@ public final class MediaQueue: NSObject, ObservableObject {
         remoteMediaClient.mediaQueue.add(self)
     }
 
-    /// Try to load a `CastPlayerItem` from the cache.
+    /// Load a `CastPlayerItem`.
     ///
-    /// - Parameter item: The item to load from the cache.
+    /// - Parameter item: The item to load.
     public func load(_ item: CastPlayerItem) {
         guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
         cachedItem.load()
