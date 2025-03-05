@@ -20,12 +20,7 @@ final class CastCachedPlayerItem: NSObject {
 
     func load() {
         guard rawItem == nil else { return }
-        if let item = queue.item(withID: id, fetchIfNeeded: false) {
-            rawItem = item
-        }
-        else if let item = queue.item(withID: id) {
-            rawItem = item
-        }
+        rawItem = queue.item(withID: id, fetchIfNeeded: false) ?? queue.item(withID: id)
     }
 
     func toItem() -> CastPlayerItem {
