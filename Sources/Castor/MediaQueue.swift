@@ -55,13 +55,8 @@ extension MediaQueue: GCKMediaQueueDelegate {
         cachedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 
-    public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
-        print("--> update")
-    }
-
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
         items = cachedItems.map { $0.toItem() }
-        print("--> \(items.first?.title)")
     }
 }

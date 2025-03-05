@@ -80,11 +80,6 @@ struct StreamsView: View {
                     Text("Append")
                 }
             }
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: update) {
-                    Text("Update")
-                }
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton()
             }
@@ -103,11 +98,6 @@ struct StreamsView: View {
     private func append() {
         guard googleCast.isActive, let stream = streams.randomElement() else { return }
         GoogleCast.append(stream: stream)
-    }
-
-    private func update() {
-        guard googleCast.isActive, let stream = streams.randomElement() else { return }
-        GoogleCast.update()
     }
 }
 

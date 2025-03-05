@@ -72,23 +72,6 @@ class GoogleCast: NSObject, ObservableObject {
             .sharedInstance().sessionManager.currentSession?.remoteMediaClient?
             .queueInsert(streams.map(queueItem(from:)), beforeItemWithID: kGCKMediaQueueInvalidItemID)
     }
-
-    static func update() {
-        let remoteMediaClient = GCKCastContext
-            .sharedInstance().sessionManager.currentSession?.remoteMediaClient
-        if let firstItem = remoteMediaClient?.mediaQueue.item(at: 0) {
-            let copy = firstItem.mediaQueueItemModified { builder in
-                if let mediaInformation = builder.mediaInformation {
-                    let mediaInformationBuilder = GCKMediaInformationBuilder(mediaInformation: mediaInformation)
-                    let metadata = GCKMediaMetadata()
-                    metadata.setString("Dummy", forKey: kGCKMetadataKeyTitle)
-                    mediaInformationBuilder.metadata = metadata
-                    builder.mediaInformation = mediaInformationBuilder.build()
-                }
-            }
-            remoteMediaClient?.queueUpdate([copy])
-        }
-    }
 }
 
 extension GoogleCast: GCKSessionManagerListener {
