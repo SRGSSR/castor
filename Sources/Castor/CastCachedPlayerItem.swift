@@ -1,0 +1,43 @@
+//
+//  Copyright (c) SRG SSR. All rights reserved.
+//
+//  License information is available from the LICENSE file.
+//
+
+import GoogleCast
+
+final class CastCachedPlayerItem: NSObject {
+    let id: GCKMediaQueueItemID
+    let queue: GCKMediaQueue
+    private var rawItem: GCKMediaQueueItem?
+
+    init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
+        self.id = id
+        self.queue = queue
+        super.init()
+        queue.add(self)
+    }
+
+    func load() {
+        guard rawItem == nil else { return }
+        if let item = queue.item(withID: id, fetchIfNeeded: false) {
+            rawItem = item
+        }
+        else if let item = queue.item(withID: id) {
+            rawItem = item
+        }
+    }
+
+    func toItem() -> CastPlayerItem {
+        .init(id: id, rawItem: rawItem)
+    }
+}
+
+extension CastCachedPlayerItem: GCKMediaQueueDelegate {
+    // swiftlint:disable:next legacy_objc_type
+    func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
+        if let item = queue.item(withID: id, fetchIfNeeded: false) {
+            rawItem = item
+        }
+    }
+}

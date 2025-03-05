@@ -177,6 +177,9 @@ private struct MediaQueueView: View {
     var body: some View {
         List(mediaQueue.items, id: \.self, selection: mediaQueue.item()) { item in
             MediaQueueCell(item: item)
+                .onAppear {
+                    mediaQueue.load(item)
+                }
         }
     }
 }
@@ -185,7 +188,7 @@ private struct MediaQueueCell: View {
     let item: CastPlayerItem
 
     var body: some View {
-        ZStack {
+        Group {
             if let title = item.title {
                 Text(title)
             }
@@ -193,7 +196,6 @@ private struct MediaQueueCell: View {
                 ProgressView()
             }
         }
-        .onAppear(perform: item.load)
     }
 }
 
