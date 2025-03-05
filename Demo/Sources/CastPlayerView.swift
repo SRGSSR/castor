@@ -188,14 +188,8 @@ private struct MediaQueueCell: View {
     let item: CastPlayerItem
 
     var body: some View {
-        Group {
-            if let title = item.title {
-                Text(title)
-            }
-            else {
-                ProgressView()
-            }
-        }
+        Text(item.title ?? String(repeating: " ", count: .random(in: 20...40)))
+            .redacted(reason: item.title == nil ? .placeholder : [])
     }
 }
 
