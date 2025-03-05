@@ -175,7 +175,7 @@ private struct MediaQueueView: View {
     @ObservedObject var mediaQueue: MediaQueue
 
     var body: some View {
-        List(mediaQueue.items, id: \.self, selection: mediaQueue.item()) { item in
+        List(mediaQueue.items, id: \.self) { item in
             MediaQueueCell(item: item)
                 .onAppear {
                     mediaQueue.load(item)
