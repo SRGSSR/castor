@@ -10,15 +10,16 @@ import SwiftUI
 /// A queue managing player items.
 public final class MediaQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
+    private let current: CastCurrent
 
     private var cachedItems: [CastCachedPlayerItem] = []
-    private var currentItem: CastPlayerItem?
 
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
+        self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
         remoteMediaClient.mediaQueue.add(self)
     }
@@ -34,9 +35,9 @@ public final class MediaQueue: NSObject, ObservableObject {
     /// The current item.
     public func item() -> Binding<CastPlayerItem?> {
         .init { [weak self] in
-            self?.currentItem
+            self?.current.item
         } set: { [weak self] newValue in
-            self?.currentItem = newValue
+            self?.current.item = newValue
         }
     }
 }
