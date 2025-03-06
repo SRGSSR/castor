@@ -12,8 +12,8 @@ final class CastCurrent: NSObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        if let status = remoteMediaClient.mediaStatus {
-            self.item = .init(id: status.currentItemID, rawItem: status.currentQueueItem)
+        if let mediaStatus = remoteMediaClient.mediaStatus {
+            item = .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem)
         }
         super.init()
         remoteMediaClient.add(self)
@@ -21,4 +21,13 @@ final class CastCurrent: NSObject {
 }
 
 extension CastCurrent: GCKRemoteMediaClientListener {
+    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        if let mediaStatus {
+            print("--> \(mediaStatus.currentItemID)")
+            item = .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem)
+        }
+        else {
+            item = nil
+        }
+    }
 }
