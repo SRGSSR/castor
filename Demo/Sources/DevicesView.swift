@@ -67,6 +67,9 @@ struct DevicesView: View {
                 cast.startSession(with: device)
             }
         }
+        .onChange(of: cast.device) {
+            device = cast.device
+        }
         .onAppear {
             device = cast.device
         }
