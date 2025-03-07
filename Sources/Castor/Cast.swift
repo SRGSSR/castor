@@ -54,7 +54,6 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
         guard self.device != device else { return }
-        self.device = device
         endSession()
         context.sessionManager.startSession(with: device.rawDevice)
     }
