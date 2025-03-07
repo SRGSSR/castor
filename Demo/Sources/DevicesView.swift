@@ -37,6 +37,16 @@ struct DevicesView: View {
         }
     }
 
+    private var selection: Binding<CastDevice?> {
+        .init {
+            cast.device
+        } set: { device in
+            if let device {
+                cast.startSession(with: device)
+            }
+        }
+    }
+
     private static func imageName(for device: CastDevice) -> String {
         switch device.type {
         case .TV:
@@ -51,7 +61,7 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(cast.devices, id: \.self, selection: cast.device()) { device in
+        List(cast.devices, id: \.self, selection: selection) { device in
             HStack {
                 Image(systemName: Self.imageName(for: device))
                 descriptionView(for: device)

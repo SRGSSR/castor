@@ -19,7 +19,8 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    @Published private var currentDevice: CastDevice?
+    /// The current device.
+    @Published public private(set) var device: CastDevice?
 
     /// The player.
     @Published public private(set) var player: CastPlayer?
@@ -35,7 +36,7 @@ public final class Cast: NSObject, ObservableObject {
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
-        currentDevice = currentSession?.device.toCastDevice()
+        device = currentSession?.device.toCastDevice()
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient)
 
         super.init()
@@ -52,8 +53,8 @@ public final class Cast: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
-        guard currentDevice != device else { return }
-        currentDevice = device
+        guard self.device != device else { return }
+        self.device = device
         endSession()
         context.sessionManager.startSession(with: device.rawDevice)
     }
@@ -63,23 +64,11 @@ public final class Cast: NSObject, ObservableObject {
         context.sessionManager.endSession()
     }
 
-    /// A binding to read and write the current device selection.
-    /// - Returns: The device binding.
-    public func device() -> Binding<CastDevice?> {
-        .init {
-            self.currentDevice
-        } set: { device in
-            if let device {
-                self.startSession(with: device)
-            }
-        }
-    }
-
     /// Check if the given device if currently casting.
     /// - Parameter device: The device.
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
-        currentDevice == device
+        self.device == device
     }
 }
 
@@ -110,7 +99,7 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session
-        currentDevice = session.device.toCastDevice()
+        device = session.device.toCastDevice()
     }
 
     // swiftlint:disable:next missing_docs
@@ -136,11 +125,11 @@ extension Cast: GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentSession = sessionManager.currentCastSession
 
-        if let currentDevice, session.device.toCastDevice() != currentDevice {
-            sessionManager.startSession(with: currentDevice.rawDevice)
+        if let device, session.device.toCastDevice() != device {
+            sessionManager.startSession(with: device.rawDevice)
         }
         else {
-            currentDevice = nil
+            device = nil
         }
     }
 
@@ -151,7 +140,7 @@ extension Cast: GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-        currentDevice = nil
+        device = nil
     }
 }
 
