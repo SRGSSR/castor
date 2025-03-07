@@ -19,6 +19,8 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
+    private var targetDevice: CastDevice?
+
     /// The current device.
     @Published public private(set) var device: CastDevice?
 
@@ -54,8 +56,13 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
         guard self.device != device else { return }
-        endSession()
-        context.sessionManager.startSession(with: device.rawDevice)
+        if self.device != nil {
+            self.targetDevice = device
+            endSession()
+        }
+        else {
+            context.sessionManager.startSession(with: device.rawDevice)
+        }
     }
 
     /// Ends the current session and stops casting if one sender device is connected.
@@ -123,12 +130,9 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentSession = sessionManager.currentCastSession
-
-        if let device, session.device.toCastDevice() != device {
-            sessionManager.startSession(with: device.rawDevice)
-        }
-        else {
-            device = nil
+        if let targetDevice {
+            sessionManager.startSession(with: targetDevice.rawDevice)
+            self.targetDevice = nil
         }
     }
 
