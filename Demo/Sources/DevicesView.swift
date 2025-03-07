@@ -62,17 +62,7 @@ struct DevicesView: View {
                 }
             }
         }
-        .onChange(of: device) {
-            if let device {
-                cast.startSession(with: device)
-            }
-        }
-        .onChange(of: cast.device) {
-            device = cast.device
-        }
-        .onAppear {
-            device = cast.device
-        }
+        .bind($device, to: cast)
     }
 
     @ViewBuilder
