@@ -13,6 +13,7 @@ public final class MediaQueue: NSObject, ObservableObject {
     private let current: CastCurrent
 
     private var cachedItems: [CastCachedPlayerItem] = []
+    private var currentItem: CastPlayerItem?
 
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
@@ -21,6 +22,7 @@ public final class MediaQueue: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
+        self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
     }
 
@@ -35,9 +37,9 @@ public final class MediaQueue: NSObject, ObservableObject {
     /// The current item.
     public func item() -> Binding<CastPlayerItem?> {
         .init { [weak self] in
-            self?.current.item
+            self?.currentItem
         } set: { [weak self] newValue in
-            self?.current.item = newValue
+            self?.currentItem = newValue
         }
     }
 }
@@ -69,5 +71,12 @@ extension MediaQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
         items = cachedItems.map { $0.toItem() }
+    }
+}
+
+extension MediaQueue: CastCurrentDelegate {
+    func didUpdate(item: CastPlayerItem?) {
+        currentItem = item
+        objectWillChange.send()
     }
 }

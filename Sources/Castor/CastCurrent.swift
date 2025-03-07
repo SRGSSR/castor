@@ -6,13 +6,20 @@
 
 import GoogleCast
 
+protocol CastCurrentDelegate: AnyObject {
+    func didUpdate(item: CastPlayerItem?)
+}
+
 final class CastCurrent: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    var item: CastPlayerItem?
+    weak var delegate: CastCurrentDelegate? {
+        didSet {
+            delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
+        }
+    }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.item = Self.item(from: remoteMediaClient.mediaStatus)
         super.init()
         remoteMediaClient.add(self)
     }
@@ -25,6 +32,6 @@ final class CastCurrent: NSObject {
 
 extension CastCurrent: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        item = Self.item(from: remoteMediaClient.mediaStatus)
+        delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
     }
 }
