@@ -12,17 +12,17 @@ public extension List where SelectionValue == CastDevice {
     /// - Parameters:
     ///   - device: The device binding.
     ///   - cast: The cast context.
-    func bind(_ device: Binding<CastDevice?>, to cast: Cast) -> some View {
-        onChange(of: device.wrappedValue) { newDevice in
-            if let newDevice {
-                cast.startSession(with: newDevice)
+    func bind(_ currentDevice: Binding<CastDevice?>, to cast: Cast) -> some View {
+        onChange(of: currentDevice.wrappedValue) { device in
+            if let device {
+                cast.startSession(with: device)
             }
         }
-        .onChange(of: cast.device) { newDevice in
-            device.wrappedValue = newDevice
+        .onChange(of: cast.currentDevice) { device in
+            currentDevice.wrappedValue = device
         }
         .onAppear {
-            device.wrappedValue = cast.device
+            currentDevice.wrappedValue = cast.currentDevice
         }
     }
 }

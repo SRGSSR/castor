@@ -199,7 +199,7 @@ struct CastPlayerView: View {
     var body: some View {
         ZStack {
             if let player = cast.player {
-                MainView(player: player, device: cast.device)
+                MainView(player: player, device: cast.currentDevice)
             }
             else {
                 ContentUnavailableView("Not connected", systemImage: "wifi.slash")

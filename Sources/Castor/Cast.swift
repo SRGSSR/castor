@@ -22,7 +22,7 @@ public final class Cast: NSObject, ObservableObject {
     private var targetDevice: CastDevice?
 
     /// The current device.
-    @Published public private(set) var device: CastDevice?
+    @Published public private(set) var currentDevice: CastDevice?
 
     /// The player.
     @Published public private(set) var player: CastPlayer?
@@ -38,7 +38,7 @@ public final class Cast: NSObject, ObservableObject {
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
-        device = currentSession?.device.toCastDevice()
+        currentDevice = currentSession?.device.toCastDevice()
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient)
 
         super.init()
@@ -55,8 +55,8 @@ public final class Cast: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
-        guard self.device != device else { return }
-        if self.device != nil {
+        guard self.currentDevice != device else { return }
+        if self.currentDevice != nil {
             targetDevice = device
             endSession()
         }
@@ -74,7 +74,7 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter device: The device.
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
-        self.device == device
+        self.currentDevice == device
     }
 }
 
@@ -105,7 +105,7 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session
-        device = session.device.toCastDevice()
+        currentDevice = session.device.toCastDevice()
     }
 
     // swiftlint:disable:next missing_docs
@@ -135,7 +135,7 @@ extension Cast: GCKSessionManagerListener {
             self.targetDevice = nil
         }
         else {
-            device = nil
+            currentDevice = nil
         }
     }
 
@@ -146,7 +146,7 @@ extension Cast: GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-        device = nil
+        currentDevice = nil
     }
 }
 
