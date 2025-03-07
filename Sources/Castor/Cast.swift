@@ -57,7 +57,7 @@ public final class Cast: NSObject, ObservableObject {
     public func startSession(with device: CastDevice) {
         guard self.device != device else { return }
         if self.device != nil {
-            self.targetDevice = device
+            targetDevice = device
             endSession()
         }
         else {
@@ -130,11 +130,12 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentSession = sessionManager.currentCastSession
-        device = nil
-
         if let targetDevice {
             sessionManager.startSession(with: targetDevice.rawDevice)
             self.targetDevice = nil
+        }
+        else {
+            device = nil
         }
     }
 
