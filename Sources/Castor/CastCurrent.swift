@@ -8,7 +8,7 @@ import GoogleCast
 
 final class CastCurrent: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    var item: CastPlayerItem?
+    @Published var item: CastPlayerItem?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient

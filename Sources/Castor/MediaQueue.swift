@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import Combine
 import GoogleCast
 import SwiftUI
 
@@ -11,6 +12,7 @@ import SwiftUI
 public final class MediaQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     private let current: CastCurrent
+    private var cancellables = Set<AnyCancellable>()
 
     private var cachedItems: [CastCachedPlayerItem] = []
 
@@ -22,6 +24,13 @@ public final class MediaQueue: NSObject, ObservableObject {
         self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
         remoteMediaClient.mediaQueue.add(self)
+
+        current.$item
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
 
     /// Load a `CastPlayerItem`.
