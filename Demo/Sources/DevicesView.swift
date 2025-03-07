@@ -20,6 +20,7 @@ private struct NoDevicesView: View {
 
 struct DevicesView: View {
     @EnvironmentObject private var cast: Cast
+    @State private var device: CastDevice?
 
     var body: some View {
         ZStack {
@@ -37,16 +38,6 @@ struct DevicesView: View {
         }
     }
 
-    private var selection: Binding<CastDevice?> {
-        .init {
-            cast.device
-        } set: { device in
-            if let device {
-                cast.startSession(with: device)
-            }
-        }
-    }
-
     private static func imageName(for device: CastDevice) -> String {
         switch device.type {
         case .TV:
@@ -61,7 +52,7 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(cast.devices, id: \.self, selection: selection) { device in
+        List(cast.devices, id: \.self, selection: $device) { device in
             HStack {
                 Image(systemName: Self.imageName(for: device))
                 descriptionView(for: device)
@@ -70,6 +61,14 @@ struct DevicesView: View {
                     statusView()
                 }
             }
+        }
+        .onChange(of: device) {
+            if let device {
+                cast.startSession(with: device)
+            }
+        }
+        .onAppear {
+            device = cast.device
         }
     }
 
