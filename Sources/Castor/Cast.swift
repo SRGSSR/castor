@@ -19,7 +19,10 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    @Published private var currentDevice: CastDevice?
+    private var targetDevice: CastDevice?
+
+    /// The current device.
+    @Published public private(set) var currentDevice: CastDevice?
 
     /// The player.
     @Published public private(set) var player: CastPlayer?
@@ -52,10 +55,14 @@ public final class Cast: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
-        guard currentDevice != device else { return }
-        currentDevice = device
-        endSession()
-        context.sessionManager.startSession(with: device.rawDevice)
+        guard self.currentDevice != device else { return }
+        if self.currentDevice != nil {
+            targetDevice = device
+            endSession()
+        }
+        else {
+            context.sessionManager.startSession(with: device.rawDevice)
+        }
     }
 
     /// Ends the current session and stops casting if one sender device is connected.
@@ -63,23 +70,11 @@ public final class Cast: NSObject, ObservableObject {
         context.sessionManager.endSession()
     }
 
-    /// A binding to read and write the current device selection.
-    /// - Returns: The device binding.
-    public func device() -> Binding<CastDevice?> {
-        .init {
-            self.currentDevice
-        } set: { device in
-            if let device {
-                self.startSession(with: device)
-            }
-        }
-    }
-
     /// Check if the given device if currently casting.
     /// - Parameter device: The device.
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
-        currentDevice == device
+        self.currentDevice == device
     }
 }
 
@@ -135,9 +130,9 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentSession = sessionManager.currentCastSession
-
-        if let currentDevice, session.device.toCastDevice() != currentDevice {
-            sessionManager.startSession(with: currentDevice.rawDevice)
+        if let targetDevice {
+            sessionManager.startSession(with: targetDevice.rawDevice)
+            self.targetDevice = nil
         }
         else {
             currentDevice = nil
