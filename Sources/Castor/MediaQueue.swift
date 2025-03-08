@@ -35,6 +35,14 @@ public final class MediaQueue: NSObject, ObservableObject {
         guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
         cachedItem.load()
     }
+
+    /// Move to the associated item.
+    ///
+    /// - Parameter item: The item to move to.
+    public func jump(to item: CastPlayerItem) {
+        guard currentItem != item else { return }
+        remoteMediaClient.queueJumpToItem(withID: item.id)
+    }
 }
 
 extension MediaQueue: GCKMediaQueueDelegate {

@@ -34,8 +34,10 @@ public extension List where SelectionValue == CastPlayerItem {
     ///   - currentItem: The current item binding.
     ///   - mediaQueue: The media queue.
     func bind(_ currentItem: Binding<CastPlayerItem?>, to mediaQueue: MediaQueue) -> some View {
-        onChange(of: currentItem.wrappedValue) { _ in
-            // TODO: Jump to the item!
+        onChange(of: currentItem.wrappedValue) { item in
+            if let item {
+                mediaQueue.jump(to: item)
+            }
         }
         .onChange(of: mediaQueue.currentItem) { item in
             currentItem.wrappedValue = item
