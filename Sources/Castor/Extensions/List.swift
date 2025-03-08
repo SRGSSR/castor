@@ -26,3 +26,22 @@ public extension List where SelectionValue == CastDevice {
         }
     }
 }
+
+public extension List where SelectionValue == CastPlayerItem {
+    /// Binds an item to a media queue.
+    ///
+    /// - Parameters:
+    ///   - currentItem: The current item binding.
+    ///   - mediaQueue: The media queue.
+    func bind(_ currentItem: Binding<CastPlayerItem?>, to mediaQueue: MediaQueue) -> some View {
+        onChange(of: currentItem.wrappedValue) { _ in
+            // TODO: Jump to the item!
+        }
+        .onChange(of: mediaQueue.currentItem) { item in
+            currentItem.wrappedValue = item
+        }
+        .onAppear {
+            currentItem.wrappedValue = mediaQueue.currentItem
+        }
+    }
+}

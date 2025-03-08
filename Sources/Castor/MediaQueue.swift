@@ -13,10 +13,12 @@ public final class MediaQueue: NSObject, ObservableObject {
     private let current: CastCurrent
 
     private var cachedItems: [CastCachedPlayerItem] = []
-    private var currentItem: CastPlayerItem?
 
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
+
+    /// The current item.
+    @Published public private(set) var currentItem: CastPlayerItem?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
@@ -32,15 +34,6 @@ public final class MediaQueue: NSObject, ObservableObject {
     public func load(_ item: CastPlayerItem) {
         guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
         cachedItem.load()
-    }
-
-    /// The current item.
-    public func item() -> Binding<CastPlayerItem?> {
-        .init { [weak self] in
-            self?.currentItem
-        } set: { [weak self] newValue in
-            self?.currentItem = newValue
-        }
     }
 }
 
