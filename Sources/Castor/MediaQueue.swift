@@ -78,6 +78,5 @@ extension MediaQueue: GCKMediaQueueDelegate {
 extension MediaQueue: CastCurrentDelegate {
     func didUpdate(item: CastPlayerItem?) {
         currentItem = item
-        objectWillChange.send()
     }
 }
