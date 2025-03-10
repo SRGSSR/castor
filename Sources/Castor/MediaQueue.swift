@@ -41,7 +41,7 @@ public final class MediaQueue: NSObject, ObservableObject {
     /// - Parameter item: The item to move to.
     public func jump(to item: CastPlayerItem) {
         guard currentItem != item else { return }
-        remoteMediaClient.queueJumpToItem(withID: item.id)
+        current.jump(to: item)
     }
 }
 
