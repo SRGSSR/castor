@@ -12,18 +12,10 @@ protocol CastCurrentDelegate: AnyObject {
 
 final class CastCurrent: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private var jumpRequest: GCKRequest?
-    private var lastTargetItem: CastPlayerItem?
-
-    private var isJumping: Bool {
-        jumpRequest != nil
-    }
 
     weak var delegate: CastCurrentDelegate? {
         didSet {
-            if !isJumping {
-                delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
-            }
+            delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
         }
     }
 
@@ -34,13 +26,8 @@ final class CastCurrent: NSObject {
     }
 
     func jump(to item: CastPlayerItem) {
-        if jumpRequest == nil {
-            jumpRequest = remoteMediaClient.queueJumpToItem(withID: item.id)
-            jumpRequest?.delegate = self
-        }
-        else {
-            lastTargetItem = item
-        }
+        let request = remoteMediaClient.queueJumpToItem(withID: item.id)
+        request.delegate = self
     }
 }
 
@@ -53,21 +40,12 @@ private extension CastCurrent {
 
 extension CastCurrent: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        if !isJumping {
-            delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
-        }
+        delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
     }
 }
 
 extension CastCurrent: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        if let target = lastTargetItem {
-            jumpRequest = remoteMediaClient.queueJumpToItem(withID: target.id)
-            jumpRequest?.delegate = self
-            lastTargetItem = nil
-        }
-        else {
-            jumpRequest = nil
-        }
+
     }
 }
