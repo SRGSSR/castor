@@ -18,7 +18,9 @@ final class CastCurrent: NSObject {
 
     weak var delegate: CastCurrentDelegate? {
         didSet {
-            delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
+            if mediaStatus.currentItemID == itemID {
+                delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
+            }
         }
     }
 
