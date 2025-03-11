@@ -33,7 +33,6 @@ final class CastCurrent: NSObject {
         if request == nil {
             let request = remoteMediaClient.queueJumpToItem(withID: item.id)
             request.delegate = self
-            print("--> [request] \(request.requestID) did start, inProgress = \(request.inProgress)")
             self.request = request
             requestItemID = item.id
         }
@@ -50,7 +49,6 @@ private extension CastCurrent {
 
 extension CastCurrent: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        print("--> [status] did update, current \(mediaStatus?.currentItemID)")
         guard let mediaStatus else { return }
         if itemID == nil {
             itemID = mediaStatus.currentItemID
@@ -63,11 +61,9 @@ extension CastCurrent: GCKRemoteMediaClientListener {
 
 extension CastCurrent: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        print("--> [request] \(request.requestID) did complete, inProgress = \(request.inProgress)")
         if let itemID, itemID != requestItemID {
             let request = remoteMediaClient.queueJumpToItem(withID: itemID)
             request.delegate = self
-            print("--> [request] \(request.requestID) did start, inProgress = \(request.inProgress)")
             self.request = request
             requestItemID = itemID
         }
