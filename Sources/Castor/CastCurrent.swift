@@ -18,12 +18,7 @@ final class CastCurrent: NSObject {
     private var itemId: GCKMediaQueueItemID?
     private var requestItemId: GCKMediaQueueItemID?
 
-    weak var delegate: CastCurrentDelegate? {
-        didSet {
-            guard let mediaStatus = remoteMediaClient.mediaStatus else { return }
-            updateItem(for: mediaStatus)
-        }
-    }
+    weak var delegate: CastCurrentDelegate?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
@@ -37,11 +32,6 @@ final class CastCurrent: NSObject {
             request = jumpRequest(to: item.id)
         }
         itemId = item.id
-    }
-
-    private func updateItem(for mediaStatus: GCKMediaStatus) {
-        guard mediaStatus.currentItemID == itemId else { return }
-        delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
     }
 
     private func jumpRequest(to itemID: GCKMediaQueueItemID) -> GCKRequest {
@@ -58,7 +48,9 @@ extension CastCurrent: GCKRemoteMediaClientListener {
         if itemId == nil {
             itemId = mediaStatus.currentItemID
         }
-        updateItem(for: mediaStatus)
+        if mediaStatus.currentItemID == itemId {
+            delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
+        }
     }
 }
 
