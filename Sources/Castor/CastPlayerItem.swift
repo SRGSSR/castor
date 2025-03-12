@@ -15,4 +15,9 @@ public struct CastPlayerItem: Hashable {
     public var title: String? {
         rawItem?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
     }
+
+    // swiftlint:disable:next missing_docs
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id && lhs.rawItem?.itemID == rhs.rawItem?.itemID
+    }
 }
