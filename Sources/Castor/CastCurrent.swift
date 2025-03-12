@@ -18,9 +18,8 @@ final class CastCurrent: NSObject {
 
     weak var delegate: CastCurrentDelegate? {
         didSet {
-            if remoteMediaClient.mediaStatus?.currentItemID == itemID {
-                delegate?.didUpdate(item: Self.item(from: remoteMediaClient.mediaStatus))
-            }
+            guard let mediaStatus = remoteMediaClient.mediaStatus else { return }
+            updateItem(for: mediaStatus)
         }
     }
 
@@ -40,12 +39,10 @@ final class CastCurrent: NSObject {
         }
         itemID = item.id
     }
-}
 
-private extension CastCurrent {
-    private static func item(from mediaStatus: GCKMediaStatus?) -> CastPlayerItem? {
-        guard let mediaStatus else { return nil }
-        return .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem)
+    private func updateItem(for mediaStatus: GCKMediaStatus) {
+        guard mediaStatus.currentItemID == itemID else { return }
+        delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
     }
 }
 
@@ -55,9 +52,7 @@ extension CastCurrent: GCKRemoteMediaClientListener {
         if itemID == nil {
             itemID = mediaStatus.currentItemID
         }
-        if mediaStatus.currentItemID == itemID {
-            delegate?.didUpdate(item: Self.item(from: mediaStatus))
-        }
+        updateItem(for: mediaStatus)
     }
 }
 
