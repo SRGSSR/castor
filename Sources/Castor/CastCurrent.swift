@@ -15,14 +15,13 @@ final class CastCurrent: NSObject {
 
     private weak var request: GCKRequest?
 
-    private var itemId: GCKMediaQueueItemID?
     private var requestItemId: GCKMediaQueueItemID?
+    private var pendingRequestItemId: GCKMediaQueueItemID?
 
     weak var delegate: CastCurrentDelegate?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.itemId = remoteMediaClient.mediaStatus?.currentItemID
         super.init()
         remoteMediaClient.add(self)
     }
@@ -31,7 +30,7 @@ final class CastCurrent: NSObject {
         if request == nil {
             request = jumpRequest(to: item.id)
         }
-        itemId = item.id
+        pendingRequestItemId = item.id
     }
 
     private func jumpRequest(to itemID: GCKMediaQueueItemID) -> GCKRequest {
@@ -45,10 +44,13 @@ final class CastCurrent: NSObject {
 extension CastCurrent: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         guard let mediaStatus else { return }
-        if itemId == nil {
-            itemId = mediaStatus.currentItemID
+        if let pendingRequestItemId {
+            if mediaStatus.currentItemID == pendingRequestItemId {
+                delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
+                self.pendingRequestItemId = nil
+            }
         }
-        if mediaStatus.currentItemID == itemId {
+        else {
             delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
         }
     }
@@ -56,7 +58,7 @@ extension CastCurrent: GCKRemoteMediaClientListener {
 
 extension CastCurrent: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        guard let itemId, itemId != requestItemId else { return }
-        self.request = jumpRequest(to: itemId)
+        guard let pendingRequestItemId, pendingRequestItemId != requestItemId else { return }
+        self.request = jumpRequest(to: pendingRequestItemId)
     }
 }
