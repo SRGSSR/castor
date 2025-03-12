@@ -14,7 +14,6 @@ final class CastCurrent: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private weak var request: GCKRequest?
-
     private var requestItemId: GCKMediaQueueItemID?
     private var pendingRequestItemId: GCKMediaQueueItemID?
 
