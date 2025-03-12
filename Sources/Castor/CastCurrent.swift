@@ -12,9 +12,11 @@ protocol CastCurrentDelegate: AnyObject {
 
 final class CastCurrent: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private var itemID: GCKMediaQueueItemID?
+
     private weak var request: GCKRequest?
-    private var requestItemID: GCKMediaQueueItemID?
+
+    private var itemId: GCKMediaQueueItemID?
+    private var requestItemId: GCKMediaQueueItemID?
 
     weak var delegate: CastCurrentDelegate? {
         didSet {
@@ -25,32 +27,36 @@ final class CastCurrent: NSObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.itemID = remoteMediaClient.mediaStatus?.currentItemID
+        self.itemId = remoteMediaClient.mediaStatus?.currentItemID
         super.init()
         remoteMediaClient.add(self)
     }
 
     func jump(to item: CastPlayerItem) {
         if request == nil {
-            let request = remoteMediaClient.queueJumpToItem(withID: item.id)
-            request.delegate = self
-            self.request = request
-            requestItemID = item.id
+            request = jumpRequest(to: item.id)
         }
-        itemID = item.id
+        itemId = item.id
     }
 
     private func updateItem(for mediaStatus: GCKMediaStatus) {
-        guard mediaStatus.currentItemID == itemID else { return }
+        guard mediaStatus.currentItemID == itemId else { return }
         delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
+    }
+
+    private func jumpRequest(to itemID: GCKMediaQueueItemID) -> GCKRequest {
+        let request = remoteMediaClient.queueJumpToItem(withID: itemID)
+        request.delegate = self
+        requestItemId = itemID
+        return request
     }
 }
 
 extension CastCurrent: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         guard let mediaStatus else { return }
-        if itemID == nil {
-            itemID = mediaStatus.currentItemID
+        if itemId == nil {
+            itemId = mediaStatus.currentItemID
         }
         updateItem(for: mediaStatus)
     }
@@ -58,11 +64,8 @@ extension CastCurrent: GCKRemoteMediaClientListener {
 
 extension CastCurrent: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        if let itemID, itemID != requestItemID {
-            let request = remoteMediaClient.queueJumpToItem(withID: itemID)
-            request.delegate = self
-            self.request = request
-            requestItemID = itemID
+        if let itemId, itemId != requestItemId {
+            self.request = jumpRequest(to: itemId)
         }
     }
 }
