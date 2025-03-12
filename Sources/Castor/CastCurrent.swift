@@ -56,8 +56,7 @@ extension CastCurrent: GCKRemoteMediaClientListener {
 
 extension CastCurrent: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        if let itemId, itemId != requestItemId {
-            self.request = jumpRequest(to: itemId)
-        }
+        guard let itemId, itemId != requestItemId else { return }
+        self.request = jumpRequest(to: itemId)
     }
 }
