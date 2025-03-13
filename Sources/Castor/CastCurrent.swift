@@ -25,11 +25,11 @@ final class CastCurrent: NSObject {
         remoteMediaClient.add(self)
     }
 
-    func jump(to item: CastPlayerItem) {
+    func jump(to itemId: CastPlayerItem.ID) {
         if request == nil {
-            request = jumpRequest(to: item.id)
+            request = jumpRequest(to: itemId)
         }
-        pendingRequestItemId = item.id
+        pendingRequestItemId = itemId
     }
 
     private func jumpRequest(to itemID: GCKMediaQueueItemID) -> GCKRequest {
