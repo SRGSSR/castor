@@ -6,9 +6,13 @@
 
 import GoogleCast
 
+/// Metadata associated to an item.
 public struct CastMetadata {
     let rawMetadata: GCKMediaMetadata
 
+    /// Creates metadata.
+    ///
+    /// - Parameter title: The content title.
     public init(title: String?) {
         rawMetadata = GCKMediaMetadata()
         if let title {

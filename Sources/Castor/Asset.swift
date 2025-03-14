@@ -7,15 +7,18 @@
 import Foundation
 import GoogleCast
 
+/// An asset representing content to be played.
 public enum Asset {
-    case url(URL)
-    case id(String)
+    /// Simple assets which can be played directly.
+    case simple(URL)
+    /// Custom assets which require a custom identifier.
+    case custom(String)
 
     func mediaInformationBuilder() -> GCKMediaInformationBuilder {
         switch self {
-        case let .url(url):
+        case let .simple(url):
             return GCKMediaInformationBuilder(contentURL: url)
-        case let .id(id):
+        case let .custom(id):
             let builder = GCKMediaInformationBuilder()
             builder.contentID = id
             return builder

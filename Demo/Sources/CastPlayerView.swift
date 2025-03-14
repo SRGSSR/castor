@@ -192,7 +192,10 @@ private struct MediaQueueView: View {
     private func reload() {
         mediaQueue.load(items: [
             .init(
-                asset: .url(URL(string: "https://play-edge.itunes.apple.com/WebObjects/MZPlayLocal.woa/hls/subscription/playlist.m3u8?cc=CH&svcId=tvs.vds.4021&a=1568297173&isExternal=true&brandId=tvs.sbd.4000&id=518034010&l=en-GB&aec=UHD")!),
+                asset: .simple(
+                    // swiftlint:disable:next line_length
+                    URL(string: "https://play-edge.itunes.apple.com/WebObjects/MZPlayLocal.woa/hls/subscription/playlist.m3u8?cc=CH&svcId=tvs.vds.4021&a=1568297173&isExternal=true&brandId=tvs.sbd.4000&id=518034010&l=en-GB&aec=UHD")!
+                ),
                 metadata: .init(title: "The Morning Show")
             )
         ])
