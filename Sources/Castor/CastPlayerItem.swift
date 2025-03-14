@@ -17,4 +17,26 @@ public struct CastPlayerItem: Identifiable {
     public var title: String? {
         rawItem?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
     }
+
+    public init(asset: Asset, metadata: CastMetadata) {
+        self.id = kGCKMediaQueueInvalidItemID
+        self.rawItem = Self.rawItem(from: asset, metadata: metadata)
+    }
+
+    init(id: GCKMediaQueueItemID, rawItem: GCKMediaQueueItem?) {
+        self.id = id
+        self.rawItem = rawItem
+    }
+
+    private static func rawItem(from asset: Asset, metadata: CastMetadata) -> GCKMediaQueueItem {
+        let builder = GCKMediaQueueItemBuilder()
+        builder.mediaInformation = Self.mediaInformation(from: asset, metadata: metadata)
+        return builder.build()
+    }
+
+    private static func mediaInformation(from asset: Asset, metadata: CastMetadata) -> GCKMediaInformation {
+        let builder = asset.mediaInformationBuilder()
+        builder.metadata = metadata.rawMetadata
+        return builder.build()
+    }
 }

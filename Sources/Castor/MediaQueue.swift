@@ -27,7 +27,11 @@ public final class MediaQueue: NSObject, ObservableObject {
         self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
     }
-    
+
+    public func load(items: [CastPlayerItem]) {
+        
+    }
+
     /// Move to the associated item.
     ///
     /// - Parameter item: The item to move to.
