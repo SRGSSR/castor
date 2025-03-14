@@ -193,10 +193,9 @@ private struct MediaQueueView: View {
         mediaQueue.load(items: [
             .init(
                 asset: .simple(
-                    // swiftlint:disable:next line_length
-                    URL(string: "https://play-edge.itunes.apple.com/WebObjects/MZPlayLocal.woa/hls/subscription/playlist.m3u8?cc=CH&svcId=tvs.vds.4021&a=1568297173&isExternal=true&brandId=tvs.sbd.4000&id=518034010&l=en-GB&aec=UHD")!
+                    URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
                 ),
-                metadata: .init(title: "The Morning Show")
+                metadata: .init(title: "Big Buck Bunny")
             )
         ])
     }
