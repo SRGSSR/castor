@@ -39,8 +39,8 @@ public extension List where SelectionValue == CastPlayerItem.ID {
                 mediaQueue.jump(to: itemId)
             }
         }
-        .onChange(of: mediaQueue.currentItem) { item in
-            currentItemId.wrappedValue = item?.id
+        .onChange(of: mediaQueue.currentItem?.id) { itemId in
+            currentItemId.wrappedValue = itemId
         }
         .onAppear {
             currentItemId.wrappedValue = mediaQueue.currentItem?.id
