@@ -195,7 +195,11 @@ private struct MediaQueueView: View {
                 asset: .simple(
                     URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
                 ),
-                metadata: .init(title: "Big Buck Bunny")
+                metadata: .init(
+                    title: "Big Buck Bunny",
+                    // swiftlint:disable:next line_length
+                    imageUrl: URL(string: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ4d816l2_N7O17rr8Cr9nta3z-7--j1ZGGe_9_oqz8zNzjVVPZ4_OdRRMGey-sQssCQBaubQ")!
+                )
             )
         ])
     }
