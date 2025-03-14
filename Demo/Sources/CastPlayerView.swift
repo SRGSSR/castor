@@ -178,9 +178,7 @@ private struct MediaQueueView: View {
     var body: some View {
         List(mediaQueue.items, selection: $selection) { item in
             MediaQueueCell(item: item)
-                .onAppear {
-                    mediaQueue.fetch(item)
-                }
+                .bind(to: item, from: mediaQueue)
         }
         .bind($selection, to: mediaQueue)
     }
