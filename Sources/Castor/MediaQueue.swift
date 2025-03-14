@@ -27,20 +27,17 @@ public final class MediaQueue: NSObject, ObservableObject {
         self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
     }
-
-    /// Fetch complete information about a `CastPlayerItem`.
-    ///
-    /// - Parameter item: The item to fetch.
-    public func fetch(_ item: CastPlayerItem) {
-        guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
-        cachedItem.fetch()
-    }
-
+    
     /// Move to the associated item.
     ///
     /// - Parameter item: The item to move to.
     public func jump(to item: CastPlayerItem) {
         jump(to: item.id)
+    }
+
+    func fetch(_ item: CastPlayerItem) {
+        guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
+        cachedItem.fetch()
     }
 
     func jump(to itemId: CastPlayerItem.ID) {
