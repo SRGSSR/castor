@@ -38,10 +38,10 @@ public final class MediaQueue: NSObject, ObservableObject {
 
     /// Move to the associated item.
     ///
-    /// - Parameter item: The item to move to.
-    public func jump(to item: CastPlayerItem) {
-        guard currentItem != item else { return }
-        current.jump(to: item)
+    /// - Parameter itemId: The item id to move to.
+    public func jump(to itemId: CastPlayerItem.ID) {
+        guard currentItem?.id != itemId else { return }
+        current.jump(to: itemId)
     }
 }
 
