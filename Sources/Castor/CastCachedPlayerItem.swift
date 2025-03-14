@@ -18,7 +18,7 @@ final class CastCachedPlayerItem: NSObject {
         queue.add(self)
     }
 
-    func load() {
+    func fetch() {
         guard rawItem == nil else { return }
         rawItem = queue.item(withID: id, fetchIfNeeded: false) ?? queue.item(withID: id)
     }

@@ -179,7 +179,7 @@ private struct MediaQueueView: View {
         List(mediaQueue.items, selection: $selection) { item in
             MediaQueueCell(item: item)
                 .onAppear {
-                    mediaQueue.load(item)
+                    mediaQueue.fetch(item)
                 }
         }
         .bind($selection, to: mediaQueue)

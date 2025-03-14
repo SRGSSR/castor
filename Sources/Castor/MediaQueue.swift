@@ -28,12 +28,12 @@ public final class MediaQueue: NSObject, ObservableObject {
         remoteMediaClient.mediaQueue.add(self)
     }
 
-    /// Load a `CastPlayerItem`.
+    /// Fetch complete information about a `CastPlayerItem`.
     ///
-    /// - Parameter item: The item to load.
-    public func load(_ item: CastPlayerItem) {
+    /// - Parameter item: The item to fetch.
+    public func fetch(_ item: CastPlayerItem) {
         guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
-        cachedItem.load()
+        cachedItem.fetch()
     }
 
     /// Move to the associated item.
