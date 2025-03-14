@@ -29,7 +29,7 @@ public final class MediaQueue: NSObject, ObservableObject {
     }
 
     public func load(items: [CastPlayerItem]) {
-        
+        remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
     }
 
     /// Move to the associated item.

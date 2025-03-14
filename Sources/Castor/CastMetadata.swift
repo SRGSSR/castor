@@ -9,7 +9,7 @@ import GoogleCast
 public struct CastMetadata {
     let rawMetadata: GCKMediaMetadata
 
-    init(title: String?) {
+    public init(title: String?) {
         rawMetadata = GCKMediaMetadata()
         if let title {
             rawMetadata.setString(title, forKey: kGCKMetadataKeyTitle)
