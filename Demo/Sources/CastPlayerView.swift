@@ -197,8 +197,7 @@ private struct MediaQueueView: View {
                 ),
                 metadata: .init(
                     title: "Big Buck Bunny",
-                    // swiftlint:disable:next line_length
-                    imageUrl: URL(string: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ4d816l2_N7O17rr8Cr9nta3z-7--j1ZGGe_9_oqz8zNzjVVPZ4_OdRRMGey-sQssCQBaubQ")!
+                    imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
                 )
             )
         ])
