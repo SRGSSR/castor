@@ -38,6 +38,7 @@ private extension CastPlayerItem {
     static func rawItem(from asset: Asset, metadata: CastMetadata) -> GCKMediaQueueItem {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = Self.mediaInformation(from: asset, metadata: metadata)
+        builder.autoplay = true
         return builder.build()
     }
 
