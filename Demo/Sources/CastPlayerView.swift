@@ -173,16 +173,16 @@ private struct MainView: View {
 
 private struct MediaQueueView: View {
     @ObservedObject var mediaQueue: MediaQueue
-    @State private var currentItemId: CastPlayerItem.ID?
+    @State private var selection: CastPlayerItem.ID?
 
     var body: some View {
-        List(mediaQueue.items, selection: $currentItemId) { item in
+        List(mediaQueue.items, selection: $selection) { item in
             MediaQueueCell(item: item)
                 .onAppear {
                     mediaQueue.load(item)
                 }
         }
-        .bind($currentItemId, to: mediaQueue)
+        .bind($selection, to: mediaQueue)
     }
 }
 
