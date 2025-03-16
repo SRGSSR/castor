@@ -13,7 +13,7 @@ function usage {
 function install_tools {
     curl -Ssf https://pkgx.sh | sh &> /dev/null
     set -a
-    eval "$(pkgx +swiftlint +shellcheck +markdownlint)"
+    eval "$(pkgx +ruby@3.3.6 +swiftlint +shellcheck +markdownlint)" # Temporarily specifying the Ruby version to avoid issues with RuboCop due to the following: https://github.com/pkgxdev/pkgx/issues/1150
     set +a
 }
 
@@ -41,7 +41,7 @@ fi
 
 echo "... checking Ruby scripts..."
 rm -rf ~/.pkgx/sqlite.org # Avoid https://github.com/pkgxdev/pkgx/issues/1059
-# pkgx rubocop --format quiet # Temporarily deactivated due to the following issue: https://github.com/pkgxdev/pkgx/issues/1150
+pkgx rubocop --format quiet
 
 echo "... checking Shell scripts..."
 shellcheck Scripts/**/*.sh hooks/* Artifacts/**/*.sh
