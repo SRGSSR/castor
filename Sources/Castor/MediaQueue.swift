@@ -28,6 +28,8 @@ public final class MediaQueue: NSObject, ObservableObject {
         remoteMediaClient.mediaQueue.add(self)
     }
 
+    /// Loads player items and starts playback.
+    /// - Parameter items: Items to load.
     public func load(items: [CastPlayerItem]) {
         remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
     }
