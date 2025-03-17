@@ -210,15 +210,17 @@ private struct MediaQueueView: View {
 
     private func insert() {
         mediaQueue.insert(
-            .init(
-                asset: .simple(
-                    URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
-                ),
-                metadata: .init(
-                    title: "Big Buck Bunny",
-                    imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
+            [
+                .init(
+                    asset: .simple(
+                        URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
+                    ),
+                    metadata: .init(
+                        title: "Big Buck Bunny",
+                        imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
+                    )
                 )
-            ),
+            ],
             after: mediaQueue.items.first
         )
     }

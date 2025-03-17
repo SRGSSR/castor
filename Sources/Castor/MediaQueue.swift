@@ -34,54 +34,57 @@ public final class MediaQueue: NSObject, ObservableObject {
         remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
     }
 
-    /// Inserts an item before another one.
+    /// Inserts items before another one.
     ///
     /// - Parameters:
-    ///   - item: The item to insert.
-    ///   - beforeItem: The item before which insertion must take place. Pass `nil` to insert the item at the front
+    ///   - insertedItems: The items to insert.
+    ///   - beforeItem: The item before which insertion must take place. Pass `nil` to insert the items at the front
     ///     of the queue.
+    /// - Returns: `true` iff some items could be inserted.
     ///
-    /// Does nothing if the item already belongs to the queue.
+    /// Ignores items already belonging to the queue.
     @discardableResult
-    public func insert(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
-        guard let item = item.rawItem else { return false }
+    public func insert(_ insertedItems: [CastPlayerItem], before beforeItem: CastPlayerItem?) -> Bool {
+        let rawItems = insertableRawItem(from: insertedItems)
+        guard !rawItems.isEmpty else { return false }
         if let beforeItem {
             guard items.contains(where: { $0.id == beforeItem.id }) else { return false }
-            remoteMediaClient.queueInsert([item], beforeItemWithID: beforeItem.id)
+            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: beforeItem.id)
         }
         else if let firstItem = items.first {
-            remoteMediaClient.queueInsert([item], beforeItemWithID: firstItem.id)
+            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: firstItem.id)
         }
         else {
-            remoteMediaClient.queueInsert([item], beforeItemWithID: kGCKMediaQueueInvalidItemID)
+            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: kGCKMediaQueueInvalidItemID)
         }
         return true
     }
 
-    /// Inserts an item after another one.
+    /// Inserts items after another one.
     ///
     /// - Parameters:
-    ///   - item: The item to insert.
-    ///   - afterItem: The item after which insertion must take place. Pass `nil` to insert the item at the back of
+    ///   - insertedItems: The items to insert.
+    ///   - afterItem: The item after which insertion must take place. Pass `nil` to insert the items at the back of
     ///     the queue. If this item does not exist the method does nothing.
-    /// - Returns: `true` iff the item could be inserted.
+    /// - Returns: `true` iff some items could be inserted.
     ///
-    /// Does nothing if the item already belongs to the queue.
+    /// Ignores items already belonging to the queue.
     @discardableResult
-    public func insert(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) -> Bool {
-        guard let item = item.rawItem else { return false }
+    public func insert(_ insertedItems: [CastPlayerItem], after afterItem: CastPlayerItem?) -> Bool {
+        let rawItems = insertableRawItem(from: insertedItems)
+        guard !rawItems.isEmpty else { return false }
         if let afterItem {
             guard let afterItemIndex = items.firstIndex(where: { $0.id == afterItem.id }) else { return false }
             let nextItemIndex = items.index(after: afterItemIndex)
             if nextItemIndex < items.endIndex {
-                remoteMediaClient.queueInsert([item], beforeItemWithID: items[nextItemIndex].id)
+                remoteMediaClient.queueInsert(rawItems, beforeItemWithID: items[nextItemIndex].id)
             }
             else {
-                remoteMediaClient.queueInsert([item], beforeItemWithID: kGCKMediaQueueInvalidItemID)
+                remoteMediaClient.queueInsert(rawItems, beforeItemWithID: kGCKMediaQueueInvalidItemID)
             }
         }
         else {
-            remoteMediaClient.queueInsert([item], beforeItemWithID: kGCKMediaQueueInvalidItemID)
+            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: kGCKMediaQueueInvalidItemID)
         }
         return true
     }
@@ -101,6 +104,13 @@ public final class MediaQueue: NSObject, ObservableObject {
     func jump(to itemId: CastPlayerItem.ID) {
         guard currentItem?.id != itemId else { return }
         current.jump(to: itemId)
+    }
+
+    private func insertableRawItem(from items: [CastPlayerItem]) -> [GCKMediaQueueItem] {
+        items.filter { item in
+            !self.items.contains { $0.id == item.id }
+        }
+        .compactMap(\.rawItem)
     }
 }
 
