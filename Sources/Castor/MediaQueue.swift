@@ -89,6 +89,24 @@ public final class MediaQueue: NSObject, ObservableObject {
         return true
     }
 
+    /// Prepends items to the queue.
+    ///
+    /// - Parameter items: The items to prepend.
+    /// - Returns: `true` iff the items could be prepended.
+    @discardableResult
+    public func prepend(_ items: [CastPlayerItem]) -> Bool {
+        insert(items, before: nil)
+    }
+
+    /// Appends items to the queue.
+    ///
+    /// - Parameter items: The items to append.
+    /// - Returns: `true` iff the items could be appended.
+    @discardableResult
+    public func append(_ items: [CastPlayerItem]) -> Bool {
+        insert(items, after: nil)
+    }
+
     /// Move to the associated item.
     ///
     /// - Parameter item: The item to move to.
