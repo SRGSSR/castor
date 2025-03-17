@@ -47,6 +47,29 @@ public final class MediaQueue: NSObject, ObservableObject {
         remoteMediaClient.queueInsert([item], beforeItemWithID: beforeItem?.id ?? items.first?.id ?? kGCKMediaQueueInvalidItemID)
     }
 
+    /// Inserts an item after another one.
+    ///
+    /// - Parameters:
+    ///   - item: The item to insert.
+    ///   - afterItem: The item after which insertion must take place. Pass `nil` to insert the item at the back of
+    ///     the queue. If this item does not exist the method does nothing.
+    /// - Returns: `true` iff the item could be inserted.
+    ///
+    /// Does nothing if the item already belongs to the queue.
+    public func insert(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) {
+        guard let item = item.rawItem else { return }
+        if let afterItemIndex = items.firstIndex(where: { $0.id == afterItem?.id }) {
+            let nextItemIndex = items.index(after: afterItemIndex)
+            if nextItemIndex < items.endIndex {
+                let nextItem = items[nextItemIndex]
+                remoteMediaClient.queueInsert([item], beforeItemWithID: nextItem.id)
+            }
+            else {
+                remoteMediaClient.queueInsert([item], beforeItemWithID: kGCKMediaQueueInvalidItemID)
+            }
+        }
+    }
+
     /// Move to the associated item.
     ///
     /// - Parameter item: The item to move to.

@@ -219,7 +219,7 @@ private struct MediaQueueView: View {
                     imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
                 )
             ),
-            before: nil
+            after: mediaQueue.items.first
         )
     }
 }
