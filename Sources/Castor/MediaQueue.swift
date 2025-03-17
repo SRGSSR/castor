@@ -67,18 +67,23 @@ public final class MediaQueue: NSObject, ObservableObject {
     /// - Returns: `true` iff the item could be inserted.
     ///
     /// Does nothing if the item already belongs to the queue.
-    public func insert(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) {
-        guard let item = item.rawItem else { return }
-        if let afterItemIndex = items.firstIndex(where: { $0.id == afterItem?.id }) {
+    @discardableResult
+    public func insert(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) -> Bool {
+        guard let item = item.rawItem else { return false }
+        if let afterItem {
+            guard let afterItemIndex = items.firstIndex(where: { $0.id == afterItem.id }) else { return false }
             let nextItemIndex = items.index(after: afterItemIndex)
             if nextItemIndex < items.endIndex {
-                let nextItem = items[nextItemIndex]
-                remoteMediaClient.queueInsert([item], beforeItemWithID: nextItem.id)
+                remoteMediaClient.queueInsert([item], beforeItemWithID: items[nextItemIndex].id)
             }
             else {
                 remoteMediaClient.queueInsert([item], beforeItemWithID: kGCKMediaQueueInvalidItemID)
             }
         }
+        else {
+            remoteMediaClient.queueInsert([item], beforeItemWithID: kGCKMediaQueueInvalidItemID)
+        }
+        return true
     }
 
     /// Move to the associated item.
