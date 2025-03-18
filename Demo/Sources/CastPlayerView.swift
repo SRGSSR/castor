@@ -191,6 +191,7 @@ private struct MediaQueueView: View {
                     .bind(to: item, from: mediaQueue)
             }
             .bind($selection, to: mediaQueue)
+            .animation(.linear, value: mediaQueue.items)
 
             HStack {
                 Button(action: reload) {

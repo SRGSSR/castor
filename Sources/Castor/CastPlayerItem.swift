@@ -7,7 +7,7 @@
 import GoogleCast
 
 /// A cast player item.
-public struct CastPlayerItem: Identifiable {
+public struct CastPlayerItem: Identifiable, Equatable {
     /// The id.
     public let id: GCKMediaQueueItemID
 
