@@ -144,7 +144,13 @@ private struct MainView: View {
 
     private func visualView() -> some View {
         ZStack {
-            artworkImage()
+            HStack {
+                returnToPreviousView()
+                Spacer()
+                artworkImage()
+                Spacer()
+                advanceToNextView()
+            }
             loadingIndicator()
         }
         .padding()
@@ -168,6 +174,30 @@ private struct MainView: View {
 
     private func playlist() -> some View {
         CastQueueView(queue: player.queue)
+    }
+
+    @ViewBuilder
+    private func returnToPreviousView() -> some View {
+        if player.queue.canReturnToPreviousItem() {
+            Button(action: player.queue.returnToPreviousItem) {
+                Image(systemName: "chevron.left")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func advanceToNextView() -> some View {
+        if player.queue.canAdvanceToNextItem() {
+            Button(action: player.queue.advanceToNextItem) {
+                Image(systemName: "chevron.right")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40)
+            }
+        }
     }
 }
 
