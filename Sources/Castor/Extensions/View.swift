@@ -7,16 +7,16 @@
 import SwiftUI
 
 public extension View {
-    /// Binds to an item from a media queue.
+    /// Binds to an item from a queue.
     ///
     /// - Parameters:
     ///   - item: The item to bind to the view.
-    ///   - mediaQueue: The media queue which fetches the item.
+    ///   - queue: The queue which fetches the item.
     ///
-    /// The item is automatically fetched by the media queue when the view appears.
-    func bind(to item: CastPlayerItem, from mediaQueue: MediaQueue) -> some View {
+    /// The item is automatically fetched by the queue when the view appears.
+    func bind(to item: CastPlayerItem, from queue: CastQueue) -> some View {
         onAppear {
-            mediaQueue.fetch(item)
+            queue.fetch(item)
         }
     }
 }

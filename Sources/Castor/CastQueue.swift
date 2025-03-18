@@ -8,7 +8,7 @@ import GoogleCast
 import SwiftUI
 
 /// A queue managing player items.
-public final class MediaQueue: NSObject, ObservableObject {
+public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     private let current: CastCurrent
 
@@ -29,7 +29,7 @@ public final class MediaQueue: NSObject, ObservableObject {
     }
 }
 
-extension MediaQueue: GCKMediaQueueDelegate {
+extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         cachedItems = (0..<queue.itemCount).map { index in
@@ -59,13 +59,13 @@ extension MediaQueue: GCKMediaQueueDelegate {
     }
 }
 
-extension MediaQueue: CastCurrentDelegate {
+extension CastQueue: CastCurrentDelegate {
     func didUpdate(item: CastPlayerItem?) {
         currentItem = item
     }
 }
 
-extension MediaQueue {
+extension CastQueue {
     func fetch(_ item: CastPlayerItem) {
         guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
         cachedItem.fetch()
@@ -77,8 +77,9 @@ extension MediaQueue {
     }
 }
 
-public extension MediaQueue {
+public extension CastQueue {
     /// Loads player items and starts playback.
+    /// 
     /// - Parameter items: Items to load.
     func load(items: [CastPlayerItem]) {
         remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
@@ -92,7 +93,7 @@ public extension MediaQueue {
     }
 }
 
-public extension MediaQueue {
+public extension CastQueue {
     /// Inserts items before another one.
     ///
     /// - Parameters:
@@ -174,7 +175,7 @@ public extension MediaQueue {
     }
 }
 
-public extension MediaQueue {
+public extension CastQueue {
     /// Removes items from the queue.
     ///
     /// - Parameter items: The items to remove.

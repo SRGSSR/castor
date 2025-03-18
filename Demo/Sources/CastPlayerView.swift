@@ -167,11 +167,11 @@ private struct MainView: View {
     }
 
     private func playlist() -> some View {
-        MediaQueueView(mediaQueue: player.queue)
+        CastQueueView(queue: player.queue)
     }
 }
 
-private struct MediaQueueView: View {
+private struct CastQueueView: View {
     private static let additionalItem = CastPlayerItem(
         asset: .simple(
             URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
@@ -181,17 +181,17 @@ private struct MediaQueueView: View {
             imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
         )
     )
-    @ObservedObject var mediaQueue: MediaQueue
+    @ObservedObject var queue: CastQueue
     @State private var selection: CastPlayerItem.ID?
 
     var body: some View {
         VStack {
-            List(mediaQueue.items, selection: $selection) { item in
-                MediaQueueCell(item: item)
-                    .bind(to: item, from: mediaQueue)
+            List(queue.items, selection: $selection) { item in
+                CastQueueCell(item: item)
+                    .bind(to: item, from: queue)
             }
-            .bind($selection, to: mediaQueue)
-            .animation(.linear, value: mediaQueue.items)
+            .bind($selection, to: queue)
+            .animation(.linear, value: queue.items)
 
             HStack {
                 Button(action: reload) {
@@ -211,24 +211,24 @@ private struct MediaQueueView: View {
     }
 
     private func reload() {
-        mediaQueue.load(items: [Self.additionalItem])
+        queue.load(items: [Self.additionalItem])
     }
 
     private func insert() {
-        mediaQueue.insert([Self.additionalItem], after: mediaQueue.items.last)
+        queue.insert([Self.additionalItem], after: queue.items.last)
     }
 
     private func removeFirst() {
-        if let item = mediaQueue.items.first {
-            mediaQueue.remove([item])
+        if let item = queue.items.first {
+            queue.remove([item])
         }
     }
     private func removeAll() {
-        mediaQueue.removeAllItems()
+        queue.removeAllItems()
     }
 }
 
-private struct MediaQueueCell: View {
+private struct CastQueueCell: View {
     let item: CastPlayerItem
 
     var body: some View {
