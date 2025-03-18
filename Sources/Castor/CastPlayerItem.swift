@@ -18,12 +18,12 @@ public struct CastPlayerItem: Identifiable, Equatable {
         rawItem?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
     }
 
-    /// Creates an item from an asset and a metadata.
+    /// Creates an item from an asset and metadata.
     ///
     /// - Parameters:
     ///   - asset: The asset.
     ///   - metadata: The metadata.
-    public init(asset: Asset, metadata: CastMetadata) {
+    public init(asset: CastAsset, metadata: CastMetadata) {
         self.id = kGCKMediaQueueInvalidItemID
         self.rawItem = Self.rawItem(from: asset, metadata: metadata)
     }
@@ -35,14 +35,14 @@ public struct CastPlayerItem: Identifiable, Equatable {
 }
 
 private extension CastPlayerItem {
-    static func rawItem(from asset: Asset, metadata: CastMetadata) -> GCKMediaQueueItem {
+    static func rawItem(from asset: CastAsset, metadata: CastMetadata) -> GCKMediaQueueItem {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = Self.mediaInformation(from: asset, metadata: metadata)
         builder.autoplay = true
         return builder.build()
     }
 
-    static func mediaInformation(from asset: Asset, metadata: CastMetadata) -> GCKMediaInformation {
+    static func mediaInformation(from asset: CastAsset, metadata: CastMetadata) -> GCKMediaInformation {
         let builder = asset.mediaInformationBuilder()
         builder.metadata = metadata.rawMetadata
         return builder.build()

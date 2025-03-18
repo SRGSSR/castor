@@ -7,10 +7,11 @@
 import Foundation
 import GoogleCast
 
-/// An asset representing content to be played.
-public enum Asset {
+/// An cast asset representing content to be played.
+public enum CastAsset {
     /// Simple assets which can be played directly.
     case simple(URL)
+
     /// Custom assets which require a custom identifier.
     case custom(String)
 
