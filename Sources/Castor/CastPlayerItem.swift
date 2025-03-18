@@ -7,7 +7,7 @@
 import GoogleCast
 
 /// A cast player item.
-public struct CastPlayerItem: Identifiable {
+public struct CastPlayerItem: Identifiable, Equatable {
     /// The id.
     public let id: GCKMediaQueueItemID
 
@@ -16,5 +16,35 @@ public struct CastPlayerItem: Identifiable {
     /// The content title.
     public var title: String? {
         rawItem?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
+    }
+
+    /// Creates an item from an asset and metadata.
+    ///
+    /// - Parameters:
+    ///   - asset: The asset.
+    ///   - metadata: The metadata.
+    public init(asset: CastAsset, metadata: CastMetadata) {
+        self.id = kGCKMediaQueueInvalidItemID
+        self.rawItem = Self.rawItem(from: asset, metadata: metadata)
+    }
+
+    init(id: GCKMediaQueueItemID, rawItem: GCKMediaQueueItem?) {
+        self.id = id
+        self.rawItem = rawItem
+    }
+}
+
+private extension CastPlayerItem {
+    static func rawItem(from asset: CastAsset, metadata: CastMetadata) -> GCKMediaQueueItem {
+        let builder = GCKMediaQueueItemBuilder()
+        builder.mediaInformation = Self.mediaInformation(from: asset, metadata: metadata)
+        builder.autoplay = true
+        return builder.build()
+    }
+
+    static func mediaInformation(from asset: CastAsset, metadata: CastMetadata) -> GCKMediaInformation {
+        let builder = asset.mediaInformationBuilder()
+        builder.metadata = metadata.rawMetadata
+        return builder.build()
     }
 }
