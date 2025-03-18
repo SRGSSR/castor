@@ -13,7 +13,7 @@ function usage {
 function install_tools {
     curl -Ssf https://pkgx.sh | sh &> /dev/null
     set -a
-    eval "$(pkgx +ruby@3.3.6 +swiftlint +shellcheck +markdownlint)" # Temporarily specifying the Ruby version to avoid issues with RuboCop due to the following: https://github.com/pkgxdev/pkgx/issues/1150
+    eval "$(pkgx +swiftlint +shellcheck +markdownlint)"
     set +a
 }
 
