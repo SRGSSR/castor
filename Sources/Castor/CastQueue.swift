@@ -202,3 +202,31 @@ public extension CastQueue {
         remove(items)
     }
 }
+
+public extension CastQueue {
+    /// Checks whether returning to the previous item in the queue is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canReturnToPreviousItem() -> Bool {
+        !items.isEmpty && currentItem?.id != items.first?.id
+    }
+
+    /// Returns to the previous item in the queue.
+    func returnToPreviousItem() {
+        guard canReturnToPreviousItem(), let currentItem, let previousIndex = Self.index(before: currentItem, in: items) else { return }
+        jump(to: items[previousIndex].id)
+    }
+
+    /// Checks whether moving to the next item in the queue is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canAdvanceToNextItem() -> Bool {
+        !items.isEmpty && currentItem?.id != items.last?.id
+    }
+
+    /// Moves to the next item in the queue.
+    func advanceToNextItem() {
+        guard canAdvanceToNextItem(), let currentItem, let previousIndex = Self.index(after: currentItem, in: items) else { return }
+        jump(to: items[previousIndex].id)
+    }
+}
