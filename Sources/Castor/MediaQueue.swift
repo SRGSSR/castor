@@ -107,6 +107,14 @@ public final class MediaQueue: NSObject, ObservableObject {
         insert(items, after: nil)
     }
 
+    /// Removes items from the queue.
+    ///
+    /// - Parameter items: The items to remove.
+    func remove(_ items: [CastPlayerItem]) {
+        // swiftlint:disable:next legacy_objc_type
+        remoteMediaClient.queueRemoveItems(withIDs: items.map { NSNumber(value: $0.id) })
+    }
+
     /// Move to the associated item.
     ///
     /// - Parameter item: The item to move to.
