@@ -226,7 +226,7 @@ public extension CastQueue {
 
     /// Moves to the next item in the queue.
     func advanceToNextItem() {
-        guard canAdvanceToNextItem(), let currentItem, let previousIndex = Self.index(after: currentItem, in: items) else { return }
-        jump(to: items[previousIndex].id)
+        guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
+        jump(to: items[nextIndex].id)
     }
 }
