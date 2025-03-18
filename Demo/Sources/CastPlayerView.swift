@@ -199,8 +199,11 @@ private struct MediaQueueView: View {
                 Button(action: insert) {
                     Text("Insert")
                 }
-                Button(action: remove) {
-                    Text("Remove")
+                Button(action: removeFirst) {
+                    Text("Remove first")
+                }
+                Button(action: removeAll) {
+                    Text("Remove all")
                 }
             }
         }
@@ -211,11 +214,16 @@ private struct MediaQueueView: View {
     }
 
     private func insert() {
-        mediaQueue.insert([Self.additionalItem], after: mediaQueue.items.first)
+        mediaQueue.insert([Self.additionalItem], after: mediaQueue.items.last)
     }
 
-    private func remove() {
-        mediaQueue.remove(mediaQueue.items)
+    private func removeFirst() {
+        if let item = mediaQueue.items.first {
+            mediaQueue.remove([item])
+        }
+    }
+    private func removeAll() {
+        mediaQueue.removeAllItems()
     }
 }
 
