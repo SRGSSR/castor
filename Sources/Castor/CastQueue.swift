@@ -66,6 +66,21 @@ extension CastQueue: CastCurrentDelegate {
 }
 
 extension CastQueue {
+    static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
+        guard let itemIndex = items.firstIndex(where: { $0.id == item.id }) else { return nil }
+        let nextIndex = items.index(after: itemIndex)
+        return (nextIndex < items.endIndex) ? nextIndex : nil
+    }
+
+    static func index(before item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
+        guard let itemIndex = items.firstIndex(where: { $0.id == item.id }), itemIndex > items.startIndex else {
+            return nil
+        }
+        return items.index(before: itemIndex)
+    }
+}
+
+extension CastQueue {
     func fetch(_ item: CastPlayerItem) {
         guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
         cachedItem.fetch()
