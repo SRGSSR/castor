@@ -115,6 +115,11 @@ public final class MediaQueue: NSObject, ObservableObject {
         remoteMediaClient.queueRemoveItems(withIDs: items.map { NSNumber(value: $0.id) })
     }
 
+    /// Removes all items from the queue.
+    public func removeAllItems() {
+        remove(items)
+    }
+
     /// Move to the associated item.
     ///
     /// - Parameter item: The item to move to.
