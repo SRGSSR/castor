@@ -199,6 +199,9 @@ private struct MediaQueueView: View {
                 Button(action: insert) {
                     Text("Insert")
                 }
+                Button(action: remove) {
+                    Text("Remove")
+                }
             }
         }
     }
@@ -209,6 +212,10 @@ private struct MediaQueueView: View {
 
     private func insert() {
         mediaQueue.insert([Self.additionalItem], after: mediaQueue.items.first)
+    }
+
+    private func remove() {
+        mediaQueue.remove(mediaQueue.items)
     }
 }
 
