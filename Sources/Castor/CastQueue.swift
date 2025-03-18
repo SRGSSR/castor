@@ -149,10 +149,8 @@ public extension CastQueue {
         let rawItems = insertableRawItem(from: insertedItems)
         guard !rawItems.isEmpty else { return false }
         if let afterItem {
-            guard let afterItemIndex = items.firstIndex(where: { $0.id == afterItem.id }) else { return false }
-            let nextItemIndex = items.index(after: afterItemIndex)
-            if nextItemIndex < items.endIndex {
-                remoteMediaClient.queueInsert(rawItems, beforeItemWithID: items[nextItemIndex].id)
+            if let nextIndex = Self.index(after: afterItem, in: items) {
+                remoteMediaClient.queueInsert(rawItems, beforeItemWithID: items[nextIndex].id)
             }
             else {
                 remoteMediaClient.queueInsert(rawItems, beforeItemWithID: kGCKMediaQueueInvalidItemID)
