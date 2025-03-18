@@ -194,7 +194,9 @@ public extension CastQueue {
     /// - Parameter items: The items to remove.
     func remove(_ items: [CastPlayerItem]) {
         // swiftlint:disable:next legacy_objc_type
-        remoteMediaClient.queueRemoveItems(withIDs: items.map { NSNumber(value: $0.id) })
+        let ids = items.map { NSNumber(value: $0.id) }
+        remoteMediaClient.queueRemoveItems(withIDs: ids)
+        remoteMediaClient.notifyDidRemoveQueueItems(withIDs: ids)
     }
 
     /// Removes all items from the queue.
