@@ -65,6 +65,18 @@ extension MediaQueue: CastCurrentDelegate {
     }
 }
 
+extension MediaQueue {
+    func fetch(_ item: CastPlayerItem) {
+        guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
+        cachedItem.fetch()
+    }
+
+    func jump(to itemId: CastPlayerItem.ID) {
+        guard currentItem?.id != itemId else { return }
+        current.jump(to: itemId)
+    }
+}
+
 public extension MediaQueue {
     /// Loads player items and starts playback.
     /// - Parameter items: Items to load.
@@ -72,23 +84,11 @@ public extension MediaQueue {
         remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
     }
 
-    internal func fetch(_ item: CastPlayerItem) {
-        guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
-        cachedItem.fetch()
-    }
-}
-
-public extension MediaQueue {
     /// Move to the associated item.
     ///
     /// - Parameter item: The item to move to.
     func jump(to item: CastPlayerItem) {
         jump(to: item.id)
-    }
-
-    internal func jump(to itemId: CastPlayerItem.ID) {
-        guard currentItem?.id != itemId else { return }
-        current.jump(to: itemId)
     }
 }
 
