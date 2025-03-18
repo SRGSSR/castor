@@ -172,6 +172,15 @@ private struct MainView: View {
 }
 
 private struct MediaQueueView: View {
+    private static let additionalItem = CastPlayerItem(
+        asset: .simple(
+            URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
+        ),
+        metadata: .init(
+            title: "Big Buck Bunny",
+            imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
+        )
+    )
     @ObservedObject var mediaQueue: MediaQueue
     @State private var selection: CastPlayerItem.ID?
 
@@ -195,34 +204,11 @@ private struct MediaQueueView: View {
     }
 
     private func reload() {
-        mediaQueue.load(items: [
-            .init(
-                asset: .simple(
-                    URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
-                ),
-                metadata: .init(
-                    title: "Big Buck Bunny",
-                    imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
-                )
-            )
-        ])
+        mediaQueue.load(items: [Self.additionalItem])
     }
 
     private func insert() {
-        mediaQueue.insert(
-            [
-                .init(
-                    asset: .simple(
-                        URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
-                    ),
-                    metadata: .init(
-                        title: "Big Buck Bunny",
-                        imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
-                    )
-                )
-            ],
-            after: mediaQueue.items.first
-        )
+        mediaQueue.insert([Self.additionalItem], after: mediaQueue.items.first)
     }
 }
 
