@@ -20,32 +20,13 @@ public final class CastQueue: NSObject, ObservableObject {
             let changes = items.difference(from: oldValue).inferringMoves()
             changes.forEach { change in
                 switch change {
-                case let .insert(offset: offset, element: element, associatedWith: associatedWith):
-                    if let associatedWith {
-                        let offsetID = remoteMediaClient.mediaQueue.itemID(at: UInt(offset))
-                        let elementID = element.id
-                        let associatedID = remoteMediaClient.mediaQueue.itemID(at: UInt(associatedWith))
-                        print("--> insert: offset = \(offset), elementID = \(elementID), associated = \(associatedWith)")
-                        print("    --> insert: offsetID = \(offsetID), elementID = \(elementID), associatedID = \(associatedID)")
-                        // Nothing to be done here
-                    }
-                    else {
-                        // Should never happen
-                    }
+                case .insert:
+                    break
                 case let .remove(offset: offset, element: element, associatedWith: associatedWith):
                     if let associatedWith {
-                        let offsetID = remoteMediaClient.mediaQueue.itemID(at: UInt(offset))
-                        let elementID = element.id
-                        let associatedID = remoteMediaClient.mediaQueue.itemID(at: UInt(associatedWith))
-                        let nextAssociatedID = remoteMediaClient.mediaQueue.itemID(at: UInt(associatedWith + 1))
-                        print("--> remove: offset = \(offset), elementID = \(elementID), associated = \(associatedWith)")
-                        print("    --> remove: offsetID = \(offsetID), elementID = \(elementID), associatedID = \(associatedID), nextAssociatedID = \(nextAssociatedID)")
-                        if offset > associatedWith {
-                            remoteMediaClient.queueMoveItem(withID: elementID, beforeItemWithID: associatedID)
-                        }
-                        else {
-                            remoteMediaClient.queueMoveItem(withID: elementID, beforeItemWithID: nextAssociatedID)
-                        }
+                        let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
+                        let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
+                        remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
                     }
                     else {
                         remoteMediaClient.queueRemoveItem(withID: element.id)
