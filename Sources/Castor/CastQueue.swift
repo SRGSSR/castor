@@ -14,7 +14,32 @@ public final class CastQueue: NSObject, ObservableObject {
     /// The items in the queue.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            print("--> new: \(items)")
+//            let changes = items.difference(from: oldValue).inferringMoves()
+//            changes.forEach { change in
+//                print("--> change: \(change)")
+//                switch change {
+//                case let .insert(offset: offset, element: element, associatedWith: associatedWith):
+//                    if let associatedWith {
+//                        if offset > associatedWith {
+//                            print("--> move down")
+//                            remoteMediaClient.queueMoveItem(
+//                                withID: element.id,
+//                                beforeItemWithID: remoteMediaClient.mediaQueue.itemID(at: UInt(associatedWith + 1))
+//                            )
+//                        }
+//                        else {
+//                            print("--> move up")
+//                             remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: UInt(associatedWith))
+//                        }
+//                    }
+//                    else {
+//                        // TODO:
+//                    }
+//                case let .remove(offset: offset, element: element, associatedWith: associatedWith):
+//                    guard associatedWith == nil else { return }
+//                    remoteMediaClient.queueRemoveItem(withID: element.id)
+//                }
+//            }
         }
     }
 
