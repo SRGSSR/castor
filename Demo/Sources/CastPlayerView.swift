@@ -219,7 +219,15 @@ private struct CastQueueView: View {
                 CastQueueCell(item: item.wrappedValue)
             }
             .animation(.linear, value: queue.items)
+
+            Button(action: shuffle) {
+                Text("Shuffle")
+            }
         }
+    }
+
+    private func shuffle() {
+        queue.items.shuffle()
     }
 
     private func reload() {
