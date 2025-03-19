@@ -216,7 +216,7 @@ private struct CastQueueView: View {
     var body: some View {
         VStack {
             List($queue.items, id: \.self, editActions: .all) { item in
-                CastQueueCell(item: item.wrappedValue, index: queue.items.firstIndex(of: item.wrappedValue))
+                CastQueueCell(item: item.wrappedValue)
             }
             .animation(.linear, value: queue.items)
         }
@@ -242,10 +242,9 @@ private struct CastQueueView: View {
 
 private struct CastQueueCell: View {
     let item: CastPlayerItem
-    let index: Int?
 
     var body: some View {
-        Text("\(index ?? -1) - \(title)")
+        Text(title)
             .redacted(reason: item.title == nil ? .placeholder : [])
     }
 
