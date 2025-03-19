@@ -220,8 +220,23 @@ private struct CastQueueView: View {
             }
             .animation(.linear, value: queue.items)
 
-            Button(action: shuffle) {
-                Text("Shuffle")
+
+            HStack {
+                Button(action: reload) {
+                    Text("Reload")
+                }
+                Button(action: insert) {
+                    Text("Insert")
+                }
+                Button(action: shuffle) {
+                    Text("Shuffle")
+                }
+                Button(action: removeFirst) {
+                    Text("Remove first")
+                }
+                Button(action: removeAll) {
+                    Text("Remove all")
+                }
             }
         }
     }
@@ -239,12 +254,11 @@ private struct CastQueueView: View {
     }
 
     private func removeFirst() {
-        if let item = queue.items.first {
-            queue.remove([item])
-        }
+        guard !queue.items.isEmpty else { return }
+        queue.items.removeFirst()
     }
     private func removeAll() {
-        queue.removeAllItems()
+        queue.items.removeAll()
     }
 }
 
