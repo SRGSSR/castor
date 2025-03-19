@@ -11,24 +11,19 @@ import SwiftUI
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    private var skipsUpdates = false
+    private var isSynchronizing = false
 
     private var requests: Set<GCKRequestID> = [] {
         didSet {
-            if requests.isEmpty {
-                print("--> did finish pending work")
-            }
             guard requests.isEmpty && !oldValue.isEmpty else { return }
-            skipsUpdates = true
-            items = Self.items(from: remoteMediaClient.mediaQueue)
-            skipsUpdates = false
+            synchronizedItems = Self.items(from: remoteMediaClient.mediaQueue)
         }
     }
 
     /// The items in the queue.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            guard !skipsUpdates else { return }
+            guard !isSynchronizing else { return }
             let changes = items.difference(from: oldValue).inferringMoves()
             changes.forEach { change in
                 switch change {
@@ -52,6 +47,17 @@ public final class CastQueue: NSObject, ObservableObject {
                 }
             }
 
+        }
+    }
+
+    private var synchronizedItems: [CastPlayerItem] {
+        get {
+            items
+        }
+        set {
+            isSynchronizing = true
+            items = newValue
+            isSynchronizing = false
         }
     }
 
@@ -93,33 +99,27 @@ extension CastQueue: GCKMediaQueueDelegate {
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         print("--> did reload")
         guard requests.isEmpty else { return }
-        skipsUpdates = true
-        items = Self.items(from: queue)
-        skipsUpdates = false
+        synchronizedItems = Self.items(from: queue)
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
         print("--> did insert")
         guard requests.isEmpty else { return }
-        skipsUpdates = true
-        items.insert(
+        synchronizedItems.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
                     CastPlayerItem(id: queue.itemID(at: UInt(index)))
                 },
             at: range.location
         )
-        skipsUpdates = false
     }
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         print("--> did remove")
         guard requests.isEmpty else { return }
-        skipsUpdates = true
-        items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
-        skipsUpdates = false
+        synchronizedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 }
 
