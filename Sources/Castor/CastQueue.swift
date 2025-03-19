@@ -36,6 +36,17 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
+    private var nonSynchronizedItems: [CastPlayerItem] {
+        get {
+            items
+        }
+        set {
+            isSynchronizing = true
+            items = newValue
+            isSynchronizing = false
+        }
+    }
+
     /// The current item.
     @Published public private(set) var currentItem: CastPlayerItem?
 
@@ -49,22 +60,14 @@ public final class CastQueue: NSObject, ObservableObject {
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        isSynchronizing = true
-        defer {
-            isSynchronizing = false
-        }
-        items = (0..<queue.itemCount).map { index in
+        nonSynchronizedItems = (0..<queue.itemCount).map { index in
             CastPlayerItem(id: queue.itemID(at: index))
         }
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        isSynchronizing = true
-        defer {
-            isSynchronizing = false
-        }
-        items.insert(
+        nonSynchronizedItems.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
                     CastPlayerItem(id: queue.itemID(at: UInt(index)))
@@ -75,11 +78,7 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        isSynchronizing = true
-        defer {
-            isSynchronizing = false
-        }
-        items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+        nonSynchronizedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 }
 
