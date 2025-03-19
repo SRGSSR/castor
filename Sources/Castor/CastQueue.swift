@@ -12,8 +12,6 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     private let current: CastCurrent
 
-    private var cachedItems: [CastCachedPlayerItem] = []
-
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
 
@@ -32,17 +30,17 @@ public final class CastQueue: NSObject, ObservableObject {
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        cachedItems = (0..<queue.itemCount).map { index in
-            CastCachedPlayerItem(id: queue.itemID(at: index), queue: queue)
+        items = (0..<queue.itemCount).map { index in
+            CastPlayerItem(id: queue.itemID(at: index))
         }
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        cachedItems.insert(
+        items.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
-                    CastCachedPlayerItem(id: queue.itemID(at: UInt(index)), queue: queue)
+                    CastPlayerItem(id: queue.itemID(at: UInt(index)))
                 },
             at: range.location
         )
@@ -50,12 +48,7 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        cachedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        items = cachedItems.map { $0.toItem() }
+        items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 }
 
@@ -82,8 +75,7 @@ extension CastQueue {
 
 extension CastQueue {
     func fetch(_ item: CastPlayerItem) {
-        guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
-        cachedItem.fetch()
+
     }
 
     func jump(to itemId: GCKMediaQueueItemID) {
