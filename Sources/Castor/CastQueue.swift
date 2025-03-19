@@ -11,11 +11,24 @@ import SwiftUI
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    private var requests: Set<GCKRequestID> = []
+    private var skipsUpdates = false
+
+    private var requests: Set<GCKRequestID> = [] {
+        didSet {
+            if requests.isEmpty {
+                print("--> did finish pending work")
+            }
+            guard requests.isEmpty && !oldValue.isEmpty else { return }
+            skipsUpdates = true
+            items = Self.items(from: remoteMediaClient.mediaQueue)
+            skipsUpdates = false
+        }
+    }
 
     /// The items in the queue.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
+            guard !skipsUpdates else { return }
             let changes = items.difference(from: oldValue).inferringMoves()
             changes.forEach { change in
                 switch change {
@@ -27,13 +40,13 @@ public final class CastQueue: NSObject, ObservableObject {
                         let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
                         let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
                         requests.insert(request.requestID)
-                        print("--> did start: \(request.requestID)")
+                        print("--> move did start: \(request.requestID)")
                         request.delegate = self
                     }
                     else {
                         let request = remoteMediaClient.queueRemoveItem(withID: element.id)
                         requests.insert(request.requestID)
-                        print("--> did start: \(request.requestID)")
+                        print("--> remove did start: \(request.requestID)")
                         request.delegate = self
                     }
                 }
@@ -49,6 +62,12 @@ public final class CastQueue: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         super.init()
         remoteMediaClient.mediaQueue.add(self)
+    }
+
+    private static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
+        (0..<queue.itemCount).map { index in
+            CastPlayerItem(id: queue.itemID(at: index))
+        }
     }
 }
 
@@ -72,15 +91,18 @@ extension CastQueue: GCKRequestDelegate {
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
+        print("--> did reload")
         guard requests.isEmpty else { return }
-        items = (0..<queue.itemCount).map { index in
-            CastPlayerItem(id: queue.itemID(at: index))
-        }
+        skipsUpdates = true
+        items = Self.items(from: queue)
+        skipsUpdates = false
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
+        print("--> did insert")
         guard requests.isEmpty else { return }
+        skipsUpdates = true
         items.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
@@ -88,12 +110,16 @@ extension CastQueue: GCKMediaQueueDelegate {
                 },
             at: range.location
         )
+        skipsUpdates = false
     }
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
+        print("--> did remove")
         guard requests.isEmpty else { return }
+        skipsUpdates = true
         items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+        skipsUpdates = false
     }
 }
 
