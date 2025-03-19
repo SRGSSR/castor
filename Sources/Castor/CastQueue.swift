@@ -86,7 +86,7 @@ extension CastQueue {
         cachedItem.fetch()
     }
 
-    func jump(to itemId: CastPlayerItem.ID) {
+    func jump(to itemId: GCKMediaQueueItemID) {
         guard currentItem?.id != itemId else { return }
         current.jump(to: itemId)
     }
@@ -97,7 +97,7 @@ public extension CastQueue {
     /// 
     /// - Parameter items: Items to load.
     func load(items: [CastPlayerItem]) {
-        remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
+        // remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
     }
 
     /// Move to the associated item.
@@ -181,10 +181,11 @@ public extension CastQueue {
     }
 
     private func insertableRawItem(from items: [CastPlayerItem]) -> [GCKMediaQueueItem] {
-        items.filter { item in
-            !self.items.contains { $0.id == item.id }
-        }
-        .compactMap(\.rawItem)
+        []
+//        items.filter { item in
+//            !self.items.contains { $0.id == item.id }
+//        }
+//        .compactMap(\.rawItem)
     }
 }
 
@@ -196,7 +197,6 @@ public extension CastQueue {
         // swiftlint:disable:next legacy_objc_type
         let ids = items.map { NSNumber(value: $0.id) }
         remoteMediaClient.queueRemoveItems(withIDs: ids)
-        remoteMediaClient.notifyDidRemoveQueueItems(withIDs: ids)
     }
 
     /// Removes all items from the queue.

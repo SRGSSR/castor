@@ -212,15 +212,12 @@ private struct CastQueueView: View {
         )
     )
     @ObservedObject var queue: CastQueue
-    @State private var selection: CastPlayerItem.ID?
 
     var body: some View {
         VStack {
-            List(queue.items, selection: $selection) { item in
+            List(queue.items, id: \.self) { item in
                 CastQueueCell(item: item)
-                    .bind(to: item, from: queue)
             }
-            .bind($selection, to: queue)
             .animation(.linear, value: queue.items)
 
             HStack {

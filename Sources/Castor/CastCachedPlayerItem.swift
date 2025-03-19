@@ -24,7 +24,7 @@ final class CastCachedPlayerItem: NSObject {
     }
 
     func toItem() -> CastPlayerItem {
-        .init(id: id, rawItem: rawItem)
+        .init(id: id)
     }
 }
 

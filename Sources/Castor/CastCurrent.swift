@@ -25,7 +25,7 @@ final class CastCurrent: NSObject {
         remoteMediaClient.add(self)
     }
 
-    func jump(to itemId: CastPlayerItem.ID) {
+    func jump(to itemId: GCKMediaQueueItemID) {
         if request == nil {
             request = jumpRequest(to: itemId)
         }
@@ -45,12 +45,12 @@ extension CastCurrent: GCKRemoteMediaClientListener {
         guard let mediaStatus else { return }
         if let pendingRequestItemId {
             if mediaStatus.currentItemID == pendingRequestItemId {
-                delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
+                delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID))
                 self.pendingRequestItemId = nil
             }
         }
         else {
-            delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID, rawItem: mediaStatus.currentQueueItem))
+            delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID))
         }
     }
 }
