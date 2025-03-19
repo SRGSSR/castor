@@ -219,21 +219,6 @@ private struct CastQueueView: View {
                 CastQueueCell(item: item)
             }
             .animation(.linear, value: queue.items)
-
-            HStack {
-                Button(action: reload) {
-                    Text("Reload")
-                }
-                Button(action: insert) {
-                    Text("Insert")
-                }
-                Button(action: removeFirst) {
-                    Text("Remove first")
-                }
-                Button(action: removeAll) {
-                    Text("Remove all")
-                }
-            }
         }
     }
 
