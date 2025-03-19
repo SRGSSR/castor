@@ -11,12 +11,12 @@ import SwiftUI
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    private var isSynchronizing = false
+    private var requests: Set<GCKRequestID> = []
+    private var discardableRequests: Set<GCKRequestID> = []
 
     /// The items in the queue.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            guard !isSynchronizing else { return }
             let changes = items.difference(from: oldValue).inferringMoves()
             changes.forEach { change in
                 switch change {
@@ -26,24 +26,18 @@ public final class CastQueue: NSObject, ObservableObject {
                     if let associatedWith {
                         let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
                         let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
-                        remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
+                        let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
+                        requests.insert(request.requestID)
+                        request.delegate = self
                     }
                     else {
-                        remoteMediaClient.queueRemoveItem(withID: element.id)
+                        let request = remoteMediaClient.queueRemoveItem(withID: element.id)
+                        requests.insert(request.requestID)
+                        request.delegate = self
                     }
                 }
             }
-        }
-    }
 
-    private var nonSynchronizedItems: [CastPlayerItem] {
-        get {
-            items
-        }
-        set {
-            isSynchronizing = true
-            items = newValue
-            isSynchronizing = false
         }
     }
 
@@ -57,17 +51,33 @@ public final class CastQueue: NSObject, ObservableObject {
     }
 }
 
+extension CastQueue: GCKRequestDelegate {
+    public func requestDidComplete(_ request: GCKRequest) {
+        discardableRequests.insert(request.requestID)
+    }
+
+    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        discardableRequests.insert(request.requestID)
+    }
+
+    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        discardableRequests.insert(request.requestID)
+    }
+}
+
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        nonSynchronizedItems = (0..<queue.itemCount).map { index in
+        guard requests.isEmpty else { return }
+        items = (0..<queue.itemCount).map { index in
             CastPlayerItem(id: queue.itemID(at: index))
         }
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        nonSynchronizedItems.insert(
+        guard requests.isEmpty else { return }
+        items.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
                     CastPlayerItem(id: queue.itemID(at: UInt(index)))
@@ -78,7 +88,13 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        nonSynchronizedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+        guard requests.isEmpty else { return }
+        items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+    }
+
+    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
+        requests.subtract(discardableRequests)
+        discardableRequests = []
     }
 }
 
