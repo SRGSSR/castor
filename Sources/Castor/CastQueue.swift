@@ -10,7 +10,6 @@ import SwiftUI
 /// A queue managing player items.
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private let current: CastCurrent
 
     /// The items in the queue.
     @Published public private(set) var items: [CastPlayerItem] = []
@@ -20,9 +19,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
-        self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
     }
 }
@@ -52,12 +49,6 @@ extension CastQueue: GCKMediaQueueDelegate {
     }
 }
 
-extension CastQueue: CastCurrentDelegate {
-    func didUpdate(item: CastPlayerItem?) {
-        currentItem = item
-    }
-}
-
 extension CastQueue {
     static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
         guard let itemIndex = items.firstIndex(where: { $0.id == item.id }) else { return nil }
@@ -79,8 +70,7 @@ extension CastQueue {
     }
 
     func jump(to itemId: GCKMediaQueueItemID) {
-        guard currentItem?.id != itemId else { return }
-        current.jump(to: itemId)
+
     }
 }
 
