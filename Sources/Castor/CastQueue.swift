@@ -11,35 +11,38 @@ import SwiftUI
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
+    private var isSynchronizing = false
+
     /// The items in the queue.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-//            let changes = items.difference(from: oldValue).inferringMoves()
-//            changes.forEach { change in
-//                print("--> change: \(change)")
-//                switch change {
-//                case let .insert(offset: offset, element: element, associatedWith: associatedWith):
-//                    if let associatedWith {
-//                        if offset > associatedWith {
-//                            print("--> move down")
-//                            remoteMediaClient.queueMoveItem(
-//                                withID: element.id,
-//                                beforeItemWithID: remoteMediaClient.mediaQueue.itemID(at: UInt(associatedWith + 1))
-//                            )
-//                        }
-//                        else {
-//                            print("--> move up")
-//                             remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: UInt(associatedWith))
-//                        }
-//                    }
-//                    else {
-//                        // TODO:
-//                    }
-//                case let .remove(offset: offset, element: element, associatedWith: associatedWith):
-//                    guard associatedWith == nil else { return }
-//                    remoteMediaClient.queueRemoveItem(withID: element.id)
-//                }
-//            }
+            guard !isSynchronizing else { return }
+            let changes = items.difference(from: oldValue).inferringMoves()
+            changes.forEach { change in
+                print("--> change: \(change)")
+                switch change {
+                case let .insert(offset: offset, element: element, associatedWith: associatedWith):
+                    if let associatedWith {
+                        let offsetID = remoteMediaClient.mediaQueue.itemID(at: UInt(offset))
+                        let elementID = element.id
+                        let associatedID = remoteMediaClient.mediaQueue.itemID(at: UInt(associatedWith))
+                        print("--> insert: offsetID = \(offsetID), elementID = \(elementID), associatedID = \(associatedID)")
+                    }
+                    else {
+                        // Should never happen
+                    }
+                case let .remove(offset: offset, element: element, associatedWith: associatedWith):
+                    if let associatedWith {
+                        let offsetID = remoteMediaClient.mediaQueue.itemID(at: UInt(offset))
+                        let elementID = element.id
+                        let associatedID = remoteMediaClient.mediaQueue.itemID(at: UInt(associatedWith))
+                        print("--> remove: offsetID = \(offsetID), elementID = \(elementID), associatedID = \(associatedID)")
+                    }
+                    else {
+                        remoteMediaClient.queueRemoveItem(withID: element.id)
+                    }
+                }
+            }
         }
     }
 
@@ -56,6 +59,10 @@ public final class CastQueue: NSObject, ObservableObject {
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
+        isSynchronizing = true
+        defer {
+            isSynchronizing = false
+        }
         items = (0..<queue.itemCount).map { index in
             CastPlayerItem(id: queue.itemID(at: index))
         }
@@ -63,6 +70,10 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
+        isSynchronizing = true
+        defer {
+            isSynchronizing = false
+        }
         items.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
@@ -74,6 +85,10 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
+        isSynchronizing = true
+        defer {
+            isSynchronizing = false
+        }
         items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 }
