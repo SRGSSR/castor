@@ -35,18 +35,15 @@ public final class CastQueue: NSObject, ObservableObject {
                         let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
                         let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
                         requests.insert(request.requestID)
-                        print("--> move did start: \(request.requestID)")
                         request.delegate = self
                     }
                     else {
                         let request = remoteMediaClient.queueRemoveItem(withID: element.id)
                         requests.insert(request.requestID)
-                        print("--> remove did start: \(request.requestID)")
                         request.delegate = self
                     }
                 }
             }
-
         }
     }
 
@@ -79,17 +76,14 @@ public final class CastQueue: NSObject, ObservableObject {
 
 extension CastQueue: GCKRequestDelegate {
     public func requestDidComplete(_ request: GCKRequest) {
-        print("--> did complete: \(request.requestID)")
         requests.remove(request.requestID)
     }
 
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        print("--> did abort: \(request.requestID)")
         requests.remove(request.requestID)
     }
 
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        print("--> did fail: \(request.requestID)")
         requests.remove(request.requestID)
     }
 }
@@ -97,14 +91,12 @@ extension CastQueue: GCKRequestDelegate {
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        print("--> did reload")
         guard requests.isEmpty else { return }
         synchronizedItems = Self.items(from: queue)
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        print("--> did insert")
         guard requests.isEmpty else { return }
         synchronizedItems.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
@@ -117,7 +109,6 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        print("--> did remove")
         guard requests.isEmpty else { return }
         synchronizedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
