@@ -12,7 +12,11 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     /// The items in the queue.
-    @Published public private(set) var items: [CastPlayerItem] = []
+    @Published public var items: [CastPlayerItem] = [] {
+        didSet {
+            print("--> new: \(items)")
+        }
+    }
 
     /// The current item.
     @Published public private(set) var currentItem: CastPlayerItem?
