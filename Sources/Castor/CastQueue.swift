@@ -12,7 +12,6 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private var requests: Set<GCKRequestID> = []
-    private var discardableRequests: Set<GCKRequestID> = []
 
     /// The items in the queue.
     @Published public var items: [CastPlayerItem] = [] {
@@ -28,11 +27,13 @@ public final class CastQueue: NSObject, ObservableObject {
                         let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
                         let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
                         requests.insert(request.requestID)
+                        print("--> did start: \(request.requestID)")
                         request.delegate = self
                     }
                     else {
                         let request = remoteMediaClient.queueRemoveItem(withID: element.id)
                         requests.insert(request.requestID)
+                        print("--> did start: \(request.requestID)")
                         request.delegate = self
                     }
                 }
@@ -53,15 +54,18 @@ public final class CastQueue: NSObject, ObservableObject {
 
 extension CastQueue: GCKRequestDelegate {
     public func requestDidComplete(_ request: GCKRequest) {
-        discardableRequests.insert(request.requestID)
+        print("--> did complete: \(request.requestID)")
+        requests.remove(request.requestID)
     }
 
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        discardableRequests.insert(request.requestID)
+        print("--> did abort: \(request.requestID)")
+        requests.remove(request.requestID)
     }
 
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        discardableRequests.insert(request.requestID)
+        print("--> did fail: \(request.requestID)")
+        requests.remove(request.requestID)
     }
 }
 
@@ -90,11 +94,6 @@ extension CastQueue: GCKMediaQueueDelegate {
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         guard requests.isEmpty else { return }
         items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
-    }
-
-    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        requests.subtract(discardableRequests)
-        discardableRequests = []
     }
 }
 
