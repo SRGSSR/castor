@@ -26,12 +26,12 @@ struct StreamsView: View {
             url: URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8")!,
             imageUrl: kAppleImageUrl
         ),
-//        .init(
-//            title: "Swiss wheelchair athlete wins top award",
-//            url: URL(string: "https://cdn.prod.swi-services.ch/video-projects/94f5f5d1-5d53-4336-afda-9198462c45d9/localised-videos/ENG/renditions/ENG.mp4")!,
-//            // swiftlint:disable:next line_length
-//            imageUrl: URL(string: "https://cdn.prod.swi-services.ch/video-delivery/images/94f5f5d1-5d53-4336-afda-9198462c45d9/_.1hAGinujJ.yERGrrGNzBGCNSxmhKZT/16x9")!
-//        ),
+        .init(
+            title: "Swiss wheelchair athlete wins top award",
+            url: URL(string: "https://cdn.prod.swi-services.ch/video-projects/94f5f5d1-5d53-4336-afda-9198462c45d9/localised-videos/ENG/renditions/ENG.mp4")!,
+            // swiftlint:disable:next line_length
+            imageUrl: URL(string: "https://cdn.prod.swi-services.ch/video-delivery/images/94f5f5d1-5d53-4336-afda-9198462c45d9/_.1hAGinujJ.yERGrrGNzBGCNSxmhKZT/16x9")!
+        ),
 //        .init(
 //            title: "Couleur 3",
 //            url: URL(string: "http://stream.srg-ssr.ch/m/couleur3/mp3_128")!,
