@@ -22,7 +22,31 @@ public final class Cast: NSObject, ObservableObject {
     private var targetDevice: CastDevice?
 
     /// The current device.
-    @Published public private(set) var currentDevice: CastDevice?
+    ///
+    /// Ends the session if set to `nil`.
+    ///
+    /// > Important: On iOS 18.3 and below use `currentDeviceSelection` to manage selection in a `List`.
+    @Published public var currentDevice: CastDevice? {
+        didSet {
+            if let currentDevice {
+                moveSession(from: oldValue, to: currentDevice)
+            }
+            else {
+                endSession()
+            }
+        }
+    }
+
+    /// A binding to the current device, for use as `List` selection.
+    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentDevice instead")
+    public var currentDeviceSelection: Binding<CastDevice?> {
+        .init { [weak self] in
+            self?.currentDevice
+        } set: { [weak self] device in
+            guard let self, let device else { return }
+            currentDevice = device
+        }
+    }
 
     /// The player.
     @Published public private(set) var player: CastPlayer?
@@ -55,14 +79,7 @@ public final class Cast: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
-        guard self.currentDevice != device else { return }
-        if self.currentDevice != nil {
-            targetDevice = device
-            endSession()
-        }
-        else {
-            context.sessionManager.startSession(with: device.rawDevice)
-        }
+        moveSession(from: currentDevice, to: device)
     }
 
     /// Ends the current session and stops casting if one sender device is connected.
@@ -74,7 +91,7 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter device: The device.
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
-        self.currentDevice == device
+        currentDevice == device
     }
 }
 
@@ -157,5 +174,16 @@ private extension Cast {
             devices.append(discoveryManager.device(at: index).toCastDevice())
         }
         return devices
+    }
+
+    private func moveSession(from previousDevice: CastDevice?, to currentDevice: CastDevice) {
+        guard previousDevice != currentDevice else { return }
+        if previousDevice != nil {
+            targetDevice = currentDevice
+            endSession()
+        }
+        else {
+            context.sessionManager.startSession(with: currentDevice.rawDevice)
+        }
     }
 }
