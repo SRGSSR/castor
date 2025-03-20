@@ -22,7 +22,12 @@ public final class Cast: NSObject, ObservableObject {
     private var targetDevice: CastDevice?
 
     /// The current device.
-    @Published public var currentDevice: CastDevice?
+    @Published public var currentDevice: CastDevice? {
+        didSet {
+            guard let currentDevice else { return }
+            moveSession(from: oldValue, to: currentDevice)
+        }
+    }
 
     /// The player.
     @Published public private(set) var player: CastPlayer?
@@ -55,13 +60,17 @@ public final class Cast: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
-        guard self.currentDevice != device else { return }
-        if self.currentDevice != nil {
-            targetDevice = device
+        moveSession(from: currentDevice, to: device)
+    }
+
+    private func moveSession(from previousDevice: CastDevice?, to currentDevice: CastDevice) {
+        guard previousDevice != currentDevice else { return }
+        if previousDevice != nil {
+            targetDevice = currentDevice
             endSession()
         }
         else {
-            context.sessionManager.startSession(with: device.rawDevice)
+            context.sessionManager.startSession(with: currentDevice.rawDevice)
         }
     }
 
@@ -74,7 +83,7 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter device: The device.
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
-        self.currentDevice == device
+        currentDevice == device
     }
 }
 
