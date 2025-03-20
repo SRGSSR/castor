@@ -22,10 +22,23 @@ public final class Cast: NSObject, ObservableObject {
     private var targetDevice: CastDevice?
 
     /// The current device.
+    ///
+    /// > Important: On iOS 18.3 and below use `currentDeviceSelection` to manage selection in a `List`.
     @Published public var currentDevice: CastDevice? {
         didSet {
             guard let currentDevice else { return }
             moveSession(from: oldValue, to: currentDevice)
+        }
+    }
+
+    /// A binding to the current device, for use as `List` selection.
+    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentDevice instead")
+    public var currentDeviceSelection: Binding<CastDevice?> {
+        .init { [weak self] in
+            self?.currentDevice
+        } set: { [weak self] device in
+            guard let self, let device else { return }
+            currentDevice = device
         }
     }
 
@@ -61,17 +74,6 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
         moveSession(from: currentDevice, to: device)
-    }
-
-    private func moveSession(from previousDevice: CastDevice?, to currentDevice: CastDevice) {
-        guard previousDevice != currentDevice else { return }
-        if previousDevice != nil {
-            targetDevice = currentDevice
-            endSession()
-        }
-        else {
-            context.sessionManager.startSession(with: currentDevice.rawDevice)
-        }
     }
 
     /// Ends the current session and stops casting if one sender device is connected.
@@ -166,5 +168,16 @@ private extension Cast {
             devices.append(discoveryManager.device(at: index).toCastDevice())
         }
         return devices
+    }
+
+    private func moveSession(from previousDevice: CastDevice?, to currentDevice: CastDevice) {
+        guard previousDevice != currentDevice else { return }
+        if previousDevice != nil {
+            targetDevice = currentDevice
+            endSession()
+        }
+        else {
+            context.sessionManager.startSession(with: currentDevice.rawDevice)
+        }
     }
 }
