@@ -62,7 +62,6 @@ struct DevicesView: View {
                 }
             }
         }
-        .bind($currentDevice, to: cast)
     }
 
     @ViewBuilder
