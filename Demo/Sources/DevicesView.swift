@@ -20,7 +20,6 @@ private struct NoDevicesView: View {
 
 struct DevicesView: View {
     @EnvironmentObject private var cast: Cast
-    @State private var currentDevice: CastDevice?
 
     var body: some View {
         ZStack {
@@ -52,7 +51,7 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(cast.devices, id: \.self, selection: $currentDevice) { device in
+        List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
             HStack {
                 Image(systemName: Self.imageName(for: device))
                 descriptionView(for: device)

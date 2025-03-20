@@ -22,7 +22,7 @@ public final class Cast: NSObject, ObservableObject {
     private var targetDevice: CastDevice?
 
     /// The current device.
-    @Published public private(set) var currentDevice: CastDevice?
+    @Published public var currentDevice: CastDevice?
 
     /// The player.
     @Published public private(set) var player: CastPlayer?
