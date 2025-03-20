@@ -69,6 +69,78 @@ public extension CastQueue {
     }
 }
 
+public extension CastQueue {
+    /// Moves an item before another one.
+    ///
+    /// - Parameters:
+    ///   - item: The item to move. The method does nothing if the item does not belong to the queue.
+    ///   - beforeItem: The item before which the moved item must be relocated. Pass `nil` to move the item to the
+    ///     front of the queue. If the item does not belong to the queue the method does nothing.
+    /// - Returns: `true` iff the item could be moved.
+    @discardableResult
+    func move(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
+        guard canMove(item, before: beforeItem), let movedIndex = items.firstIndex(of: item) else {
+            return false
+        }
+        if let beforeItem {
+            guard let index = items.firstIndex(of: beforeItem) else { return false }
+            items.move(from: movedIndex, to: index)
+        }
+        else {
+            items.move(from: movedIndex, to: items.startIndex)
+        }
+        return true
+    }
+
+    /// Moves an item after another one.
+    ///
+    /// - Parameters:
+    ///   - item: The item to move.
+    ///   - afterItem: The item after which the moved item must be relocated. Pass `nil` to move the item to the
+    ///     back of the queue. If the item does not belong to the queue the method does nothing.
+    /// - Returns: `true` iff the item could be moved.
+    @discardableResult
+    func move(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) -> Bool {
+        guard canMove(item, after: afterItem), let movedIndex = items.firstIndex(of: item) else {
+            return false
+        }
+        if let afterItem {
+            guard let index = items.firstIndex(of: afterItem) else { return false }
+            items.move(from: movedIndex, to: items.index(after: index))
+        }
+        else {
+            items.move(from: movedIndex, to: items.endIndex)
+        }
+        return true
+    }
+}
+
+private extension CastQueue {
+    func canMove(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
+        guard items.contains(item) else { return false }
+        if let beforeItem {
+            guard item != beforeItem, let index = items.firstIndex(of: beforeItem) else { return false }
+            guard index > 0 else { return true }
+            return items[items.index(before: index)] != item
+        }
+        else {
+            return items.first != item
+        }
+    }
+
+    func canMove(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) -> Bool {
+        guard items.contains(item) else { return false }
+        if let afterItem {
+            guard item != afterItem, let index = items.firstIndex(of: afterItem) else { return false }
+            guard index < items.count - 1 else { return true }
+            return items[items.index(after: index)] != item
+        }
+        else {
+            return items.last != item
+        }
+    }
+}
+
 private extension CastQueue {
     static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
         (0..<queue.itemCount).map { index in
