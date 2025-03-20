@@ -12,7 +12,7 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     /// The items in the queue.
-    @Published public private(set) var items: [CastPlayerItem] = []
+    @Published public var items: [CastPlayerItem] = []
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient

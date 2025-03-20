@@ -176,8 +176,8 @@ private struct CastQueueView: View {
 
     var body: some View {
         VStack {
-            List(queue.items, id: \.self) { item in
-                CastQueueCell(item: item)
+            List($queue.items, id: \.self, editActions: .all) { item in
+                CastQueueCell(item: item.wrappedValue)
             }
             .animation(.linear, value: queue.items)
         }
