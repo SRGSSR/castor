@@ -175,12 +175,31 @@ private struct CastQueueView: View {
     @ObservedObject var queue: CastQueue
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            toolbar()
             List($queue.items, id: \.self, editActions: .all) { item in
                 CastQueueCell(item: item.wrappedValue)
             }
             .animation(.linear, value: queue.items)
         }
+    }
+
+    private func toolbar() -> some View {
+        HStack(spacing: 30) {
+            Button(action: shuffle) {
+                Image(systemName: "shuffle")
+            }
+            .disabled(queue.isEmpty)
+
+            Button(action: queue.removeAllItems) {
+                Image(systemName: "trash")
+            }
+            .disabled(queue.isEmpty)
+        }
+    }
+
+    private func shuffle() {
+        queue.items.shuffle()
     }
 }
 
