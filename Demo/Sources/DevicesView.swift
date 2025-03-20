@@ -51,7 +51,7 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(cast.devices, id: \.self, selection: cast.currentDeviceSelection) { device in
+        List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
             HStack {
                 Image(systemName: Self.imageName(for: device))
                 descriptionView(for: device)
