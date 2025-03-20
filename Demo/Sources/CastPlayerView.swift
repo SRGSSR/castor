@@ -196,6 +196,7 @@ private struct CastQueueView: View {
             }
             .disabled(queue.isEmpty)
         }
+        .padding()
     }
 
     private func shuffle() {
