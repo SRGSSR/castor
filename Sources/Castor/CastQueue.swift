@@ -50,6 +50,25 @@ public final class CastQueue: NSObject, ObservableObject {
     }
 }
 
+public extension CastQueue {
+    /// A Boolean indicating if the queue is empty.
+    var isEmpty: Bool {
+        items.isEmpty
+    }
+
+    /// Removes an item from the queue.
+    ///
+    /// - Parameter item: The item to remove.
+    func remove(_ item: CastPlayerItem) {
+        items.removeAll { $0 == item }
+    }
+
+    /// Removes all items from the queue.
+    func removeAllItems() {
+        items.removeAll()
+    }
+}
+
 private extension CastQueue {
     static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
         (0..<queue.itemCount).map { index in
