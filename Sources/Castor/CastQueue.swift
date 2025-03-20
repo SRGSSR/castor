@@ -10,39 +10,182 @@ import SwiftUI
 /// A queue managing player items.
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private let current: CastCurrent
-
-    private var cachedItems: [CastCachedPlayerItem] = []
 
     /// The items in the queue.
-    @Published public private(set) var items: [CastPlayerItem] = []
+    @Published public var items: [CastPlayerItem] = [] {
+        didSet {
+            guard canRequest else { return }
+            requestUpdates(from: oldValue, to: items)
+        }
+    }
 
-    /// The current item.
-    @Published public private(set) var currentItem: CastPlayerItem?
+    private var canRequest = true
+
+    private var nonRequestedItems: [CastPlayerItem] {
+        get {
+            items
+        }
+        set {
+            canRequest = false
+            items = newValue
+            canRequest = true
+        }
+    }
+
+    private var requests: Set<GCKRequestID> = [] {
+        didSet {
+            guard !oldValue.isEmpty, requests.isEmpty else { return }
+            nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
+        }
+    }
+
+    private var isRequesting: Bool {
+        !requests.isEmpty
+    }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
-        self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
+    }
+}
+
+public extension CastQueue {
+    /// A Boolean indicating if the queue is empty.
+    var isEmpty: Bool {
+        items.isEmpty
+    }
+
+    /// Removes an item from the queue.
+    ///
+    /// - Parameter item: The item to remove.
+    func remove(_ item: CastPlayerItem) {
+        items.removeAll { $0 == item }
+    }
+
+    /// Removes all items from the queue.
+    func removeAllItems() {
+        items.removeAll()
+    }
+}
+
+public extension CastQueue {
+    /// Moves an item before another one.
+    ///
+    /// - Parameters:
+    ///   - item: The item to move. The method does nothing if the item does not belong to the queue.
+    ///   - beforeItem: The item before which the moved item must be relocated. Pass `nil` to move the item to the
+    ///     front of the queue. If the item does not belong to the queue the method does nothing.
+    /// - Returns: `true` iff the item could be moved.
+    @discardableResult
+    func move(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
+        guard canMove(item, before: beforeItem), let movedIndex = items.firstIndex(of: item) else {
+            return false
+        }
+        if let beforeItem {
+            guard let index = items.firstIndex(of: beforeItem) else { return false }
+            items.move(from: movedIndex, to: index)
+        }
+        else {
+            items.move(from: movedIndex, to: items.startIndex)
+        }
+        return true
+    }
+
+    /// Moves an item after another one.
+    ///
+    /// - Parameters:
+    ///   - item: The item to move.
+    ///   - afterItem: The item after which the moved item must be relocated. Pass `nil` to move the item to the
+    ///     back of the queue. If the item does not belong to the queue the method does nothing.
+    /// - Returns: `true` iff the item could be moved.
+    @discardableResult
+    func move(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) -> Bool {
+        guard canMove(item, after: afterItem), let movedIndex = items.firstIndex(of: item) else {
+            return false
+        }
+        if let afterItem {
+            guard let index = items.firstIndex(of: afterItem) else { return false }
+            items.move(from: movedIndex, to: items.index(after: index))
+        }
+        else {
+            items.move(from: movedIndex, to: items.endIndex)
+        }
+        return true
+    }
+}
+
+private extension CastQueue {
+    func canMove(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
+        guard items.contains(item) else { return false }
+        if let beforeItem {
+            guard item != beforeItem, let index = items.firstIndex(of: beforeItem) else { return false }
+            guard index > 0 else { return true }
+            return items[items.index(before: index)] != item
+        }
+        else {
+            return items.first != item
+        }
+    }
+
+    func canMove(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) -> Bool {
+        guard items.contains(item) else { return false }
+        if let afterItem {
+            guard item != afterItem, let index = items.firstIndex(of: afterItem) else { return false }
+            guard index < items.count - 1 else { return true }
+            return items[items.index(after: index)] != item
+        }
+        else {
+            return items.last != item
+        }
+    }
+}
+
+private extension CastQueue {
+    static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
+        (0..<queue.itemCount).map { index in
+            CastPlayerItem(id: queue.itemID(at: index))
+        }
+    }
+
+    func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
+        let changes = currentItems.difference(from: previousItems).inferringMoves()
+        changes.forEach { change in
+            switch change {
+            case .insert:
+                break
+            case let .remove(offset: offset, element: element, associatedWith: associatedWith):
+                if let associatedWith {
+                    let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
+                    let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
+                    let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
+                    requests.insert(request.requestID)
+                    request.delegate = self
+                }
+                else {
+                    let request = remoteMediaClient.queueRemoveItem(withID: element.id)
+                    requests.insert(request.requestID)
+                    request.delegate = self
+                }
+            }
+        }
     }
 }
 
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        cachedItems = (0..<queue.itemCount).map { index in
-            CastCachedPlayerItem(id: queue.itemID(at: index), queue: queue)
-        }
+        guard !isRequesting else { return }
+        nonRequestedItems = Self.items(from: queue)
     }
 
     // swiftlint:disable:next missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        cachedItems.insert(
+        guard !isRequesting else { return }
+        nonRequestedItems.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
-                    CastCachedPlayerItem(id: queue.itemID(at: UInt(index)), queue: queue)
+                    CastPlayerItem(id: queue.itemID(at: UInt(index)))
                 },
             at: range.location
         )
@@ -50,142 +193,24 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        cachedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+        guard !isRequesting else { return }
+        nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+    }
+}
+
+extension CastQueue: GCKRequestDelegate {
+    // swiftlint:disable:next missing_docs
+    public func requestDidComplete(_ request: GCKRequest) {
+        requests.remove(request.requestID)
     }
 
     // swiftlint:disable:next missing_docs
-    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        items = cachedItems.map { $0.toItem() }
-    }
-}
-
-extension CastQueue: CastCurrentDelegate {
-    func didUpdate(item: CastPlayerItem?) {
-        currentItem = item
-    }
-}
-
-extension CastQueue {
-    func fetch(_ item: CastPlayerItem) {
-        guard let cachedItem = cachedItems.first(where: { $0.id == item.id }) else { return }
-        cachedItem.fetch()
+    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        requests.remove(request.requestID)
     }
 
-    func jump(to itemId: CastPlayerItem.ID) {
-        guard currentItem?.id != itemId else { return }
-        current.jump(to: itemId)
-    }
-}
-
-public extension CastQueue {
-    /// Loads player items and starts playback.
-    /// 
-    /// - Parameter items: Items to load.
-    func load(items: [CastPlayerItem]) {
-        remoteMediaClient.queueLoad(items.compactMap(\.rawItem), with: .init())
-    }
-
-    /// Move to the associated item.
-    ///
-    /// - Parameter item: The item to move to.
-    func jump(to item: CastPlayerItem) {
-        jump(to: item.id)
-    }
-}
-
-public extension CastQueue {
-    /// Inserts items before another one.
-    ///
-    /// - Parameters:
-    ///   - insertedItems: The items to insert.
-    ///   - beforeItem: The item before which insertion must take place. Pass `nil` to insert the items at the front
-    ///     of the queue.
-    /// - Returns: `true` iff some items could be inserted.
-    ///
-    /// Ignores items already belonging to the queue.
-    @discardableResult
-    func insert(_ insertedItems: [CastPlayerItem], before beforeItem: CastPlayerItem?) -> Bool {
-        let rawItems = insertableRawItem(from: insertedItems)
-        guard !rawItems.isEmpty else { return false }
-        if let beforeItem {
-            guard items.contains(where: { $0.id == beforeItem.id }) else { return false }
-            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: beforeItem.id)
-        }
-        else if let firstItem = items.first {
-            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: firstItem.id)
-        }
-        else {
-            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: kGCKMediaQueueInvalidItemID)
-        }
-        return true
-    }
-
-    /// Inserts items after another one.
-    ///
-    /// - Parameters:
-    ///   - insertedItems: The items to insert.
-    ///   - afterItem: The item after which insertion must take place. Pass `nil` to insert the items at the back of
-    ///     the queue. If this item does not exist the method does nothing.
-    /// - Returns: `true` iff some items could be inserted.
-    ///
-    /// Ignores items already belonging to the queue.
-    @discardableResult
-    func insert(_ insertedItems: [CastPlayerItem], after afterItem: CastPlayerItem?) -> Bool {
-        let rawItems = insertableRawItem(from: insertedItems)
-        guard !rawItems.isEmpty else { return false }
-        if let afterItem {
-            guard let afterItemIndex = items.firstIndex(where: { $0.id == afterItem.id }) else { return false }
-            let nextItemIndex = items.index(after: afterItemIndex)
-            if nextItemIndex < items.endIndex {
-                remoteMediaClient.queueInsert(rawItems, beforeItemWithID: items[nextItemIndex].id)
-            }
-            else {
-                remoteMediaClient.queueInsert(rawItems, beforeItemWithID: kGCKMediaQueueInvalidItemID)
-            }
-        }
-        else {
-            remoteMediaClient.queueInsert(rawItems, beforeItemWithID: kGCKMediaQueueInvalidItemID)
-        }
-        return true
-    }
-
-    /// Prepends items to the queue.
-    ///
-    /// - Parameter items: The items to prepend.
-    /// - Returns: `true` iff the items could be prepended.
-    @discardableResult
-    func prepend(_ items: [CastPlayerItem]) -> Bool {
-        insert(items, before: nil)
-    }
-
-    /// Appends items to the queue.
-    ///
-    /// - Parameter items: The items to append.
-    /// - Returns: `true` iff the items could be appended.
-    @discardableResult
-    func append(_ items: [CastPlayerItem]) -> Bool {
-        insert(items, after: nil)
-    }
-
-    private func insertableRawItem(from items: [CastPlayerItem]) -> [GCKMediaQueueItem] {
-        items.filter { item in
-            !self.items.contains { $0.id == item.id }
-        }
-        .compactMap(\.rawItem)
-    }
-}
-
-public extension CastQueue {
-    /// Removes items from the queue.
-    ///
-    /// - Parameter items: The items to remove.
-    func remove(_ items: [CastPlayerItem]) {
-        // swiftlint:disable:next legacy_objc_type
-        remoteMediaClient.queueRemoveItems(withIDs: items.map { NSNumber(value: $0.id) })
-    }
-
-    /// Removes all items from the queue.
-    func removeAllItems() {
-        remove(items)
+    // swiftlint:disable:next missing_docs
+    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        requests.remove(request.requestID)
     }
 }

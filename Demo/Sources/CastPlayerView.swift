@@ -172,59 +172,35 @@ private struct MainView: View {
 }
 
 private struct CastQueueView: View {
-    private static let additionalItem = CastPlayerItem(
-        asset: .simple(
-            URL(string: "https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_1080p_h264.mov")!
-        ),
-        metadata: .init(
-            title: "Big Buck Bunny",
-            imageUrl: URL(string: "https://illudiumfilm.com/big_buck_bunny_title_658w.jpg")!
-        )
-    )
     @ObservedObject var queue: CastQueue
-    @State private var selection: CastPlayerItem.ID?
 
     var body: some View {
-        VStack {
-            List(queue.items, selection: $selection) { item in
-                CastQueueCell(item: item)
-                    .bind(to: item, from: queue)
+        VStack(spacing: 0) {
+            toolbar()
+            List($queue.items, id: \.self, editActions: .all) { item in
+                CastQueueCell(item: item.wrappedValue)
             }
-            .bind($selection, to: queue)
             .animation(.linear, value: queue.items)
+        }
+    }
 
-            HStack {
-                Button(action: reload) {
-                    Text("Reload")
-                }
-                Button(action: insert) {
-                    Text("Insert")
-                }
-                Button(action: removeFirst) {
-                    Text("Remove first")
-                }
-                Button(action: removeAll) {
-                    Text("Remove all")
-                }
+    private func toolbar() -> some View {
+        HStack(spacing: 30) {
+            Button(action: shuffle) {
+                Image(systemName: "shuffle")
             }
+            .disabled(queue.isEmpty)
+
+            Button(action: queue.removeAllItems) {
+                Image(systemName: "trash")
+            }
+            .disabled(queue.isEmpty)
         }
+        .padding()
     }
 
-    private func reload() {
-        queue.load(items: [Self.additionalItem])
-    }
-
-    private func insert() {
-        queue.insert([Self.additionalItem], after: queue.items.last)
-    }
-
-    private func removeFirst() {
-        if let item = queue.items.first {
-            queue.remove([item])
-        }
-    }
-    private func removeAll() {
-        queue.removeAllItems()
+    private func shuffle() {
+        queue.items.shuffle()
     }
 }
 
