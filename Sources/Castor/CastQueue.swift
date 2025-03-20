@@ -19,6 +19,9 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
+    /// The current item.
+    @Published public var currentItem: CastPlayerItem?
+
     private var canRequest = true
 
     private var nonRequestedItems: [CastPlayerItem] {
