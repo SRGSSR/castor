@@ -36,6 +36,16 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
+    private var publishedCurrentItem: CastPlayerItem? {
+        get {
+            currentItem
+        }
+        set {
+            currentItem = newValue
+            objectWillChange.send()
+        }
+    }
+
     /// A binding to the current item, for use as `List` selection.
     @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentItem instead")
     public var currentItemSelection: Binding<CastPlayerItem?> {
@@ -248,8 +258,7 @@ private extension CastQueue {
 
 extension CastQueue: CastCurrentDelegate {
     func didUpdate(item: CastPlayerItem?) {
-        currentItem = item
-        objectWillChange.send()
+        publishedCurrentItem = item
     }
 }
 
