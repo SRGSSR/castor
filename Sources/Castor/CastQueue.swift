@@ -146,6 +146,34 @@ public extension CastQueue {
     }
 }
 
+public extension CastQueue {
+    /// Checks whether returning to the previous item in the queue is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canReturnToPreviousItem() -> Bool {
+        !items.isEmpty && currentItem?.id != items.first?.id
+    }
+
+    /// Returns to the previous item in the queue.
+    func returnToPreviousItem() {
+        guard canReturnToPreviousItem(), let currentItem, let previousIndex = Self.index(before: currentItem, in: items) else { return }
+        current.jump(to: items[previousIndex].id)
+    }
+
+    /// Checks whether moving to the next item in the queue is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canAdvanceToNextItem() -> Bool {
+        !items.isEmpty && currentItem?.id != items.last?.id
+    }
+
+    /// Moves to the next item in the queue.
+    func advanceToNextItem() {
+        guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
+        current.jump(to: items[nextIndex].id)
+    }
+}
+
 private extension CastQueue {
     func canMove(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
         guard items.contains(item) else { return false }
@@ -169,6 +197,21 @@ private extension CastQueue {
         else {
             return items.last != item
         }
+    }
+}
+
+private extension CastQueue {
+    static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
+        guard let itemIndex = items.firstIndex(of: item) else { return nil }
+        let nextIndex = items.index(after: itemIndex)
+        return (nextIndex < items.endIndex) ? nextIndex : nil
+    }
+
+    static func index(before item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
+        guard let itemIndex = items.firstIndex(of: item), itemIndex > items.startIndex else {
+            return nil
+        }
+        return items.index(before: itemIndex)
     }
 }
 
