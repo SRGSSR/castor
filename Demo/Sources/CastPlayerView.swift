@@ -177,11 +177,24 @@ private struct CastQueueView: View {
     var body: some View {
         VStack(spacing: 0) {
             toolbar()
-            List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { item in
-                CastQueueCell(item: item.wrappedValue)
-            }
-            .animation(.linear, value: queue.items)
+            list()
         }
+    }
+
+    private func list() -> some View {
+        ZStack {
+            if !queue.items.isEmpty {
+                List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { item in
+                    CastQueueCell(item: item.wrappedValue)
+                }
+            }
+            else {
+                ContentUnavailableView {
+                    Text("No items")
+                }
+            }
+        }
+        .animation(.linear, value: queue.items)
     }
 
     private func toolbar() -> some View {
