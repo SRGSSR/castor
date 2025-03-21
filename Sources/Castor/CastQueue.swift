@@ -57,6 +57,7 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
+    private var isRequesting = false
     private var canRequest = true
     private let current: CastCurrent
 
@@ -69,17 +70,6 @@ public final class CastQueue: NSObject, ObservableObject {
             items = newValue
             canRequest = true
         }
-    }
-
-    private var requests: Set<GCKRequestID> = [] {
-        didSet {
-            guard !oldValue.isEmpty, requests.isEmpty else { return }
-            nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
-        }
-    }
-
-    private var isRequesting: Bool {
-        !requests.isEmpty
     }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
@@ -242,15 +232,12 @@ private extension CastQueue {
                 if let associatedWith {
                     let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
                     let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
-                    let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
-                    requests.insert(request.requestID)
-                    request.delegate = self
+                    remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
                 }
                 else {
-                    let request = remoteMediaClient.queueRemoveItem(withID: element.id)
-                    requests.insert(request.requestID)
-                    request.delegate = self
+                    remoteMediaClient.queueRemoveItem(withID: element.id)
                 }
+                isRequesting = true
             }
         }
     }
@@ -265,7 +252,7 @@ extension CastQueue: CastCurrentDelegate {
 extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        guard !isRequesting else { return }
+        isRequesting = false
         nonRequestedItems = Self.items(from: queue)
     }
 
@@ -285,22 +272,5 @@ extension CastQueue: GCKMediaQueueDelegate {
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         guard !isRequesting else { return }
         nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
-    }
-}
-
-extension CastQueue: GCKRequestDelegate {
-    // swiftlint:disable:next missing_docs
-    public func requestDidComplete(_ request: GCKRequest) {
-        requests.remove(request.requestID)
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        requests.remove(request.requestID)
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        requests.remove(request.requestID)
     }
 }
