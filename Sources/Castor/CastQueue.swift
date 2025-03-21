@@ -20,9 +20,20 @@ public final class CastQueue: NSObject, ObservableObject {
     }
 
     /// The current item.
-    @Published public var currentItem: CastPlayerItem?
+    @Published public var currentItem: CastPlayerItem? {
+        didSet {
+            if let currentItem {
+                guard currentItem != oldValue else { return }
+                current.jump(to: currentItem.id)
+            }
+            else {
+                remoteMediaClient.stop()
+            }
+        }
+    }
 
     private var canRequest = true
+    private let current: CastCurrent
 
     private var nonRequestedItems: [CastPlayerItem] {
         get {
@@ -48,7 +59,9 @@ public final class CastQueue: NSObject, ObservableObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
+        self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
+        self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
     }
 }
@@ -172,6 +185,12 @@ private extension CastQueue {
                 }
             }
         }
+    }
+}
+
+extension CastQueue: CastCurrentDelegate {
+    func didUpdate(item: CastPlayerItem?) {
+        currentItem = item
     }
 }
 
