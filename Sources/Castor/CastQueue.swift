@@ -167,7 +167,7 @@ public extension CastQueue {
     /// Returns to the previous item in the queue.
     func returnToPreviousItem() {
         guard canReturnToPreviousItem(), let currentItem, let previousIndex = Self.index(before: currentItem, in: items) else { return }
-        self.currentItem = items[previousIndex]
+        publishedCurrentItem = items[previousIndex]
     }
 
     /// Checks whether moving to the next item in the queue is possible.
@@ -180,7 +180,7 @@ public extension CastQueue {
     /// Moves to the next item in the queue.
     func advanceToNextItem() {
         guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
-        self.currentItem = items[nextIndex]
+        publishedCurrentItem = items[nextIndex]
     }
 }
 
