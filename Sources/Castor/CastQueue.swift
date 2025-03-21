@@ -24,7 +24,7 @@ public final class CastQueue: NSObject, ObservableObject {
     /// Stops playback if set to `nil`.
     ///
     /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
-    @Published public var currentItem: CastPlayerItem? {
+    public var currentItem: CastPlayerItem? {
         didSet {
             if let currentItem {
                 guard currentItem != oldValue else { return }
@@ -249,6 +249,7 @@ private extension CastQueue {
 extension CastQueue: CastCurrentDelegate {
     func didUpdate(item: CastPlayerItem?) {
         currentItem = item
+        objectWillChange.send()
     }
 }
 
