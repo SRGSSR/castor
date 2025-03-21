@@ -44,7 +44,9 @@ extension CastCurrent: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if let mediaStatus {
             if let pendingRequestItemId {
-                if mediaStatus.currentItemID == pendingRequestItemId {
+                let isPendingItemReached = mediaStatus.currentItemID == pendingRequestItemId
+                let isPendingItemMissing = client.mediaQueue.indexOfItem(withID: pendingRequestItemId) == NSNotFound
+                if isPendingItemReached || isPendingItemMissing {
                     delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID))
                     self.pendingRequestItemId = nil
                 }
