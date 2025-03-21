@@ -10,6 +10,8 @@ protocol CastCurrentDelegate: AnyObject {
     func didUpdate(item: CastPlayerItem?)
 }
 
+/// This class is a workaround to avoid cast session instabilities when jumps are performed in quick succession.
+/// It should ideally be removed if jumps are made reliable at the Google Cast SDK level directly.
 final class CastCurrent: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
