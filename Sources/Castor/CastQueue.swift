@@ -20,6 +20,10 @@ public final class CastQueue: NSObject, ObservableObject {
     }
 
     /// The current item.
+    ///
+    /// Stops playback if set to `nil`.
+    ///
+    /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
     @Published public var currentItem: CastPlayerItem? {
         didSet {
             if let currentItem {
@@ -29,6 +33,17 @@ public final class CastQueue: NSObject, ObservableObject {
             else {
                 remoteMediaClient.stop()
             }
+        }
+    }
+
+    /// A binding to the current item, for use as `List` selection.
+    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentItem instead")
+    public var currentItemSelection: Binding<CastPlayerItem?> {
+        .init { [weak self] in
+            self?.currentItem
+        } set: { [weak self] item in
+            guard let self, let item else { return }
+            currentItem = item
         }
     }
 
