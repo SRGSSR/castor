@@ -177,14 +177,45 @@ private struct CastQueueView: View {
     var body: some View {
         VStack(spacing: 0) {
             toolbar()
-            List($queue.items, id: \.self, editActions: .all) { item in
-                CastQueueCell(item: item.wrappedValue)
-            }
-            .animation(.linear, value: queue.items)
+            list()
         }
     }
 
+    private func list() -> some View {
+        ZStack {
+            if !queue.items.isEmpty {
+                List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { item in
+                    CastQueueCell(item: item.wrappedValue)
+                }
+            }
+            else {
+                ContentUnavailableView {
+                    Text("No items")
+                }
+            }
+        }
+        .animation(.linear, value: queue.items)
+    }
+
     private func toolbar() -> some View {
+        HStack {
+            previousButton()
+            Spacer()
+            managementButtons()
+            Spacer()
+            nextButton()
+        }
+        .padding()
+    }
+
+    private func previousButton() -> some View {
+        Button(action: queue.returnToPreviousItem) {
+            Image(systemName: "arrow.left")
+        }
+        .disabled(!queue.canReturnToPreviousItem())
+    }
+
+    private func managementButtons() -> some View {
         HStack(spacing: 30) {
             Button(action: shuffle) {
                 Image(systemName: "shuffle")
@@ -197,6 +228,13 @@ private struct CastQueueView: View {
             .disabled(queue.isEmpty)
         }
         .padding()
+    }
+
+    private func nextButton() -> some View {
+        Button(action: queue.advanceToNextItem) {
+            Image(systemName: "arrow.right")
+        }
+        .disabled(!queue.canAdvanceToNextItem())
     }
 
     private func shuffle() {

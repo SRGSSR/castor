@@ -19,7 +19,46 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
+    /// The current item.
+    ///
+    /// Stops playback if set to `nil`.
+    ///
+    /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
+    public var currentItem: CastPlayerItem? {
+        didSet {
+            if let currentItem {
+                guard currentItem != oldValue else { return }
+                current.jump(to: currentItem.id)
+            }
+            else {
+                remoteMediaClient.stop()
+            }
+        }
+    }
+
+    private var publishedCurrentItem: CastPlayerItem? {
+        get {
+            currentItem
+        }
+        set {
+            currentItem = newValue
+            objectWillChange.send()
+        }
+    }
+
+    /// A binding to the current item, for use as `List` selection.
+    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentItem instead")
+    public var currentItemSelection: Binding<CastPlayerItem?> {
+        .init { [weak self] in
+            self?.currentItem
+        } set: { [weak self] item in
+            guard let self, let item else { return }
+            currentItem = item
+        }
+    }
+
     private var canRequest = true
+    private let current: CastCurrent
 
     private var nonRequestedItems: [CastPlayerItem] {
         get {
@@ -45,7 +84,9 @@ public final class CastQueue: NSObject, ObservableObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
+        self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
+        self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
     }
 }
@@ -115,6 +156,34 @@ public extension CastQueue {
     }
 }
 
+public extension CastQueue {
+    /// Checks whether returning to the previous item in the queue is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canReturnToPreviousItem() -> Bool {
+        !items.isEmpty && currentItem?.id != items.first?.id
+    }
+
+    /// Returns to the previous item in the queue.
+    func returnToPreviousItem() {
+        guard canReturnToPreviousItem(), let currentItem, let previousIndex = Self.index(before: currentItem, in: items) else { return }
+        publishedCurrentItem = items[previousIndex]
+    }
+
+    /// Checks whether moving to the next item in the queue is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canAdvanceToNextItem() -> Bool {
+        !items.isEmpty && currentItem?.id != items.last?.id
+    }
+
+    /// Moves to the next item in the queue.
+    func advanceToNextItem() {
+        guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
+        publishedCurrentItem = items[nextIndex]
+    }
+}
+
 private extension CastQueue {
     func canMove(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
         guard items.contains(item) else { return false }
@@ -138,6 +207,21 @@ private extension CastQueue {
         else {
             return items.last != item
         }
+    }
+}
+
+private extension CastQueue {
+    static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
+        guard let itemIndex = items.firstIndex(of: item) else { return nil }
+        let nextIndex = items.index(after: itemIndex)
+        return (nextIndex < items.endIndex) ? nextIndex : nil
+    }
+
+    static func index(before item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
+        guard let itemIndex = items.firstIndex(of: item), itemIndex > items.startIndex else {
+            return nil
+        }
+        return items.index(before: itemIndex)
     }
 }
 
@@ -169,6 +253,12 @@ private extension CastQueue {
                 }
             }
         }
+    }
+}
+
+extension CastQueue: CastCurrentDelegate {
+    func didUpdate(item: CastPlayerItem?) {
+        publishedCurrentItem = item
     }
 }
 
