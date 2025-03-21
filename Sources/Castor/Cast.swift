@@ -26,7 +26,7 @@ public final class Cast: NSObject, ObservableObject {
     /// Ends the session if set to `nil`.
     ///
     /// > Important: On iOS 18.3 and below use `currentDeviceSelection` to manage selection in a `List`.
-    @Published public var currentDevice: CastDevice? {
+    public var currentDevice: CastDevice? {
         didSet {
             if let currentDevice {
                 moveSession(from: oldValue, to: currentDevice)
@@ -34,6 +34,16 @@ public final class Cast: NSObject, ObservableObject {
             else {
                 endSession()
             }
+        }
+    }
+
+    private var publishedCurrentDevice: CastDevice? {
+        get {
+            currentDevice
+        }
+        set {
+            currentDevice = newValue
+            objectWillChange.send()
         }
     }
 
@@ -122,7 +132,7 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session
-        currentDevice = session.device.toCastDevice()
+        publishedCurrentDevice = session.device.toCastDevice()
     }
 
     // swiftlint:disable:next missing_docs
@@ -152,7 +162,7 @@ extension Cast: GCKSessionManagerListener {
             self.targetDevice = nil
         }
         else {
-            currentDevice = nil
+            publishedCurrentDevice = nil
         }
     }
 
@@ -163,7 +173,7 @@ extension Cast: GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-        currentDevice = nil
+        publishedCurrentDevice = nil
     }
 }
 
