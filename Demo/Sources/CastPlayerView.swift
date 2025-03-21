@@ -185,6 +185,24 @@ private struct CastQueueView: View {
     }
 
     private func toolbar() -> some View {
+        HStack {
+            previousButton()
+            Spacer()
+            managementButtons()
+            Spacer()
+            nextButton()
+        }
+        .padding()
+    }
+
+    private func previousButton() -> some View {
+        Button(action: queue.returnToPreviousItem) {
+            Image(systemName: "arrow.left")
+        }
+        .disabled(!queue.canReturnToPreviousItem())
+    }
+
+    private func managementButtons() -> some View {
         HStack(spacing: 30) {
             Button(action: shuffle) {
                 Image(systemName: "shuffle")
@@ -197,6 +215,13 @@ private struct CastQueueView: View {
             .disabled(queue.isEmpty)
         }
         .padding()
+    }
+
+    private func nextButton() -> some View {
+        Button(action: queue.advanceToNextItem) {
+            Image(systemName: "arrow.right")
+        }
+        .disabled(!queue.canAdvanceToNextItem())
     }
 
     private func shuffle() {
