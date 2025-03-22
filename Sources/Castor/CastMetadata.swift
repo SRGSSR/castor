@@ -8,13 +8,18 @@ import GoogleCast
 
 /// Metadata associated to an item.
 public struct CastMetadata {
-    let rawMetadata: GCKMediaMetadata
+    let rawMetadata: GCKMediaMetadata?
+
+    /// The content title.
+    public var title: String? {
+        rawMetadata?.string(forKey: kGCKMetadataKeyTitle)
+    }
 
     /// Creates metadata.
     ///
     /// - Parameter title: The content title.
     public init(title: String?, imageUrl: URL?) {
-        rawMetadata = GCKMediaMetadata()
+        let rawMetadata = GCKMediaMetadata()
         if let title {
             rawMetadata.setString(title, forKey: kGCKMetadataKeyTitle)
         }
@@ -22,9 +27,10 @@ public struct CastMetadata {
             rawMetadata.removeAllMediaImages()
             rawMetadata.addImage(.init(url: imageUrl, width: 0, height: 0))
         }
+        self.init(rawMetadata: rawMetadata)
     }
 
-    public var title: String? {
-        rawMetadata.string(forKey: kGCKMetadataKeyTitle)
+    init(rawMetadata: GCKMediaMetadata?) {
+        self.rawMetadata = rawMetadata
     }
 }

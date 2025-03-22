@@ -185,7 +185,7 @@ private struct CastQueueView: View {
         ZStack {
             if !queue.items.isEmpty {
                 List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { item in
-                    CastQueueCell(metadata: queue.metadata(for: item.wrappedValue))
+                    CastQueueCell(metadata: queue.metadata(for: item.wrappedValue), id: item.wrappedValue.id)
                         .onAppear {
                             queue.fetch(item.wrappedValue)
                         }
@@ -247,9 +247,10 @@ private struct CastQueueView: View {
 
 private struct CastQueueCell: View {
     let metadata: CastMetadata?
+    let id: GCKMediaQueueItemID
 
     var body: some View {
-        Text(metadata?.title ?? "-")
+        LabeledContent("\(id)", value: metadata?.title ?? "-")
     }
 }
 

@@ -10,6 +10,7 @@ import SwiftUI
 /// A queue managing player items.
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
+    private var metadataCache: [GCKMediaQueueItemID: CastMetadata] = [:]
 
     /// The items in the queue.
     @Published public var items: [CastPlayerItem] = [] {
@@ -112,22 +113,34 @@ public extension CastQueue {
 
 public extension CastQueue {
     /// Loads assets.
-    func load(assets: [CastAsset]) {
+    func loadItems(from assets: [CastAsset]) {
     }
 
     /// Loads assets.
     @discardableResult
-    func load(assets: [CastAsset], before beforeItem: CastPlayerItem?) -> Bool {
+    func loadItems(from assets: [CastAsset], before beforeItem: CastPlayerItem?) -> Bool {
         false
     }
 }
 
 public extension CastQueue {
     func fetch(_ item: CastPlayerItem) {
+        guard metadata(for: item) == nil else { return }
+        remoteMediaClient.mediaQueue.item(withID: item.id)
     }
 
     func metadata(for item: CastPlayerItem) -> CastMetadata? {
-        return nil
+        if let metadata = metadataCache[item.id] {
+            return metadata
+        }
+        else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
+            let metadata = CastMetadata(rawMetadata: rawItem.mediaInformation.metadata)
+            metadataCache[item.id] = metadata
+            return metadata
+        }
+        else {
+            return nil
+        }
     }
 }
 
@@ -306,6 +319,11 @@ extension CastQueue: GCKMediaQueueDelegate {
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         guard !isRequesting else { return }
         nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+    }
+
+    // swiftlint:disable:next legacy_objc_type missing_docs
+    public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
+        objectWillChange.send()
     }
 }
 
