@@ -111,6 +111,18 @@ public extension CastQueue {
 }
 
 public extension CastQueue {
+    /// Loads assets.
+    func load(assets: [CastAsset]) {
+    }
+
+    /// Loads assets.
+    @discardableResult
+    func load(assets: [CastAsset], before beforeItem: CastPlayerItem?) -> Bool {
+        false
+    }
+}
+
+public extension CastQueue {
     /// Moves an item before another one.
     ///
     /// - Parameters:
