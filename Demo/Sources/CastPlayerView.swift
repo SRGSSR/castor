@@ -185,7 +185,10 @@ private struct CastQueueView: View {
         ZStack {
             if !queue.items.isEmpty {
                 List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { item in
-                    CastQueueCell(item: item.wrappedValue)
+                    CastQueueCell(metadata: queue.metadata(for: item.wrappedValue))
+                        .onAppear {
+                            queue.fetch(item.wrappedValue)
+                        }
                 }
             }
             else {
@@ -243,11 +246,10 @@ private struct CastQueueView: View {
 }
 
 private struct CastQueueCell: View {
-    let item: CastPlayerItem
+    let metadata: CastMetadata?
 
     var body: some View {
-        Text(item.title ?? String(repeating: " ", count: .random(in: 20...40)))
-            .redacted(reason: item.title == nil ? .placeholder : [])
+        Text(metadata?.title ?? "-")
     }
 }
 

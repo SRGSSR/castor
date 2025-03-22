@@ -23,4 +23,8 @@ public struct CastMetadata {
             rawMetadata.addImage(.init(url: imageUrl, width: 0, height: 0))
         }
     }
+
+    public var title: String? {
+        rawMetadata.string(forKey: kGCKMetadataKeyTitle)
+    }
 }

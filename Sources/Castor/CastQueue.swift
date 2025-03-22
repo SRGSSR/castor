@@ -123,6 +123,15 @@ public extension CastQueue {
 }
 
 public extension CastQueue {
+    func fetch(_ item: CastPlayerItem) {
+    }
+
+    func metadata(for item: CastPlayerItem) -> CastMetadata? {
+        return nil
+    }
+}
+
+public extension CastQueue {
     /// Moves an item before another one.
     ///
     /// - Parameters:
