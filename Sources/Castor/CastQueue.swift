@@ -266,9 +266,15 @@ private extension CastQueue {
             case let .remove(offset: offset, element: element, associatedWith: associatedWith):
                 if let associatedWith {
                     let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
-                    let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
-                    let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
-                    request.delegate = self
+                    if (0..<previousItems.count).contains(beforeIndex) {
+                        let beforeId = previousItems[beforeIndex].id
+                        let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
+                        request.delegate = self
+                    }
+                    else {
+                        let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: kGCKMediaQueueInvalidItemID)
+                        request.delegate = self
+                    }
                 }
                 else {
                     let request = remoteMediaClient.queueRemoveItem(withID: element.id)
@@ -323,6 +329,7 @@ extension CastQueue: GCKMediaQueueDelegate {
 extension CastQueue: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
+        print("--> did complete")
         isRequesting = false
         nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
     }
