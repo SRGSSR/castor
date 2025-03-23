@@ -116,22 +116,23 @@ public extension CastQueue {
 
 public extension CastQueue {
     func fetch(_ item: CastPlayerItem) {
-        guard metadata(for: item) == nil else { return }
-        remoteMediaClient.mediaQueue.item(withID: item.id)
+        //guard metadata(for: item) == nil else { return }
+        //remoteMediaClient.mediaQueue.item(withID: item.id)
     }
 
     func metadata(for item: CastPlayerItem) -> CastMetadata? {
-        if let metadata = metadataCache[item.id] {
-            return metadata
-        }
-        else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
-            let metadata = CastMetadata(rawMetadata: rawItem.mediaInformation.metadata)
-            metadataCache[item.id] = metadata
-            return metadata
-        }
-        else {
-            return nil
-        }
+        nil
+//        if let metadata = metadataCache[item.id] {
+//            return metadata
+//        }
+//        else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
+//            let metadata = CastMetadata(rawMetadata: rawItem.mediaInformation.metadata)
+//            metadataCache[item.id] = metadata
+//            return metadata
+//        }
+//        else {
+//            return nil
+//        }
     }
 }
 
@@ -259,6 +260,9 @@ private extension CastQueue {
 
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
         let changes = currentItems.difference(from: previousItems).inferringMoves()
+        // TODO: Incorrect. Because we are moving items (and not inserting / removing individually) the result is
+        //       not the same, which explains why the update is a two-step process (we receive a final update but
+        //       we should not if no other sender has changed anything).
         changes.forEach { change in
             switch change {
             case .insert:
@@ -331,6 +335,6 @@ extension CastQueue: GCKRequestDelegate {
     public func requestDidComplete(_ request: GCKRequest) {
         print("--> did complete")
         isRequesting = false
-        nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
+        //nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
     }
 }
