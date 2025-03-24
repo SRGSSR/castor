@@ -15,46 +15,48 @@ enum Operation: Equatable {
 @Test
 func operations_empty() {
     let initial: [Character] = []
-    let final: [Character] = []
+    let target: [Character] = []
 
-    #expect(operations(initial: initial, final: final) == [])
+    #expect(operations(initial: initial, target: target) == [])
 }
 
 @Test
 func operations_identical() {
     let initial: [Character] = ["A", "B", "C", "D"]
-    let final: [Character] = ["A", "B", "C", "D"]
+    let target: [Character] = ["A", "B", "C", "D"]
 
-    #expect(operations(initial: initial, final: final) == [
-        .move("A", nil),
-        .move("B", nil),
-        .move("C", nil),
-        .move("D", nil),
+    #expect(operations(initial: initial, target: target) == [])
+}
+
+@Test
+func operations_not_identical_1() {
+    let initial: [Character] = ["A", "B", "C", "D"]
+    let target: [Character] = ["D", "B", "A", "C"]
+
+    #expect(operations(initial: initial, target: target) == [
+        .move("D", "A"),
+        .move("B", "A"),
     ])
 }
 
 @Test
-func operations_not_identical() {
-    let initial: [Character] = ["A", "B", "C", "D"]
-    let final: [Character] = ["D", "B", "A", "C"]
+func operations_not_identical_2() {
+    let initial: [Character] = ["A", "B", "C", "D", "E"]
+    let target: [Character] = ["D", "B", "E", "A", "C"]
 
-    #expect(operations(initial: initial, final: final) == [
-        .move("A", nil),
+    #expect(operations(initial: initial, target: target) == [
+        .move("D", "A"),
         .move("B", "A"),
-        .move("C", nil),
-        .move("D", "B"),
+        .move("E", "A"),
     ])
 }
 
 @Test
 func operations_remove_one() {
     let initial: [Character] = ["A", "B", "C", "D"]
-    let final: [Character] = ["A", "B", "C"]
+    let target: [Character] = ["A", "B", "C"]
 
-    #expect(operations(initial: initial, final: final) == [
-        .move("A", nil),
-        .move("B", nil),
-        .move("C", nil),
+    #expect(operations(initial: initial, target: target) == [
         .remove("D"),
     ])
 }
@@ -62,42 +64,45 @@ func operations_remove_one() {
 @Test
 func operations_remove_many() {
     let initial: [Character] = ["A", "B", "C", "D"]
-    let final: [Character] = ["A", "C"]
+    let target: [Character] = ["A", "C"]
 
-    #expect(operations(initial: initial, final: final) == [
-        .move("A", nil),
+    #expect(operations(initial: initial, target: target) == [
         .remove("B"),
-        .move("C", nil),
         .remove("D"),
     ])
 }
 
-func operations(initial: [Character], final: [Character]) -> [Operation] {
-    var result: [Character] = []
+func operations(initial: [Character], target: [Character]) -> [Operation] {
     var operations: [Operation] = []
+    var final: [Character] = initial
 
-    for char in initial {
-        if !final.contains(char) {
-            operations.append(.remove(char))
-        }
-        else if result.isEmpty {
-            result.append(char)
-            operations.append(.move(char, nil))
-        }
-        else {
-            let insertIndex = result.firstIndex { resultChar in
-                final.firstIndex(of: char)! < final.firstIndex(of: resultChar)!
+    if initial == target {
+        return operations
+    }
+
+    if final.count != target.count {
+        final.removeAll { fChar in
+            let isRemoved = !target.contains(fChar)
+            if isRemoved {
+                operations.append(.remove(fChar))
             }
-            if let insertIndex {
-                result.insert(char, at: insertIndex)
-                operations.append(.move(char, result[insertIndex + 1]))
-            }
-            else {
-                result.append(char)
-                operations.append(.move(char, nil))
-            }
+            return isRemoved
         }
     }
 
+    for (tIndex, tChar) in target.enumerated() {
+        let isTargetCharAtTheRightPlace = final[tIndex] == target[tIndex]
+        if isTargetCharAtTheRightPlace {
+            continue
+        }
+        else {
+            if let indexOfTargetCharInFinal = final.firstIndex(of: tChar) {
+                final.remove(at: indexOfTargetCharInFinal)
+                final.insert(tChar, at: tIndex)
+                let before = tIndex + 1 < final.count ? final[tIndex + 1] : nil
+                operations.append(.move(tChar, before))
+            }
+        }
+    }
     return operations
 }
