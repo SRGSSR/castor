@@ -335,6 +335,6 @@ extension CastQueue: GCKRequestDelegate {
     public func requestDidComplete(_ request: GCKRequest) {
         print("--> did complete")
         isRequesting = false
-        //nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
+        nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
     }
 }
