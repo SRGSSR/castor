@@ -7,9 +7,9 @@
 import Foundation
 import Testing
 
-enum Operation<Item>: Equatable where Item: Equatable {
-    case move(_ char: Item, _ before: Item?)
-    case remove(_ char: Item)
+enum Operation: Equatable {
+    case move(_ char: Character, _ before: Character?)
+    case remove(_ char: Character)
 }
 
 @Test
@@ -26,7 +26,7 @@ func operations_identical() {
     let final: [Character] = ["A", "B", "C", "D"]
 
     #expect(operations(initial: initial, final: final) == [
-        Operation.move("A", nil),
+        .move("A", nil),
         .move("B", nil),
         .move("C", nil),
         .move("D", nil),
@@ -39,7 +39,7 @@ func operations_not_identical() {
     let final: [Character] = ["D", "B", "A", "C"]
 
     #expect(operations(initial: initial, final: final) == [
-        Operation.move("A", nil),
+        .move("A", nil),
         .move("B", "A"),
         .move("C", nil),
         .move("D", "B"),
@@ -52,7 +52,7 @@ func operations_remove_one() {
     let final: [Character] = ["A", "B", "C"]
 
     #expect(operations(initial: initial, final: final) == [
-        Operation.move("A", nil),
+        .move("A", nil),
         .move("B", nil),
         .move("C", nil),
         .remove("D"),
@@ -65,16 +65,16 @@ func operations_remove_many() {
     let final: [Character] = ["A", "C"]
 
     #expect(operations(initial: initial, final: final) == [
-        Operation.move("A", nil),
+        .move("A", nil),
         .remove("B"),
         .move("C", nil),
         .remove("D"),
     ])
 }
 
-func operations<Item>(initial: [Item], final: [Item]) -> [Operation<Item>] where Item: Equatable {
-    var result: [Item] = []
-    var operations: [Operation<Item>] = []
+func operations(initial: [Character], final: [Character]) -> [Operation] {
+    var result: [Character] = []
+    var operations: [Operation] = []
 
     for char in initial {
         if !final.contains(char) {
