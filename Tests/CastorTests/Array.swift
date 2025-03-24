@@ -52,6 +52,40 @@ func operations_not_identical_2() {
 }
 
 @Test
+func operations_not_identical_3() {
+    let initial: [Character] = ["A", "B", "C", "D", "E"]
+    let target: [Character] = ["E", "C", "A", "B", "D"]
+
+    #expect(operations(initial: initial, target: target) == [
+        .move("E", "A"),
+        .move("C", "A"),
+    ])
+}
+
+@Test
+func operations_not_identical_4() {
+    let initial: [Character] = ["A", "B", "C", "D", "E"]
+    let target: [Character] = ["B", "D", "A", "C", "E"]
+
+    #expect(operations(initial: initial, target: target) == [
+        .move("B", "A"),
+        .move("D", "A"),
+    ])
+}
+
+@Test
+func operations_not_identical_and_remove() {
+    let initial: [Character] = ["A", "B", "C", "D", "E"]
+    let target: [Character] = ["D", "E", "A", "C"]
+
+    #expect(operations(initial: initial, target: target) == [
+        .remove("B"),
+        .move("D", "A"),
+        .move("E", "A"),
+    ])
+}
+
+@Test
 func operations_remove_one() {
     let initial: [Character] = ["A", "B", "C", "D"]
     let target: [Character] = ["A", "B", "C"]
