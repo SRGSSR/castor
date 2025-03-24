@@ -5,8 +5,8 @@
 //
 
 enum Operation<Item>: Equatable where Item: Equatable {
-    case move(_ char: Item, _ before: Item?)
-    case remove(_ char: Item)
+    case move(item: Item, before: Item?)
+    case remove(item: Item)
 
     // swiftlint:disable:next cyclomatic_complexity
     static func transactions(initial: [Item], target: [Item]) -> [Self] {
@@ -21,7 +21,7 @@ enum Operation<Item>: Equatable where Item: Equatable {
             final.removeAll { fChar in
                 let isRemoved = !target.contains(fChar)
                 if isRemoved {
-                    operations.append(.remove(fChar))
+                    operations.append(.remove(item: fChar))
                 }
                 return isRemoved
             }
@@ -37,7 +37,7 @@ enum Operation<Item>: Equatable where Item: Equatable {
                     final.remove(at: indexOfTargetCharInFinal)
                     final.insert(tChar, at: tIndex)
                     let before = tIndex + 1 < final.count ? final[tIndex + 1] : nil
-                    operations.append(.move(tChar, before))
+                    operations.append(.move(item: tChar, before: before))
                 }
             }
         }

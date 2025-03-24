@@ -31,8 +31,8 @@ func operations_not_identical_1() {
     let target: [Character] = ["D", "B", "A", "C"]
 
     #expect(Operation.transactions(initial: initial, target: target) == [
-        .move("D", "A"),
-        .move("B", "A")
+        .move(item: "D", before: "A"),
+        .move(item: "B", before: "A")
     ])
 }
 
@@ -42,9 +42,9 @@ func operations_not_identical_2() {
     let target: [Character] = ["D", "B", "E", "A", "C"]
 
     #expect(Operation.transactions(initial: initial, target: target) == [
-        .move("D", "A"),
-        .move("B", "A"),
-        .move("E", "A")
+        .move(item: "D", before: "A"),
+        .move(item: "B", before: "A"),
+        .move(item: "E", before: "A")
     ])
 }
 
@@ -54,8 +54,8 @@ func operations_not_identical_3() {
     let target: [Character] = ["E", "C", "A", "B", "D"]
 
     #expect(Operation.transactions(initial: initial, target: target) == [
-        .move("E", "A"),
-        .move("C", "A")
+        .move(item: "E", before: "A"),
+        .move(item: "C", before: "A")
     ])
 }
 
@@ -65,8 +65,8 @@ func operations_not_identical_4() {
     let target: [Character] = ["B", "D", "A", "C", "E"]
 
     #expect(Operation.transactions(initial: initial, target: target) == [
-        .move("B", "A"),
-        .move("D", "A")
+        .move(item: "B", before: "A"),
+        .move(item: "D", before: "A")
     ])
 }
 
@@ -76,9 +76,9 @@ func operations_not_identical_and_remove() {
     let target: [Character] = ["D", "E", "A", "C"]
 
     #expect(Operation.transactions(initial: initial, target: target) == [
-        .remove("B"),
-        .move("D", "A"),
-        .move("E", "A")
+        .remove(item: "B"),
+        .move(item: "D", before: "A"),
+        .move(item: "E", before: "A")
     ])
 }
 
@@ -88,7 +88,7 @@ func operations_remove_one() {
     let target: [Character] = ["A", "B", "C"]
 
     #expect(Operation.transactions(initial: initial, target: target) == [
-        .remove("D")
+        .remove(item: "D")
     ])
 }
 
@@ -98,7 +98,7 @@ func operations_remove_many() {
     let target: [Character] = ["A", "C"]
 
     #expect(Operation.transactions(initial: initial, target: target) == [
-        .remove("B"),
-        .remove("D")
+        .remove(item: "B"),
+        .remove(item: "D")
     ])
 }
