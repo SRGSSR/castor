@@ -259,31 +259,17 @@ private extension CastQueue {
     }
 
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
-        let changes = currentItems.difference(from: previousItems).inferringMoves()
-        // TODO: Incorrect. Because we are moving items (and not inserting / removing individually) the result is
-        //       not the same, which explains why the update is a two-step process (we receive a final update but
-        //       we should not if no other sender has changed anything).
-        changes.forEach { change in
-            switch change {
-            case .insert:
-                break
-            case let .remove(offset: offset, element: element, associatedWith: associatedWith):
-                if let associatedWith {
-                    let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
-                    if (0..<previousItems.count).contains(beforeIndex) {
-                        let beforeId = previousItems[beforeIndex].id
-                        let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
-                        request.delegate = self
-                    }
-                    else {
-                        let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: kGCKMediaQueueInvalidItemID)
-                        request.delegate = self
-                    }
-                }
-                else {
-                    let request = remoteMediaClient.queueRemoveItem(withID: element.id)
-                    request.delegate = self
-                }
+        currentItems.mutations(from: previousItems).forEach { mutation in
+            switch mutation {
+            case let .move(element, before):
+                let request = remoteMediaClient.queueMoveItem(
+                    withID: element.id,
+                    beforeItemWithID: before?.id ?? kGCKMediaQueueInvalidItemID
+                )
+                request.delegate = self
+            case let .remove(element):
+                let request = remoteMediaClient.queueRemoveItem(withID: element.id)
+                request.delegate = self
             }
         }
         isRequesting = true
