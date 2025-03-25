@@ -49,6 +49,7 @@ public final class CastQueue: NSObject, ObservableObject {
             currentItem
         }
         set {
+            guard currentItem != newValue else { return }
             currentItem = newValue
             objectWillChange.send()
         }
@@ -268,7 +269,7 @@ private extension CastQueue {
 
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
         // Avoid issues when emptying the whole playlist (some request might never finish on senders).
-        if currentItems.isEmpty {
+        guard !currentItems.isEmpty else {
             remoteMediaClient.stop()
             return
         }

@@ -28,6 +28,7 @@ final class CastCurrent: NSObject {
     }
 
     func jump(to itemId: GCKMediaQueueItemID) {
+        guard remoteMediaClient.mediaStatus?.currentItemID != itemId else { return }
         if request == nil {
             request = jumpRequest(to: itemId)
         }
