@@ -41,17 +41,9 @@ public final class CastQueue: NSObject, ObservableObject {
             else {
                 remoteMediaClient.stop()
             }
-        }
-    }
-
-    private var publishedCurrentItem: CastPlayerItem? {
-        get {
-            currentItem
-        }
-        set {
-            guard currentItem != newValue else { return }
-            currentItem = newValue
-            objectWillChange.send()
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
+            }
         }
     }
 
@@ -202,7 +194,7 @@ public extension CastQueue {
     /// Returns to the previous item in the queue.
     func returnToPreviousItem() {
         guard canReturnToPreviousItem(), let currentItem, let previousIndex = Self.index(before: currentItem, in: items) else { return }
-        publishedCurrentItem = items[previousIndex]
+        self.currentItem = items[previousIndex]
     }
 
     /// Checks whether moving to the next item in the queue is possible.
@@ -215,7 +207,7 @@ public extension CastQueue {
     /// Moves to the next item in the queue.
     func advanceToNextItem() {
         guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
-        publishedCurrentItem = items[nextIndex]
+        self.currentItem = items[nextIndex]
     }
 }
 
@@ -294,7 +286,7 @@ private extension CastQueue {
 
 extension CastQueue: CastCurrentDelegate {
     func didUpdate(item: CastPlayerItem?) {
-        publishedCurrentItem = item
+        self.currentItem = item
     }
 }
 
