@@ -18,6 +18,7 @@ final class CastCurrent: NSObject {
     private weak var request: GCKRequest?
     private var requestItemId: GCKMediaQueueItemID?
     private var pendingRequestItemId: GCKMediaQueueItemID?
+    private var mediaStatus: GCKMediaStatus?
 
     weak var delegate: CastCurrentDelegate?
 
@@ -28,7 +29,7 @@ final class CastCurrent: NSObject {
     }
 
     func jump(to itemId: GCKMediaQueueItemID) {
-        guard remoteMediaClient.mediaStatus?.currentItemID != itemId else { return }
+        guard mediaStatus?.currentItemID != itemId else { return }
         if request == nil {
             request = jumpRequest(to: itemId)
         }
@@ -45,6 +46,7 @@ final class CastCurrent: NSObject {
 
 extension CastCurrent: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        self.mediaStatus = mediaStatus
         if let mediaStatus {
             if let pendingRequestItemId {
                 let isPendingItemReached = mediaStatus.currentItemID == pendingRequestItemId
