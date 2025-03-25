@@ -116,23 +116,22 @@ public extension CastQueue {
 
 public extension CastQueue {
     func fetch(_ item: CastPlayerItem) {
-        //guard metadata(for: item) == nil else { return }
-        //remoteMediaClient.mediaQueue.item(withID: item.id)
+        guard metadata(for: item) == nil else { return }
+        remoteMediaClient.mediaQueue.item(withID: item.id)
     }
 
     func metadata(for item: CastPlayerItem) -> CastMetadata? {
-        nil
-//        if let metadata = metadataCache[item.id] {
-//            return metadata
-//        }
-//        else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
-//            let metadata = CastMetadata(rawMetadata: rawItem.mediaInformation.metadata)
-//            metadataCache[item.id] = metadata
-//            return metadata
-//        }
-//        else {
-//            return nil
-//        }
+        if let metadata = metadataCache[item.id] {
+            return metadata
+        }
+        else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
+            let metadata = CastMetadata(rawMetadata: rawItem.mediaInformation.metadata)
+            metadataCache[item.id] = metadata
+            return metadata
+        }
+        else {
+            return nil
+        }
     }
 }
 
