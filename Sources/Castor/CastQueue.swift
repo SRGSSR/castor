@@ -306,9 +306,7 @@ extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         guard !isRequesting else { return }
-        nonRequestedItems = queue.itemIDs().map { id in
-            CastPlayerItem(id: id, queue: self)
-        }
+        nonRequestedItems = items(items, merging: queue)
     }
 
     // swiftlint:disable:next missing_docs
