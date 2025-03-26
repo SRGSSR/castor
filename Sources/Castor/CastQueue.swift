@@ -236,17 +236,20 @@ private extension CastQueue {
         let mutations = Mutation.mutations(from: previousItems, to: currentItems)
         requests += mutations.count
         mutations.forEach { mutation in
-            switch mutation {
-            case let .move(element, before):
-                let request = remoteMediaClient.queueMoveItem(
-                    withID: element.id,
-                    beforeItemWithID: before?.id ?? kGCKMediaQueueInvalidItemID
-                )
-                request.delegate = self
-            case let .remove(element):
-                let request = remoteMediaClient.queueRemoveItem(withID: element.id)
-                request.delegate = self
-            }
+            let request = request(for: mutation)
+            request.delegate = self
+        }
+    }
+
+    private func request(for mutation: Mutation<CastPlayerItem>) -> GCKRequest {
+        switch mutation {
+        case let .move(element, before):
+            remoteMediaClient.queueMoveItem(
+                withID: element.id,
+                beforeItemWithID: before?.id ?? kGCKMediaQueueInvalidItemID
+            )
+        case let .remove(element):
+            remoteMediaClient.queueRemoveItem(withID: element.id)
         }
     }
 }
