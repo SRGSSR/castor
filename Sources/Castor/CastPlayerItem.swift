@@ -11,11 +11,6 @@ public struct CastPlayerItem: Hashable {
     /// The id.
     public let id: GCKMediaQueueItemID
 
-    /// The content title.
-    public var title: String? {
-        "\(id)"
-    }
-
     init(id: GCKMediaQueueItemID) {
         self.id = id
     }
