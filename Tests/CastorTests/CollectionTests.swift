@@ -8,7 +8,7 @@ import Testing
 
 @testable import Castor
 
-@Suite("Collection")
+@Suite
 struct CollectionTests {
     @Test
     func safe_index() {
