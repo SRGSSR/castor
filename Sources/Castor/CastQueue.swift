@@ -12,12 +12,19 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
+    private var currentItemId: GCKMediaQueueItemID? {
+        didSet {
+            try? currentItem = Self.item(withId: currentItemId, in: items)
+        }
+    }
+
     /// The items in the queue.
     ///
     /// > Warning: Avoid making significant changes to the item list by mutating this property, as each change will
     ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
+            try? currentItem = Self.item(withId: currentItemId, in: items)
             guard canRequest else { return }
             requestUpdates(from: oldValue, to: items)
         }
@@ -90,6 +97,16 @@ public final class CastQueue: NSObject, ObservableObject {
         super.init()
         self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
+    }
+
+    private static func item(withId id: GCKMediaQueueItemID?, in items: [CastPlayerItem]) throws -> CastPlayerItem? {
+        if let id {
+            guard let item = items.first(where: { $0.id == id }) else { throw CastError.notFound }
+            return item
+        }
+        else {
+            return nil
+        }
     }
 
     func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
@@ -292,13 +309,7 @@ private extension CastQueue {
 
 extension CastQueue: CastCurrentDelegate {
     func didUpdateItem(withId id: GCKMediaQueueItemID?) {
-        if let id {
-            guard let item = items.first(where: { $0.id == id }) else { return }
-            currentItem = item
-        }
-        else {
-            currentItem = nil
-        }
+        currentItemId = id
     }
 }
 
