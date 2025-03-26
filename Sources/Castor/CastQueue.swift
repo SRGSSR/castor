@@ -12,6 +12,9 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     /// The items in the queue.
+    ///
+    /// > Warning: Avoid making significant changes to the item list by mutating this property, as each change will
+    ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
             guard canRequest else { return }
