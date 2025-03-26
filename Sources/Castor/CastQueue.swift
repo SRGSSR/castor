@@ -10,6 +10,7 @@ import SwiftUI
 /// A queue managing player items.
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
+    private var metadataCache: [GCKMediaQueueItemID: CastMetadata] = [:]
 
     /// The items in the queue.
     ///
@@ -20,6 +21,11 @@ public final class CastQueue: NSObject, ObservableObject {
             guard canRequest else { return }
             requestUpdates(from: oldValue, to: items)
         }
+    }
+
+    /// A Boolean indicating if the queue is empty.
+    public var isEmpty: Bool {
+        items.isEmpty
     }
 
     /// The current item.
@@ -88,11 +94,6 @@ public final class CastQueue: NSObject, ObservableObject {
 }
 
 public extension CastQueue {
-    /// A Boolean indicating if the queue is empty.
-    var isEmpty: Bool {
-        items.isEmpty
-    }
-
     /// Removes an item from the queue.
     ///
     /// - Parameter item: The item to remove.
@@ -177,6 +178,27 @@ public extension CastQueue {
     func advanceToNextItem() {
         guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
         self.currentItem = items[nextIndex]
+    }
+}
+
+extension CastQueue {
+    func fetchMetadata(for item: CastPlayerItem) {
+        guard metadata(for: item) == nil else { return }
+        remoteMediaClient.mediaQueue.item(withID: item.id)
+    }
+
+    func metadata(for item: CastPlayerItem) -> CastMetadata? {
+        if let metadata = metadataCache[item.id] {
+            return metadata
+        }
+        else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
+            let metadata = CastMetadata(rawMetadata: rawItem.mediaInformation.metadata)
+            metadataCache[item.id] = metadata
+            return metadata
+        }
+        else {
+            return nil
+        }
     }
 }
 
@@ -286,6 +308,11 @@ extension CastQueue: GCKMediaQueueDelegate {
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         guard !isRequesting else { return }
         nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+    }
+
+    // swiftlint:disable:next legacy_objc_type missing_docs
+    public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
+        objectWillChange.send()
     }
 }
 
