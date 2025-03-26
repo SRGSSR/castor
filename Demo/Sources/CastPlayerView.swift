@@ -249,8 +249,13 @@ private struct CastQueueCell: View {
     let metadata: CastMetadata?
 
     var body: some View {
-        Text(metadata?.title ?? String(repeating: " ", count: .random(in: 20...40)))
+        Text(title)
             .redactedIfNil(metadata)
+    }
+
+    private var title: String {
+        guard let metadata else { return .placeholder(length: .random(in: 20...40)) }
+        return metadata.title ?? "-"
     }
 }
 
