@@ -19,4 +19,22 @@ public struct CastPlayerItem: Hashable {
     init(id: GCKMediaQueueItemID) {
         self.id = id
     }
+
+    /// Asynchronously fetches item metadata from the specified queue.
+    ///
+    /// - Parameter queue: The queue to retrieve metadata from.
+    ///
+    /// Fetching an item from a queue to which it does not belong leads to unexpected behavior.
+    public func fetchMetadata(from queue: CastQueue) {
+        queue.fetchMetadata(for: self)
+    }
+
+    /// Reads item metadata from the specified queue.
+    ///
+    /// - Parameter queue: The queue to retrieve metadata from.
+    ///
+    /// Reading metadata for an item from a queue to which it does not belong leads to unexpected behavior.
+    public func metadata(from queue: CastQueue) -> CastMetadata? {
+        queue.metadata(for: self)
+    }
 }
