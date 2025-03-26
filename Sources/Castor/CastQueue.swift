@@ -10,7 +10,7 @@ import SwiftUI
 /// A queue managing player items.
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private var metadataCache: [GCKMediaQueueItemID: CastMetadata] = [:]
+    private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
     /// The items in the queue.
     ///
@@ -182,19 +182,18 @@ public extension CastQueue {
 }
 
 extension CastQueue {
-    func fetchMetadata(for item: CastPlayerItem) {
-        guard metadata(for: item) == nil else { return }
+    func fetch(_ item: CastPlayerItem) {
+        guard rawItem(for: item) == nil else { return }
         remoteMediaClient.mediaQueue.item(withID: item.id)
     }
 
-    func metadata(for item: CastPlayerItem) -> CastMetadata? {
-        if let metadata = metadataCache[item.id] {
-            return metadata
+    func rawItem(for item: CastPlayerItem) -> GCKMediaQueueItem? {
+        if let rawItem = rawItemCache[item.id] {
+            return rawItem
         }
         else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
-            let metadata = CastMetadata(rawMetadata: rawItem.mediaInformation.metadata)
-            metadataCache[item.id] = metadata
-            return metadata
+            rawItemCache[item.id] = rawItem
+            return rawItem
         }
         else {
             return nil

@@ -187,7 +187,7 @@ private struct CastQueueView: View {
                 List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { $item in
                     CastQueueCell(metadata: item.metadata(from: queue))
                         .onAppear {
-                            item.fetchMetadata(from: queue)
+                            item.fetch(from: queue)
                         }
                 }
             }
