@@ -71,15 +71,15 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
-    private var requests: Set<GCKRequestID> = [] {
+    private var requests = 0 {
         didSet {
-            guard !oldValue.isEmpty, requests.isEmpty else { return }
+            guard requests == 0, oldValue != 0 else { return }
             nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
         }
     }
 
     private var isRequesting: Bool {
-        !requests.isEmpty
+        requests != 0
     }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
@@ -233,18 +233,18 @@ private extension CastQueue {
     }
 
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
-        Mutation.mutations(from: previousItems, to: currentItems).forEach { mutation in
+        let mutations = Mutation.mutations(from: previousItems, to: currentItems)
+        requests += mutations.count
+        mutations.forEach { mutation in
             switch mutation {
             case let .move(element, before):
                 let request = remoteMediaClient.queueMoveItem(
                     withID: element.id,
                     beforeItemWithID: before?.id ?? kGCKMediaQueueInvalidItemID
                 )
-                requests.insert(request.requestID)
                 request.delegate = self
             case let .remove(element):
                 let request = remoteMediaClient.queueRemoveItem(withID: element.id)
-                requests.insert(request.requestID)
                 request.delegate = self
             }
         }
@@ -286,16 +286,16 @@ extension CastQueue: GCKMediaQueueDelegate {
 extension CastQueue: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
-        requests.remove(request.requestID)
+        requests -= 1
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        requests.remove(request.requestID)
+        requests -= 1
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        requests.remove(request.requestID)
+        requests -= 1
     }
 }
