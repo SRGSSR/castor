@@ -236,6 +236,13 @@ private extension CastQueue {
     }
 
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
+        // Workaround for Google Cast SDK issue. If emptying a playlist with as many removal requests as needed,
+        // and if the playlist is being mutated from another sender at the same time, one request might never end.
+        guard !currentItems.isEmpty else {
+            remoteMediaClient.stop()
+            return
+        }
+
         let mutations = Mutation.mutations(from: previousItems, to: currentItems)
         requests += mutations.count
         mutations.forEach { mutation in
