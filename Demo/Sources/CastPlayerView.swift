@@ -250,7 +250,7 @@ private struct CastQueueCell: View {
 
     var body: some View {
         Text(metadata?.title ?? String(repeating: " ", count: .random(in: 20...40)))
-            .redacted(reason: metadata == nil ? .placeholder : [])
+            .redactedIfNil(metadata)
     }
 }
 
