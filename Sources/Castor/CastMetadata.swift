@@ -14,8 +14,4 @@ public struct CastMetadata {
     public var title: String? {
         rawMetadata?.string(forKey: kGCKMetadataKeyTitle)
     }
-
-    init(rawMetadata: GCKMediaMetadata?) {
-        self.rawMetadata = rawMetadata
-    }
 }
