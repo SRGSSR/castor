@@ -33,7 +33,8 @@ public struct CastPlayerItem: Hashable {
     ///
     /// - Parameter queue: The queue to retrieve metadata from.
     ///
-    /// Reading metadata for an item from a queue to which it does not belong leads to unexpected behavior.
+    /// Reading metadata for an item from a queue to which it does not belong leads to unexpected behavior. Metadata
+    /// must be fetched first by calling ``fetchMetadata(from:)``.
     public func metadata(from queue: CastQueue) -> CastMetadata? {
         queue.metadata(for: self)
     }
