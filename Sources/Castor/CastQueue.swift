@@ -12,6 +12,9 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     /// The items in the queue.
+    ///
+    /// > Warning: Avoid making significant changes to the item list by mutating this property, as each change will
+    ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
             guard canRequest else { return }
@@ -33,16 +36,9 @@ public final class CastQueue: NSObject, ObservableObject {
             else {
                 remoteMediaClient.stop()
             }
-        }
-    }
-
-    private var publishedCurrentItem: CastPlayerItem? {
-        get {
-            currentItem
-        }
-        set {
-            currentItem = newValue
-            objectWillChange.send()
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
+            }
         }
     }
 
@@ -71,15 +67,15 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
-    private var requests: Set<GCKRequestID> = [] {
+    private var requests = 0 {
         didSet {
-            guard !oldValue.isEmpty, requests.isEmpty else { return }
+            guard requests == 0, oldValue != 0 else { return }
             nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
         }
     }
 
     private var isRequesting: Bool {
-        !requests.isEmpty
+        requests != 0
     }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
@@ -167,7 +163,7 @@ public extension CastQueue {
     /// Returns to the previous item in the queue.
     func returnToPreviousItem() {
         guard canReturnToPreviousItem(), let currentItem, let previousIndex = Self.index(before: currentItem, in: items) else { return }
-        publishedCurrentItem = items[previousIndex]
+        self.currentItem = items[previousIndex]
     }
 
     /// Checks whether moving to the next item in the queue is possible.
@@ -180,7 +176,7 @@ public extension CastQueue {
     /// Moves to the next item in the queue.
     func advanceToNextItem() {
         guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
-        publishedCurrentItem = items[nextIndex]
+        self.currentItem = items[nextIndex]
     }
 }
 
@@ -233,32 +229,37 @@ private extension CastQueue {
     }
 
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
-        let changes = currentItems.difference(from: previousItems).inferringMoves()
-        changes.forEach { change in
-            switch change {
-            case .insert:
-                break
-            case let .remove(offset: offset, element: element, associatedWith: associatedWith):
-                if let associatedWith {
-                    let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
-                    let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
-                    let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
-                    requests.insert(request.requestID)
-                    request.delegate = self
-                }
-                else {
-                    let request = remoteMediaClient.queueRemoveItem(withID: element.id)
-                    requests.insert(request.requestID)
-                    request.delegate = self
-                }
-            }
+        // Workaround for Google Cast SDK issue. If emptying a playlist with as many removal requests as needed,
+        // and if the playlist is being mutated from another sender at the same time, one request might never end.
+        guard !currentItems.isEmpty else {
+            remoteMediaClient.stop()
+            return
+        }
+
+        let mutations = Mutation.mutations(from: previousItems, to: currentItems)
+        requests += mutations.count
+        mutations.forEach { mutation in
+            let request = request(for: mutation)
+            request.delegate = self
+        }
+    }
+
+    private func request(for mutation: Mutation<CastPlayerItem>) -> GCKRequest {
+        switch mutation {
+        case let .move(element, before):
+            remoteMediaClient.queueMoveItem(
+                withID: element.id,
+                beforeItemWithID: before?.id ?? kGCKMediaQueueInvalidItemID
+            )
+        case let .remove(element):
+            remoteMediaClient.queueRemoveItem(withID: element.id)
         }
     }
 }
 
 extension CastQueue: CastCurrentDelegate {
     func didUpdate(item: CastPlayerItem?) {
-        publishedCurrentItem = item
+        currentItem = item
     }
 }
 
@@ -291,16 +292,16 @@ extension CastQueue: GCKMediaQueueDelegate {
 extension CastQueue: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
-        requests.remove(request.requestID)
+        requests -= 1
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        requests.remove(request.requestID)
+        requests -= 1
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        requests.remove(request.requestID)
+        requests -= 1
     }
 }
