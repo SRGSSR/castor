@@ -34,16 +34,9 @@ public final class Cast: NSObject, ObservableObject {
             else {
                 endSession()
             }
-        }
-    }
-
-    private var publishedCurrentDevice: CastDevice? {
-        get {
-            currentDevice
-        }
-        set {
-            currentDevice = newValue
-            objectWillChange.send()
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
+            }
         }
     }
 
@@ -132,7 +125,7 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session
-        publishedCurrentDevice = session.device.toCastDevice()
+        currentDevice = session.device.toCastDevice()
     }
 
     // swiftlint:disable:next missing_docs
@@ -162,7 +155,7 @@ extension Cast: GCKSessionManagerListener {
             self.targetDevice = nil
         }
         else {
-            publishedCurrentDevice = nil
+            currentDevice = nil
         }
     }
 
@@ -173,7 +166,7 @@ extension Cast: GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-        publishedCurrentDevice = nil
+        currentDevice = nil
     }
 }
 
