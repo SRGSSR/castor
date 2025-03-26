@@ -20,6 +20,8 @@ public final class CastQueue: NSObject, ObservableObject {
     }
 
     /// The items in the queue.
+    ///
+    /// > Warning: Updates involving more changes to the playlist requires more time to be performed on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
             guard canRequest else { return }
