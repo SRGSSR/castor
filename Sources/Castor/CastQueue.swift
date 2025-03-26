@@ -233,24 +233,19 @@ private extension CastQueue {
     }
 
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
-        let changes = currentItems.difference(from: previousItems).inferringMoves()
-        changes.forEach { change in
-            switch change {
-            case .insert:
-                break
-            case let .remove(offset: offset, element: element, associatedWith: associatedWith):
-                if let associatedWith {
-                    let beforeIndex = (offset > associatedWith) ? associatedWith : associatedWith + 1
-                    let beforeId = remoteMediaClient.mediaQueue.itemID(at: UInt(beforeIndex))
-                    let request = remoteMediaClient.queueMoveItem(withID: element.id, beforeItemWithID: beforeId)
-                    requests.insert(request.requestID)
-                    request.delegate = self
-                }
-                else {
-                    let request = remoteMediaClient.queueRemoveItem(withID: element.id)
-                    requests.insert(request.requestID)
-                    request.delegate = self
-                }
+        Mutation.mutations(from: previousItems, to: currentItems).forEach { mutation in
+            switch mutation {
+            case let .move(element, before):
+                let request = remoteMediaClient.queueMoveItem(
+                    withID: element.id,
+                    beforeItemWithID: before?.id ?? kGCKMediaQueueInvalidItemID
+                )
+                requests.insert(request.requestID)
+                request.delegate = self
+            case let .remove(element):
+                let request = remoteMediaClient.queueRemoveItem(withID: element.id)
+                requests.insert(request.requestID)
+                request.delegate = self
             }
         }
     }
