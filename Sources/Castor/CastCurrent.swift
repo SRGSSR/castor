@@ -7,7 +7,7 @@
 import GoogleCast
 
 protocol CastCurrentDelegate: AnyObject {
-    func didUpdate(item: CastPlayerItem?)
+    func didUpdateItem(withId id: GCKMediaQueueItemID?)
 }
 
 /// This class is a workaround to avoid cast session instabilities when jumps are performed in quick succession.
@@ -50,16 +50,16 @@ extension CastCurrent: GCKRemoteMediaClientListener {
                 let isPendingItemReached = mediaStatus.currentItemID == pendingRequestItemId
                 let isPendingItemMissing = client.mediaQueue.indexOfItem(withID: pendingRequestItemId) == NSNotFound
                 if isPendingItemReached || isPendingItemMissing {
-                    delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID))
+                    delegate?.didUpdateItem(withId: mediaStatus.currentItemID)
                     self.pendingRequestItemId = nil
                 }
             }
             else {
-                delegate?.didUpdate(item: .init(id: mediaStatus.currentItemID))
+                delegate?.didUpdateItem(withId: mediaStatus.currentItemID)
             }
         }
         else {
-            delegate?.didUpdate(item: nil)
+            delegate?.didUpdateItem(withId: nil)
         }
     }
 }

@@ -7,31 +7,43 @@
 import GoogleCast
 
 /// A cast player item.
-public struct CastPlayerItem: Hashable {
+public class CastPlayerItem: ObservableObject {
     /// The id.
     public let id: GCKMediaQueueItemID
 
-    init(id: GCKMediaQueueItemID) {
-        self.id = id
+    private let queue: CastQueue
+
+    /// The metadata associated with the item.
+    ///
+    /// Metadata must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.
+    public var metadata: CastMetadata? {
+        guard let rawItem = queue.rawItem(for: self) else { return nil }
+        return .init(rawMetadata: rawItem.mediaInformation.metadata)
     }
 
-    /// Asynchronously fetches an item from the specified queue.
-    ///
-    /// - Parameter queue: The queue to retrieve metadata from.
-    ///
-    /// Fetching an item from a queue to which it does not belong leads to unexpected behavior.
-    public func fetch(from queue: CastQueue) {
+    init(id: GCKMediaQueueItemID, queue: CastQueue) {
+        self.id = id
+        self.queue = queue
+    }
+
+    /// Fetch complete item information from the receiver.
+    public func fetch() {
         queue.fetch(self)
     }
 
-    /// Reads item metadata from the specified queue.
-    ///
-    /// - Parameter queue: The queue to retrieve metadata from.
-    ///
-    /// Reading metadata for an item from a queue to which it does not belong leads to unexpected behavior. Metadata
-    /// must be fetched first by calling ``fetchMetadata(from:)``.
-    public func metadata(from queue: CastQueue) -> CastMetadata? {
-        guard let rawItem = queue.rawItem(for: self) else { return nil }
-        return .init(rawMetadata: rawItem.mediaInformation.metadata)
+    func notifyUpdate() {
+        objectWillChange.send()
+    }
+}
+
+extension CastPlayerItem: Hashable {
+    // swiftlint:disable:next missing_docs
+    public static func == (lhs: CastPlayerItem, rhs: CastPlayerItem) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

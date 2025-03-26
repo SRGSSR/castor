@@ -76,7 +76,7 @@ public final class CastQueue: NSObject, ObservableObject {
     private var requests = 0 {
         didSet {
             guard requests == 0, oldValue != 0 else { return }
-            nonRequestedItems = Self.items(from: remoteMediaClient.mediaQueue)
+            nonRequestedItems = items(items, merging: remoteMediaClient.mediaQueue)
         }
     }
 
@@ -90,6 +90,24 @@ public final class CastQueue: NSObject, ObservableObject {
         super.init()
         self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
+    }
+
+    func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
+        var updatedItems = items
+        queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
+            switch change {
+            case let .insert(offset: offset, element: element, associatedWith: associatedWith):
+                if let associatedWith {
+                    updatedItems.insert(items[associatedWith], at: offset)
+                }
+                else {
+                    updatedItems.insert(.init(id: element, queue: self), at: offset)
+                }
+            case let .remove(offset: offset, element: _, associatedWith: _):
+                updatedItems.remove(at: offset)
+            }
+        }
+        return updatedItems
     }
 }
 
@@ -243,12 +261,6 @@ private extension CastQueue {
 }
 
 private extension CastQueue {
-    static func items(from queue: GCKMediaQueue) -> [CastPlayerItem] {
-        (0..<queue.itemCount).map { index in
-            CastPlayerItem(id: queue.itemID(at: index))
-        }
-    }
-
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
         // Workaround for Google Cast SDK issue. If emptying a playlist with as many removal requests as needed,
         // and if the playlist is being mutated from another sender at the same time, one request might never end.
@@ -279,8 +291,14 @@ private extension CastQueue {
 }
 
 extension CastQueue: CastCurrentDelegate {
-    func didUpdate(item: CastPlayerItem?) {
-        currentItem = item
+    func didUpdateItem(withId id: GCKMediaQueueItemID?) {
+        if let id {
+            guard let item = items.first(where: { $0.id == id }) else { return }
+            currentItem = item
+        }
+        else {
+            currentItem = nil
+        }
     }
 }
 
@@ -288,7 +306,7 @@ extension CastQueue: GCKMediaQueueDelegate {
     // swiftlint:disable:next missing_docs
     public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         guard !isRequesting else { return }
-        nonRequestedItems = Self.items(from: queue)
+        nonRequestedItems = items(items, merging: queue)
     }
 
     // swiftlint:disable:next missing_docs
@@ -297,7 +315,7 @@ extension CastQueue: GCKMediaQueueDelegate {
         nonRequestedItems.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
-                    CastPlayerItem(id: queue.itemID(at: UInt(index)))
+                    CastPlayerItem(id: queue.itemID(at: UInt(index)), queue: self)
                 },
             at: range.location
         )
@@ -311,7 +329,18 @@ extension CastQueue: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type missing_docs
     public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
-        objectWillChange.send()
+        let ids = itemIds(atIndexes: indexes)
+        items.forEach { item in
+            guard ids.contains(item.id) else { return }
+            item.notifyUpdate()
+        }
+    }
+
+    // swiftlint:disable:next legacy_objc_type
+    private func itemIds(atIndexes indexes: [NSNumber]) -> [GCKMediaQueueItemID] {
+        indexes.map { index in
+            remoteMediaClient.mediaQueue.itemID(at: UInt(truncating: index))
+        }
     }
 }
 
