@@ -185,9 +185,9 @@ private struct CastQueueView: View {
         ZStack {
             if !queue.items.isEmpty {
                 List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { item in
-                    CastQueueCell(metadata: queue.metadata(for: item.wrappedValue), id: item.wrappedValue.id)
+                    CastQueueCell(metadata: item.wrappedValue.metadata(from: queue), id: item.wrappedValue.id)
                         .onAppear {
-                            queue.fetch(item.wrappedValue)
+                            item.wrappedValue.fetch(from: queue)
                         }
                 }
             }

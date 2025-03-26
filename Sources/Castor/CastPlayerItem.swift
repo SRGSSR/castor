@@ -19,4 +19,12 @@ public struct CastPlayerItem: Hashable {
     init(id: GCKMediaQueueItemID) {
         self.id = id
     }
+
+    public func fetch(from queue: CastQueue) {
+        queue.fetch(self)
+    }
+
+    public func metadata(from queue: CastQueue) -> CastMetadata? {
+        queue.metadata(for: self)
+    }
 }
