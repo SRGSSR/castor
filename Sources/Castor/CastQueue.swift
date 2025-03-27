@@ -101,6 +101,33 @@ public final class CastQueue: NSObject, ObservableObject {
 }
 
 public extension CastQueue {
+    private static func rawItems(from assets: [CastAsset]) -> [GCKMediaQueueItem] {
+        assets.map { $0.rawItem() }
+    }
+
+    /// Loads player items from asset and starts playback.
+    ///
+    /// - Parameter assets: The assets for the item to load.
+    func loadItems(from assets: [CastAsset]) {
+        remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: .init())
+    }
+
+    /// Inserts items after another one.
+    ///
+    /// - Parameter assets: The assets for the item to insert.
+    func insertItems(from assets: [CastAsset], before beforeItem: CastPlayerItem?) {
+        remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: beforeItem?.id ?? kGCKMediaQueueInvalidItemID)
+    }
+
+    /// Prepends items to the queue.
+    ///
+    /// - Parameter assets: The assets for the item to insert.
+    func appendItems(from assets: [CastAsset]) {
+        insertItems(from: assets, before: nil)
+    }
+}
+
+public extension CastQueue {
     /// Removes an item from the queue.
     ///
     /// - Parameter item: The item to remove.
