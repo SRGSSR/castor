@@ -184,8 +184,8 @@ private struct CastQueueView: View {
     private func list() -> some View {
         ZStack {
             if !queue.items.isEmpty {
-                List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { item in
-                    CastQueueCell(item: item.wrappedValue)
+                List($queue.items, id: \.self, editActions: .all, selection: queue.currentItemSelection) { $item in
+                    CastQueueCell(item: item)
                 }
             }
             else {
@@ -243,11 +243,17 @@ private struct CastQueueView: View {
 }
 
 private struct CastQueueCell: View {
-    let item: CastPlayerItem
+    @ObservedObject var item: CastPlayerItem
 
     var body: some View {
-        Text(item.title ?? String(repeating: " ", count: .random(in: 20...40)))
-            .redacted(reason: item.title == nil ? .placeholder : [])
+        Text(title)
+            .onAppear(perform: item.fetch)
+            .redactedIfNil(item.metadata)
+    }
+
+    private var title: String {
+        guard let metadata = item.metadata else { return .placeholder(length: .random(in: 20...30)) }
+        return metadata.title ?? "-"
     }
 }
 
