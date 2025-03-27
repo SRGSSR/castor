@@ -14,7 +14,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var currentItemId: GCKMediaQueueItemID? {
         didSet {
-            try? currentItem = Self.item(withId: currentItemId, in: items)
+            try? currentItem = Self.findItem(withId: currentItemId, in: items)
         }
     }
 
@@ -24,7 +24,7 @@ public final class CastQueue: NSObject, ObservableObject {
     ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            try? currentItem = Self.item(withId: currentItemId, in: items)
+            try? currentItem = Self.findItem(withId: currentItemId, in: items)
             guard canRequest else { return }
             requestUpdates(from: oldValue, to: items)
         }
@@ -97,34 +97,6 @@ public final class CastQueue: NSObject, ObservableObject {
         super.init()
         self.current.delegate = self
         remoteMediaClient.mediaQueue.add(self)
-    }
-
-    private static func item(withId id: GCKMediaQueueItemID?, in items: [CastPlayerItem]) throws -> CastPlayerItem? {
-        if let id {
-            guard let item = items.first(where: { $0.id == id }) else { throw CastError.notFound }
-            return item
-        }
-        else {
-            return nil
-        }
-    }
-
-    func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
-        var updatedItems = items
-        queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
-            switch change {
-            case let .insert(offset: offset, element: element, associatedWith: associatedWith):
-                if let associatedWith {
-                    updatedItems.insert(items[associatedWith], at: offset)
-                }
-                else {
-                    updatedItems.insert(.init(id: element, queue: self), at: offset)
-                }
-            case let .remove(offset: offset, element: _, associatedWith: _):
-                updatedItems.remove(at: offset)
-            }
-        }
-        return updatedItems
     }
 }
 
@@ -259,6 +231,32 @@ private extension CastQueue {
         else {
             return items.last != item
         }
+    }
+}
+
+private extension CastQueue {
+    static func findItem(withId id: GCKMediaQueueItemID?, in items: [CastPlayerItem]) throws -> CastPlayerItem? {
+        guard let id else { return nil }
+        guard let item = items.first(where: { $0.id == id }) else { throw CastError.notFound }
+        return item
+    }
+
+    func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
+        var updatedItems = items
+        queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
+            switch change {
+            case let .insert(offset: offset, element: element, associatedWith: associatedWith):
+                if let associatedWith {
+                    updatedItems.insert(items[associatedWith], at: offset)
+                }
+                else {
+                    updatedItems.insert(.init(id: element, queue: self), at: offset)
+                }
+            case let .remove(offset: offset, element: _, associatedWith: _):
+                updatedItems.remove(at: offset)
+            }
+        }
+        return updatedItems
     }
 }
 
