@@ -46,14 +46,17 @@ struct StreamsView: View {
     ]
 
     @State private var selectedStream: Stream?
-    @StateObject private var googleCast = GoogleCast()
+    @EnvironmentObject private var cast: Cast
 
     var body: some View {
         VStack(spacing: 0) {
             List(streams) { stream in
                 Button {
-                    if googleCast.isActive {
-                        GoogleCast.load(stream: stream)
+                    if let player = cast.player {
+                        player.queue
+                            .loadItems(
+                                from: [.simple(url: stream.url, metadata: .init(title: stream.title, imageUrl: stream.imageUrl))]
+                            )
                     }
                     else {
                         selectedStream = stream
@@ -62,13 +65,13 @@ struct StreamsView: View {
                     Text(stream.title)
                 }
             }
-            if googleCast.isLoaded {
+            if cast.player != nil {
                 MiniMediaControlsView()
                     .frame(height: 64)
                     .transition(.move(edge: .bottom))
             }
         }
-        .animation(.linear(duration: 0.2), value: googleCast.isLoaded)
+        .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: batchLoad) {
@@ -91,13 +94,22 @@ struct StreamsView: View {
     }
 
     private func batchLoad() {
-        guard googleCast.isActive else { return }
-        GoogleCast.load(streams: streams + streams + streams + streams)
+        guard let player = cast.player else { return }
+        let streams = streams + streams + streams + streams
+        player.queue
+            .loadItems(
+                from: streams.map { stream in
+                    .simple(url: stream.url, metadata: .init(title: stream.title, imageUrl: stream.imageUrl))
+                }
+            )
     }
 
     private func append() {
-        guard googleCast.isActive, let stream = streams.randomElement() else { return }
-        GoogleCast.append(stream: stream)
+        guard let player = cast.player, let stream = streams.randomElement() else { return }
+        player.queue
+            .loadItems(
+                from: [.simple(url: stream.url, metadata: .init(title: stream.title, imageUrl: stream.imageUrl))]
+            )
     }
 }
 
