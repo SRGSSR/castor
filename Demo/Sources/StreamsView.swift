@@ -53,10 +53,7 @@ struct StreamsView: View {
             List(streams) { stream in
                 Button {
                     if let player = cast.player {
-                        player.queue
-                            .loadItems(
-                                from: [.simple(url: stream.url, metadata: .init(title: stream.title, imageUrl: stream.imageUrl))]
-                            )
+                        player.queue.loadItems(from: [stream.asset()])
                     }
                     else {
                         selectedStream = stream
@@ -95,21 +92,12 @@ struct StreamsView: View {
 
     private func batchLoad() {
         guard let player = cast.player else { return }
-        let streams = streams + streams + streams + streams
-        player.queue
-            .loadItems(
-                from: streams.map { stream in
-                    .simple(url: stream.url, metadata: .init(title: stream.title, imageUrl: stream.imageUrl))
-                }
-            )
+        player.queue.loadItems(from: (streams + streams + streams + streams).map { $0.asset() })
     }
 
     private func append() {
         guard let player = cast.player, let stream = streams.randomElement() else { return }
-        player.queue
-            .loadItems(
-                from: [.simple(url: stream.url, metadata: .init(title: stream.title, imageUrl: stream.imageUrl))]
-            )
+        player.queue.appendItems(from: [stream.asset()])
     }
 }
 
