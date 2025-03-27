@@ -173,6 +173,7 @@ private struct MainView: View {
 
 private struct CastQueueView: View {
     @ObservedObject var queue: CastQueue
+    @State private var isSelectionPresented = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -222,6 +223,17 @@ private struct CastQueueView: View {
             }
             .disabled(queue.isEmpty)
 
+            Button {
+                isSelectionPresented.toggle()
+            } label: {
+                Image(systemName: "plus")
+            }
+            .sheet(isPresented: $isSelectionPresented) {
+                NavigationStack {
+                    PlaylistSelectionView(queue: queue)
+                }
+            }
+
             Button(action: queue.removeAllItems) {
                 Image(systemName: "trash")
             }
@@ -239,6 +251,35 @@ private struct CastQueueView: View {
 
     private func shuffle() {
         queue.items.shuffle()
+    }
+}
+
+private struct PlaylistSelectionView: View {
+    let queue: CastQueue
+    @State private var selectedStreams: Set<Stream> = []
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        List(kStreams, id: \.self, selection: $selectedStreams) { stream in
+            Text(stream.title)
+        }
+        .environment(\.editMode, .constant(.active))
+        .navigationTitle("Add content")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") { dismiss() }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Add", action: add)
+                    .disabled(selectedStreams.isEmpty)
+            }
+        }
+    }
+
+    func add() {
+        queue.appendItems(from: selectedStreams.map { $0.asset() })
+        dismiss()
     }
 }
 
