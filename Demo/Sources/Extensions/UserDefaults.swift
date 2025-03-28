@@ -7,11 +7,11 @@
 import Foundation
 
 extension UserDefaults {
-    enum DemoSettingKey: String, CaseIterable {
-        case receiver
+    enum DemoSettingKey {
+        static let receiver = "CastorDemoReceiver"
     }
 
     @objc dynamic var receiver: Receiver {
-        .init(rawValue: integer(forKey: DemoSettingKey.receiver.rawValue)) ?? .standard
+        .init(rawValue: integer(forKey: DemoSettingKey.receiver)) ?? .standard
     }
 }

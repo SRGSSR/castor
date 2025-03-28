@@ -8,7 +8,7 @@ import GoogleCast
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage(UserDefaults.DemoSettingKey.receiver.rawValue)
+    @AppStorage(UserDefaults.DemoSettingKey.receiver)
     private var receiver: Receiver = .standard
 
     @State private var animate = false
