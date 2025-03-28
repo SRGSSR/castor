@@ -279,11 +279,13 @@ private struct PlaylistSelectionView: View {
     @State private var selectedStreams: Set<Stream> = []
     @Environment(\.dismiss) private var dismiss
     @State private var selectedInsertionOption: InsertionOption = .append
+    @State private var multiplier = 1
 
     var body: some View {
         VStack {
             picker()
             list()
+            stepper()
         }
         .environment(\.editMode, .constant(.active))
         .navigationTitle("Add content")
@@ -308,6 +310,7 @@ private struct PlaylistSelectionView: View {
         }
         .pickerStyle(.segmented)
         .padding(.horizontal)
+        .padding(.bottom)
     }
 
     private func list() -> some View {
@@ -316,19 +319,25 @@ private struct PlaylistSelectionView: View {
         }
     }
 
+    private func stepper() -> some View {
+        Stepper(value: $multiplier, in: 1...100) {
+            LabeledContent("Multiplier", value: "×\(multiplier)")
+        }
+        .padding()
+    }
+
     private func add() {
-        let items = selectedStreams.map { $0.asset() }
+        let assets = Array(repeating: selectedStreams.map { $0.asset() }, count: multiplier).flatMap(\.self)
         switch selectedInsertionOption {
         case .prepend:
-            queue.prependItems(from: items)
+            queue.prependItems(from: assets)
         case .insertBefore:
-            queue.insertItems(from: items, before: queue.currentItem)
+            queue.insertItems(from: assets, before: queue.currentItem)
         case .insertAfter:
-            queue.insertItems(from: items, after: queue.currentItem)
+            queue.insertItems(from: assets, after: queue.currentItem)
         case .append:
-            queue.appendItems(from: items)
+            queue.appendItems(from: assets)
         }
-
         dismiss()
     }
 }
