@@ -7,16 +7,22 @@
 import Castor
 import Foundation
 
-struct Stream: Hashable, Identifiable {
-    let title: String
-    let url: URL
-    let imageUrl: URL
-
-    var id: URL {
-        url
+struct Stream: Hashable {
+    enum `Type`: Hashable {
+        case url(URL)
+        case urn(String)
     }
 
+    let title: String
+    let imageUrl: URL
+    let type: Type
+
     func asset() -> CastAsset {
-        .simple(url: url, metadata: .init(title: title, imageUrl: imageUrl))
+        switch type {
+        case let .url(url):
+            return .simple(url: url, metadata: .init(title: title, imageUrl: imageUrl))
+        case let .urn(identifier):
+            return .custom(identifier: identifier, metadata: .init(title: title, imageUrl: imageUrl))
+        }
     }
 }
