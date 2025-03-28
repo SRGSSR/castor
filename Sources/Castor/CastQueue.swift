@@ -107,7 +107,7 @@ public extension CastQueue {
 
     /// Loads player items from assets and starts playback.
     ///
-    /// - Parameter assets: The assets for the item to load.
+    /// - Parameter assets: The assets for the items to load.
     func loadItems(from assets: [CastAsset]) {
         remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: .init())
     }

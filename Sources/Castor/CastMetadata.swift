@@ -20,8 +20,10 @@ public struct CastMetadata {
     }
 
     /// Creates metadata.
-    ///
-    /// - Parameter title: The content title.
+    /// 
+    /// - Parameters:
+    ///   - title: The content title.
+    ///   - imageUrl: The image url.
     public init(title: String?, imageUrl: URL?) {
         rawMetadata = GCKMediaMetadata()
         if let title {

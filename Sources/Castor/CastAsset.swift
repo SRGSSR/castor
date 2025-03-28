@@ -28,7 +28,7 @@ public struct CastAsset {
     private let kind: Kind
     private let metadata: CastMetadata
 
-    /// Simple assets which can be played directly.
+    /// A simple asset which can be played directly.
     ///
     /// - Parameters:
     ///   - url: The URL to be played.
@@ -38,7 +38,7 @@ public struct CastAsset {
         .init(kind: .simple(url), metadata: metadata)
     }
 
-    /// Custom assets which require a custom identifier.
+    /// A custom asset which require a custom identifier.
     ///
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
