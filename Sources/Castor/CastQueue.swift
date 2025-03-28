@@ -145,11 +145,11 @@ public extension CastQueue {
     ///
     /// - Parameter assets: The assets for the items to insert.
     func appendItems(from assets: [CastAsset]) {
-        if items.isEmpty {
-            loadItems(from: assets)
+        if !items.isEmpty {
+            remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: kGCKMediaQueueInvalidItemID)
         }
         else {
-            remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: kGCKMediaQueueInvalidItemID)
+            loadItems(from: assets)
         }
     }
 
@@ -158,6 +158,25 @@ public extension CastQueue {
     /// - Parameter asset: The asset for the item to insert.
     func appendItem(from asset: CastAsset) {
         appendItems(from: [asset])
+    }
+
+    /// Prepends items to the queue.
+    ///
+    /// - Parameter assets: The assets for the item to insert.
+    func prependItems(from assets: [CastAsset]) {
+        if let firstItem = items.first {
+            remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: firstItem.id)
+        }
+        else {
+            loadItems(from: assets)
+        }
+    }
+
+    /// Prepends an item to the queue.
+    ///
+    /// - Parameter asset: The asset for the item to insert.
+    func prependItem(from asset: CastAsset) {
+        prependItems(from: [asset])
     }
 }
 
