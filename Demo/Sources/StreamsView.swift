@@ -17,7 +17,7 @@ struct StreamsView: View {
             List(kStreams) { stream in
                 Button {
                     if let player = cast.player {
-                        player.queue.loadItems(from: [stream.asset()])
+                        player.queue.loadItem(from: stream.asset())
                     }
                     else {
                         selectedStream = stream
