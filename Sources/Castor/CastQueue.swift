@@ -114,16 +114,32 @@ public extension CastQueue {
 
     /// Inserts items after another one.
     ///
-    /// - Parameter assets: The assets for the item to insert.
-    func insertItems(from assets: [CastAsset], before beforeItem: CastPlayerItem?) {
-        remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: beforeItem?.id ?? kGCKMediaQueueInvalidItemID)
+    /// - Parameters:
+    ///   - assets: The assets for the items to insert.
+    ///   - beforeItem: The item before which insertion must take place. Pass `nil` to insert the item at the front
+    ///     of the queue.
+    @discardableResult
+    func insertItems(from assets: [CastAsset], before beforeItem: CastPlayerItem?) -> Bool {
+        if let beforeItem {
+            guard items.contains(beforeItem) else { return false }
+            remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: beforeItem.id)
+        }
+        else {
+            appendItems(from: assets)
+        }
+        return true
     }
 
     /// Prepends items to the queue.
     ///
-    /// - Parameter assets: The assets for the item to insert.
+    /// - Parameter assets: The assets for the items to insert.
     func appendItems(from assets: [CastAsset]) {
-        insertItems(from: assets, before: nil)
+        if items.isEmpty {
+            loadItems(from: assets)
+        }
+        else {
+            remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: kGCKMediaQueueInvalidItemID)
+        }
     }
 }
 
