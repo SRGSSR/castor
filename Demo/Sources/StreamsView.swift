@@ -34,16 +34,6 @@ struct StreamsView: View {
         }
         .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: batchLoad) {
-                    Text("Load > 20")
-                }
-            }
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: append) {
-                    Text("Append")
-                }
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton()
             }
@@ -52,16 +42,6 @@ struct StreamsView: View {
             PlayerView(url: stream.url)
         }
         .navigationTitle("Castor")
-    }
-
-    private func batchLoad() {
-        guard let player = cast.player else { return }
-        player.queue.loadItems(from: (kStreams + kStreams + kStreams + kStreams).map { $0.asset() })
-    }
-
-    private func append() {
-        guard let player = cast.player, let stream = kStreams.randomElement() else { return }
-        player.queue.appendItems(from: [stream.asset()])
     }
 }
 
