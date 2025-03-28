@@ -14,17 +14,8 @@ struct ExamplesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            List(kUrlMedias) { media in
-                Button {
-                    if let player = cast.player {
-                        player.queue.loadItem(from: media.asset())
-                    }
-                    else {
-                        selectedMedia = media
-                    }
-                } label: {
-                    Text(media.title)
-                }
+            List(kMedias) { media in
+                button(for: media)
             }
             if cast.player != nil {
                 MiniMediaControlsView()
@@ -39,9 +30,22 @@ struct ExamplesView: View {
             }
         }
         .sheet(item: $selectedMedia) { media in
-            PlayerView(url: media.url)
+            PlayerView(media: media)
         }
         .navigationTitle("Examples")
+    }
+
+    private func button(for media: Media) -> some View {
+        Button {
+            if let player = cast.player {
+                player.queue.loadItem(from: media.asset())
+            }
+            else {
+                selectedMedia = media
+            }
+        } label: {
+            Text(media.title)
+        }
     }
 }
 

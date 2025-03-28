@@ -314,7 +314,7 @@ private struct PlaylistSelectionView: View {
     }
 
     private func list() -> some View {
-        List(kUrlMedias, id: \.self, selection: $selectedMedias) { media in
+        List(kMedias, id: \.self, selection: $selectedMedias) { media in
             Text(media.title)
         }
     }
