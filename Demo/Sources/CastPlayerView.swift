@@ -255,13 +255,35 @@ private struct CastQueueView: View {
 }
 
 private struct PlaylistSelectionView: View {
+    enum InsertionOption: CaseIterable {
+        case prepend
+        case insertBefore
+        case insertAfter
+        case append
+
+        var name: LocalizedStringKey {
+            switch self {
+            case .prepend:
+                "Prepend"
+            case .insertBefore:
+                "Insert before"
+            case .insertAfter:
+                "Insert after"
+            case .append:
+                "Append"
+            }
+        }
+    }
+
     let queue: CastQueue
     @State private var selectedStreams: Set<Stream> = []
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedInsertionOption: InsertionOption = .append
 
     var body: some View {
-        List(kStreams, id: \.self, selection: $selectedStreams) { stream in
-            Text(stream.title)
+        VStack {
+            picker()
+            list()
         }
         .environment(\.editMode, .constant(.active))
         .navigationTitle("Add content")
@@ -277,8 +299,36 @@ private struct PlaylistSelectionView: View {
         }
     }
 
-    func add() {
-        queue.appendItems(from: selectedStreams.map { $0.asset() })
+    private func picker() -> some View {
+        Picker("Insertion options", selection: $selectedInsertionOption) {
+            ForEach(InsertionOption.allCases, id: \.self) { option in
+                Text(option.name)
+                    .tag(option)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
+    }
+
+    private func list() -> some View {
+        List(kStreams, id: \.self, selection: $selectedStreams) { stream in
+            Text(stream.title)
+        }
+    }
+
+    private func add() {
+        let items = selectedStreams.map { $0.asset() }
+        switch selectedInsertionOption {
+        case .prepend:
+            queue.prependItems(from: items)
+        case .insertBefore:
+            queue.insertItems(from: items, before: queue.currentItem)
+        case .insertAfter:
+            queue.insertItems(from: items, after: queue.currentItem)
+        case .append:
+            queue.appendItems(from: items)
+        }
+
         dismiss()
     }
 }
