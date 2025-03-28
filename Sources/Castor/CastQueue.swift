@@ -105,11 +105,18 @@ public extension CastQueue {
         assets.map { $0.rawItem() }
     }
 
-    /// Loads player items from asset and starts playback.
+    /// Loads player items from assets and starts playback.
     ///
     /// - Parameter assets: The assets for the item to load.
     func loadItems(from assets: [CastAsset]) {
         remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: .init())
+    }
+
+    /// Loads the player item from an asset and starts playback.
+    ///
+    /// - Parameter asset: The assets for the item to load.
+    func loadItem(from asset: CastAsset) {
+        loadItems(from: [asset])
     }
 
     /// Inserts items before another one.
