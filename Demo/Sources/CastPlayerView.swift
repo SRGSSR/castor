@@ -173,6 +173,7 @@ private struct MainView: View {
 
 private struct CastQueueView: View {
     @ObservedObject var queue: CastQueue
+    @State private var isSelectionPresented = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -222,6 +223,17 @@ private struct CastQueueView: View {
             }
             .disabled(queue.isEmpty)
 
+            Button {
+                isSelectionPresented.toggle()
+            } label: {
+                Image(systemName: "plus")
+            }
+            .sheet(isPresented: $isSelectionPresented) {
+                NavigationStack {
+                    PlaylistSelectionView(queue: queue)
+                }
+            }
+
             Button(action: queue.removeAllItems) {
                 Image(systemName: "trash")
             }
@@ -242,13 +254,114 @@ private struct CastQueueView: View {
     }
 }
 
+private struct PlaylistSelectionView: View {
+    enum InsertionOption: CaseIterable {
+        case prepend
+        case insertBefore
+        case insertAfter
+        case append
+
+        var name: LocalizedStringKey {
+            switch self {
+            case .prepend:
+                "Prepend"
+            case .insertBefore:
+                "Insert before"
+            case .insertAfter:
+                "Insert after"
+            case .append:
+                "Append"
+            }
+        }
+    }
+
+    let queue: CastQueue
+    @State private var selectedStreams: Set<Stream> = []
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedInsertionOption: InsertionOption = .append
+    @State private var multiplier = 1
+
+    var body: some View {
+        VStack {
+            picker()
+            list()
+            stepper()
+        }
+        .environment(\.editMode, .constant(.active))
+        .navigationTitle("Add content")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") { dismiss() }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Add", action: add)
+                    .disabled(selectedStreams.isEmpty)
+            }
+        }
+    }
+
+    private func picker() -> some View {
+        Picker("Insertion options", selection: $selectedInsertionOption) {
+            ForEach(InsertionOption.allCases, id: \.self) { option in
+                Text(option.name)
+                    .tag(option)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
+        .padding(.bottom)
+    }
+
+    private func list() -> some View {
+        List(kStreams, id: \.self, selection: $selectedStreams) { stream in
+            Text(stream.title)
+        }
+    }
+
+    private func stepper() -> some View {
+        Stepper(value: $multiplier, in: 1...100) {
+            LabeledContent("Multiplier", value: "×\(multiplier)")
+        }
+        .padding()
+    }
+
+    private func add() {
+        let assets = Array(repeating: selectedStreams.map { $0.asset() }, count: multiplier).flatMap(\.self)
+        switch selectedInsertionOption {
+        case .prepend:
+            queue.prependItems(from: assets)
+        case .insertBefore:
+            queue.insertItems(from: assets, before: queue.currentItem)
+        case .insertAfter:
+            queue.insertItems(from: assets, after: queue.currentItem)
+        case .append:
+            queue.appendItems(from: assets)
+        }
+        dismiss()
+    }
+}
+
 private struct CastQueueCell: View {
     @ObservedObject var item: CastPlayerItem
 
     var body: some View {
-        Text(title)
-            .onAppear(perform: item.fetch)
-            .redactedIfNil(item.metadata)
+        HStack(spacing: 30) {
+            AsyncImage(url: item.metadata?.imageUrl) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } placeholder: {
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
+            .frame(width: 64, height: 64)
+
+            Text(title)
+                .onAppear(perform: item.fetch)
+                .redactedIfNil(item.metadata)
+        }
     }
 
     private var title: String {

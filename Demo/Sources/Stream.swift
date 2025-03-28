@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import Castor
 import Foundation
 
 struct Stream: Hashable, Identifiable {
@@ -13,5 +14,9 @@ struct Stream: Hashable, Identifiable {
 
     var id: URL {
         url
+    }
+
+    func asset() -> CastAsset {
+        .simple(url: url, metadata: .init(title: title, imageUrl: imageUrl))
     }
 }
