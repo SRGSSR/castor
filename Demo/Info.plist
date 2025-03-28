@@ -17,6 +17,8 @@
 	<array>
 		<string>_googlecast._tcp</string>
 		<string>_CC1AD845._googlecast._tcp</string>
+		<string>_A12D4273._googlecast._tcp</string>
+		<string>_1AC2931D._googlecast._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>$(PRODUCT_NAME) uses the local network to discover Google Cast devices on your WiFi network.</string>
