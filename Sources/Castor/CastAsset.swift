@@ -38,7 +38,7 @@ public struct CastAsset {
         .init(kind: .simple(url), metadata: metadata)
     }
 
-    /// A custom asset which require a custom identifier.
+    /// A custom asset represented by some identifier..
     ///
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.

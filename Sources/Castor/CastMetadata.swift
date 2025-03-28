@@ -30,7 +30,6 @@ public struct CastMetadata {
             rawMetadata?.setString(title, forKey: kGCKMetadataKeyTitle)
         }
         if let imageUrl {
-            rawMetadata?.removeAllMediaImages()
             rawMetadata?.addImage(.init(url: imageUrl, width: 0, height: 0))
         }
     }
