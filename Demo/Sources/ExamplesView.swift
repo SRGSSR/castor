@@ -8,23 +8,14 @@ import AVKit
 import Castor
 import SwiftUI
 
-struct StreamsView: View {
-    @State private var selectedStream: Stream?
+struct ExamplesView: View {
+    @State private var selectedMedia: Media?
     @EnvironmentObject private var cast: Cast
 
     var body: some View {
         VStack(spacing: 0) {
-            List(kStreams) { stream in
-                Button {
-                    if let player = cast.player {
-                        player.queue.loadItem(from: stream.asset())
-                    }
-                    else {
-                        selectedStream = stream
-                    }
-                } label: {
-                    Text(stream.title)
-                }
+            List(kMedias) { media in
+                button(for: media)
             }
             if cast.player != nil {
                 MiniMediaControlsView()
@@ -38,15 +29,28 @@ struct StreamsView: View {
                 CastButton()
             }
         }
-        .sheet(item: $selectedStream) { stream in
-            PlayerView(url: stream.url)
+        .sheet(item: $selectedMedia) { media in
+            PlayerView(media: media)
         }
-        .navigationTitle("Castor")
+        .navigationTitle("Examples")
+    }
+
+    private func button(for media: Media) -> some View {
+        Button {
+            if let player = cast.player {
+                player.queue.loadItem(from: media.asset())
+            }
+            else {
+                selectedMedia = media
+            }
+        } label: {
+            Text(media.title)
+        }
     }
 }
 
 #Preview {
     NavigationStack {
-        StreamsView()
+        ExamplesView()
     }
 }

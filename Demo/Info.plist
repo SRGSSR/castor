@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>TestFlightApplicationIdentifier</key>
+	<string>$(TEST_FLIGHT_APPLICATION_IDENTIFIER)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>UIBackgroundModes</key>
@@ -17,6 +19,8 @@
 	<array>
 		<string>_googlecast._tcp</string>
 		<string>_CC1AD845._googlecast._tcp</string>
+		<string>_A12D4273._googlecast._tcp</string>
+		<string>_1AC2931D._googlecast._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>$(PRODUCT_NAME) uses the local network to discover Google Cast devices on your WiFi network.</string>

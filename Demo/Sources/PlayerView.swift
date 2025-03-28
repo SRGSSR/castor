@@ -9,14 +9,19 @@ import SwiftUI
 
 struct PlayerView: View {
     @State private var player = AVPlayer()
-    let url: URL
+    let media: Media
 
     var body: some View {
-        VideoPlayer(player: player)
-            .ignoresSafeArea()
-            .onAppear {
-                player.replaceCurrentItem(with: .init(url: url))
-                player.play()
-            }
+        switch media.type {
+        case let .url(url):
+            VideoPlayer(player: player)
+                .ignoresSafeArea()
+                .onAppear {
+                    player.replaceCurrentItem(with: .init(url: url))
+                    player.play()
+                }
+        case .urn:
+            ContentUnavailableView("Not playable locally", systemImage: "play.slash.fill")
+        }
     }
 }

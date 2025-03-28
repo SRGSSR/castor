@@ -276,7 +276,7 @@ private struct PlaylistSelectionView: View {
     }
 
     let queue: CastQueue
-    @State private var selectedStreams: Set<Stream> = []
+    @State private var selectedMedias: Set<Media> = []
     @Environment(\.dismiss) private var dismiss
     @State private var selectedInsertionOption: InsertionOption = .append
     @State private var multiplier = 1
@@ -296,7 +296,7 @@ private struct PlaylistSelectionView: View {
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button("Add", action: add)
-                    .disabled(selectedStreams.isEmpty)
+                    .disabled(selectedMedias.isEmpty)
             }
         }
     }
@@ -314,8 +314,8 @@ private struct PlaylistSelectionView: View {
     }
 
     private func list() -> some View {
-        List(kStreams, id: \.self, selection: $selectedStreams) { stream in
-            Text(stream.title)
+        List(kMedias, id: \.self, selection: $selectedMedias) { media in
+            Text(media.title)
         }
     }
 
@@ -327,7 +327,7 @@ private struct PlaylistSelectionView: View {
     }
 
     private func add() {
-        let assets = Array(repeating: selectedStreams.map { $0.asset() }, count: multiplier).flatMap(\.self)
+        let assets = Array(repeating: selectedMedias.map { $0.asset() }, count: multiplier).flatMap(\.self)
         switch selectedInsertionOption {
         case .prepend:
             queue.prependItems(from: assets)

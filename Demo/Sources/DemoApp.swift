@@ -18,7 +18,7 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     private func configureGoogleCast() {
-        let criteria = GCKDiscoveryCriteria(applicationID: kGCKDefaultMediaReceiverApplicationID)
+        let criteria = GCKDiscoveryCriteria(applicationID: UserDefaults.standard.receiver.identifier)
         let options = GCKCastOptions(discoveryCriteria: criteria)
         GCKCastContext.setSharedInstanceWith(options)
         GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
@@ -33,10 +33,10 @@ struct DemoApp: App {
         WindowGroup {
             TabView {
                 NavigationStack {
-                    StreamsView()
+                    ExamplesView()
                 }
                 .tabItem {
-                    Label("Streams", systemImage: "film.fill")
+                    Label("Examples", systemImage: "film.fill")
                 }
                 NavigationStack {
                     DevicesView()
@@ -49,6 +49,12 @@ struct DemoApp: App {
                 }
                 .tabItem {
                     Label("Player", systemImage: "play.rectangle.fill")
+                }
+                NavigationStack {
+                    SettingsView()
+                }
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape.fill")
                 }
             }
         }
