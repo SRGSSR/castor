@@ -13,6 +13,11 @@ public class CastPlayerItem: ObservableObject {
 
     private let queue: CastQueue
 
+    // swiftlint:disable:next legacy_objc_type
+    var idNumber: NSNumber {
+        .init(value: id)
+    }
+
     /// The metadata associated with the item.
     ///
     /// Metadata must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.

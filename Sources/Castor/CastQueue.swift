@@ -394,31 +394,27 @@ private extension CastQueue {
 
 private extension CastQueue {
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
-        // Workaround for Google Cast SDK issue. If emptying a playlist with as many removal requests as needed,
-        // and if the playlist is being mutated from another sender at the same time, one request might never end.
+        // Workaround for Google Cast SDK state consistency possibly arising when removing items from a sender while
+        // updating them from another one.
         guard !currentItems.isEmpty else {
             remoteMediaClient.stop()
             return
         }
 
-        let mutations = Mutation.mutations(from: previousItems, to: currentItems)
-        requests += mutations.count
-        mutations.forEach { mutation in
-            let request = request(for: mutation)
-            request.delegate = self
-        }
-    }
+        let previousIds = previousItems.map(\.idNumber)
+        let currentIds = currentItems.map(\.idNumber)
 
-    private func request(for mutation: Mutation<CastPlayerItem>) -> GCKRequest {
-        switch mutation {
-        case let .move(element, before):
-            remoteMediaClient.queueMoveItem(
-                withID: element.id,
-                beforeItemWithID: before?.id ?? kGCKMediaQueueInvalidItemID
-            )
-        case let .remove(element):
-            remoteMediaClient.queueRemoveItem(withID: element.id)
-        }
+        requests += 2
+
+        let removedIds = Array(Set(previousIds).subtracting(currentIds))
+        let removeRequest = remoteMediaClient.queueRemoveItems(withIDs: removedIds)
+        removeRequest.delegate = self
+
+        let reorderRequest = remoteMediaClient.queueReorderItems(
+            withIDs: currentIds,
+            insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
+        )
+        reorderRequest.delegate = self
     }
 }
 
