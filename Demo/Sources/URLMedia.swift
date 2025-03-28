@@ -10,7 +10,7 @@ private let kAppleImageUrl = URL(
     string: "https://www.apple.com/newsroom/images/default/apple-logo-og.jpg?202312141200"
 )!
 
-let kStreams: [Stream] = [
+let kUrlMedias: [Media] = [
     .init(
         title: "Apple Basic 4:3",
         imageUrl: kAppleImageUrl,

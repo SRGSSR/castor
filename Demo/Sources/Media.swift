@@ -7,12 +7,13 @@
 import Castor
 import Foundation
 
-struct Stream: Hashable {
+struct Media: Hashable, Identifiable {
     enum `Type`: Hashable {
         case url(URL)
         case urn(String)
     }
 
+    let id = UUID()
     let title: String
     let imageUrl: URL
     let type: Type

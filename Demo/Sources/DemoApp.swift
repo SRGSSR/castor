@@ -33,10 +33,10 @@ struct DemoApp: App {
         WindowGroup {
             TabView {
                 NavigationStack {
-                    StreamsView()
+                    ExamplesView()
                 }
                 .tabItem {
-                    Label("Streams", systemImage: "film.fill")
+                    Label("Examples", systemImage: "film.fill")
                 }
                 NavigationStack {
                     DevicesView()
