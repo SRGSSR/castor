@@ -11,8 +11,6 @@ struct SettingsView: View {
     @AppStorage(UserDefaults.DemoSettingKey.receiver)
     private var receiver: Receiver = .standard
 
-    @State private var animate = false
-
     var body: some View {
         Form {
             Section {
@@ -26,10 +24,25 @@ struct SettingsView: View {
                     Text("Updating this setting will exit the application.")
                         .font(.footnote)
                 }
+            } footer: {
+                versionFooter()
             }
         }
         .onChange(of: receiver) { _, _ in exit(0) }
         .navigationTitle("Settings")
+    }
+
+    private func versionFooter() -> some View {
+        HStack(spacing: 0) {
+            Text("Made with ")
+            Image(systemName: "heart.fill")
+                .foregroundColor(.red)
+                .symbolEffect(.pulse)
+            Text(" in Switzerland")
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement()
+        .accessibilityLabel("Made with love in Switzerland")
     }
 }
 
