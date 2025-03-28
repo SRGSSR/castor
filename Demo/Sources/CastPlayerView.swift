@@ -346,9 +346,22 @@ private struct CastQueueCell: View {
     @ObservedObject var item: CastPlayerItem
 
     var body: some View {
-        Text(title)
-            .onAppear(perform: item.fetch)
-            .redactedIfNil(item.metadata)
+        HStack(spacing: 30) {
+            AsyncImage(url: item.metadata?.imageUrl) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } placeholder: {
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
+            .frame(width: 64, height: 64)
+
+            Text(title)
+                .onAppear(perform: item.fetch)
+                .redactedIfNil(item.metadata)
+        }
     }
 
     private var title: String {

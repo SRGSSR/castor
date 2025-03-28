@@ -15,6 +15,11 @@ public struct CastMetadata {
         rawMetadata?.string(forKey: kGCKMetadataKeyTitle)
     }
 
+    /// The image URL.
+    public var imageUrl: URL? {
+        (rawMetadata?.images().first as? GCKImage)?.url
+    }
+
     init(rawMetadata: GCKMediaMetadata?) {
         self.rawMetadata = rawMetadata
     }
@@ -23,7 +28,7 @@ public struct CastMetadata {
     /// 
     /// - Parameters:
     ///   - title: The content title.
-    ///   - imageUrl: The image url.
+    ///   - imageUrl: The image URL.
     public init(title: String?, imageUrl: URL?) {
         rawMetadata = GCKMediaMetadata()
         if let title {
