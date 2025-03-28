@@ -29,11 +29,21 @@ public struct CastAsset {
     private let metadata: CastMetadata
 
     /// Simple assets which can be played directly.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to be played.
+    ///   - metadata: The metadata associated with the asset.
+    /// - Returns: The asset.
     public static func simple(url: URL, metadata: CastMetadata) -> Self {
         .init(kind: .simple(url), metadata: metadata)
     }
 
     /// Custom assets which require a custom identifier.
+    ///
+    /// - Parameters:
+    ///   - identifier: An identifier for the content to be played.
+    ///   - metadata: The metadata associated with the asset.
+    /// - Returns: The asset.
     public static func custom(identifier: String, metadata: CastMetadata) -> Self {
         .init(kind: .custom(identifier), metadata: metadata)
     }
