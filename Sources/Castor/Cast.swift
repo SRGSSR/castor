@@ -11,6 +11,9 @@ import SwiftUI
 
 /// This object that handles everything related to Google Cast.
 public final class Cast: NSObject, ObservableObject {
+    /// The player version.
+    public static let version = PackageInfo.version
+
     private let context = GCKCastContext.sharedInstance()
 
     private var currentSession: GCKCastSession? {
