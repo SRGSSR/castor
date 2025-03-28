@@ -112,7 +112,7 @@ public extension CastQueue {
         remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: .init())
     }
 
-    /// Inserts items after another one.
+    /// Inserts items before another one.
     ///
     /// - Parameters:
     ///   - assets: The assets for the items to insert.
@@ -130,7 +130,7 @@ public extension CastQueue {
         return true
     }
 
-    /// Insert an item after another one.
+    /// Insert an item before another one.
     ///
     /// - Parameters:
     ///   - asset: The asset for the item to insert.
@@ -217,7 +217,7 @@ public extension CastQueue {
         return true
     }
 
-    /// Moves an item after another one.
+    /// Moves an item before another one.
     ///
     /// - Parameters:
     ///   - item: The item to move.
