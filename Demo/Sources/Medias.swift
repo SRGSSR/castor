@@ -6,7 +6,7 @@
 
 import Foundation
 
-let kMedias = kUrlMedias + kUrnMedias
+let kMedias = UserDefaults.standard.receiver == .srgssr ? (kUrlMedias + kUrnMedias) : kUrlMedias
 
 private let kAppleImageUrl = URL(
     string: "https://www.apple.com/newsroom/images/default/apple-logo-og.jpg?202312141200"
