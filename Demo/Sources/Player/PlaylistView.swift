@@ -21,7 +21,7 @@ private struct ItemCell: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             }
-            .frame(width: 64, height: 64)
+            .frame(width: 80, height: 45)
 
             Text(title)
                 .onAppear(perform: item.fetch)
