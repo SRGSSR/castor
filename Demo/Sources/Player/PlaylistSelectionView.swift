@@ -8,31 +8,13 @@ import Castor
 import SwiftUI
 
 struct PlaylistSelectionView: View {
-    enum InsertionOption: CaseIterable {
-        case prepend
-        case insertBefore
-        case insertAfter
-        case append
-
-        var name: LocalizedStringKey {
-            switch self {
-            case .prepend:
-                "Prepend"
-            case .insertBefore:
-                "Insert before"
-            case .insertAfter:
-                "Insert after"
-            case .append:
-                "Append"
-            }
-        }
-    }
-
     let queue: CastQueue
+
     @State private var selectedMedias: Set<Media> = []
-    @Environment(\.dismiss) private var dismiss
     @State private var selectedInsertionOption: InsertionOption = .append
     @State private var multiplier = 1
+
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack {
@@ -92,5 +74,27 @@ struct PlaylistSelectionView: View {
             queue.appendItems(from: assets)
         }
         dismiss()
+    }
+}
+
+private extension PlaylistSelectionView {
+    enum InsertionOption: CaseIterable {
+        case prepend
+        case insertBefore
+        case insertAfter
+        case append
+
+        var name: LocalizedStringKey {
+            switch self {
+            case .prepend:
+                "Prepend"
+            case .insertBefore:
+                "Insert before"
+            case .insertAfter:
+                "Insert after"
+            case .append:
+                "Append"
+            }
+        }
     }
 }
