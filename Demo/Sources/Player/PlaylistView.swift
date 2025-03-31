@@ -87,7 +87,7 @@ private extension PlaylistView {
         HStack(spacing: 30) {
             shuffleButton()
             addButton()
-            removeAllButton()
+            trashButton()
         }
         .padding()
     }
@@ -123,7 +123,7 @@ private extension PlaylistView {
         }
     }
 
-    func removeAllButton() -> some View {
+    func trashButton() -> some View {
         Button(action: queue.removeAllItems) {
             Image(systemName: "trash")
         }
