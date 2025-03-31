@@ -66,7 +66,7 @@ struct PlaylistSelectionView: View {
     }
 
     private func add() {
-        let assets = Array(repeating: selectedMedias.map { $0.asset() }, count: multiplier).flatMap(\.self)
+        let assets = Array(repeating: selectedMedias, count: multiplier).flatMap(\.self).map { $0.asset() }
         switch selectedInsertionOption {
         case .prepend:
             queue.prependItems(from: assets)
