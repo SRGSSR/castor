@@ -8,7 +8,12 @@ import Foundation
 
 extension UserDefaults {
     enum DemoSettingKey {
-        static let receiver = "CastorDemoReceiver"
+        static let receiver = "receiver"
+        static let presenterModeEnabled = "presenterModeEnabled"
+    }
+
+    @objc dynamic var presenterModeEnabled: Bool {
+        bool(forKey: DemoSettingKey.presenterModeEnabled)
     }
 
     @objc dynamic var receiver: Receiver {

@@ -9,6 +9,9 @@ import GoogleCast
 import SwiftUI
 
 struct SettingsView: View {
+    @AppStorage(UserDefaults.DemoSettingKey.presenterModeEnabled)
+    private var isPresenterModeEnabled = false
+
     @AppStorage(UserDefaults.DemoSettingKey.receiver)
     private var receiver: Receiver = .standard
 
@@ -27,11 +30,23 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            applicationSection()
             receiverSection()
             versionSection()
         }
         .onChange(of: receiver) { _, _ in exit(0) }
         .navigationTitle("Settings")
+    }
+
+    private func applicationSection() -> some View {
+        Section {
+            Toggle(isOn: $isPresenterModeEnabled) {
+                Text("Presenter mode")
+                Text("Displays touches for presentation purposes.").font(.footnote)
+            }
+        } header: {
+            Text("Application")
+        }
     }
 
     private func receiverSection() -> some View {
