@@ -40,7 +40,7 @@ public final class CastQueue: NSObject, ObservableObject {
     /// Stops playback if set to `nil`.
     ///
     /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
-    public var currentItem: CastPlayerItem? {
+    @Published public var currentItem: CastPlayerItem? {
         didSet {
             if let currentItem {
                 guard currentItem != oldValue else { return }
@@ -48,9 +48,6 @@ public final class CastQueue: NSObject, ObservableObject {
             }
             else {
                 remoteMediaClient.stop()
-            }
-            DispatchQueue.main.async {
-                self.objectWillChange.send()
             }
         }
     }
