@@ -29,16 +29,13 @@ public final class Cast: NSObject, ObservableObject {
     /// Ends the session if set to `nil`.
     ///
     /// > Important: On iOS 18.3 and below use `currentDeviceSelection` to manage selection in a `List`.
-    public var currentDevice: CastDevice? {
+    @Published public var currentDevice: CastDevice? {
         didSet {
             if let currentDevice {
                 moveSession(from: oldValue, to: currentDevice)
             }
             else {
                 endSession()
-            }
-            DispatchQueue.main.async {
-                self.objectWillChange.send()
             }
         }
     }
