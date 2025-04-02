@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0EFEFEF72D4916A1003034F7 /* Castor in Frameworks */ = {isa = PBXBuildFile; productRef = 0EFEFEF62D4916A1003034F7 /* Castor */; };
+		6F93E3812D9C0CEA00B412AA /* ShowTime in Frameworks */ = {isa = PBXBuildFile; productRef = 6F93E3802D9C0CEA00B412AA /* ShowTime */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F93E3812D9C0CEA00B412AA /* ShowTime in Frameworks */,
 				0EFEFEF72D4916A1003034F7 /* Castor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -124,6 +126,7 @@
 			name = "Castor-demo";
 			packageProductDependencies = (
 				0EFEFEF62D4916A1003034F7 /* Castor */,
+				6F93E3802D9C0CEA00B412AA /* ShowTime */,
 			);
 			productName = "Castor-demo";
 			productReference = 0ECF4A4D2D48E1F400238371 /* Castor-demo.app */;
@@ -153,6 +156,9 @@
 			);
 			mainGroup = 0ECF4A442D48E1F400238371;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6F93E37F2D9C0CEA00B412AA /* XCRemoteSwiftPackageReference "ShowTime" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0ECF4A4E2D48E1F400238371 /* Products */;
 			projectDirPath = "";
@@ -496,10 +502,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		6F93E37F2D9C0CEA00B412AA /* XCRemoteSwiftPackageReference "ShowTime" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/KaneCheshire/ShowTime.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		0EFEFEF62D4916A1003034F7 /* Castor */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Castor;
+		};
+		6F93E3802D9C0CEA00B412AA /* ShowTime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F93E37F2D9C0CEA00B412AA /* XCRemoteSwiftPackageReference "ShowTime" */;
+			productName = ShowTime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

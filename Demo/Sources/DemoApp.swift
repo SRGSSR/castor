@@ -6,15 +6,28 @@
 
 import AVFAudio
 import Castor
+import Combine
 import GoogleCast
+import ShowTime
 import SwiftUI
 
 private final class AppDelegate: NSObject, UIApplicationDelegate {
+    private var cancellables = Set<AnyCancellable>()
+
     // swiftlint:disable:next discouraged_optional_collection
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         try? AVAudioSession.sharedInstance().setCategory(.playback)
+        configureShowTime()
         configureGoogleCast()
         return true
+    }
+
+    private func configureShowTime() {
+        UserDefaults.standard.publisher(for: \.presenterModeEnabled)
+            .sink { isEnabled in
+                ShowTime.enabled = isEnabled ? .always : .never
+            }
+            .store(in: &cancellables)
     }
 
     private func configureGoogleCast() {
