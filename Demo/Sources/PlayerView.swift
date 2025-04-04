@@ -21,7 +21,7 @@ struct PlayerView: View {
                     player.play()
                 }
         case .urn:
-            ContentUnavailableView("Not playable locally", systemImage: "play.slash.fill")
+            MessageView(message: "Not playable locally", icon: .system("play.slash.fill"))
         }
     }
 }

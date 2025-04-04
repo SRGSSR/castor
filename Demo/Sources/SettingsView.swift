@@ -34,7 +34,7 @@ struct SettingsView: View {
             receiverSection()
             versionSection()
         }
-        .onChange(of: receiver) { _, _ in exit(0) }
+        .onChange(of: receiver) { _ in exit(0) }
         .navigationTitle("Settings")
     }
 
@@ -85,7 +85,7 @@ struct SettingsView: View {
             Text("Made with ")
             Image(systemName: "heart.fill")
                 .foregroundColor(.red)
-                .symbolEffect(.pulse)
+                .pulseSymbolEffect17()
             Text(" in Switzerland")
         }
         .frame(maxWidth: .infinity)
