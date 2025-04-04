@@ -12,6 +12,7 @@ enum Receiver: Int, CaseIterable {
     case standard
     case drm
     case srgssr
+    case amtins
 
     var identifier: String {
         switch self {
@@ -21,6 +22,8 @@ enum Receiver: Int, CaseIterable {
             "A12D4273"
         case .srgssr:
             "1AC2931D"
+        case .amtins:
+            "EB05B588"
         }
     }
 
@@ -32,6 +35,8 @@ enum Receiver: Int, CaseIterable {
             "DRM enabled"
         case .srgssr:
             "SRG SSR"
+        case .amtins:
+            "amtins"
         }
     }
 }

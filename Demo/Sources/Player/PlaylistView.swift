@@ -66,9 +66,7 @@ struct PlaylistView: View {
                 }
             }
             else {
-                ContentUnavailableView {
-                    Text("No items")
-                }
+                MessageView(message: "No items", icon: .none)
             }
         }
         .animation(.linear, value: queue.items)

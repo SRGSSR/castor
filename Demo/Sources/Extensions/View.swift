@@ -6,7 +6,23 @@
 
 import SwiftUI
 
+private struct PulseSymbolEffect17: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            content
+                .symbolEffect(.pulse)
+        }
+        else {
+            content
+        }
+    }
+}
+
 extension View {
+    func pulseSymbolEffect17() -> some View {
+        modifier(PulseSymbolEffect17())
+    }
+
     func redactedIfNil(_ object: Any?) -> some View {
         redacted(reason: object == nil ? .placeholder : .init())
     }

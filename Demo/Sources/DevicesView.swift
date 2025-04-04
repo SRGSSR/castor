@@ -10,11 +10,11 @@ import SwiftUI
 
 private struct NoDevicesView: View {
     var body: some View {
-        ContentUnavailableView {
-            Label("No devices available", systemImage: "tv.badge.wifi.fill")
-        } description: {
-            Text("Check your Wi-Fi network and make sure Local Network Access is on.")
-        }
+        MessageView(
+            message: "No devices available",
+            icon: .system("tv.badge.wifi.fill"),
+            description: "Check your Wi-Fi network and make sure Local Network Access is on."
+        )
     }
 }
 
