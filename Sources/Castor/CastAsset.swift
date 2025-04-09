@@ -16,7 +16,11 @@ public struct CastAsset {
         func mediaInformationBuilder() -> GCKMediaInformationBuilder {
             switch self {
             case let .simple(url):
-                return GCKMediaInformationBuilder(contentURL: url)
+                let builder = GCKMediaInformationBuilder(contentURL: url)
+                // TODO: This workaround should be removed.
+                // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
+                builder.contentID = UUID().uuidString
+                return builder
             case let .custom(id):
                 let builder = GCKMediaInformationBuilder()
                 builder.contentID = id
