@@ -12,26 +12,29 @@ private struct ItemCell: View {
 
     var body: some View {
         HStack(spacing: 30) {
-            AsyncImage(url: item.metadata?.imageUrl) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } placeholder: {
-                Image(systemName: "photo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            }
-            .frame(width: 80, height: 45)
-
+            image()
             Text(title)
-                .onAppear(perform: item.fetch)
-                .redactedIfNil(item.metadata)
         }
+        .onAppear(perform: item.fetch)
+        .redactedIfNil(item.metadata)
     }
 
     private var title: String {
         guard let metadata = item.metadata else { return .placeholder(length: .random(in: 20...30)) }
         return metadata.title ?? "-"
+    }
+
+    private func image() -> some View {
+        AsyncImage(url: item.metadata?.imageUrl) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        } placeholder: {
+            Image(systemName: "photo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        }
+        .frame(width: 80, height: 45)
     }
 }
 
