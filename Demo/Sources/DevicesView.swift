@@ -52,13 +52,20 @@ struct DevicesView: View {
 
     private func devicesView() -> some View {
         List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
-            HStack {
+            Label {
+                label(for: device)
+            } icon: {
                 Image(systemName: Self.imageName(for: device))
-                descriptionView(for: device)
-                if cast.isCasting(on: device) {
-                    Spacer()
-                    statusView()
-                }
+            }
+        }
+    }
+
+    private func label(for device: CastDevice) -> some View {
+        HStack {
+            descriptionView(for: device)
+            if cast.isCasting(on: device) {
+                Spacer()
+                statusView()
             }
         }
     }
