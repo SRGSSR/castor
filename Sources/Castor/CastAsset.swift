@@ -4,10 +4,9 @@
 //  License information is available from the LICENSE file.
 //
 
-import Foundation
 import GoogleCast
 
-/// An cast asset representing content to be played.
+/// A cast asset representing content to be played.
 public struct CastAsset {
     private enum Kind {
         case simple(URL)
