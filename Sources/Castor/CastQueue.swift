@@ -15,7 +15,7 @@ public final class CastQueue: NSObject, ObservableObject {
     private var currentItemId: GCKMediaQueueItemID? {
         didSet {
             canRequest = false
-            Self.extractItem(withId: currentItemId, from: items, into: &currentItem)
+            updateCurrentItem()
             canRequest = true
         }
     }
@@ -26,7 +26,7 @@ public final class CastQueue: NSObject, ObservableObject {
     ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            Self.extractItem(withId: currentItemId, from: items, into: &currentItem)
+            updateCurrentItem()
             guard canRequest else { return }
             requestUpdates(from: oldValue, to: items)
         }
@@ -356,14 +356,14 @@ private extension CastQueue {
 }
 
 private extension CastQueue {
-    static func extractItem(withId id: GCKMediaQueueItemID?, from items: [CastPlayerItem], into item: inout CastPlayerItem?) {
-        if !items.isEmpty, let id {
+    func updateCurrentItem() {
+        if !items.isEmpty, let currentItemId {
             // The current item id is updated separately from the list of items. Inhibit updates when not in sync.
-            guard let matchingItem = items.first(where: { $0.id == id }) else { return }
-            item = matchingItem
+            guard let matchingItem = items.first(where: { $0.id == currentItemId }) else { return }
+            currentItem = matchingItem
         }
         else {
-            item = nil
+            currentItem = nil
         }
     }
 
