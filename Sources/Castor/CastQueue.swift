@@ -14,7 +14,14 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var currentItemId: GCKMediaQueueItemID? {
         didSet {
-            try? currentItem = Self.findItem(withId: currentItemId, in: items)
+            if let currentItemId {
+                // The current item id is updated separately from the list of items. Inhibit updates when not in sync.
+                guard let item = items.first(where: { $0.id == currentItemId }) else { return }
+                currentItem = item
+            }
+            else {
+                currentItem = nil
+            }
         }
     }
 
@@ -24,8 +31,10 @@ public final class CastQueue: NSObject, ObservableObject {
     ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            if !items.isEmpty {
-                try? currentItem = Self.findItem(withId: currentItemId, in: items)
+            if !items.isEmpty, let currentItemId {
+                // The current item id is updated separately from the list of items. Inhibit updates when not in sync.
+                guard let item = items.first(where: { $0.id == currentItemId }) else { return }
+                currentItem = item
             }
             else {
                 currentItem = nil
@@ -359,12 +368,6 @@ private extension CastQueue {
 }
 
 private extension CastQueue {
-    static func findItem(withId id: GCKMediaQueueItemID?, in items: [CastPlayerItem]) throws -> CastPlayerItem? {
-        guard let id else { return nil }
-        guard let item = items.first(where: { $0.id == id }) else { throw CastError.notFound }
-        return item
-    }
-
     func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
         var updatedItems = items
         queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
