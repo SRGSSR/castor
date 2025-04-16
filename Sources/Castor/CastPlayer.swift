@@ -29,6 +29,10 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         remoteMediaClient.add(self)
     }
+
+    deinit {
+        queue.release()
+    }
 }
 
 public extension CastPlayer {

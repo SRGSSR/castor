@@ -93,7 +93,11 @@ public final class CastQueue: NSObject, ObservableObject {
         self.current = .init(remoteMediaClient: remoteMediaClient)
         super.init()
         self.current.delegate = self
-        remoteMediaClient.mediaQueue.add(self)
+        remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
+    }
+
+    func release() {
+        remoteMediaClient.mediaQueue.remove(self)
     }
 }
 
