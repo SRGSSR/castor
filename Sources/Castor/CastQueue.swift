@@ -14,9 +14,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var currentItemId: GCKMediaQueueItemID? {
         didSet {
-            canRequest = false
             updateCurrentItem()
-            canRequest = true
         }
     }
 
@@ -44,7 +42,7 @@ public final class CastQueue: NSObject, ObservableObject {
     /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
     @Published public var currentItem: CastPlayerItem? {
         didSet {
-            guard canRequest else { return }
+            guard canJump else { return }
             if let currentItem {
                 guard currentItem != oldValue else { return }
                 current.jump(to: currentItem.id)
@@ -67,6 +65,8 @@ public final class CastQueue: NSObject, ObservableObject {
     }
 
     private var canRequest = true
+    private var canJump = true
+
     private let current: CastCurrent
 
     private var nonRequestedItems: [CastPlayerItem] {
@@ -357,14 +357,14 @@ private extension CastQueue {
 
 private extension CastQueue {
     func updateCurrentItem() {
-        if !items.isEmpty, let currentItemId {
-            // The current item id is updated separately from the list of items. Inhibit updates when not in sync.
-            guard let matchingItem = items.first(where: { $0.id == currentItemId }) else { return }
-            currentItem = matchingItem
+        canJump = false
+        if let currentItemId {
+            currentItem = items.first { $0.id == currentItemId }
         }
         else {
             currentItem = nil
         }
+        canJump = true
     }
 
     func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
