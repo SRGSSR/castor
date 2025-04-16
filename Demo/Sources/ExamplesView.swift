@@ -53,4 +53,5 @@ struct ExamplesView: View {
     NavigationStack {
         ExamplesView()
     }
+    .environmentObject(Cast())
 }
