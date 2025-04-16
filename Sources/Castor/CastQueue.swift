@@ -24,7 +24,13 @@ public final class CastQueue: NSObject, ObservableObject {
     ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            try? currentItem = Self.findItem(withId: currentItemId, in: items)
+            print("--> items: \(items.count)")
+            if !items.isEmpty {
+                try? currentItem = Self.findItem(withId: currentItemId, in: items)
+            }
+            else {
+                currentItem = nil
+            }
             guard canRequest else { return }
             requestUpdates(from: oldValue, to: items)
         }
@@ -42,6 +48,8 @@ public final class CastQueue: NSObject, ObservableObject {
     /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
     @Published public var currentItem: CastPlayerItem? {
         didSet {
+            print("--> did set curr: \(currentItem)")
+            guard canRequest else { return }
             if let currentItem {
                 guard currentItem != oldValue else { return }
                 current.jump(to: currentItem.id)
