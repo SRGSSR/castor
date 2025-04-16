@@ -358,12 +358,7 @@ private extension CastQueue {
 private extension CastQueue {
     func updateCurrentItem() {
         canJump = false
-        if let currentItemId {
-            currentItem = items.first { $0.id == currentItemId }
-        }
-        else {
-            currentItem = nil
-        }
+        currentItem = items.first { $0.id == currentItemId }
         canJump = true
     }
 
