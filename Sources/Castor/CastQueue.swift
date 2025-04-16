@@ -14,14 +14,9 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var currentItemId: GCKMediaQueueItemID? {
         didSet {
-            if let currentItemId {
-                // The current item id is updated separately from the list of items. Inhibit updates when not in sync.
-                guard let item = items.first(where: { $0.id == currentItemId }) else { return }
-                currentItem = item
-            }
-            else {
-                currentItem = nil
-            }
+            canRequest = false
+            Self.extractItem(withId: currentItemId, from: items, into: &currentItem)
+            canRequest = true
         }
     }
 
@@ -31,14 +26,7 @@ public final class CastQueue: NSObject, ObservableObject {
     ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = [] {
         didSet {
-            if !items.isEmpty, let currentItemId {
-                // The current item id is updated separately from the list of items. Inhibit updates when not in sync.
-                guard let item = items.first(where: { $0.id == currentItemId }) else { return }
-                currentItem = item
-            }
-            else {
-                currentItem = nil
-            }
+            Self.extractItem(withId: currentItemId, from: items, into: &currentItem)
             guard canRequest else { return }
             requestUpdates(from: oldValue, to: items)
         }
@@ -368,6 +356,17 @@ private extension CastQueue {
 }
 
 private extension CastQueue {
+    static func extractItem(withId id: GCKMediaQueueItemID?, from items: [CastPlayerItem], into item: inout CastPlayerItem?) {
+        if !items.isEmpty, let id {
+            // The current item id is updated separately from the list of items. Inhibit updates when not in sync.
+            guard let matchingItem = items.first(where: { $0.id == id }) else { return }
+            item = matchingItem
+        }
+        else {
+            item = nil
+        }
+    }
+
     func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
         var updatedItems = items
         queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
