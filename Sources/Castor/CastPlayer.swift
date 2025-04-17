@@ -16,7 +16,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     @Published private var mediaStatus: GCKMediaStatus?
 
     /// The queue managing player items.
-    public var queue: CastQueue
+    public let queue: CastQueue
 
     init?(remoteMediaClient: GCKRemoteMediaClient?) {
         guard let remoteMediaClient else { return nil }
@@ -31,7 +31,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     deinit {
-        remoteMediaClient.mediaQueue.remove(queue)
+        queue.release()
     }
 }
 

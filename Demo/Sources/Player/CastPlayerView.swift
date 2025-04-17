@@ -17,7 +17,7 @@ struct CastPlayerView: View {
                 PlaylistView(queue: player.queue)
             }
             else {
-                MessageView(message: "Not connected", icon: .system("wifi.slash"))
+                MessageView(message: "Not connected", icon: .system("play.slash.fill"))
                     .overlay(alignment: .topTrailing) {
                         ProgressView()
                             .padding()
