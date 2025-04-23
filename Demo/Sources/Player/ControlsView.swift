@@ -110,7 +110,9 @@ struct ControlsView: View {
             Image(systemName: imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
         }
+        .frame(width: 60)
     }
 
     private func stopButton() -> some View {
@@ -118,7 +120,9 @@ struct ControlsView: View {
             Image(systemName: "stop.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
         }
+        .frame(width: 60)
     }
 
     private func buttons() -> some View {
@@ -126,7 +130,6 @@ struct ControlsView: View {
             playbackButton()
             stopButton()
         }
-        .frame(height: 60)
     }
 
     private func informationView() -> some View {
