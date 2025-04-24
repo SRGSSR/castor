@@ -47,7 +47,7 @@ let kDashUrlMedias: [Media] = [
     ),
     .init(
         title: "Live",
-        imageUrl: "https://mango.blender.org/wp-content/gallery/4k-renders/01_thom_celia_bridge.jpg",
+        imageUrl: "https://website-storage.unified-streaming.com/images/_1200x630_crop_center-center_none/default-facebook.png",
         type: .url("https://demo.unified-streaming.com/k8s/live/stable/live.isml/.mpd?time_shift=300")
     )
 ]
