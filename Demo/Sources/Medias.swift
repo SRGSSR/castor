@@ -6,13 +6,9 @@
 
 import Foundation
 
-let kMedias = UserDefaults.standard.receiver == .srgssr ? (kUrlMedias + kUrnMedias) : kUrlMedias
+let kMedias = kHlsUrlMedias + kDashUrlMedias + kUrnMedias
 
-private let kAppleImageUrl = URL(
-    string: "https://www.apple.com/newsroom/images/default/apple-logo-og.jpg?202312141200"
-)!
-
-private let kUrlMedias: [Media] = [
+let kHlsUrlMedias: [Media] = [
     .init(
         title: "Apple Basic 4:3",
         imageUrl: kAppleImageUrl,
@@ -45,7 +41,15 @@ private let kUrlMedias: [Media] = [
     )
 ]
 
-private let kUrnMedias: [Media] = [
+let kDashUrlMedias: [Media] = [
+    .init(
+        title: "VOD (h264)",
+        imageUrl: "https://mango.blender.org/wp-content/gallery/4k-renders/01_thom_celia_bridge.jpg",
+        type: .url("https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd")
+    )
+]
+
+let kUrnMedias: [Media] = [
     .init(
         title: "Horizontal video",
         imageUrl: "https://www.rts.ch/2024/04/10/19/23/14827621.image/16x9",
@@ -67,3 +71,7 @@ private let kUrnMedias: [Media] = [
         type: .urn("urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
     )
 ]
+
+private let kAppleImageUrl = URL(
+    string: "https://www.apple.com/newsroom/images/default/apple-logo-og.jpg?202312141200"
+)!
