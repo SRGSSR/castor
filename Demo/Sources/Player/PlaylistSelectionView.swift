@@ -49,8 +49,21 @@ struct PlaylistSelectionView: View {
     }
 
     private func list() -> some View {
-        List(kMedias, id: \.self, selection: $selectedMedias) { media in
-            Text(media.title)
+        List(selection: $selectedMedias) {
+            section("HLS", medias: kHlsUrlMedias)
+            section("DASH", medias: kDashUrlMedias)
+            if UserDefaults.standard.receiver == .srgssr {
+                section("URN", medias: kUrnMedias)
+            }
+        }
+    }
+
+    private func section(_ titleKey: LocalizedStringKey, medias: [Media]) -> some View {
+        Section(titleKey) {
+            ForEach(medias) { media in
+                Text(media.title)
+                    .tag(media)
+            }
         }
     }
 

@@ -6,13 +6,7 @@
 
 import Foundation
 
-let kMedias = UserDefaults.standard.receiver == .srgssr ? (kUrlMedias + kUrnMedias) : kUrlMedias
-
-private let kAppleImageUrl = URL(
-    string: "https://www.apple.com/newsroom/images/default/apple-logo-og.jpg?202312141200"
-)!
-
-private let kUrlMedias: [Media] = [
+let kHlsUrlMedias: [Media] = [
     .init(
         title: "Apple Basic 4:3",
         imageUrl: kAppleImageUrl,
@@ -45,7 +39,20 @@ private let kUrlMedias: [Media] = [
     )
 ]
 
-private let kUrnMedias: [Media] = [
+let kDashUrlMedias: [Media] = [
+    .init(
+        title: "VOD",
+        imageUrl: "https://dashif.org/img/dashif-logo-283x100_new.jpg",
+        type: .url("https://dash.akamaized.net/dash264/TestCases/1a/netflix/exMPD_BIP_TC1.mpd")
+    ),
+    .init(
+        title: "Live",
+        imageUrl: "https://website-storage.unified-streaming.com/images/_1200x630_crop_center-center_none/default-facebook.png",
+        type: .url("https://demo.unified-streaming.com/k8s/live/stable/live.isml/.mpd?time_shift=300")
+    )
+]
+
+let kUrnMedias: [Media] = [
     .init(
         title: "Horizontal video",
         imageUrl: "https://www.rts.ch/2024/04/10/19/23/14827621.image/16x9",
@@ -67,3 +74,7 @@ private let kUrnMedias: [Media] = [
         type: .urn("urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
     )
 ]
+
+private let kAppleImageUrl = URL(
+    string: "https://www.apple.com/newsroom/images/default/apple-logo-og.jpg?202312141200"
+)!

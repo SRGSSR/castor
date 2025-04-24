@@ -61,6 +61,7 @@ public struct CastAsset {
     private func mediaInformation() -> GCKMediaInformation {
         let builder = kind.mediaInformationBuilder()
         builder.metadata = metadata.rawMetadata
+        builder.streamType = .unknown
         return builder.build()
     }
 }
