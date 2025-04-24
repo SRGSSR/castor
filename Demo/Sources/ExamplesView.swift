@@ -16,8 +16,12 @@ struct ExamplesView: View {
         VStack(spacing: 0) {
             List {
                 section("HLS", medias: kHlsUrlMedias)
-                section("DASH", medias: kDashUrlMedias)
-                section("URN", medias: kHlsUrlMedias)
+                if cast.player != nil {
+                    section("DASH", medias: kDashUrlMedias)
+                    if UserDefaults.standard.receiver == .srgssr {
+                        section("URN", medias: kUrnMedias)
+                    }
+                }
             }
             if cast.player != nil {
                 MiniMediaControlsView()
