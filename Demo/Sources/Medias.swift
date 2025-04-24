@@ -41,9 +41,14 @@ let kHlsUrlMedias: [Media] = [
 
 let kDashUrlMedias: [Media] = [
     .init(
-        title: "VOD (h264)",
+        title: "VOD",
+        imageUrl: "https://dashif.org/img/dashif-logo-283x100_new.jpg",
+        type: .url("https://dash.akamaized.net/dash264/TestCases/1a/netflix/exMPD_BIP_TC1.mpd")
+    ),
+    .init(
+        title: "Live",
         imageUrl: "https://mango.blender.org/wp-content/gallery/4k-renders/01_thom_celia_bridge.jpg",
-        type: .url("https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd")
+        type: .url("https://demo.unified-streaming.com/k8s/live/stable/live.isml/.mpd?time_shift=300")
     )
 ]
 
