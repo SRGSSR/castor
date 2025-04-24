@@ -49,7 +49,8 @@ struct PlaylistSelectionView: View {
     }
 
     private func list() -> some View {
-        List(kMedias, id: \.self, selection: $selectedMedias) { media in
+        let medias = kHlsUrlMedias + kDashUrlMedias + kUrnMedias
+        return List(medias, id: \.self, selection: $selectedMedias) { media in
             Text(media.title)
         }
     }

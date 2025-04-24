@@ -6,8 +6,6 @@
 
 import Foundation
 
-let kMedias = kHlsUrlMedias + kDashUrlMedias + kUrnMedias
-
 let kHlsUrlMedias: [Media] = [
     .init(
         title: "Apple Basic 4:3",
