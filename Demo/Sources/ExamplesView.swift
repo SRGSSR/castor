@@ -14,8 +14,10 @@ struct ExamplesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            List(kMedias) { media in
-                button(for: media)
+            List {
+                section("HLS", medias: kHlsUrlMedias)
+                section("DASH", medias: kDashUrlMedias)
+                section("URN", medias: kHlsUrlMedias)
             }
             if cast.player != nil {
                 MiniMediaControlsView()
@@ -45,6 +47,14 @@ struct ExamplesView: View {
             }
         } label: {
             Text(media.title)
+        }
+    }
+
+    private func section(_ titleKey: LocalizedStringKey, medias: [Media]) -> some View {
+        Section(titleKey) {
+            ForEach(medias) { media in
+                button(for: media)
+            }
         }
     }
 }
