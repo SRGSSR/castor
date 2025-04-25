@@ -31,7 +31,7 @@ public extension Slider {
             minimumValueLabel: minimumValueLabel,
             maximumValueLabel: maximumValueLabel
         ) { isEditing in
-            // progressTracker.isInteracting = isEditing
+            progressTracker.isInteracting = isEditing
             onEditingChanged(isEditing)
         }
     }
@@ -56,7 +56,7 @@ public extension Slider where ValueLabel == EmptyView {
             in: progressTracker.range,
             label: label
         ) { isEditing in
-            // progressTracker.isInteracting = isEditing
+            progressTracker.isInteracting = isEditing
             onEditingChanged(isEditing)
         }
     }
@@ -78,7 +78,7 @@ public extension Slider where Label == EmptyView, ValueLabel == EmptyView {
             value: Binding(progressTracker, at: \.progress),
             in: progressTracker.range
         ) { isEditing in
-            // progressTracker.isInteracting = isEditing
+            progressTracker.isInteracting = isEditing
             onEditingChanged(isEditing)
         }
     }

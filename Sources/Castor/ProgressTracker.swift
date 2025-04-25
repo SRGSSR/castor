@@ -13,6 +13,9 @@ public final class ProgressTracker: ObservableObject {
     @Published var player: CastPlayer?
     @Published private var _progress: Float?
 
+    /// A Boolean describing whether user interaction is currently changing the progress value.
+    @Published public var isInteracting = false
+
     /// The current progress.
     ///
     /// Returns a value between 0 and 1. The progress might be different from the actual player progress during
@@ -64,13 +67,15 @@ public final class ProgressTracker: ObservableObject {
     ///
     /// Additional updates will happen when time jumps or when playback starts or stops.
     public init(interval: CMTime) {
-        $player.map { player -> AnyPublisher<Float?, Never> in
+        $player.map { [$isInteracting] player -> AnyPublisher<Float?, Never> in
             guard let player else { return Just(nil).eraseToAnyPublisher() }
-            return Timer.publish(every: interval.seconds, on: .main, in: .common)
-                .autoconnect()
-                .map { _ in
-                    Self.progress(for: player.time(), in: player.seekableTimeRange())
-                }
+            return Publishers
+                .CombineLatest(
+                    Self.currentProgressPublisher(for: player, interval: interval),
+                    $isInteracting
+                )
+                .filter { !$1 }
+                .map(\.0)
                 .eraseToAnyPublisher()
         }
         .switchToLatest()
@@ -89,5 +94,14 @@ public final class ProgressTracker: ObservableObject {
     static func time(forProgress progress: Float?, in timeRange: CMTimeRange) -> CMTime {
         guard let progress else { return .invalid }
         return timeRange.start + CMTimeMultiplyByFloat64(timeRange.duration, multiplier: Float64(progress))
+    }
+
+    private static func currentProgressPublisher(for player: CastPlayer, interval: CMTime) -> AnyPublisher<Float?, Never> {
+        Timer.publish(every: interval.seconds, on: .main, in: .common)
+            .autoconnect()
+            .map { _ in
+                progress(for: player.time(), in: player.seekableTimeRange())
+            }
+            .eraseToAnyPublisher()
     }
 }
