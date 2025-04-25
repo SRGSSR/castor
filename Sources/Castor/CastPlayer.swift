@@ -130,6 +130,16 @@ extension CastPlayer: GCKRequestDelegate {
     public func requestDidComplete(_ request: GCKRequest) {
         isSeeking = false
     }
+
+    // swiftlint:disable:next missing_docs
+    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        isSeeking = false
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        isSeeking = false
+    }
 }
 
 private extension CastPlayer {
