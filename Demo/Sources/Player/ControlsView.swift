@@ -87,17 +87,33 @@ struct ControlsView: View {
     @ViewBuilder
     private func progressView() -> some View {
         HStack {
-            if let elapsedTime = Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration) {
-                Text(elapsedTime)
-            }
             if progressTracker.isProgressAvailable {
-                ProgressView(value: progressTracker.progress)
-            }
-            if let totalTime = Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration) {
-                Text(totalTime)
+                Slider(
+                    progressTracker: progressTracker,
+                    label: {
+                        Text("Current position")
+                    },
+                    minimumValueLabel: {
+                        label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                    },
+                    maximumValueLabel: {
+                        label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                    }
+                )
             }
         }
         .frame(height: 30)
+    }
+
+    @ViewBuilder
+    private func label(withText text: String?) -> some View {
+        if let text {
+            Text(text)
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundColor(.white)
+                .shadow(color: .init(white: 0.2, opacity: 0.8), radius: 15)
+        }
     }
 
     private func playbackButton() -> some View {
