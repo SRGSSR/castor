@@ -78,7 +78,7 @@ public extension CastPlayer {
 
     /// Returns if the player is busy.
     var isBusy: Bool {
-        state == .buffering || state == .loading
+        state == .buffering || state == .loading || isSeeking
     }
 
     /// Time.
