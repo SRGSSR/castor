@@ -102,6 +102,17 @@ public extension CastPlayer {
     }
 }
 
+public extension CastPlayer {
+    /// Performs a seek to a given time.
+    ///
+    /// - Parameter time: The time to reach.
+    func seek(to time: CMTime) {
+        let options = GCKMediaSeekOptions()
+        options.interval = time.seconds
+        remoteMediaClient.seek(with: options)
+    }
+}
+
 extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
