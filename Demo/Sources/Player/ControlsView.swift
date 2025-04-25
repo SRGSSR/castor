@@ -24,6 +24,7 @@ struct ControlsView: View {
         return formatter
     }()
 
+    @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 10))
     @ObservedObject var player: CastPlayer
     let device: CastDevice?
 
@@ -33,6 +34,7 @@ struct ControlsView: View {
             visualView()
             controls()
         }
+        .bind(progressTracker, to: player)
     }
 
     private var imageName: String {
