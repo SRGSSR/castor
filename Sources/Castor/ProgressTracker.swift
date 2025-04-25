@@ -30,6 +30,7 @@ public final class ProgressTracker: ObservableObject {
         set {
             guard _progress != nil else { return }
             _progress = Self.validProgress(newValue, in: range)
+            seek(to: newValue)
         }
     }
 
@@ -103,5 +104,11 @@ public final class ProgressTracker: ObservableObject {
                 progress(for: player.time(), in: player.seekableTimeRange())
             }
             .eraseToAnyPublisher()
+    }
+
+    private func seek(to progress: Float) {
+        guard let player else { return }
+        let time = Self.time(forProgress: progress, in: timeRange)
+        player.seek(to: time)
     }
 }
