@@ -15,7 +15,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
 
-    weak var seekRequest: GCKRequest?
+    private weak var seekRequest: GCKRequest?
     var isSeeking = false
 
     /// The queue managing player items.
