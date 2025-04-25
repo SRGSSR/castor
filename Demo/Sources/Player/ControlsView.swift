@@ -85,24 +85,22 @@ struct ControlsView: View {
     }
 
     @ViewBuilder
-    private func progressView() -> some View {
-        HStack {
-            if progressTracker.isProgressAvailable {
-                Slider(
-                    progressTracker: progressTracker,
-                    label: {
-                        Text("Current position")
-                    },
-                    minimumValueLabel: {
-                        label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
-                    },
-                    maximumValueLabel: {
-                        label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
-                    }
-                )
-            }
+    private func slider() -> some View {
+        if progressTracker.isProgressAvailable {
+            Slider(
+                progressTracker: progressTracker,
+                label: {
+                    Text("Current position")
+                },
+                minimumValueLabel: {
+                    label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                },
+                maximumValueLabel: {
+                    label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                }
+            )
+            .frame(height: 30)
         }
-        .frame(height: 30)
     }
 
     @ViewBuilder
@@ -166,7 +164,7 @@ struct ControlsView: View {
 
     private func controls() -> some View {
         VStack {
-            progressView()
+            slider()
             buttons()
         }
         .padding()
