@@ -87,11 +87,13 @@ struct ControlsView: View {
     @ViewBuilder
     private func progressView() -> some View {
         HStack {
-            if let elapsedTime = Self.formattedTime(player.time(), duration: player.seekableTimeRange().duration) {
+            if let elapsedTime = Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration) {
                 Text(elapsedTime)
             }
-            ProgressView(value: progressTracker.progress)
-            if let totalTime = Self.formattedTime(player.seekableTimeRange().duration, duration: player.seekableTimeRange().duration) {
+            if progressTracker.isProgressAvailable {
+                ProgressView(value: progressTracker.progress)
+            }
+            if let totalTime = Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration) {
                 Text(totalTime)
             }
         }

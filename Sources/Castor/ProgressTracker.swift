@@ -11,15 +11,51 @@ import GoogleCast
 /// An observable object tracking playback progress.
 public final class ProgressTracker: ObservableObject {
     @Published var player: CastPlayer?
-    @Published private var timeProperties: TimeProperties = .empty
+    @Published private var _progress: Float?
 
     /// The current progress.
+    ///
+    /// Returns a value between 0 and 1. The progress might be different from the actual player progress during
+    /// user interaction.
+    ///
+    /// This property returns 0 when no progress information is available. Use `isProgressAvailable` to check whether
+    /// progress is available or not.
     public var progress: Float {
-        guard let player else { return 0 }
-        let time = player.time()
-        let timeRange = player.seekableTimeRange()
-        guard time.isValid, timeRange.isValid, !timeRange.isEmpty else { return 0 }
-        return Float(time.seconds / timeRange.duration.seconds).clamped(to: 0...1)
+        get {
+            Self.validProgress(_progress, in: range)
+        }
+        set {
+            guard _progress != nil else { return }
+            _progress = Self.validProgress(newValue, in: range)
+        }
+    }
+
+    /// A Boolean reporting whether progress information is available.
+    ///
+    /// This Boolean is a recommendation you can use to entirely hide progress information in cases where it is not
+    /// meaningful (e.g., when loading content or for livestreams).
+    public var isProgressAvailable: Bool {
+        _progress != nil
+    }
+
+    /// The current time range.
+    ///
+    /// Returns `.invalid` when the time range is unknown.
+    public var timeRange: CMTimeRange {
+        player?.seekableTimeRange() ?? .invalid
+    }
+
+    /// The time corresponding to the current progress.
+    ///
+    /// Returns `.invalid` when the time range is unknown. The returned value might be different from the player current
+    /// time when interaction takes place.
+    public var time: CMTime {
+        Self.time(forProgress: _progress, in: timeRange)
+    }
+
+    /// The allowed range for progress values.
+    public var range: ClosedRange<Float> {
+        _progress != nil ? 0...1 : 0...0
     }
 
     /// Creates a progress tracker updating its progress at the specified interval.
@@ -28,16 +64,30 @@ public final class ProgressTracker: ObservableObject {
     ///
     /// Additional updates will happen when time jumps or when playback starts or stops.
     public init(interval: CMTime) {
-        $player.map { player -> AnyPublisher<TimeProperties, Never> in
-            guard let player else { return Just(.empty).eraseToAnyPublisher() }
+        $player.map { player -> AnyPublisher<Float?, Never> in
+            guard let player else { return Just(nil).eraseToAnyPublisher() }
             return Timer.publish(every: interval.seconds, on: .main, in: .common)
                 .autoconnect()
                 .map { _ in
-                    TimeProperties(time: player.time(), timeRange: player.seekableTimeRange())
+                    Self.progress(for: player.time(), in: player.seekableTimeRange())
                 }
                 .eraseToAnyPublisher()
         }
         .switchToLatest()
-        .assign(to: &$timeProperties)
+        .assign(to: &$_progress)
+    }
+
+    static func progress(for time: CMTime, in timeRange: CMTimeRange) -> Float? {
+        guard time.isValid, timeRange.isValidAndNotEmpty else { return nil }
+        return Float((time - timeRange.start).seconds / timeRange.duration.seconds)
+    }
+
+    static func validProgress(_ progress: Float?, in range: ClosedRange<Float>) -> Float {
+        (progress ?? 0).clamped(to: range)
+    }
+
+    static func time(forProgress progress: Float?, in timeRange: CMTimeRange) -> CMTime {
+        guard let progress else { return .invalid }
+        return timeRange.start + CMTimeMultiplyByFloat64(timeRange.duration, multiplier: Float64(progress))
     }
 }
