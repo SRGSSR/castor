@@ -50,13 +50,6 @@ struct ControlsView: View {
         return image.url
     }
 
-    private var progress: Float? {
-        let time = player.time()
-        let timeRange = player.seekableTimeRange()
-        guard time.isValid, timeRange.isValid, !timeRange.isEmpty else { return nil }
-        return Float(time.seconds / timeRange.duration.seconds).clamped(to: 0...1)
-    }
-
     private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
         guard time.isValid, duration.isValid else { return nil }
         if duration.seconds < 60 * 60 {
@@ -97,9 +90,7 @@ struct ControlsView: View {
             if let elapsedTime = Self.formattedTime(player.time(), duration: player.seekableTimeRange().duration) {
                 Text(elapsedTime)
             }
-            if let progress {
-                ProgressView(value: progress)
-            }
+            ProgressView(value: progressTracker.progress)
             if let totalTime = Self.formattedTime(player.seekableTimeRange().duration, duration: player.seekableTimeRange().duration) {
                 Text(totalTime)
             }

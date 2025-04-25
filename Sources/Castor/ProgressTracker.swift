@@ -13,6 +13,15 @@ public final class ProgressTracker: ObservableObject {
     @Published var player: CastPlayer?
     @Published private var timeProperties: TimeProperties = .empty
 
+    /// The current progress.
+    public var progress: Float {
+        guard let player else { return 0 }
+        let time = player.time()
+        let timeRange = player.seekableTimeRange()
+        guard time.isValid, timeRange.isValid, !timeRange.isEmpty else { return 0 }
+        return Float(time.seconds / timeRange.duration.seconds).clamped(to: 0...1)
+    }
+
     /// Creates a progress tracker updating its progress at the specified interval.
     /// 
     /// - Parameter interval: The interval at which progress must be updated, according to progress of the current
