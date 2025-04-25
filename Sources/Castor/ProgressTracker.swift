@@ -14,7 +14,13 @@ public final class ProgressTracker: ObservableObject {
     @Published private var _progress: Float?
 
     /// A Boolean describing whether user interaction is currently changing the progress value.
-    @Published public var isInteracting = false
+    @Published public var isInteracting = false {
+        willSet {
+            if !newValue, let progress = _progress {
+                seek(to: progress)
+            }
+        }
+    }
 
     /// The current progress.
     ///
@@ -30,7 +36,6 @@ public final class ProgressTracker: ObservableObject {
         set {
             guard _progress != nil else { return }
             _progress = Self.validProgress(newValue, in: range)
-            seek(to: newValue)
         }
     }
 
