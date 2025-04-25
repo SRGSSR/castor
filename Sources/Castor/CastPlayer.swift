@@ -15,6 +15,9 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
 
+    weak var seekRequest: GCKRequest?
+    var isSeeking = false
+
     /// The queue managing player items.
     public let queue: CastQueue
 
@@ -107,9 +110,11 @@ public extension CastPlayer {
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
+        isSeeking = true
         let options = GCKMediaSeekOptions()
         options.interval = time.seconds
-        remoteMediaClient.seek(with: options)
+        seekRequest = remoteMediaClient.seek(with: options)
+        seekRequest?.delegate = self
     }
 }
 
@@ -117,6 +122,13 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
+    }
+}
+
+extension CastPlayer: GCKRequestDelegate {
+    // swiftlint:disable:next missing_docs
+    public func requestDidComplete(_ request: GCKRequest) {
+        isSeeking = false
     }
 }
 

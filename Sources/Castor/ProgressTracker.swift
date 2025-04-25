@@ -80,7 +80,7 @@ public final class ProgressTracker: ObservableObject {
                     Self.currentProgressPublisher(for: player, interval: interval),
                     $isInteracting
                 )
-                .filter { !$1 }
+                .filter { !$1 && !player.isSeeking }
                 .map(\.0)
                 .eraseToAnyPublisher()
         }
