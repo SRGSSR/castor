@@ -133,18 +133,19 @@ extension CastPlayer {
             targetSeekTimePublisher,
             timePublisher(interval: interval)
         )
-        .compactMap { [weak self] targetSeekTime, _ in
-            guard let self else { return nil }
-            return targetSeekTime ?? time()
+        .weakCapture(self)
+        .map { ($0.0, $1) }
+        .map { targetSeekTime, player in
+            targetSeekTime ?? player.time()
         }
         .eraseToAnyPublisher()
     }
 
     func timePropertiesPublisher(interval: CMTime) -> AnyPublisher<TimeProperties, Never> {
         smoothTimePublisher(interval: interval)
-            .compactMap { [weak self] time in
-                guard let self else { return nil }
-                return .init(time: time, timeRange: seekableTimeRange())
+            .weakCapture(self)
+            .map { time, player in
+                TimeProperties(time: time, timeRange: player.seekableTimeRange())
             }
             .eraseToAnyPublisher()
     }
