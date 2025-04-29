@@ -121,11 +121,17 @@ extension CastPlayer {
         targetSeekTimePublisher.send(time)
     }
 
-    func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
+    private func timePublisher(interval: CMTime) -> AnyPublisher<Void, Never> {
+        Timer.publish(every: interval.seconds, on: .main, in: .common)
+            .autoconnect()
+            .map { _ in }
+            .eraseToAnyPublisher()
+    }
+
+    private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest(
             targetSeekTimePublisher,
-            Timer.publish(every: interval.seconds, on: .main, in: .common)
-                .autoconnect(),
+            timePublisher(interval: interval)
         )
         .compactMap { [weak self] targetSeekTime, _ in
             guard let self else { return nil }
