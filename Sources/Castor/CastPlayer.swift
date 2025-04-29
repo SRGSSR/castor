@@ -12,9 +12,9 @@ import SwiftUI
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
+    private var targetSeekTimePublisher = CurrentValueSubject<CMTime?, Never>(nil)
 
     @Published private var mediaStatus: GCKMediaStatus?
-    @Published private var targetSeekTime: CMTime?
 
     /// The queue managing player items.
     public let queue: CastQueue
@@ -108,7 +108,7 @@ public extension CastPlayer {
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        targetSeekTime = time
+        updateSeekTargetTime(to: time)
         let options = GCKMediaSeekOptions()
         options.interval = time.seconds
         let request = remoteMediaClient.seek(with: options)
@@ -117,9 +117,13 @@ public extension CastPlayer {
 }
 
 extension CastPlayer {
+    func updateSeekTargetTime(to time: CMTime?) {
+        targetSeekTimePublisher.send(time)
+    }
+
     func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest(
-            $targetSeekTime,
+            targetSeekTimePublisher,
             Timer.publish(every: interval.seconds, on: .main, in: .common)
                 .autoconnect(),
         )
@@ -150,17 +154,17 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 extension CastPlayer: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
-        targetSeekTime = nil
+        updateSeekTargetTime(to: nil)
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        targetSeekTime = nil
+        updateSeekTargetTime(to: nil)
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        targetSeekTime = nil
+        updateSeekTargetTime(to: nil)
     }
 }
 
