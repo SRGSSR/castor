@@ -103,10 +103,9 @@ public final class ProgressTracker: ObservableObject {
     }
 
     private static func currentProgressPublisher(for player: CastPlayer, interval: CMTime) -> AnyPublisher<Float?, Never> {
-        Timer.publish(every: interval.seconds, on: .main, in: .common)
-            .autoconnect()
-            .map { _ in
-                progress(for: player.time(), in: player.seekableTimeRange())
+        player.timePropertiesPublisher(interval: interval)
+            .map { properties in
+                progress(for: properties.time, in: properties.timeRange)
             }
             .eraseToAnyPublisher()
     }
@@ -115,5 +114,22 @@ public final class ProgressTracker: ObservableObject {
         guard let player else { return }
         let time = Self.time(forProgress: progress, in: timeRange)
         player.seek(to: time)
+    }
+}
+
+struct TimeProperties {
+    let time: CMTime
+    let timeRange: CMTimeRange
+}
+
+extension CastPlayer {
+    func timePropertiesPublisher(interval: CMTime) -> AnyPublisher<TimeProperties, Never> {
+        Timer.publish(every: interval.seconds, on: .main, in: .common)
+            .autoconnect()
+            .compactMap { [weak self] _ in
+                guard let self else { return nil }
+                return .init(time: time(), timeRange: seekableTimeRange())
+            }
+            .eraseToAnyPublisher()
     }
 }
