@@ -125,12 +125,14 @@ extension CastPlayer {
         Timer.publish(every: interval.seconds, on: .main, in: .common)
             .autoconnect()
             .map { _ in }
+            .prepend(())
             .eraseToAnyPublisher()
     }
 
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
-        Publishers.CombineLatest(
+        Publishers.CombineLatest3(
             targetSeekTimePublisher,
+            $mediaStatus,
             pulsePublisher(interval: interval)
         )
         .weakCapture(self)
