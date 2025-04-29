@@ -77,11 +77,13 @@ public final class ProgressTracker: ObservableObject {
             guard let player else { return Just(nil).eraseToAnyPublisher() }
             return Publishers
                 .CombineLatest(
-                    Self.currentProgressPublisher(for: player, interval: interval),
+                    player.timePropertiesPublisher(interval: interval),
                     $isInteracting
                 )
-                .filter { !$1 && !player.isSeeking }
-                .map(\.0)
+                .filter { !$1 }
+                .map { properties, _ in
+                    Self.progress(for: properties.time, in: properties.timeRange)
+                }
                 .eraseToAnyPublisher()
         }
         .switchToLatest()
@@ -102,34 +104,9 @@ public final class ProgressTracker: ObservableObject {
         return timeRange.start + CMTimeMultiplyByFloat64(timeRange.duration, multiplier: Float64(progress))
     }
 
-    private static func currentProgressPublisher(for player: CastPlayer, interval: CMTime) -> AnyPublisher<Float?, Never> {
-        player.timePropertiesPublisher(interval: interval)
-            .map { properties in
-                progress(for: properties.time, in: properties.timeRange)
-            }
-            .eraseToAnyPublisher()
-    }
-
     private func seek(to progress: Float) {
         guard let player else { return }
         let time = Self.time(forProgress: progress, in: timeRange)
         player.seek(to: time)
-    }
-}
-
-struct TimeProperties {
-    let time: CMTime
-    let timeRange: CMTimeRange
-}
-
-extension CastPlayer {
-    func timePropertiesPublisher(interval: CMTime) -> AnyPublisher<TimeProperties, Never> {
-        Timer.publish(every: interval.seconds, on: .main, in: .common)
-            .autoconnect()
-            .compactMap { [weak self] _ in
-                guard let self else { return nil }
-                return .init(time: time(), timeRange: seekableTimeRange())
-            }
-            .eraseToAnyPublisher()
     }
 }

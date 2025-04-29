@@ -14,9 +14,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     @Published private var mediaStatus: GCKMediaStatus?
-
-    private weak var seekRequest: GCKRequest?
-    private(set) var isSeeking = false
+    @Published private var targetSeekTime: CMTime?
 
     /// The queue managing player items.
     public let queue: CastQueue
@@ -78,7 +76,7 @@ public extension CastPlayer {
 
     /// Returns if the player is busy.
     var isBusy: Bool {
-        state == .buffering || state == .loading || isSeeking
+        state == .buffering || state == .loading
     }
 
     /// Time.
@@ -110,11 +108,35 @@ public extension CastPlayer {
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        isSeeking = true
+        targetSeekTime = time
         let options = GCKMediaSeekOptions()
         options.interval = time.seconds
-        seekRequest = remoteMediaClient.seek(with: options)
-        seekRequest?.delegate = self
+        let request = remoteMediaClient.seek(with: options)
+        request.delegate = self
+    }
+}
+
+extension CastPlayer {
+    func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
+        Publishers.CombineLatest(
+            $targetSeekTime,
+            Timer.publish(every: interval.seconds, on: .main, in: .common)
+                .autoconnect(),
+        )
+        .compactMap { [weak self] targetSeekTime, _ in
+            guard let self else { return nil }
+            return targetSeekTime ?? time()
+        }
+        .eraseToAnyPublisher()
+    }
+
+    func timePropertiesPublisher(interval: CMTime) -> AnyPublisher<TimeProperties, Never> {
+        smoothTimePublisher(interval: interval)
+            .compactMap { [weak self] time in
+                guard let self else { return nil }
+                return .init(time: time, timeRange: seekableTimeRange())
+            }
+            .eraseToAnyPublisher()
     }
 }
 
@@ -128,17 +150,17 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 extension CastPlayer: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
-        isSeeking = false
+        targetSeekTime = nil
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        isSeeking = false
+        targetSeekTime = nil
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        isSeeking = false
+        targetSeekTime = nil
     }
 }
 
