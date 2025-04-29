@@ -74,9 +74,13 @@ public extension CastPlayer {
         mediaStatus?.mediaInformation
     }
 
+    var isSeeking: Bool {
+        targetSeekTime != nil
+    }
+
     /// Returns if the player is busy.
     var isBusy: Bool {
-        state == .buffering || state == .loading
+        state == .buffering || state == .loading || isSeeking
     }
 
     /// Time.
