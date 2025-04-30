@@ -72,7 +72,7 @@ public final class ProgressTracker: ObservableObject {
     }
 
     /// Creates a progress tracker updating its progress at the specified interval.
-    /// 
+    ///
     /// - Parameter interval: The interval at which progress must be updated, according to progress of the current
     ///
     /// Additional updates will happen when time jumps or when playback starts or stops.
@@ -94,16 +94,16 @@ public final class ProgressTracker: ObservableObject {
         .assign(to: &$_progress)
     }
 
-    static func progress(for time: CMTime, in timeRange: CMTimeRange) -> Float? {
+    private static func progress(for time: CMTime, in timeRange: CMTimeRange) -> Float? {
         guard time.isValid, timeRange.isValidAndNotEmpty else { return nil }
         return Float((time - timeRange.start).seconds / timeRange.duration.seconds)
     }
 
-    static func validProgress(_ progress: Float?, in range: ClosedRange<Float>) -> Float {
+    private static func validProgress(_ progress: Float?, in range: ClosedRange<Float>) -> Float {
         (progress ?? 0).clamped(to: range)
     }
 
-    static func time(forProgress progress: Float?, in timeRange: CMTimeRange) -> CMTime {
+    private static func time(forProgress progress: Float?, in timeRange: CMTimeRange) -> CMTime {
         guard let progress else { return .invalid }
         return timeRange.start + CMTimeMultiplyByFloat64(timeRange.duration, multiplier: Float64(progress))
     }
