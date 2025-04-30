@@ -2,8 +2,16 @@
 
 This document lists known issues affecting Castor:
 
-- Entries with a feedback number (`FBxxxxxxxx`) have been reported to Apple and are pending resolution in future iOS updates.  
+- Entries with a feedback number (`FBxxxxxxxx`) have been reported to Apple and are pending resolution in future iOS updates.
 - Issues with a numeric identifier have been filed on the [Google Cast issue tracker](https://issuetracker.google.com/issues?q=componentid:190205%20status:open&s=modified_time:desc) and may be addressed in upcoming Google Cast SDK updates.
+
+## Incorrect time ranges and progress reporting for HLS live DVR streams ([397112872](https://issuetracker.google.com/issues/397112872))
+
+HLS live DVR streams report incorrect time ranges, which in turn causes inaccurate progress reporting for these streams.
+
+### Workaround
+
+No workaround is available yet.
 
 ## Items not updated during scrolling ([412588110](https://issuetracker.google.com/issues/412588110))
 

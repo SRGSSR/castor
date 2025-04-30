@@ -12,6 +12,7 @@ import SwiftUI
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
+    private var targetSeekTimePublisher = CurrentValueSubject<CMTime?, Never>(nil)
 
     @Published private var mediaStatus: GCKMediaStatus?
 
@@ -102,10 +103,77 @@ public extension CastPlayer {
     }
 }
 
+public extension CastPlayer {
+    /// Performs a seek to a given time.
+    ///
+    /// - Parameter time: The time to reach.
+    func seek(to time: CMTime) {
+        updateSeekTargetTime(to: time)
+        let options = GCKMediaSeekOptions()
+        options.interval = time.seconds
+        let request = remoteMediaClient.seek(with: options)
+        request.delegate = self
+    }
+}
+
+extension CastPlayer {
+    func updateSeekTargetTime(to time: CMTime?) {
+        targetSeekTimePublisher.send(time)
+    }
+
+    private func pulsePublisher(interval: CMTime) -> AnyPublisher<Void, Never> {
+        Timer.publish(every: interval.seconds, on: .main, in: .common)
+            .autoconnect()
+            .map { _ in }
+            .prepend(())
+            .eraseToAnyPublisher()
+    }
+
+    private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
+        Publishers.CombineLatest3(
+            targetSeekTimePublisher,
+            $mediaStatus,
+            pulsePublisher(interval: interval)
+        )
+        .weakCapture(self)
+        .map { ($0.0, $1) }
+        .map { targetSeekTime, player in
+            targetSeekTime ?? player.time()
+        }
+        .eraseToAnyPublisher()
+    }
+
+    func timePropertiesPublisher(interval: CMTime) -> AnyPublisher<TimeProperties, Never> {
+        smoothTimePublisher(interval: interval)
+            .weakCapture(self)
+            .map { time, player in
+                TimeProperties(time: time, timeRange: player.seekableTimeRange())
+            }
+            .eraseToAnyPublisher()
+    }
+}
+
 extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
+    }
+}
+
+extension CastPlayer: GCKRequestDelegate {
+    // swiftlint:disable:next missing_docs
+    public func requestDidComplete(_ request: GCKRequest) {
+        updateSeekTargetTime(to: nil)
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        updateSeekTargetTime(to: nil)
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        updateSeekTargetTime(to: nil)
     }
 }
 

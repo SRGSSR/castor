@@ -50,10 +50,10 @@ struct PlaylistSelectionView: View {
 
     private func list() -> some View {
         List(selection: $selectedMedias) {
-            section("HLS", medias: kHlsUrlMedias)
-            section("DASH", medias: kDashUrlMedias)
+            section("HLS streams", medias: kHlsUrlMedias)
+            section("DASH streams", medias: kDashUrlMedias)
             if UserDefaults.standard.receiver == .srgssr {
-                section("URN", medias: kUrnMedias)
+                section("URN-based streams", medias: kUrnMedias)
             }
         }
     }

@@ -24,6 +24,7 @@ struct ControlsView: View {
         return formatter
     }()
 
+    @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 10))
     @ObservedObject var player: CastPlayer
     let device: CastDevice?
 
@@ -33,6 +34,7 @@ struct ControlsView: View {
             visualView()
             controls()
         }
+        .bind(progressTracker, to: player)
     }
 
     private var imageName: String {
@@ -46,13 +48,6 @@ struct ControlsView: View {
     private var imageUrl: URL? {
         guard let image = player.mediaInformation?.metadata?.images().first as? GCKImage else { return nil }
         return image.url
-    }
-
-    private var progress: Float? {
-        let time = player.time()
-        let timeRange = player.seekableTimeRange()
-        guard time.isValid, timeRange.isValid, !timeRange.isEmpty else { return nil }
-        return Float(time.seconds / timeRange.duration.seconds).clamped(to: 0...1)
     }
 
     private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
@@ -90,19 +85,32 @@ struct ControlsView: View {
     }
 
     @ViewBuilder
-    private func progressView() -> some View {
-        HStack {
-            if let elapsedTime = Self.formattedTime(player.time(), duration: player.seekableTimeRange().duration) {
-                Text(elapsedTime)
-            }
-            if let progress {
-                ProgressView(value: progress)
-            }
-            if let totalTime = Self.formattedTime(player.seekableTimeRange().duration, duration: player.seekableTimeRange().duration) {
-                Text(totalTime)
-            }
+    private func slider() -> some View {
+        if progressTracker.isProgressAvailable {
+            Slider(
+                progressTracker: progressTracker,
+                label: {
+                    Text("Current position")
+                },
+                minimumValueLabel: {
+                    label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                },
+                maximumValueLabel: {
+                    label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                }
+            )
+            .frame(height: 30)
         }
-        .frame(height: 30)
+    }
+
+    @ViewBuilder
+    private func label(withText text: String?) -> some View {
+        if let text {
+            Text(text)
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundColor(.white)
+        }
     }
 
     private func playbackButton() -> some View {
@@ -155,7 +163,7 @@ struct ControlsView: View {
 
     private func controls() -> some View {
         VStack {
-            progressView()
+            slider()
             buttons()
         }
         .padding()
