@@ -114,69 +114,6 @@ struct ControlsView: View {
         }
     }
 
-    private func skipBackwardButton() -> some View {
-        Button(action: player.skipBackward) {
-            Image(systemName: "gobackward.10")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 60)
-        }
-        .frame(width: 60)
-        .disabled(!player.canSkipBackward())
-    }
-
-    private func playbackButton() -> some View {
-        Button(action: player.togglePlayPause) {
-            Image(systemName: imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 60)
-        }
-        .frame(width: 60)
-    }
-
-    private func stopButton() -> some View {
-        Button(action: player.stop) {
-            Image(systemName: "stop.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 60)
-        }
-        .frame(width: 60)
-    }
-
-    private func skipForwardButton() -> some View {
-        Button(action: player.skipForward) {
-            Image(systemName: "goforward.10")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 60)
-        }
-        .frame(width: 60)
-        .disabled(!player.canSkipBackward())
-    }
-
-    private func skipToDefaultButton() -> some View {
-        Button(action: player.skipToDefault) {
-            Image(systemName: "forward.end.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 60)
-        }
-        .frame(width: 60)
-        .disabled(!player.canSkipToDefault())
-    }
-
-    private func buttons() -> some View {
-        HStack(spacing: 40) {
-            skipBackwardButton()
-            playbackButton()
-            stopButton()
-            skipForwardButton()
-            skipToDefaultButton()
-        }
-    }
-
     private func informationView() -> some View {
         VStack {
             if let title {
@@ -204,5 +141,72 @@ struct ControlsView: View {
             buttons()
         }
         .padding()
+    }
+}
+
+private extension ControlsView {
+    private static let side: CGFloat = 40
+
+    private func skipBackwardButton() -> some View {
+        Button(action: player.skipBackward) {
+            Image(systemName: "gobackward.10")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: Self.side)
+        }
+        .frame(width: Self.side)
+        .disabled(!player.canSkipBackward())
+    }
+
+    private func playbackButton() -> some View {
+        Button(action: player.togglePlayPause) {
+            Image(systemName: imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: Self.side)
+        }
+        .frame(width: Self.side)
+    }
+
+    private func stopButton() -> some View {
+        Button(action: player.stop) {
+            Image(systemName: "stop.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: Self.side)
+        }
+        .frame(width: Self.side)
+    }
+
+    private func skipForwardButton() -> some View {
+        Button(action: player.skipForward) {
+            Image(systemName: "goforward.10")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: Self.side)
+        }
+        .frame(width: Self.side)
+        .disabled(!player.canSkipBackward())
+    }
+
+    private func skipToDefaultButton() -> some View {
+        Button(action: player.skipToDefault) {
+            Image(systemName: "forward.end.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: Self.side)
+        }
+        .frame(width: Self.side)
+        .disabled(!player.canSkipToDefault())
+    }
+
+    func buttons() -> some View {
+        HStack(spacing: 20) {
+            skipBackwardButton()
+            playbackButton()
+            stopButton()
+            skipForwardButton()
+            skipToDefaultButton()
+        }
     }
 }
