@@ -137,6 +137,18 @@ public extension CastPlayer {
         let currentTime = seekTargetTime ?? time()
         seek(to: CMTimeClampToRange(currentTime + .init(value: 10, timescale: 1), range: seekableTimeRange()))
     }
+
+    /// Skips in a given direction.
+    ///
+    /// - Parameter skip: The skip direction.
+    func skip(_ skip: Skip) {
+        switch skip {
+        case .backward:
+            skipBackward()
+        case .forward:
+            skipForward()
+        }
+    }
 }
 
 extension CastPlayer {
