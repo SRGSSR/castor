@@ -84,23 +84,24 @@ struct ControlsView: View {
             .animation(.default, value: player.isBusy)
     }
 
-    @ViewBuilder
     private func slider() -> some View {
-        if progressTracker.isProgressAvailable {
-            Slider(
-                progressTracker: progressTracker,
-                label: {
-                    Text("Current position")
-                },
-                minimumValueLabel: {
-                    label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
-                },
-                maximumValueLabel: {
-                    label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
-                }
-            )
-            .frame(height: 30)
+        ZStack {
+            if progressTracker.isProgressAvailable {
+                Slider(
+                    progressTracker: progressTracker,
+                    label: {
+                        Text("Current position")
+                    },
+                    minimumValueLabel: {
+                        label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                    },
+                    maximumValueLabel: {
+                        label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                    }
+                )
+            }
         }
+        .frame(height: 30)
     }
 
     @ViewBuilder
