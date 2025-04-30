@@ -149,6 +149,21 @@ public extension CastPlayer {
             skipForward()
         }
     }
+
+    /// Returns the current item to its default position.
+    ///
+    /// For a livestream supporting DVR the default position corresponds to the live edge.
+    func skipToDefault() {
+        guard let mediaInformation else { return }
+        switch mediaInformation.streamType {
+        case .live:
+            seek(to: seekableTimeRange().end)
+        case .buffered:
+            seek(to: seekableTimeRange().start)
+        default:
+            return
+        }
+    }
 }
 
 extension CastPlayer {

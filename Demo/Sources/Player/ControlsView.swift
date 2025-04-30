@@ -154,12 +154,23 @@ struct ControlsView: View {
         .frame(width: 60)
     }
 
+    private func skipToDefaultButton() -> some View {
+        Button(action: player.skipToDefault) {
+            Image(systemName: "forward.end.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
+        }
+        .frame(width: 60)
+    }
+
     private func buttons() -> some View {
         HStack(spacing: 40) {
             skipBackwardButton()
             playbackButton()
             stopButton()
             skipForwardButton()
+            skipToDefaultButton()
         }
     }
 
