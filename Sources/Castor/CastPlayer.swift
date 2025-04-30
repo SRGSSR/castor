@@ -114,13 +114,13 @@ public extension CastPlayer {
         let request = remoteMediaClient.seek(with: options)
         request.delegate = self
     }
+
+    private func updateSeekTargetTime(to time: CMTime?) {
+        targetSeekTimePublisher.send(time)
+    }
 }
 
 extension CastPlayer {
-    func updateSeekTargetTime(to time: CMTime?) {
-        targetSeekTimePublisher.send(time)
-    }
-
     private func pulsePublisher(interval: CMTime) -> AnyPublisher<Void, Never> {
         Timer.publish(every: interval.seconds, on: .main, in: .common)
             .autoconnect()
