@@ -125,6 +125,77 @@ public extension CastPlayer {
     }
 }
 
+extension CastPlayer {
+    var backwardSkipTime: CMTime {
+        CMTime(seconds: -10, preferredTimescale: 1)
+    }
+
+    var forwardSkipTime: CMTime {
+        CMTime(seconds: 10, preferredTimescale: 1)
+    }
+}
+
+public extension CastPlayer {
+    /// Checks whether seeking to a specific time is possible.
+    ///
+    /// - Parameter time: The time to seek to.
+    /// - Returns: `true` if possible.
+    func canSeek(to time: CMTime) -> Bool {
+        let seekableTimeRange = seekableTimeRange()
+        guard seekableTimeRange.isValidAndNotEmpty else { return false }
+        return seekableTimeRange.start <= time && time <= seekableTimeRange.end
+    }
+
+    /// Checks whether skipping backward is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canSkipBackward() -> Bool {
+        seekableTimeRange().isValidAndNotEmpty
+    }
+
+    /// Checks whether skipping forward is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canSkipForward() -> Bool {
+        let seekableTimeRange = seekableTimeRange()
+        guard seekableTimeRange.isValidAndNotEmpty else { return false }
+        let currentTime = seekTargetTime ?? time()
+        return canSeek(to: currentTime + forwardSkipTime)
+    }
+
+    /// Returns whether the current player item player can be returned to its default position.
+    ///
+    /// - Returns: `true` if skipping to the default position is possible.
+    ///
+    /// For a livestream supporting DVR this method can be used to check whether the stream is played at the live
+    /// edge or not.
+    func canSkipToDefault() -> Bool {
+        guard let mediaInformation else { return false }
+        switch mediaInformation.streamType {
+        case .live where seekableTimeRange().isValidAndNotEmpty:
+            return time() < seekableTimeRange().end - forwardSkipTime
+        case .live:
+            return false
+        case .buffered:
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// Checks whether skipping in some direction is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canSkip(_ skip: Skip) -> Bool {
+        switch skip {
+        case .backward:
+            return canSkipBackward()
+        case .forward:
+            return canSkipForward()
+        }
+    }
+}
+
 public extension CastPlayer {
     /// Skips backward.
     func skipBackward() {
