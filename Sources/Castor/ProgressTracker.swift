@@ -10,8 +10,12 @@ import GoogleCast
 
 /// An observable object tracking playback progress.
 public final class ProgressTracker: ObservableObject {
-    @Published var player: CastPlayer?
     @Published private var _progress: Float?
+
+    /// The player to attach.
+    ///
+    /// Use `View.bind(_:to:)` in SwiftUI code.
+    @Published public var player: CastPlayer?
 
     /// A Boolean describing whether user interaction is currently changing the progress value.
     @Published public var isInteracting = false {
