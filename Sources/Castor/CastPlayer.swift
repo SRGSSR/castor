@@ -104,19 +104,24 @@ public extension CastPlayer {
 }
 
 public extension CastPlayer {
+    private var seekTargetTime: CMTime? {
+        get {
+            targetSeekTimePublisher.value
+        }
+        set {
+            targetSeekTimePublisher.send(newValue)
+        }
+    }
+
     /// Performs a seek to a given time.
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        updateSeekTargetTime(to: time)
+        seekTargetTime = time
         let options = GCKMediaSeekOptions()
         options.interval = time.seconds
         let request = remoteMediaClient.seek(with: options)
         request.delegate = self
-    }
-
-    private func updateSeekTargetTime(to time: CMTime?) {
-        targetSeekTimePublisher.send(time)
     }
 }
 
@@ -163,17 +168,17 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 extension CastPlayer: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
-        updateSeekTargetTime(to: nil)
+        seekTargetTime = nil
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        updateSeekTargetTime(to: nil)
+        seekTargetTime = nil
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        updateSeekTargetTime(to: nil)
+        seekTargetTime = nil
     }
 }
 
