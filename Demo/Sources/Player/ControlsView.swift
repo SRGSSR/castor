@@ -110,7 +110,7 @@ struct ControlsView: View {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
-                .foregroundColor(.white)
+                .foregroundColor(.primary)
         }
     }
 
