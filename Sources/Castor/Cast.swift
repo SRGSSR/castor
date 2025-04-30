@@ -18,11 +18,12 @@ public final class Cast: NSObject, ObservableObject {
 
     private var currentSession: GCKCastSession? {
         didSet {
-            player = .init(remoteMediaClient: currentSession?.remoteMediaClient)
+            player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
         }
     }
 
     private var targetDevice: CastDevice?
+    private let configuration: CastConfiguration
 
     /// The current device.
     ///
@@ -61,12 +62,15 @@ public final class Cast: NSObject, ObservableObject {
     @Published public private(set) var connectionState: GCKConnectionState
 
     /// Default initializer.
-    override public init() {
+    /// 
+    /// - Parameter configuration: The configuration to apply to the cast.
+    public init(configuration: CastConfiguration = .default) {
+        self.configuration = configuration
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
         currentDevice = currentSession?.device.toCastDevice()
-        player = .init(remoteMediaClient: currentSession?.remoteMediaClient)
+        player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
         super.init()
 

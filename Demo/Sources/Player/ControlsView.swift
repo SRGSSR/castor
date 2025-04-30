@@ -84,23 +84,24 @@ struct ControlsView: View {
             .animation(.default, value: player.isBusy)
     }
 
-    @ViewBuilder
     private func slider() -> some View {
-        if progressTracker.isProgressAvailable {
-            Slider(
-                progressTracker: progressTracker,
-                label: {
-                    Text("Current position")
-                },
-                minimumValueLabel: {
-                    label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
-                },
-                maximumValueLabel: {
-                    label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
-                }
-            )
-            .frame(height: 30)
+        ZStack {
+            if progressTracker.isProgressAvailable {
+                Slider(
+                    progressTracker: progressTracker,
+                    label: {
+                        Text("Current position")
+                    },
+                    minimumValueLabel: {
+                        label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                    },
+                    maximumValueLabel: {
+                        label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                    }
+                )
+            }
         }
+        .frame(height: 30)
     }
 
     @ViewBuilder
@@ -109,8 +110,19 @@ struct ControlsView: View {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
-                .foregroundColor(.white)
+                .foregroundColor(.primary)
         }
+    }
+
+    private func skipBackwardButton() -> some View {
+        Button(action: player.skipBackward) {
+            Image(systemName: "gobackward.10")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
+        }
+        .frame(width: 60)
+        .disabled(!player.canSkipBackward())
     }
 
     private func playbackButton() -> some View {
@@ -133,10 +145,35 @@ struct ControlsView: View {
         .frame(width: 60)
     }
 
+    private func skipForwardButton() -> some View {
+        Button(action: player.skipForward) {
+            Image(systemName: "goforward.10")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
+        }
+        .frame(width: 60)
+        .disabled(!player.canSkipBackward())
+    }
+
+    private func skipToDefaultButton() -> some View {
+        Button(action: player.skipToDefault) {
+            Image(systemName: "forward.end.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
+        }
+        .frame(width: 60)
+        .disabled(!player.canSkipToDefault())
+    }
+
     private func buttons() -> some View {
         HStack(spacing: 40) {
+            skipBackwardButton()
             playbackButton()
             stopButton()
+            skipForwardButton()
+            skipToDefaultButton()
         }
     }
 

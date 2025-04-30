@@ -30,15 +30,17 @@ public struct CastAsset {
 
     private let kind: Kind
     private let metadata: CastMetadata
+    private let configuration: PlaybackConfiguration
 
     /// A simple asset which can be played directly.
     ///
     /// - Parameters:
     ///   - url: The URL to be played.
     ///   - metadata: The metadata associated with the asset.
+    ///   - configuration: The playback configuration.
     /// - Returns: The asset.
-    public static func simple(url: URL, metadata: CastMetadata) -> Self {
-        .init(kind: .simple(url), metadata: metadata)
+    public static func simple(url: URL, metadata: CastMetadata, configuration: PlaybackConfiguration = .default) -> Self {
+        .init(kind: .simple(url), metadata: metadata, configuration: configuration)
     }
 
     /// A custom asset represented by some identifier..
@@ -47,14 +49,15 @@ public struct CastAsset {
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     /// - Returns: The asset.
-    public static func custom(identifier: String, metadata: CastMetadata) -> Self {
-        .init(kind: .custom(identifier), metadata: metadata)
+    public static func custom(identifier: String, metadata: CastMetadata, configuration: PlaybackConfiguration = .default) -> Self {
+        .init(kind: .custom(identifier), metadata: metadata, configuration: configuration)
     }
 
     func rawItem() -> GCKMediaQueueItem {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = mediaInformation()
-        builder.autoplay = true
+        builder.autoplay = configuration.autoplay
+        builder.startTime = configuration.startTime.seconds
         return builder.build()
     }
 

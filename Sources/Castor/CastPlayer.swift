@@ -19,10 +19,13 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// The queue managing player items.
     public let queue: CastQueue
 
-    init?(remoteMediaClient: GCKRemoteMediaClient?) {
+    let configuration: CastConfiguration
+
+    init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
 
         self.remoteMediaClient = remoteMediaClient
+        self.configuration = configuration
         mediaStatus = remoteMediaClient.mediaStatus
         queue = .init(remoteMediaClient: remoteMediaClient)
 
@@ -104,11 +107,20 @@ public extension CastPlayer {
 }
 
 public extension CastPlayer {
+    private var seekTargetTime: CMTime? {
+        get {
+            targetSeekTimePublisher.value
+        }
+        set {
+            targetSeekTimePublisher.send(newValue)
+        }
+    }
+
     /// Performs a seek to a given time.
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        updateSeekTargetTime(to: time)
+        seekTargetTime = time
         let options = GCKMediaSeekOptions()
         options.interval = time.seconds
         let request = remoteMediaClient.seek(with: options)
@@ -117,10 +129,118 @@ public extension CastPlayer {
 }
 
 extension CastPlayer {
-    func updateSeekTargetTime(to time: CMTime?) {
-        targetSeekTimePublisher.send(time)
+    var backwardSkipTime: CMTime {
+        CMTime(seconds: -configuration.backwardSkipInterval, preferredTimescale: 1)
     }
 
+    var forwardSkipTime: CMTime {
+        CMTime(seconds: configuration.forwardSkipInterval, preferredTimescale: 1)
+    }
+}
+
+public extension CastPlayer {
+    /// Checks whether seeking to a specific time is possible.
+    ///
+    /// - Parameter time: The time to seek to.
+    /// - Returns: `true` if possible.
+    func canSeek(to time: CMTime) -> Bool {
+        let seekableTimeRange = seekableTimeRange()
+        guard seekableTimeRange.isValidAndNotEmpty else { return false }
+        return seekableTimeRange.start <= time && time <= seekableTimeRange.end
+    }
+
+    /// Checks whether skipping backward is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canSkipBackward() -> Bool {
+        seekableTimeRange().isValidAndNotEmpty
+    }
+
+    /// Checks whether skipping forward is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canSkipForward() -> Bool {
+        let seekableTimeRange = seekableTimeRange()
+        guard seekableTimeRange.isValidAndNotEmpty else { return false }
+        let currentTime = seekTargetTime ?? time()
+        return canSeek(to: currentTime + forwardSkipTime)
+    }
+
+    /// Returns whether the current player item player can be returned to its default position.
+    ///
+    /// - Returns: `true` if skipping to the default position is possible.
+    ///
+    /// For a livestream supporting DVR this method can be used to check whether the stream is played at the live
+    /// edge or not.
+    func canSkipToDefault() -> Bool {
+        guard let mediaInformation else { return false }
+        switch mediaInformation.streamType {
+        case .live where seekableTimeRange().isValidAndNotEmpty:
+            return time() < seekableTimeRange().end - forwardSkipTime
+        case .live:
+            return false
+        case .buffered:
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// Checks whether skipping in some direction is possible.
+    ///
+    /// - Returns: `true` if possible.
+    func canSkip(_ skip: Skip) -> Bool {
+        switch skip {
+        case .backward:
+            return canSkipBackward()
+        case .forward:
+            return canSkipForward()
+        }
+    }
+}
+
+public extension CastPlayer {
+    /// Skips backward.
+    func skipBackward() {
+        let currentTime = seekTargetTime ?? time()
+        seek(to: CMTimeClampToRange(currentTime + backwardSkipTime, range: seekableTimeRange()))
+    }
+
+    /// Skips forward.
+    func skipForward() {
+        let currentTime = seekTargetTime ?? time()
+        seek(to: CMTimeClampToRange(currentTime + forwardSkipTime, range: seekableTimeRange()))
+    }
+
+    /// Skips in a given direction.
+    ///
+    /// - Parameter skip: The skip direction.
+    func skip(_ skip: Skip) {
+        switch skip {
+        case .backward:
+            skipBackward()
+        case .forward:
+            skipForward()
+        }
+    }
+
+    /// Returns the current item to its default position.
+    ///
+    /// For a livestream supporting DVR the default position corresponds to the live edge.
+    func skipToDefault() {
+        guard let mediaInformation else { return }
+        switch mediaInformation.streamType {
+        case .live:
+            seek(to: seekableTimeRange().end)
+        case .buffered:
+            seek(to: seekableTimeRange().start)
+        default:
+            return
+        }
+    }
+}
+
+extension CastPlayer {
     private func pulsePublisher(interval: CMTime) -> AnyPublisher<Void, Never> {
         Timer.publish(every: interval.seconds, on: .main, in: .common)
             .autoconnect()
@@ -163,17 +283,17 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 extension CastPlayer: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
-        updateSeekTargetTime(to: nil)
+        seekTargetTime = nil
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        updateSeekTargetTime(to: nil)
+        seekTargetTime = nil
     }
 
     // swiftlint:disable:next missing_docs
     public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        updateSeekTargetTime(to: nil)
+        seekTargetTime = nil
     }
 }
 
