@@ -125,6 +125,20 @@ public extension CastPlayer {
     }
 }
 
+public extension CastPlayer {
+    /// Skips backward.
+    func skipBackward() {
+        let currentTime = seekTargetTime ?? time()
+        seek(to: CMTimeClampToRange(currentTime - .init(value: 10, timescale: 1), range: seekableTimeRange()))
+    }
+
+    /// Skips forward.
+    func skipForward() {
+        let currentTime = seekTargetTime ?? time()
+        seek(to: CMTimeClampToRange(currentTime + .init(value: 10, timescale: 1), range: seekableTimeRange()))
+    }
+}
+
 extension CastPlayer {
     private func pulsePublisher(interval: CMTime) -> AnyPublisher<Void, Never> {
         Timer.publish(every: interval.seconds, on: .main, in: .common)

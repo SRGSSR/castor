@@ -113,6 +113,16 @@ struct ControlsView: View {
         }
     }
 
+    private func skipBackwardButton() -> some View {
+        Button(action: player.skipBackward) {
+            Image(systemName: "gobackward.10")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
+        }
+        .frame(width: 60)
+    }
+
     private func playbackButton() -> some View {
         Button(action: player.togglePlayPause) {
             Image(systemName: imageName)
@@ -133,10 +143,22 @@ struct ControlsView: View {
         .frame(width: 60)
     }
 
+    private func skipForwardButton() -> some View {
+        Button(action: player.skipForward) {
+            Image(systemName: "goforward.10")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 60)
+        }
+        .frame(width: 60)
+    }
+
     private func buttons() -> some View {
         HStack(spacing: 40) {
+            skipBackwardButton()
             playbackButton()
             stopButton()
+            skipForwardButton()
         }
     }
 
