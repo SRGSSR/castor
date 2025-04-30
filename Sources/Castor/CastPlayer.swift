@@ -19,10 +19,13 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// The queue managing player items.
     public let queue: CastQueue
 
-    init?(remoteMediaClient: GCKRemoteMediaClient?) {
+    let configuration: CastConfiguration
+
+    init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
 
         self.remoteMediaClient = remoteMediaClient
+        self.configuration = configuration
         mediaStatus = remoteMediaClient.mediaStatus
         queue = .init(remoteMediaClient: remoteMediaClient)
 
@@ -127,11 +130,11 @@ public extension CastPlayer {
 
 extension CastPlayer {
     var backwardSkipTime: CMTime {
-        CMTime(seconds: -10, preferredTimescale: 1)
+        CMTime(seconds: -configuration.backwardSkipInterval, preferredTimescale: 1)
     }
 
     var forwardSkipTime: CMTime {
-        CMTime(seconds: 10, preferredTimescale: 1)
+        CMTime(seconds: configuration.forwardSkipInterval, preferredTimescale: 1)
     }
 }
 
@@ -200,13 +203,13 @@ public extension CastPlayer {
     /// Skips backward.
     func skipBackward() {
         let currentTime = seekTargetTime ?? time()
-        seek(to: CMTimeClampToRange(currentTime - .init(value: 10, timescale: 1), range: seekableTimeRange()))
+        seek(to: CMTimeClampToRange(currentTime + backwardSkipTime, range: seekableTimeRange()))
     }
 
     /// Skips forward.
     func skipForward() {
         let currentTime = seekTargetTime ?? time()
-        seek(to: CMTimeClampToRange(currentTime + .init(value: 10, timescale: 1), range: seekableTimeRange()))
+        seek(to: CMTimeClampToRange(currentTime + forwardSkipTime, range: seekableTimeRange()))
     }
 
     /// Skips in a given direction.
