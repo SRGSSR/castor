@@ -15,11 +15,11 @@ struct ExamplesView: View {
     var body: some View {
         VStack(spacing: 0) {
             List {
-                section("HLS", medias: kHlsUrlMedias)
+                section("HLS streams", medias: kHlsUrlMedias)
                 if cast.player != nil {
-                    section("DASH", medias: kDashUrlMedias)
+                    section("DASH streams", medias: kDashUrlMedias)
                     if UserDefaults.standard.receiver == .srgssr {
-                        section("URN", medias: kUrnMedias)
+                        section("URN-based streams", medias: kUrnMedias)
                     }
                 }
             }
