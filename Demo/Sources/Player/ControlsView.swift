@@ -122,6 +122,7 @@ struct ControlsView: View {
                 .frame(height: 60)
         }
         .frame(width: 60)
+        .disabled(!player.canSkipBackward())
     }
 
     private func playbackButton() -> some View {
@@ -152,6 +153,7 @@ struct ControlsView: View {
                 .frame(height: 60)
         }
         .frame(width: 60)
+        .disabled(!player.canSkipBackward())
     }
 
     private func skipToDefaultButton() -> some View {
@@ -162,6 +164,7 @@ struct ControlsView: View {
                 .frame(height: 60)
         }
         .frame(width: 60)
+        .disabled(!player.canSkipToDefault())
     }
 
     private func buttons() -> some View {
