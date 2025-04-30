@@ -61,7 +61,9 @@ public final class Cast: NSObject, ObservableObject {
     @Published public private(set) var connectionState: GCKConnectionState
 
     /// Default initializer.
-    override public init() {
+    /// 
+    /// - Parameter configuration: The configuration to apply to the cast.
+    public init(configuration: CastConfiguration = .default) {
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
