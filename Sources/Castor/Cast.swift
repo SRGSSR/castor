@@ -79,6 +79,10 @@ public final class Cast: NSObject, ObservableObject {
 
         context.sessionManager.add(self)
 
+        assert(
+            GCKCastContext.isSharedInstanceInitialized(),
+            "Initialize the Cast context by following instructions at https://developers.google.com/cast/docs/ios_sender/integrate"
+        )
         context.sessionManager.publisher(for: \.connectionState)
             .assign(to: &$connectionState)
     }
