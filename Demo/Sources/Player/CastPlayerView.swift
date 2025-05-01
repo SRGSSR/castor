@@ -7,14 +7,6 @@
 import Castor
 import SwiftUI
 
-private struct TimeSlider: View {
-    @ObservedObject var player: CastPlayer
-
-    var body: some View {
-        Slider(value: player.playbackSpeed, in: player.playbackSpeedRange)
-    }
-}
-
 struct CastPlayerView: View {
     @EnvironmentObject private var cast: Cast
 
@@ -22,7 +14,6 @@ struct CastPlayerView: View {
         VStack {
             if let player = cast.player {
                 ControlsView(player: player, device: cast.currentDevice)
-                TimeSlider(player: player)
                 PlaylistView(queue: player.queue)
             }
             else {
