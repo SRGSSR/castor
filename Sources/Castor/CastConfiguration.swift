@@ -31,7 +31,7 @@ public struct CastConfiguration {
     }
 
     /// The skip interval for some direction, in seconds.
-    public func interval(forSkip skip: Skip) -> TimeInterval {
+    public func interval(forSkip skip: CastSkip) -> TimeInterval {
         switch skip {
         case .backward:
             return backwardSkipInterval

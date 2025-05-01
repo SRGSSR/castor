@@ -5,7 +5,7 @@
 //
 
 /// A skip.
-public enum Skip {
+public enum CastSkip {
     /// Backward skip.
     case backward
 

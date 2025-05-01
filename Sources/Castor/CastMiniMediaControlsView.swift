@@ -8,7 +8,7 @@ import GoogleCast
 import SwiftUI
 
 /// A mini media controls view.
-public struct MiniMediaControlsView: UIViewControllerRepresentable {
+public struct CastMiniMediaControlsView: UIViewControllerRepresentable {
     // swiftlint:disable:next missing_docs
     public init() {}
 

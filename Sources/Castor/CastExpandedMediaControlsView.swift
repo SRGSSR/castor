@@ -16,7 +16,7 @@ private struct _ExpandedMediaControlsView: UIViewControllerRepresentable {
 }
 
 /// An expanded media controls view.
-public struct ExpandedMediaControlsView: View {
+public struct CastExpandedMediaControlsView: View {
     // swiftlint:disable:next missing_docs
     public var body: some View {
         _ExpandedMediaControlsView()
