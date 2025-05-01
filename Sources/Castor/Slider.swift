@@ -18,7 +18,7 @@ public extension Slider {
     ///   - maximumValueLabel: A view describing the upper bound.
     ///   - onEditingChanged: A closure called when editing begins or ends.
     init(
-        progressTracker: ProgressTracker,
+        progressTracker: CastProgressTracker,
         @ViewBuilder label: () -> Label,
         @ViewBuilder minimumValueLabel: () -> ValueLabel,
         @ViewBuilder maximumValueLabel: () -> ValueLabel,
@@ -47,7 +47,7 @@ public extension Slider where ValueLabel == EmptyView {
     ///   - label: A view describing the slider purpose.
     ///   - onEditingChanged: A closure called when editing begins or ends.
     init(
-        progressTracker: ProgressTracker,
+        progressTracker: CastProgressTracker,
         @ViewBuilder label: () -> Label,
         onEditingChanged: @escaping (Bool) -> Void = { _ in }
     ) {
@@ -71,7 +71,7 @@ public extension Slider where Label == EmptyView, ValueLabel == EmptyView {
     ///   - progressTracker: The progress tracker.
     ///   - onEditingChanged: A closure called when editing begins or ends.
     init(
-        progressTracker: ProgressTracker,
+        progressTracker: CastProgressTracker,
         onEditingChanged: @escaping (Bool) -> Void = { _ in }
     ) {
         self.init(
