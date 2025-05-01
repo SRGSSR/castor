@@ -30,12 +30,4 @@ extension CastSeek: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         targetTime = nil
     }
-
-    func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        targetTime = nil
-    }
-
-    func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        targetTime = nil
-    }
 }
