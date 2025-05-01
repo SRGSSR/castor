@@ -48,6 +48,7 @@ public struct CastAsset {
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
+    ///   - configuration: The playback configuration.
     /// - Returns: The asset.
     public static func custom(identifier: String, metadata: CastMetadata, configuration: CastPlaybackConfiguration = .default) -> Self {
         .init(kind: .custom(identifier), metadata: metadata, configuration: configuration)
