@@ -12,7 +12,9 @@ import SwiftUI
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
+
     private let seek: CastSeek
+    private let speed: CastPlaybackSpeed
 
     @Published private var mediaStatus: GCKMediaStatus?
     @Published private var _playbackSpeed: Float = 1
@@ -31,11 +33,27 @@ public final class CastPlayer: NSObject, ObservableObject {
         mediaStatus = remoteMediaClient.mediaStatus
 
         seek = .init(remoteMediaClient: remoteMediaClient)
+        speed = .init(remoteMediaClient: remoteMediaClient)
         queue = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
         remoteMediaClient.add(self)
+        configurePlaybackSpeedPublisher()
+    }
+
+    private func configurePlaybackSpeedPublisher() {
+        Publishers.CombineLatest(speed.$targetValue, mediaStatusPlaybackSpeedPublisher())
+            .map { targetSpeed, mediaStatusSpeed in
+                targetSpeed ?? mediaStatusSpeed
+            }
+            .assign(to: &$_playbackSpeed)
+    }
+
+    private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
+        $mediaStatus
+            .map { $0?.playbackRate ?? 1 }
+            .eraseToAnyPublisher()
     }
 
     deinit {
@@ -73,12 +91,12 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The currently applicable playback speed.
     var effectivePlaybackSpeed: Float {
-        mediaStatus?.playbackRate ?? 1
+        _playbackSpeed
     }
 
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
-        0...1
+        0.5...2
     }
 
     /// A binding to read and write the current playback speed.
@@ -97,7 +115,7 @@ public extension CastPlayer {
     /// This value might not be applied immediately or might not be applicable at all. You must check
     /// `effectivePlaybackSpeed` to obtain the actually applied speed.
     func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
-        remoteMediaClient.setPlaybackRate(playbackSpeed)
+        speed.request(for: playbackSpeed)
     }
 }
 
@@ -146,7 +164,7 @@ public extension CastPlayer {
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        seek.request(to: time)
+        seek.request(for: time)
     }
 }
 

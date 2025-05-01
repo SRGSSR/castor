@@ -16,8 +16,8 @@ final class CastSeek: NSObject {
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
     }
-    
-    func request(to time: CMTime) {
+
+    func request(for time: CMTime) {
         targetTime = time
         let options = GCKMediaSeekOptions()
         options.interval = time.seconds

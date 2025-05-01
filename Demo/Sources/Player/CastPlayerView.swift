@@ -14,6 +14,7 @@ struct CastPlayerView: View {
         VStack {
             if let player = cast.player {
                 ControlsView(player: player, device: cast.currentDevice)
+                Slider(value: player.playbackSpeed, in: player.playbackSpeedRange)
                 PlaylistView(queue: player.queue)
             }
             else {
