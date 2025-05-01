@@ -12,7 +12,7 @@ public extension View {
     /// - Parameters:
     ///   - progressTracker: The progress tracker to bind.
     ///   - player: The player to observe.
-    func bind(_ progressTracker: ProgressTracker, to player: CastPlayer?) -> some View {
+    func bind(_ progressTracker: CastProgressTracker, to player: CastPlayer?) -> some View {
         onAppear {
             progressTracker.player = player
         }

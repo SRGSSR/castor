@@ -24,7 +24,7 @@ struct ControlsView: View {
         return formatter
     }()
 
-    @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 10))
+    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
     @ObservedObject var player: CastPlayer
     let device: CastDevice?
 

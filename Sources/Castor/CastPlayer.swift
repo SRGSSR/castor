@@ -189,7 +189,7 @@ public extension CastPlayer {
     /// Checks whether skipping in some direction is possible.
     ///
     /// - Returns: `true` if possible.
-    func canSkip(_ skip: Skip) -> Bool {
+    func canSkip(_ skip: CastSkip) -> Bool {
         switch skip {
         case .backward:
             return canSkipBackward()
@@ -215,7 +215,7 @@ public extension CastPlayer {
     /// Skips in a given direction.
     ///
     /// - Parameter skip: The skip direction.
-    func skip(_ skip: Skip) {
+    func skip(_ skip: CastSkip) {
         switch skip {
         case .backward:
             skipBackward()

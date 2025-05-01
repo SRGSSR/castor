@@ -27,15 +27,15 @@ let package = Package(
                 .process("Resources")
             ],
             plugins: [
-                .plugin(name: "PackageInfoPlugin")
+                .plugin(name: "CastorPackageInfoPlugin")
             ]
         ),
-        .binaryTarget(name: "PackageInfo", path: "Artifacts/PackageInfo.artifactbundle"),
+        .binaryTarget(name: "CastorPackageInfo", path: "Artifacts/PackageInfo.artifactbundle"),
         .plugin(
-            name: "PackageInfoPlugin",
+            name: "CastorPackageInfoPlugin",
             capability: .buildTool(),
             dependencies: [
-                .target(name: "PackageInfo")
+                .target(name: "CastorPackageInfo")
             ]
         ),
         .testTarget(
