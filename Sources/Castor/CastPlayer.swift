@@ -96,7 +96,7 @@ public extension CastPlayer {
 
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
-        0.5...2
+        mediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
     }
 
     /// A binding to read and write the current playback speed.
