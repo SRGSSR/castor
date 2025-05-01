@@ -15,6 +15,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private var targetSeekTimePublisher = CurrentValueSubject<CMTime?, Never>(nil)
 
     @Published private var mediaStatus: GCKMediaStatus?
+    @Published private var _playbackSpeed: Float = 1
 
     /// The queue managing player items.
     public let queue: CastQueue
@@ -63,6 +64,37 @@ public extension CastPlayer {
     /// Stops.
     func stop() {
         remoteMediaClient.stop()
+    }
+}
+
+public extension CastPlayer {
+    /// The currently applicable playback speed.
+    var effectivePlaybackSpeed: Float {
+        mediaStatus?.playbackRate ?? 1
+    }
+
+    /// The currently allowed playback speed range.
+    var playbackSpeedRange: ClosedRange<Float> {
+        0...1
+    }
+
+    /// A binding to read and write the current playback speed.
+    var playbackSpeed: Binding<Float> {
+        .init {
+            self.effectivePlaybackSpeed
+        } set: { newValue in
+            self.setDesiredPlaybackSpeed(newValue)
+        }
+    }
+
+    /// Sets the desired playback speed.
+    ///
+    /// - Parameter playbackSpeed: The playback speed. The default value is 1.
+    ///
+    /// This value might not be applied immediately or might not be applicable at all. You must check
+    /// `effectivePlaybackSpeed` to obtain the actually applied speed.
+    func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
+        remoteMediaClient.setPlaybackRate(playbackSpeed)
     }
 }
 
