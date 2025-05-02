@@ -20,6 +20,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @Published private var mediaStatus: GCKMediaStatus?
     @Published private var _playbackSpeed: Float = 1
+    @Published private var _activeTracks: [CastMediaTrack] = []
 
     /// The queue managing player items.
     public let queue: CastQueue
@@ -43,6 +44,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         remoteMediaClient.add(self)
         configurePlaybackSpeedPublisher()
+        configureActiveTracksPublisher()
     }
 
     private func configurePlaybackSpeedPublisher() {
@@ -53,10 +55,24 @@ public final class CastPlayer: NSObject, ObservableObject {
             .assign(to: &$_playbackSpeed)
     }
 
+    private func configureActiveTracksPublisher() {
+        Publishers.CombineLatest(tracks.$targetTracks, mediaStatusActiveTracksPublisher())
+            .map { targetTracks, mediaStatusActiveTracks in
+                targetTracks ?? mediaStatusActiveTracks
+            }
+            .assign(to: &$_activeTracks)
+    }
+
     private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
         $mediaStatus
             .map { $0?.playbackRate ?? 1 }
             .filter { $0 != 0 }
+            .eraseToAnyPublisher()
+    }
+
+    private func mediaStatusActiveTracksPublisher() -> AnyPublisher<[CastMediaTrack], Never> {
+        $mediaStatus
+            .map { Self.activeMediaTracks(from: $0) }
             .eraseToAnyPublisher()
     }
 
@@ -184,7 +200,7 @@ public extension CastPlayer {
     func selectedMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         switch characteristic {
         case .audible, .legible:
-            guard let track = Self.activeMediaTracks(from: mediaStatus).first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
+            guard let track = _activeTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
             return .on(track)
         default:
             return .off
