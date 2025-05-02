@@ -1,7 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-
+    "%g×" : {
+      "comment" : "Speed multiplier"
+    },
+    "Playback Speed" : {
+      "comment" : "Playback setting menu title"
+    }
   },
   "version" : "1.0"
 }

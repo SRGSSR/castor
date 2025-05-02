@@ -12,9 +12,12 @@ import SwiftUI
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private var targetSeekTimePublisher = CurrentValueSubject<CMTime?, Never>(nil)
+
+    private let seek: CastSeek
+    private let speed: CastPlaybackSpeed
 
     @Published private var mediaStatus: GCKMediaStatus?
+    @Published private var _playbackSpeed: Float = 1
 
     /// The queue managing player items.
     public let queue: CastQueue
@@ -26,12 +29,31 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
+
         mediaStatus = remoteMediaClient.mediaStatus
+
+        seek = .init(remoteMediaClient: remoteMediaClient)
+        speed = .init(remoteMediaClient: remoteMediaClient)
         queue = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
         remoteMediaClient.add(self)
+        configurePlaybackSpeedPublisher()
+    }
+
+    private func configurePlaybackSpeedPublisher() {
+        Publishers.CombineLatest(speed.$targetValue, mediaStatusPlaybackSpeedPublisher())
+            .map { targetSpeed, mediaStatusSpeed in
+                targetSpeed ?? mediaStatusSpeed
+            }
+            .assign(to: &$_playbackSpeed)
+    }
+
+    private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
+        $mediaStatus
+            .map { $0?.playbackRate ?? 1 }
+            .eraseToAnyPublisher()
     }
 
     deinit {
@@ -63,6 +85,37 @@ public extension CastPlayer {
     /// Stops.
     func stop() {
         remoteMediaClient.stop()
+    }
+}
+
+public extension CastPlayer {
+    /// The currently applicable playback speed.
+    var effectivePlaybackSpeed: Float {
+        _playbackSpeed
+    }
+
+    /// The currently allowed playback speed range.
+    var playbackSpeedRange: ClosedRange<Float> {
+        mediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
+    }
+
+    /// A binding to read and write the current playback speed.
+    var playbackSpeed: Binding<Float> {
+        .init {
+            self.effectivePlaybackSpeed
+        } set: { newValue in
+            self.setDesiredPlaybackSpeed(newValue)
+        }
+    }
+
+    /// Sets the desired playback speed.
+    ///
+    /// - Parameter playbackSpeed: The playback speed. The default value is 1.
+    ///
+    /// This value might not be applied immediately or might not be applicable at all. You must check
+    /// `effectivePlaybackSpeed` to obtain the actually applied speed.
+    func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
+        speed.request(for: playbackSpeed)
     }
 }
 
@@ -107,24 +160,11 @@ public extension CastPlayer {
 }
 
 public extension CastPlayer {
-    private var seekTargetTime: CMTime? {
-        get {
-            targetSeekTimePublisher.value
-        }
-        set {
-            targetSeekTimePublisher.send(newValue)
-        }
-    }
-
     /// Performs a seek to a given time.
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        seekTargetTime = time
-        let options = GCKMediaSeekOptions()
-        options.interval = time.seconds
-        let request = remoteMediaClient.seek(with: options)
-        request.delegate = self
+        seek.request(for: time)
     }
 }
 
@@ -162,7 +202,7 @@ public extension CastPlayer {
     func canSkipForward() -> Bool {
         let seekableTimeRange = seekableTimeRange()
         guard seekableTimeRange.isValidAndNotEmpty else { return false }
-        let currentTime = seekTargetTime ?? time()
+        let currentTime = seek.targetTime ?? time()
         return canSeek(to: currentTime + forwardSkipTime)
     }
 
@@ -202,13 +242,13 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Skips backward.
     func skipBackward() {
-        let currentTime = seekTargetTime ?? time()
+        let currentTime = seek.targetTime ?? time()
         seek(to: CMTimeClampToRange(currentTime + backwardSkipTime, range: seekableTimeRange()))
     }
 
     /// Skips forward.
     func skipForward() {
-        let currentTime = seekTargetTime ?? time()
+        let currentTime = seek.targetTime ?? time()
         seek(to: CMTimeClampToRange(currentTime + forwardSkipTime, range: seekableTimeRange()))
     }
 
@@ -251,7 +291,7 @@ extension CastPlayer {
 
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest3(
-            targetSeekTimePublisher,
+            seek.$targetTime,
             $mediaStatus,
             pulsePublisher(interval: interval)
         )
@@ -277,23 +317,6 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
-    }
-}
-
-extension CastPlayer: GCKRequestDelegate {
-    // swiftlint:disable:next missing_docs
-    public func requestDidComplete(_ request: GCKRequest) {
-        seekTargetTime = nil
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        seekTargetTime = nil
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        seekTargetTime = nil
     }
 }
 
