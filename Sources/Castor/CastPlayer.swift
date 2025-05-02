@@ -53,6 +53,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
         $mediaStatus
             .map { $0?.playbackRate ?? 1 }
+            .filter { $0 != 0 }
             .eraseToAnyPublisher()
     }
 
@@ -91,7 +92,7 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The currently applicable playback speed.
     var effectivePlaybackSpeed: Float {
-        _playbackSpeed
+        _playbackSpeed.clamped(to: playbackSpeedRange)
     }
 
     /// The currently allowed playback speed range.
