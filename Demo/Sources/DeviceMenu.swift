@@ -5,6 +5,7 @@
 //
 
 import Castor
+import GoogleCast
 import SwiftUI
 
 struct DeviceMenu: View {
@@ -21,7 +22,12 @@ struct DeviceMenu: View {
                     if let currentDevice = cast.currentDevice {
                         Text(currentDevice.name ?? "Untitled")
                     }
-                    Image(systemName: "airplay.video")
+                    if let image = GCKUICastButton().imageView?.image {
+                      Image(uiImage: image)
+                    }
+                    else {
+                        Image(systemName: "tv.badge.wifi")
+                    }
                 }
             }
         } label: {
