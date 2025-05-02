@@ -813,6 +813,9 @@
         }
       }
     },
+    "Devices" : {
+
+    },
     "Off" : {
       "comment" : "Media selection option",
       "localizations" : {
@@ -1247,6 +1250,9 @@
           }
         }
       }
+    },
+    "This device" : {
+
     },
     "Undefined" : {
       "comment" : "Undefined language",
