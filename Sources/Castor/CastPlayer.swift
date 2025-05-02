@@ -142,7 +142,10 @@ public extension CastPlayer {
     ///
     /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
-        []
+        guard let mediaTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
+        return mediaTracks
+            .filter { $0.type.mediaCharacteristic() == characteristic }
+            .map { .on(.init(rawTrack: $0)) }
     }
 
     /// The currently selected media option for a characteristic.

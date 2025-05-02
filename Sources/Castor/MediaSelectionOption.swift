@@ -7,23 +7,6 @@
 import GoogleCast
 
 /// An option for media selection (audible, legible, etc.).
-public struct CastMediaTrack: Hashable {
-    private let rawTrack: GCKMediaTrack
-
-    var trackIdentifier: Int {
-        rawTrack.identifier
-    }
-
-    var displayName: String {
-        "-->"
-    }
-
-    init(rawTrack: GCKMediaTrack) {
-        self.rawTrack = rawTrack
-    }
-}
-
-/// An option for media selection (audible, legible, etc.).
 public enum CastMediaSelectionOption: Hashable {
     /// Disabled.
     ///
@@ -43,5 +26,31 @@ public enum CastMediaSelectionOption: Hashable {
         case let .on(option):
             return option.displayName
         }
+    }
+}
+
+/// An option for media selection (audible, legible, etc.).
+public struct CastMediaTrack: Hashable {
+    private let rawTrack: GCKMediaTrack
+
+    var trackIdentifier: Int {
+        rawTrack.identifier
+    }
+
+    var displayName: String {
+        if let displayName = rawTrack.name {
+            return displayName
+        }
+        else {
+            guard let languageCode = rawTrack.languageCode,
+                  let displayName = Locale.current.localizedString(forIdentifier: languageCode) else {
+                return "Undefined"
+            }
+            return displayName.localizedCapitalized
+        }
+    }
+
+    init(rawTrack: GCKMediaTrack) {
+        self.rawTrack = rawTrack
     }
 }
