@@ -135,6 +135,16 @@ public extension CastPlayer {
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
     }
 
+    /// The list of media options associated with a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The list of options associated with the characteristic.
+    ///
+    /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
+    func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
+        []
+    }
+
     /// The currently selected media option for a characteristic.
     ///
     /// - Parameter characteristic: The characteristic.

@@ -4,10 +4,16 @@
     "%g×" : {
       "comment" : "Speed multiplier"
     },
+    "Languages" : {
+      "comment" : "Playback setting menu title"
+    },
     "Off" : {
       "comment" : "Subtitle selection option"
     },
     "Playback Speed" : {
+      "comment" : "Playback setting menu title"
+    },
+    "Subtitles" : {
       "comment" : "Playback setting menu title"
     }
   },

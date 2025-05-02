@@ -4,32 +4,8 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import SwiftUI
-
-private struct SettingsMenuContent: View {
-    @ObservedObject var player: CastPlayer
-
-    let speeds: Set<Float>
-    let action: (CastSettingsUpdate) -> Void
-
-    var body: some View {
-        playbackSpeedMenu()
-    }
-
-    private func playbackSpeedMenu() -> some View {
-        Menu {
-            player.playbackSpeedMenu(speeds: speeds) { speed in
-                action(.playbackSpeed(speed))
-            }
-        } label: {
-            Button(action: {}) {
-                Text("Playback Speed", bundle: .module, comment: "Playback setting menu title")
-                Text("\(player.playbackSpeed.wrappedValue, specifier: "%g×")", comment: "Speed multiplier")
-                Image(systemName: "speedometer")
-            }
-        }
-    }
-}
 
 private struct PlaybackSpeedMenuContent: View {
     let speeds: Set<Float>
@@ -63,6 +39,103 @@ private struct PlaybackSpeedMenuContent: View {
     }
 }
 
+private struct MediaSelectionMenuContent: View {
+    let characteristic: AVMediaCharacteristic
+    let action: (CastMediaSelectionOption) -> Void
+
+    @ObservedObject var player: CastPlayer
+
+    private var title: String {
+        switch characteristic {
+        case .audible:
+            "Languages"
+        case .legible:
+            "Subtitles"
+        default:
+            ""
+        }
+    }
+
+    var body: some View {
+        Picker(title, selection: selection(for: characteristic)) {
+            ForEach(mediaOptions, id: \.self) { option in
+                Text(option.displayName).tag(option)
+            }
+        }
+        .pickerStyle(.inline)
+    }
+
+    private var mediaOptions: [CastMediaSelectionOption] {
+        player.mediaSelectionOptions(for: characteristic)
+    }
+
+    private func selection(for characteristic: AVMediaCharacteristic) -> Binding<CastMediaSelectionOption> {
+        .init {
+            player.mediaOption(for: characteristic).wrappedValue
+        } set: { newValue in
+            player.mediaOption(for: characteristic).wrappedValue = newValue
+            action(newValue)
+        }
+    }
+}
+
+private struct SettingsMenuContent: View {
+    @ObservedObject var player: CastPlayer
+
+    let speeds: Set<Float>
+    let action: (CastSettingsUpdate) -> Void
+
+    var body: some View {
+        playbackSpeedMenu()
+        audibleMediaSelectionMenu()
+        legibleMediaSelectionMenu()
+    }
+
+    private func playbackSpeedMenu() -> some View {
+        Menu {
+            player.playbackSpeedMenu(speeds: speeds) { speed in
+                action(.playbackSpeed(speed))
+            }
+        } label: {
+            Button(action: {}) {
+                Text("Playback Speed", bundle: .module, comment: "Playback setting menu title")
+                Text("\(player.playbackSpeed.wrappedValue, specifier: "%g×")", comment: "Speed multiplier")
+                Image(systemName: "speedometer")
+            }
+        }
+    }
+
+    private func audibleMediaSelectionMenu() -> some View {
+        Menu {
+            mediaSelectionMenuContent(characteristic: .audible)
+        } label: {
+            Button(action: {}) {
+                Text("Languages", bundle: .module, comment: "Playback setting menu title")
+                Text(player.selectedMediaOption(for: .audible).displayName)
+                Image(systemName: "waveform.circle")
+            }
+        }
+    }
+
+    private func legibleMediaSelectionMenu() -> some View {
+        Menu {
+            mediaSelectionMenuContent(characteristic: .legible)
+        } label: {
+            Button(action: {}) {
+                Text("Subtitles", bundle: .module, comment: "Playback setting menu title")
+                Text(player.selectedMediaOption(for: .legible).displayName)
+                Image(systemName: "captions.bubble")
+            }
+        }
+    }
+
+    private func mediaSelectionMenuContent(characteristic: AVMediaCharacteristic) -> some View {
+        player.mediaSelectionMenu(characteristic: characteristic) { option in
+            action(.mediaSelection(characteristic: characteristic, option: option))
+        }
+    }
+}
+
 public extension CastPlayer {
     /// Returns content for a standard player settings menu.
     ///
@@ -92,5 +165,20 @@ public extension CastPlayer {
         action: @escaping (_ speed: Float) -> Void = { _ in }
     ) -> some View {
         PlaybackSpeedMenuContent(speeds: speeds, action: action, player: self)
+    }
+
+    /// Returns content for a media selection menu.
+    ///
+    /// - Parameters:
+    ///    - characteristic: The characteristic for which selection is made.
+    ///    - action: The action to perform when the user interacts with an item from the menu.
+    ///
+    /// The returned view is meant to be used as content of a `Menu`. Using it for any other purpose has undefined
+    /// behavior.
+    func mediaSelectionMenu(
+        characteristic: AVMediaCharacteristic,
+        action: @escaping (_ option: CastMediaSelectionOption) -> Void = { _ in }
+    ) -> some View {
+        MediaSelectionMenuContent(characteristic: characteristic, action: action, player: self)
     }
 }
