@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import Combine
 import CoreMedia
 import GoogleCast
@@ -15,6 +16,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
+    private let tracks: CastTracks
 
     @Published private var mediaStatus: GCKMediaStatus?
     @Published private var _playbackSpeed: Float = 1
@@ -34,6 +36,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         seek = .init(remoteMediaClient: remoteMediaClient)
         speed = .init(remoteMediaClient: remoteMediaClient)
+        tracks = .init(remoteMediaClient: remoteMediaClient)
         queue = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
@@ -117,6 +120,41 @@ public extension CastPlayer {
     /// `effectivePlaybackSpeed` to obtain the actually applied speed.
     func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
         speed.request(for: playbackSpeed)
+    }
+}
+
+public extension CastPlayer {
+    /// Selects a media option for a characteristic.
+    ///
+    /// - Parameters:
+    ///   - mediaOption: The option to select.
+    ///   - characteristic: The characteristic.
+    ///
+    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
+    /// attempting to set an option that is not supported.
+    func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
+    }
+
+    /// The currently selected media option for a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The selected option.
+    ///
+    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics.
+    func selectedMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
+        .off
+    }
+
+    /// A binding to read and write the current media selection for a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The binding.
+    func mediaOption(for characteristic: AVMediaCharacteristic) -> Binding<CastMediaSelectionOption> {
+        .init {
+            self.selectedMediaOption(for: characteristic)
+        } set: { newValue in
+            self.select(mediaOption: newValue, for: characteristic)
+        }
     }
 }
 

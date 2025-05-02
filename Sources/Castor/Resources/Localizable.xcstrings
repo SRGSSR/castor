@@ -4,6 +4,9 @@
     "%g×" : {
       "comment" : "Speed multiplier"
     },
+    "Off" : {
+      "comment" : "Subtitle selection option"
+    },
     "Playback Speed" : {
       "comment" : "Playback setting menu title"
     }
