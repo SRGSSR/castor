@@ -7,18 +7,6 @@
 import AVFoundation
 import GoogleCast
 
-struct MediaSelectionOption {
-    private let rawTrack: GCKMediaTrack
-
-    var trackIdentifier: Int {
-        rawTrack.identifier
-    }
-
-    init(rawTrack: GCKMediaTrack) {
-        self.rawTrack = rawTrack
-    }
-}
-
 final class CastMediaSelection: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     private let mediaCharacteristic: AVMediaCharacteristic
