@@ -7,6 +7,9 @@
     "Audio" : {
       "comment" : "Playback setting menu title"
     },
+    "Devices" : {
+
+    },
     "Off" : {
       "comment" : "Media selection option"
     },
@@ -15,6 +18,9 @@
     },
     "Subtitles" : {
       "comment" : "Playback setting menu title"
+    },
+    "This device" : {
+
     },
     "Undefined" : {
       "comment" : "Undefined language"
