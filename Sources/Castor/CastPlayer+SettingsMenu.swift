@@ -7,7 +7,8 @@
 import SwiftUI
 
 private struct SettingsMenuContent: View {
-    let player: CastPlayer
+    @ObservedObject var player: CastPlayer
+
     let speeds: Set<Float>
     let action: (CastSettingsUpdate) -> Void
 
@@ -21,9 +22,9 @@ private struct SettingsMenuContent: View {
                 action(.playbackSpeed(speed))
             }
         } label: {
-            Label {
+            Button(action: {}) {
                 Text("Playback Speed", bundle: .module, comment: "Playback setting menu title")
-            } icon: {
+                Text("\(player.playbackSpeed.wrappedValue, specifier: "%g×")", comment: "Speed multiplier")
                 Image(systemName: "speedometer")
             }
         }
