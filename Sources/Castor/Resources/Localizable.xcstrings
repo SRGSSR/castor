@@ -4,8 +4,14 @@
     "%g×" : {
       "comment" : "Speed multiplier"
     },
+    "Devices" : {
+
+    },
     "Playback Speed" : {
       "comment" : "Playback setting menu title"
+    },
+    "This device" : {
+
     }
   },
   "version" : "1.0"

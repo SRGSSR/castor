@@ -25,6 +25,10 @@ struct CastPlayerView: View {
                     }
             }
         }
+        .overlay(alignment: .topLeading) {
+            DeviceMenu()
+                .padding()
+        }
         .animation(.default, value: cast.player)
     }
 }
