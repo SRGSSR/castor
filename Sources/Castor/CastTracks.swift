@@ -19,7 +19,7 @@ final class CastTracks: NSObject {
 
     func request(for tracks: [CastMediaTrack]) {
         targetTracks = tracks
-
+        print("--> \(tracks)")
         // swiftlint:disable:next legacy_objc_type
         let request = remoteMediaClient.setActiveTrackIDs(tracks.map { NSNumber(value: $0.trackIdentifier) })
         request.delegate = self

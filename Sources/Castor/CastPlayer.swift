@@ -124,6 +124,19 @@ public extension CastPlayer {
 }
 
 public extension CastPlayer {
+    private static func mediaTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let mediaTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
+        return mediaTracks.map { .init(rawTrack: $0) }
+    }
+
+    private static func activeMediaTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let mediaStatus, let mediaTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
+            return []
+        }
+        // swiftlint:disable:next legacy_objc_type
+        return mediaTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
+    }
+
     /// Selects a media option for a characteristic.
     ///
     /// - Parameters:
@@ -133,6 +146,15 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
+        var tracks = self.tracks.targetTracks ?? Self.activeMediaTracks(from: mediaStatus)
+        tracks.removeAll { $0.mediaCharacteristic == characteristic }
+        switch mediaOption {
+        case .off:
+            break
+        case let .on(track):
+            tracks.append(track)
+        }
+        self.tracks.request(for: tracks)
     }
 
     /// The list of media options associated with a characteristic.
@@ -142,10 +164,15 @@ public extension CastPlayer {
     ///
     /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
-        guard let mediaTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
-        return mediaTracks
-            .filter { $0.type.mediaCharacteristic() == characteristic }
-            .map { .on(.init(rawTrack: $0)) }
+        let tracks = Self.mediaTracks(from: mediaStatus).filter { $0.mediaCharacteristic == characteristic }
+        switch characteristic {
+        case .audible:
+            return tracks.map { .on($0) }
+        case .legible where !tracks.isEmpty:
+            return [.off] + tracks.map { .on($0) }
+        default:
+            return []
+        }
     }
 
     /// The currently selected media option for a characteristic.
@@ -155,7 +182,13 @@ public extension CastPlayer {
     ///
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func selectedMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
-        .off
+        switch characteristic {
+        case .audible, .legible:
+            guard let track = Self.activeMediaTracks(from: mediaStatus).first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
+            return .on(track)
+        default:
+            return .off
+        }
     }
 
     /// A binding to read and write the current media selection for a characteristic.

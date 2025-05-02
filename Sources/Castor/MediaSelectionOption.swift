@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import GoogleCast
 
 /// An option for media selection (audible, legible, etc.).
@@ -35,6 +36,10 @@ public struct CastMediaTrack: Hashable {
 
     var trackIdentifier: Int {
         rawTrack.identifier
+    }
+
+    var mediaCharacteristic: AVMediaCharacteristic? {
+        rawTrack.type.mediaCharacteristic()
     }
 
     var displayName: String {
