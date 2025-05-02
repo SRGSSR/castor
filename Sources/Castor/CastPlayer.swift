@@ -13,10 +13,12 @@ import SwiftUI
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
+    private let playback: CastPlayback
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
 
     @Published private var mediaStatus: GCKMediaStatus?
+    @Published private var _shouldPlay = false
     @Published private var _playbackSpeed: Float = 1
 
     /// The queue managing player items.
@@ -32,6 +34,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         mediaStatus = remoteMediaClient.mediaStatus
 
+        playback = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
         speed = .init(remoteMediaClient: remoteMediaClient)
         queue = .init(remoteMediaClient: remoteMediaClient)
@@ -39,7 +42,23 @@ public final class CastPlayer: NSObject, ObservableObject {
         super.init()
 
         remoteMediaClient.add(self)
+
+        configureShouldPlayPublisher()
         configurePlaybackSpeedPublisher()
+    }
+
+    private func configureShouldPlayPublisher() {
+        Publishers.CombineLatest(playback.$targetShouldPlay, mediaStatusShouldPlayPublisher())
+            .map { targetShouldPlay, mediaStatusShouldPlay in
+                targetShouldPlay ?? mediaStatusShouldPlay
+            }
+            .assign(to: &$_shouldPlay)
+    }
+
+    private func mediaStatusShouldPlayPublisher() -> AnyPublisher<Bool, Never> {
+        $mediaStatus
+            .map { $0?.playerState == .playing }
+            .eraseToAnyPublisher()
     }
 
     private func configurePlaybackSpeedPublisher() {
@@ -62,24 +81,29 @@ public final class CastPlayer: NSObject, ObservableObject {
 }
 
 public extension CastPlayer {
+    /// A Boolean value whether the player should play content when possible.
+    var shouldPlay: Bool {
+        get {
+            _shouldPlay
+        }
+        set {
+            playback.request(shouldPlay: newValue)
+        }
+    }
+
     /// Plays.
     func play() {
-        remoteMediaClient.play()
+        shouldPlay = true
     }
 
     /// Pauses.
     func pause() {
-        remoteMediaClient.pause()
+        shouldPlay = false
     }
 
     /// Toggles between play and pause.
     func togglePlayPause() {
-        if state == .playing {
-            pause()
-        }
-        else {
-            play()
-        }
+        shouldPlay.toggle()
     }
 
     /// Stops.
