@@ -23,7 +23,9 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     private var targetDevice: CastDevice?
-    private let configuration: CastConfiguration
+
+    /// The cast configuration.
+    public let configuration: CastConfiguration
 
     /// The current device.
     ///
