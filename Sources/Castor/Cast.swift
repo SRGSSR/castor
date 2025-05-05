@@ -25,7 +25,7 @@ public final class Cast: NSObject, ObservableObject {
     private var targetDevice: CastDevice?
 
     /// The cast configuration.
-    public let configuration: CastConfiguration
+    public private(set) var configuration: CastConfiguration
 
     /// The current device.
     ///
@@ -105,6 +105,13 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
         currentDevice == device
+    }
+
+    /// Update the configuration.
+    /// - Parameter configuration: The new configuration.
+    public func update(configuration: CastConfiguration) {
+        self.configuration = configuration
+        player?.update(configuration: configuration)
     }
 }
 

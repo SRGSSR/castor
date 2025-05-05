@@ -22,7 +22,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// The queue managing player items.
     public let queue: CastQueue
 
-    let configuration: CastConfiguration
+    private(set) var configuration: CastConfiguration
 
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
@@ -40,6 +40,10 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         remoteMediaClient.add(self)
         configurePlaybackSpeedPublisher()
+    }
+
+    func update(configuration: CastConfiguration) {
+        self.configuration = configuration
     }
 
     private func configurePlaybackSpeedPublisher() {
