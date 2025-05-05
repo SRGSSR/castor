@@ -140,6 +140,11 @@ public extension CastPlayer {
 }
 
 public extension CastPlayer {
+    /// The set of media characteristics for which a media selection is available.
+    var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
+        Set(Self.mediaTracks(from: mediaStatus).compactMap(\.mediaCharacteristic))
+    }
+
     private static func mediaTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
         guard let mediaTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
         return mediaTracks.map { .init(rawTrack: $0) }
