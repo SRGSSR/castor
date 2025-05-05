@@ -13,7 +13,7 @@ HLS live DVR streams report incorrect time ranges, which in turn causes inaccura
 
 No workaround is available yet.
 
-## Items not updated during scrolling ([412588110](https://issuetracker.google.com/issues/412588110))
+## Items not updated during scrolling ([415626993](https://issuetracker.google.com/issues/415626993))
 
 When calling `CastPlayerItem.fetch()` to lazily load metadata for items in a scrollable view, updates are not delivered until scrolling stops.
 
