@@ -10,6 +10,8 @@ extension UserDefaults {
     enum DemoSettingKey {
         static let receiver = "receiver"
         static let presenterModeEnabled = "presenterModeEnabled"
+        static let backwardSkipInterval = "backwardSkipInterval"
+        static let forwardSkipInterval = "forwardSkipInterval"
     }
 
     @objc dynamic var presenterModeEnabled: Bool {
@@ -18,5 +20,13 @@ extension UserDefaults {
 
     @objc dynamic var receiver: Receiver {
         .init(rawValue: integer(forKey: DemoSettingKey.receiver)) ?? .standard
+    }
+
+    @objc dynamic var backwardSkipInterval: TimeInterval {
+        double(forKey: DemoSettingKey.backwardSkipInterval)
+    }
+
+    @objc dynamic var forwardSkipInterval: TimeInterval {
+        double(forKey: DemoSettingKey.forwardSkipInterval)
     }
 }
