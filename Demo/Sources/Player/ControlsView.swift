@@ -24,6 +24,7 @@ struct ControlsView: View {
         return formatter
     }()
 
+    @EnvironmentObject private var cast: Cast
     @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
     @ObservedObject var player: CastPlayer
     let device: CastDevice?
@@ -153,7 +154,7 @@ private extension ControlsView {
 
     private func skipBackwardButton() -> some View {
         Button(action: player.skipBackward) {
-            Image(systemName: "gobackward.10")
+            Image.goBackward(withInterval: cast.configuration.backwardSkipInterval)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(height: Self.side)
@@ -184,7 +185,7 @@ private extension ControlsView {
 
     private func skipForwardButton() -> some View {
         Button(action: player.skipForward) {
-            Image(systemName: "goforward.10")
+            Image.goForward(withInterval: cast.configuration.forwardSkipInterval)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(height: Self.side)
