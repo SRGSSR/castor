@@ -203,13 +203,9 @@ public extension CastPlayer {
     ///
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func selectedMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
-        switch characteristic {
-        case .audible, .legible:
-            guard let track = _activeTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
-            return .on(track)
-        default:
-            return .off
-        }
+        let options = mediaSelectionOptions(for: characteristic)
+        let currentOption = currentMediaOption(for: characteristic)
+        return options.contains(currentOption) ? currentOption : .off
     }
 
     /// A binding to read and write the current media selection for a characteristic.
@@ -221,6 +217,24 @@ public extension CastPlayer {
             self.selectedMediaOption(for: characteristic)
         } set: { newValue in
             self.select(mediaOption: newValue, for: characteristic)
+        }
+    }
+
+    /// The current media option for a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The current option.
+    ///
+    /// Unlike `selectedMediaOption(for:)` this method provides the currently applied option. This method can
+    /// be useful if you need to access the actual selection made by `select(mediaOption:for:)` for `.automatic`
+    /// and `.off` options (forced options might be returned where applicable).
+    func currentMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
+        switch characteristic {
+        case .audible, .legible:
+            guard let track = _activeTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
+            return .on(track)
+        default:
+            return .off
         }
     }
 }
