@@ -23,7 +23,7 @@ public enum CastMediaSelectionOption: Hashable {
     public var displayName: String {
         switch self {
         case .off:
-            return String(localized: "Off", bundle: .module, comment: "Subtitle selection option")
+            return String(localized: "Off", bundle: .module, comment: "Media selection option")
         case let .on(option):
             return option.displayName
         }
