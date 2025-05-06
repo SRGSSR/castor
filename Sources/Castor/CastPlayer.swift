@@ -187,7 +187,7 @@ public extension CastPlayer {
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
         let tracks = Self.mediaTracks(from: mediaStatus).filter { $0.mediaCharacteristic == characteristic }
         switch characteristic {
-        case .audible:
+        case .audible where tracks.count > 1:
             return tracks.map { .on($0) }
         case .legible where !tracks.isEmpty:
             return [.off] + tracks.map { .on($0) }
