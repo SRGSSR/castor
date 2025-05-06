@@ -22,7 +22,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// The queue managing player items.
     public let queue: CastQueue
 
-    let configuration: CastConfiguration
+    var configuration: CastConfiguration
 
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }

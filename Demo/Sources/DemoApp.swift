@@ -70,7 +70,7 @@ struct DemoApp: App {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
             }
-            .environmentObject(Cast())
+            .environmentObject(Cast(configuration: .standard))
         }
     }
 }

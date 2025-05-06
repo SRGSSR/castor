@@ -9,11 +9,19 @@ import GoogleCast
 import SwiftUI
 
 struct SettingsView: View {
+    @EnvironmentObject private var cast: Cast
+
     @AppStorage(UserDefaults.DemoSettingKey.presenterModeEnabled)
     private var isPresenterModeEnabled = false
 
     @AppStorage(UserDefaults.DemoSettingKey.receiver)
     private var receiver: Receiver = .standard
+
+    @AppStorage(UserDefaults.DemoSettingKey.backwardSkipInterval)
+    private var backwardSkipInterval: TimeInterval = 10
+
+    @AppStorage(UserDefaults.DemoSettingKey.forwardSkipInterval)
+    private var forwardSkipInterval: TimeInterval = 10
 
     private var version: String {
         Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
@@ -33,11 +41,15 @@ struct SettingsView: View {
     var body: some View {
         Form {
             applicationSection()
+            skipsSection()
             receiverSection()
             versionSection()
         }
         .onChange(of: receiver) { _ in exit(0) }
         .navigationTitle("Settings")
+        .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in
+            cast.configuration = .standard
+        }
     }
 
     private func applicationSection() -> some View {
@@ -48,6 +60,24 @@ struct SettingsView: View {
             }
         } header: {
             Text("Application")
+        }
+    }
+
+    private func skipsSection() -> some View {
+        Section {
+            skipPicker("Backward by", selection: $backwardSkipInterval)
+            skipPicker("Forward by", selection: $forwardSkipInterval)
+        } header: {
+             Text("Skips")
+        }
+    }
+
+    private func skipPicker(_ titleKey: LocalizedStringKey, selection: Binding<TimeInterval>) -> some View {
+        Picker(titleKey, selection: selection) {
+            ForEach([TimeInterval]([5, 7, 10, 15, 30, 45, 60, 75, 90]), id: \.self) { interval in
+                Text("\(Int(interval)) seconds")
+                    .tag(interval)
+            }
         }
     }
 

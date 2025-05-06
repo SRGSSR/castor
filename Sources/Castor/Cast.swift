@@ -23,7 +23,13 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     private var targetDevice: CastDevice?
-    private let configuration: CastConfiguration
+
+    /// The cast configuration.
+    public var configuration: CastConfiguration {
+        didSet {
+            player?.configuration = configuration
+        }
+    }
 
     /// The current device.
     ///
