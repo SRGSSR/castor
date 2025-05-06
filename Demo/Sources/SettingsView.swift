@@ -9,6 +9,8 @@ import GoogleCast
 import SwiftUI
 
 struct SettingsView: View {
+    @EnvironmentObject private var cast: Cast
+
     @AppStorage(UserDefaults.DemoSettingKey.presenterModeEnabled)
     private var isPresenterModeEnabled = false
 
@@ -45,6 +47,9 @@ struct SettingsView: View {
         }
         .onChange(of: receiver) { _ in exit(0) }
         .navigationTitle("Settings")
+        .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in
+            cast.configuration = .standard
+        }
     }
 
     private func applicationSection() -> some View {

@@ -26,9 +26,6 @@ struct CastPlayerView: View {
             }
         }
         .animation(.default, value: cast.player)
-        .onAppear {
-            cast.update(configuration: .standard)
-        }
     }
 }
 
