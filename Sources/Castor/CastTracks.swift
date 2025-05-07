@@ -11,14 +11,14 @@ final class CastTracks: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     // swiftlint:disable:next discouraged_optional_collection
-    @Published private(set) var targetTracks: [CastMediaTrack]?
+    @Published private(set) var targetActiveTracks: [CastMediaTrack]?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
     }
 
     func request(for tracks: [CastMediaTrack]) {
-        targetTracks = tracks
+        targetActiveTracks = tracks
         // swiftlint:disable:next legacy_objc_type
         let request = remoteMediaClient.setActiveTrackIDs(tracks.map { NSNumber(value: $0.trackIdentifier) })
         request.delegate = self
@@ -27,6 +27,6 @@ final class CastTracks: NSObject {
 
 extension CastTracks: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        targetTracks = nil
+        targetActiveTracks = nil
     }
 }

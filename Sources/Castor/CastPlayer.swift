@@ -56,9 +56,9 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     private func configureActiveTracksPublisher() {
-        Publishers.CombineLatest(tracks.$targetTracks, mediaStatusActiveTracksPublisher())
-            .map { targetTracks, mediaStatusActiveTracks in
-                targetTracks ?? mediaStatusActiveTracks
+        Publishers.CombineLatest(tracks.$targetActiveTracks, mediaStatusActiveTracksPublisher())
+            .map { targetActiveTracks, mediaStatusActiveTracks in
+                targetActiveTracks ?? mediaStatusActiveTracks
             }
             .assign(to: &$_activeTracks)
     }
@@ -72,7 +72,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private func mediaStatusActiveTracksPublisher() -> AnyPublisher<[CastMediaTrack], Never> {
         $mediaStatus
-            .map { Self.activeMediaTracks(from: $0) }
+            .map { Self.activeTracks(from: $0) }
             .eraseToAnyPublisher()
     }
 
@@ -142,20 +142,20 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The set of media characteristics for which a media selection is available.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
-        Set(Self.mediaTracks(from: mediaStatus).compactMap(\.mediaCharacteristic))
+        Set(Self.tracks(from: mediaStatus).compactMap(\.mediaCharacteristic))
     }
 
-    private static func mediaTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        guard let mediaTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
-        return mediaTracks.map { .init(rawTrack: $0) }
+    private static func tracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let rawTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
+        return rawTracks.map { .init(rawTrack: $0) }
     }
 
-    private static func activeMediaTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        guard let mediaStatus, let mediaTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
+    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
             return []
         }
         // swiftlint:disable:next legacy_objc_type
-        return mediaTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
+        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
     }
 
     /// Selects a media option for a characteristic.
@@ -167,15 +167,15 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var tracks = self.tracks.targetTracks ?? Self.activeMediaTracks(from: mediaStatus)
-        tracks.removeAll { $0.mediaCharacteristic == characteristic }
+        var activeTracks = self.tracks.targetActiveTracks ?? Self.activeTracks(from: mediaStatus)
+        activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
         case .off:
             break
         case let .on(track):
-            tracks.append(track)
+            activeTracks.append(track)
         }
-        self.tracks.request(for: tracks)
+        tracks.request(for: activeTracks)
     }
 
     /// The list of media options associated with a characteristic.
@@ -185,7 +185,7 @@ public extension CastPlayer {
     ///
     /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
-        let tracks = Self.mediaTracks(from: mediaStatus).filter { $0.mediaCharacteristic == characteristic }
+        let tracks = Self.tracks(from: mediaStatus).filter { $0.mediaCharacteristic == characteristic }
         switch characteristic {
         case .audible where tracks.count > 1:
             return tracks.map { .on($0) }
