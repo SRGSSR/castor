@@ -167,7 +167,7 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var activeTracks = self.tracks.targetActiveTracks ?? Self.activeTracks(from: mediaStatus)
+        var activeTracks = tracks.targetActiveTracks ?? Self.activeTracks(from: mediaStatus)
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
         case .off:
