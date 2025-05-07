@@ -21,6 +21,7 @@ private struct PlaybackSpeedMenuContent: View {
         } label: {
             EmptyView()
         }
+        .pickerStyle(.inline)
     }
 
     private var playbackSpeeds: [Float] {
