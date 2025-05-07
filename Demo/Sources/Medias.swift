@@ -72,6 +72,11 @@ let kUrnMedias: [Media] = [
         title: "Puls - Gehirnerschütterung, Akutgeriatrie, Erlenpollen im Winter",
         imageUrl: "https://ws.srf.ch/asset/image/audio/3bc7c819-9f77-4b2f-bbb1-6787df21d7bc/WEBVISUAL/1641807822.jpg",
         type: .urn("urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
+    ),
+    .init(
+        title: "Bonjour la Suisse (5/5) - Que du bonheur?",
+        imageUrl: "https://www.rts.ch/2017/07/28/21/11/8806915.image/16x9",
+        type: .urn("urn:rts:video:8806923")
     )
 ]
 

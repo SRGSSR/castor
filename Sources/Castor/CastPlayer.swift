@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import Combine
 import CoreMedia
 import GoogleCast
@@ -15,9 +16,11 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
+    private let tracks: CastTracks
 
     @Published private var mediaStatus: GCKMediaStatus?
     @Published private var _playbackSpeed: Float = 1
+    @Published private var _activeTracks: [CastMediaTrack] = []
 
     /// The queue managing player items.
     public let queue: CastQueue
@@ -34,12 +37,14 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         seek = .init(remoteMediaClient: remoteMediaClient)
         speed = .init(remoteMediaClient: remoteMediaClient)
+        tracks = .init(remoteMediaClient: remoteMediaClient)
         queue = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
         remoteMediaClient.add(self)
         configurePlaybackSpeedPublisher()
+        configureActiveTracksPublisher()
     }
 
     private func configurePlaybackSpeedPublisher() {
@@ -50,9 +55,24 @@ public final class CastPlayer: NSObject, ObservableObject {
             .assign(to: &$_playbackSpeed)
     }
 
+    private func configureActiveTracksPublisher() {
+        Publishers.CombineLatest(tracks.$targetActiveTracks, mediaStatusActiveTracksPublisher())
+            .map { targetActiveTracks, mediaStatusActiveTracks in
+                targetActiveTracks ?? mediaStatusActiveTracks
+            }
+            .assign(to: &$_activeTracks)
+    }
+
     private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
         $mediaStatus
             .map { $0?.playbackRate ?? 1 }
+            .filter { $0 != 0 }
+            .eraseToAnyPublisher()
+    }
+
+    private func mediaStatusActiveTracksPublisher() -> AnyPublisher<[CastMediaTrack], Never> {
+        $mediaStatus
+            .map { Self.activeTracks(from: $0) }
             .eraseToAnyPublisher()
     }
 
@@ -91,7 +111,7 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The currently applicable playback speed.
     var effectivePlaybackSpeed: Float {
-        _playbackSpeed
+        _playbackSpeed.clamped(to: playbackSpeedRange)
     }
 
     /// The currently allowed playback speed range.
@@ -116,6 +136,106 @@ public extension CastPlayer {
     /// `effectivePlaybackSpeed` to obtain the actually applied speed.
     func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
         speed.request(for: playbackSpeed)
+    }
+}
+
+public extension CastPlayer {
+    /// The set of media characteristics for which a media selection is available.
+    var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
+        Set(Self.tracks(from: mediaStatus).compactMap(\.mediaCharacteristic))
+    }
+
+    private static func tracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let rawTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
+        return rawTracks.map { .init(rawTrack: $0) }
+    }
+
+    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
+            return []
+        }
+        // swiftlint:disable:next legacy_objc_type
+        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
+    }
+
+    /// Selects a media option for a characteristic.
+    ///
+    /// - Parameters:
+    ///   - mediaOption: The option to select.
+    ///   - characteristic: The characteristic.
+    ///
+    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
+    /// attempting to set an option that is not supported.
+    func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
+        var activeTracks = tracks.targetActiveTracks ?? Self.activeTracks(from: mediaStatus)
+        activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
+        switch mediaOption {
+        case .off:
+            break
+        case let .on(track):
+            activeTracks.append(track)
+        }
+        tracks.request(for: activeTracks)
+    }
+
+    /// The list of media options associated with a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The list of options associated with the characteristic.
+    ///
+    /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
+    func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
+        let tracks = Self.tracks(from: mediaStatus).filter { $0.mediaCharacteristic == characteristic }
+        switch characteristic {
+        case .audible where tracks.count > 1:
+            return tracks.map { .on($0) }
+        case .legible where !tracks.isEmpty:
+            return [.off] + tracks.map { .on($0) }
+        default:
+            return []
+        }
+    }
+
+    /// The currently selected media option for a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The selected option.
+    ///
+    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics.
+    func selectedMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
+        let options = mediaSelectionOptions(for: characteristic)
+        let currentOption = currentMediaOption(for: characteristic)
+        return options.contains(currentOption) ? currentOption : .off
+    }
+
+    /// A binding to read and write the current media selection for a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The binding.
+    func mediaOption(for characteristic: AVMediaCharacteristic) -> Binding<CastMediaSelectionOption> {
+        .init {
+            self.selectedMediaOption(for: characteristic)
+        } set: { newValue in
+            self.select(mediaOption: newValue, for: characteristic)
+        }
+    }
+
+    /// The current media option for a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    /// - Returns: The current option.
+    ///
+    /// Unlike `selectedMediaOption(for:)` this method provides the currently applied option. This method can
+    /// be useful if you need to access the actual selection made by `select(mediaOption:for:)` for `.automatic`
+    /// and `.off` options (forced options might be returned where applicable).
+    func currentMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
+        switch characteristic {
+        case .audible, .legible:
+            guard let track = _activeTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
+            return .on(track)
+        default:
+            return .off
+        }
     }
 }
 
