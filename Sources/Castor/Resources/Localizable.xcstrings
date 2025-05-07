@@ -15,6 +15,9 @@
     },
     "Subtitles" : {
       "comment" : "Playback setting menu title"
+    },
+    "Undefined" : {
+      "comment" : "Undefined language"
     }
   },
   "version" : "1.0"

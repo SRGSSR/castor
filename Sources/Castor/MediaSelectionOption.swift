@@ -49,7 +49,7 @@ public struct CastMediaTrack: Hashable {
         else {
             guard let languageCode = rawTrack.languageCode,
                   let displayName = Locale.current.localizedString(forIdentifier: languageCode) else {
-                return "Undefined"
+                return String(localized: "Undefined", bundle: .module, comment: "Undefined language")
             }
             return displayName.localizedCapitalized
         }
