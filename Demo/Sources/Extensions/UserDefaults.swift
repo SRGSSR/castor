@@ -30,3 +30,13 @@ extension UserDefaults {
         double(forKey: DemoSettingKey.forwardSkipInterval)
     }
 }
+
+extension UserDefaults {
+    static func registerDefaults() {
+        UserDefaults.standard.register(defaults: [
+            DemoSettingKey.presenterModeEnabled: false,
+            DemoSettingKey.backwardSkipInterval: 10,
+            DemoSettingKey.forwardSkipInterval: 10
+        ])
+    }
+}
