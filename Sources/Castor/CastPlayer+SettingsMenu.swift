@@ -14,12 +14,13 @@ private struct PlaybackSpeedMenuContent: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
-        Picker("Playback Speed", selection: selection) {
+        Picker(selection: selection) {
             ForEach(playbackSpeeds, id: \.self) { speed in
                 Text("\(speed, specifier: "%g×")", comment: "Speed multiplier").tag(speed)
             }
+        } label: {
+            EmptyView()
         }
-        .pickerStyle(.inline)
     }
 
     private var playbackSpeeds: [Float] {
@@ -45,22 +46,13 @@ private struct MediaSelectionMenuContent: View {
 
     @ObservedObject var player: CastPlayer
 
-    private var title: String {
-        switch characteristic {
-        case .audible:
-            "Audio"
-        case .legible:
-            "Subtitles"
-        default:
-            ""
-        }
-    }
-
     var body: some View {
-        Picker(title, selection: selection(for: characteristic)) {
+        Picker(selection: selection(for: characteristic)) {
             ForEach(mediaOptions, id: \.self) { option in
                 Text(option.displayName).tag(option)
             }
+        } label: {
+            EmptyView()
         }
         .pickerStyle(.inline)
     }
