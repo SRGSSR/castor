@@ -19,6 +19,7 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
         try? AVAudioSession.sharedInstance().setCategory(.playback)
         configureShowTime()
         configureGoogleCast()
+        UserDefaults.registerDefaults()
         return true
     }
 
