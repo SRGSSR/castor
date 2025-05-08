@@ -16,7 +16,6 @@ struct SettingsMenu: View {
         } label: {
             Image(systemName: "gearshape.fill")
                 .font(.system(size: 20))
-                .tint(.accent)
         }
         .menuOrder(.fixed)
     }
