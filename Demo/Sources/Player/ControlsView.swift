@@ -86,7 +86,7 @@ struct ControlsView: View {
     }
 
     private func slider() -> some View {
-        ZStack {
+        HStack {
             if progressTracker.isProgressAvailable {
                 Slider(
                     progressTracker: progressTracker,
@@ -100,6 +100,9 @@ struct ControlsView: View {
                         label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
                     }
                 )
+                if player.mediaInformation?.streamType == .live {
+                    skipToDefaultButton()
+                }
             }
         }
         .frame(height: 30)
@@ -183,11 +186,8 @@ private extension ControlsView {
     private func skipToDefaultButton() -> some View {
         Button(action: player.skipToDefault) {
             Image(systemName: "forward.end.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Self.side)
+                .font(.system(size: 20))
         }
-        .frame(width: Self.side)
         .disabled(!player.canSkipToDefault())
     }
 
@@ -196,7 +196,6 @@ private extension ControlsView {
             skipBackwardButton()
             playbackButton()
             skipForwardButton()
-            skipToDefaultButton()
         }
     }
 }
