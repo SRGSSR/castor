@@ -173,16 +173,6 @@ private extension ControlsView {
         .frame(width: Self.side)
     }
 
-    private func stopButton() -> some View {
-        Button(action: player.stop) {
-            Image(systemName: "stop.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Self.side)
-        }
-        .frame(width: Self.side)
-    }
-
     private func skipForwardButton() -> some View {
         Button(action: player.skipForward) {
             Image.goForward(withInterval: cast.configuration.forwardSkipInterval)
@@ -209,7 +199,6 @@ private extension ControlsView {
         HStack(spacing: 20) {
             skipBackwardButton()
             playbackButton()
-            stopButton()
             skipForwardButton()
             skipToDefaultButton()
         }
