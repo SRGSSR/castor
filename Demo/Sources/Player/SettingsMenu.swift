@@ -14,9 +14,8 @@ struct SettingsMenu: View {
         Menu {
             player.standardSettingsMenu()
         } label: {
-            Image(systemName: "ellipsis.circle")
+            Image(systemName: "gearshape.fill")
                 .font(.system(size: 20))
-                .tint(.accent)
         }
         .menuOrder(.fixed)
     }

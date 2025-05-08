@@ -86,7 +86,7 @@ struct ControlsView: View {
     }
 
     private func slider() -> some View {
-        ZStack {
+        HStack {
             if progressTracker.isProgressAvailable {
                 Slider(
                     progressTracker: progressTracker,
@@ -100,6 +100,9 @@ struct ControlsView: View {
                         label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
                     }
                 )
+                if player.mediaInformation?.streamType == .live {
+                    skipToDefaultButton()
+                }
             }
         }
         .frame(height: 30)
@@ -138,11 +141,7 @@ struct ControlsView: View {
 
     private func controls() -> some View {
         VStack {
-            HStack {
-                slider()
-                Spacer()
-                SettingsMenu(player: player)
-            }
+            slider()
             buttons()
         }
         .padding()
@@ -173,16 +172,6 @@ private extension ControlsView {
         .frame(width: Self.side)
     }
 
-    private func stopButton() -> some View {
-        Button(action: player.stop) {
-            Image(systemName: "stop.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Self.side)
-        }
-        .frame(width: Self.side)
-    }
-
     private func skipForwardButton() -> some View {
         Button(action: player.skipForward) {
             Image.goForward(withInterval: cast.configuration.forwardSkipInterval)
@@ -197,21 +186,16 @@ private extension ControlsView {
     private func skipToDefaultButton() -> some View {
         Button(action: player.skipToDefault) {
             Image(systemName: "forward.end.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Self.side)
+                .font(.system(size: 20))
         }
-        .frame(width: Self.side)
         .disabled(!player.canSkipToDefault())
     }
 
     func buttons() -> some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 50) {
             skipBackwardButton()
             playbackButton()
-            stopButton()
             skipForwardButton()
-            skipToDefaultButton()
         }
     }
 }
