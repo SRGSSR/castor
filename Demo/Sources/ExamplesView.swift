@@ -18,7 +18,7 @@ struct ExamplesView: View {
                 section("HLS streams", medias: kHlsUrlMedias)
                 if cast.player != nil {
                     section("DASH streams", medias: kDashUrlMedias)
-                    if [.srgssr, .amtins].contains(UserDefaults.standard.receiver) {
+                    if UserDefaults.standard.receiver.isSupportingUrns {
                         section("URN-based streams", medias: kUrnMedias)
                     }
                 }

@@ -39,4 +39,13 @@ enum Receiver: Int, CaseIterable {
             "amtins"
         }
     }
+
+    var isSupportingUrns: Bool {
+        switch self {
+        case .srgssr, .amtins:
+            true
+        default:
+            false
+        }
+    }
 }
