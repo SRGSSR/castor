@@ -192,7 +192,7 @@ private extension ControlsView {
     }
 
     func buttons() -> some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 50) {
             skipBackwardButton()
             playbackButton()
             skipForwardButton()
