@@ -56,7 +56,7 @@ struct DemoApp: App {
                     DevicesView()
                 }
                 .tabItem {
-                    Label("Devices", systemImage: "tv.badge.wifi.fill")
+                    Label("Devices", systemImage: "tv.fill")
                 }
                 NavigationStack {
                     CastPlayerView()
