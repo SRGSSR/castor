@@ -138,11 +138,7 @@ struct ControlsView: View {
 
     private func controls() -> some View {
         VStack {
-            HStack {
-                slider()
-                Spacer()
-                SettingsMenu(player: player)
-            }
+            slider()
             buttons()
         }
         .padding()

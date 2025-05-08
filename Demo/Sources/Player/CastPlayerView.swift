@@ -27,8 +27,11 @@ struct CastPlayerView: View {
         }
         .animation(.default, value: cast.player)
         .toolbar {
-            ToolbarItem {
+            ToolbarItem(placement: .topBarLeading) {
                 stopButton()
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                settingsMenu()
             }
         }
     }
@@ -41,6 +44,13 @@ struct CastPlayerView: View {
             } label: {
                 Text("Stop")
             }
+        }
+    }
+
+    @ViewBuilder
+    private func settingsMenu() -> some View {
+        if let player = cast.player {
+            SettingsMenu(player: player)
         }
     }
 }
