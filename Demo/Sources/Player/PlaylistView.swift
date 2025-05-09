@@ -39,6 +39,7 @@ private struct ItemCell: View {
 }
 
 struct PlaylistView: View {
+    @ObservedObject var player: CastPlayer
     @ObservedObject var queue: CastQueue
     @State private var isSelectionPresented = false
 
@@ -86,6 +87,7 @@ private extension PlaylistView {
 
     func managementButtons() -> some View {
         HStack(spacing: 30) {
+            repeatModeButton()
             shuffleButton()
             addButton()
             trashButton()
@@ -98,6 +100,36 @@ private extension PlaylistView {
             Image(systemName: "arrow.right")
         }
         .disabled(!queue.canAdvanceToNextItem())
+    }
+}
+
+private extension PlaylistView {
+    private var repeatModeImageName: String {
+        switch player.repeatMode {
+        case .off:
+            "repeat.circle"
+        case .one:
+            "repeat.1.circle.fill"
+        case .all:
+            "repeat.circle.fill"
+        }
+    }
+
+    private func toggleRepeatMode() {
+        switch player.repeatMode {
+        case .off:
+            player.repeatMode = .all
+        case .one:
+            player.repeatMode = .off
+        case .all:
+            player.repeatMode = .one
+        }
+    }
+
+    func repeatModeButton() -> some View {
+        Button(action: toggleRepeatMode) {
+            Image(systemName: repeatModeImageName)
+        }
     }
 }
 

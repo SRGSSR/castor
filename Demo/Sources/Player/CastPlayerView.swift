@@ -14,7 +14,7 @@ struct CastPlayerView: View {
         VStack {
             if let player = cast.player {
                 ControlsView(player: player, device: cast.currentDevice)
-                PlaylistView(queue: player.queue)
+                PlaylistView(player: player, queue: player.queue)
             }
             else {
                 MessageView(message: "Not connected", icon: .system("play.slash.fill"))
