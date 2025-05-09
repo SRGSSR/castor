@@ -70,7 +70,7 @@ struct ControlsView: View {
                 .resizable()
         }
         .aspectRatio(contentMode: .fit)
-        .frame(height: 160)
+        .frame(height: 100)
     }
 
     private func loadingIndicator() -> some View {
