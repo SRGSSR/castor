@@ -4,8 +4,8 @@ set -e
 
 function install_tools {
     curl -Ssf https://pkgx.sh | sh &> /dev/null
-    set -a
-    eval "$(pkgx +ruby +bundle +xcodes)"
+    set -a;
+    eval "$(pkgx +ruby@3.3.0 +bundle +xcodes)"
     set +a
 }
 

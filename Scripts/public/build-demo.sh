@@ -5,7 +5,7 @@ set -e
 function install_tools {
     curl -Ssf https://pkgx.sh | sh &> /dev/null
     set -a
-    eval "$(pkgx +bundle)"
+    eval "$(pkgx +ruby@3.3.0 +bundle)"
     set +a
 }
 
