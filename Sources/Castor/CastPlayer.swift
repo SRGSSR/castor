@@ -17,10 +17,22 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
     private let tracks: CastTracks
+    private let `repeat`: CastRepeat
 
     @Published private var mediaStatus: GCKMediaStatus?
     @Published private var _playbackSpeed: Float = 1
     @Published private var _activeTracks: [CastMediaTrack] = []
+    @Published private var _repeatMode: CastRepeatMode = .off
+
+    /// The mode with which the player repeats playback of items in its queue.
+    public var repeatMode: CastRepeatMode {
+        get {
+            _repeatMode
+        }
+        set {
+            `repeat`.request(for: newValue)
+        }
+    }
 
     /// The queue managing player items.
     public let queue: CastQueue
@@ -39,11 +51,13 @@ public final class CastPlayer: NSObject, ObservableObject {
         speed = .init(remoteMediaClient: remoteMediaClient)
         tracks = .init(remoteMediaClient: remoteMediaClient)
         queue = .init(remoteMediaClient: remoteMediaClient)
+        `repeat` = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
         remoteMediaClient.add(self)
         configurePlaybackSpeedPublisher()
+        configureRepeatModePublisher()
         configureActiveTracksPublisher()
     }
 
@@ -53,6 +67,14 @@ public final class CastPlayer: NSObject, ObservableObject {
                 targetSpeed ?? mediaStatusSpeed
             }
             .assign(to: &$_playbackSpeed)
+    }
+
+    private func configureRepeatModePublisher() {
+        Publishers.CombineLatest(`repeat`.$targetMode, mediaStatusRepeatModePublisher())
+            .map { targetMode, mediaStatusRepeatMode in
+                targetMode ?? mediaStatusRepeatMode
+            }
+            .assign(to: &$_repeatMode)
     }
 
     private func configureActiveTracksPublisher() {
@@ -67,6 +89,13 @@ public final class CastPlayer: NSObject, ObservableObject {
         $mediaStatus
             .map { $0?.playbackRate ?? 1 }
             .filter { $0 != 0 }
+            .eraseToAnyPublisher()
+    }
+
+    private func mediaStatusRepeatModePublisher() -> AnyPublisher<CastRepeatMode, Never> {
+        $mediaStatus
+            .compactMap(\.self)
+            .compactMap { .init(rawMode: $0.queueRepeatMode) }
             .eraseToAnyPublisher()
     }
 

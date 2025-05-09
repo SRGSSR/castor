@@ -17,6 +17,19 @@ public enum CastRepeatMode {
     /// Repeat all items.
     case all
 
+    init?(rawMode: GCKMediaRepeatMode) {
+        switch rawMode {
+        case .off:
+            self = .off
+        case .single:
+            self = .one
+        case .all, .allAndShuffle:
+            self = .all
+        default:
+            return nil
+        }
+    }
+
     func rawMode() -> GCKMediaRepeatMode {
         switch self {
         case .off:
