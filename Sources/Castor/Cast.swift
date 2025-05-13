@@ -14,6 +14,7 @@ public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version
 
+    @Published private var _volume: Float = 0
     @Published private var _isMuted = false
 
     private let context = GCKCastContext.sharedInstance()
@@ -34,7 +35,19 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    /// A Boolean setting whether the audio output of the player must be muted.
+    /// The audio output volume of the current device.
+    ///
+    /// Valid values range from 0 (silent) to 1 (maximum volume).
+    public var volume: Float {
+        get {
+            _volume
+        }
+        set {
+            currentSession?.setDeviceVolume(newValue)
+        }
+    }
+
+    /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
         get {
             _isMuted
@@ -198,6 +211,7 @@ extension Cast: GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, castSession session: GCKCastSession, didReceiveDeviceVolume volume: Float, muted: Bool) {
+        _volume = volume
         _isMuted = muted
     }
 }
