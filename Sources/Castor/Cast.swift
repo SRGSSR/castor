@@ -47,8 +47,13 @@ public final class Cast: NSObject, ObservableObject {
             _volume
         }
         set {
-            _volume = newValue.clamped(to: 0...1)
+            _volume = newValue.clamped(to: volumeRange)
         }
+    }
+
+    /// The allowed range for volume values.
+    public var volumeRange: ClosedRange<Float> {
+        currentSession != nil ? 0...1 : 0...0
     }
 
     /// A Boolean setting whether the audio output of the current device must be muted.

@@ -16,6 +16,7 @@ struct MuteButton: View {
         } label: {
             Image(systemName: imageName)
         }
+        .opacity(cast.connectionState == .connected ? 1 : 0)
     }
 
     private var imageName: String {

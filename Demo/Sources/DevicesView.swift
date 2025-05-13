@@ -52,22 +52,32 @@ struct DevicesView: View {
 
     private func devicesView() -> some View {
         VStack {
-            List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
-                Label {
-                    label(for: device)
-                } icon: {
-                    Image(systemName: Self.imageName(for: device))
-                }
-            }
-            Slider(value: $cast.volume, in: 0...1, step: 0.1) {
-                Text("Volume")
-            } minimumValueLabel: {
-                Image(systemName: "speaker.wave.1.fill")
-            } maximumValueLabel: {
-                Image(systemName: "speaker.wave.3.fill")
-            }
-            .padding()
+            devicesList()
+            volumeSlider()
         }
+    }
+
+    private func devicesList() -> some View {
+        List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
+            Label {
+                label(for: device)
+            } icon: {
+                Image(systemName: Self.imageName(for: device))
+            }
+        }
+    }
+
+    private func volumeSlider() -> some View {
+        Slider(value: $cast.volume, in: cast.volumeRange) {
+            Text("Volume")
+        } minimumValueLabel: {
+            Image(systemName: "speaker.wave.1.fill")
+        } maximumValueLabel: {
+            Image(systemName: "speaker.wave.3.fill")
+        }
+        .padding()
+        .opacity(cast.connectionState == .connected ? 1 : 0)
+        .animation(.default, value: cast.connectionState)
     }
 
     private func label(for device: CastDevice) -> some View {
