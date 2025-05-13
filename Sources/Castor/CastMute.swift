@@ -9,6 +9,7 @@ import GoogleCast
 final class CastMute: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
+    // swiftlint:disable:next discouraged_optional_boolean
     @Published private(set) var targetMuted: Bool?
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
@@ -27,4 +28,3 @@ extension CastMute: GCKRequestDelegate {
         targetMuted = nil
     }
 }
-

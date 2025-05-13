@@ -100,9 +100,9 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     private func configureMutedPublisher() {
-        Publishers.CombineLatest(mute.$targetMuted, mediaStatusIsMutedPublisher())
-            .map { targetActiveTracks, mediaStatusActiveTracks in
-                targetActiveTracks ?? mediaStatusActiveTracks
+        Publishers.CombineLatest(mute.$targetMuted, mediaStatusMutedPublisher())
+            .map { targetMuted, mediaStatusMuted in
+                targetMuted ?? mediaStatusMuted
             }
             .assign(to: &$_isMuted)
     }
@@ -127,7 +127,7 @@ public final class CastPlayer: NSObject, ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    private func mediaStatusIsMutedPublisher() -> AnyPublisher<Bool, Never> {
+    private func mediaStatusMutedPublisher() -> AnyPublisher<Bool, Never> {
         $mediaStatus
             .map { $0?.isMuted ?? false }
             .eraseToAnyPublisher()
