@@ -59,7 +59,7 @@ struct DevicesView: View {
                     Image(systemName: Self.imageName(for: device))
                 }
             }
-            Slider(value: $cast.volume)
+            Slider(value: $cast.volume, in: 0...1, step: 0.1)
                 .padding()
         }
     }

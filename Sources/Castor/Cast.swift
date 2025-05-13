@@ -26,6 +26,12 @@ public final class Cast: NSObject, ObservableObject {
 
     private var targetDevice: CastDevice?
 
+    @Published private var _volume: Float {
+        didSet {
+            currentSession?.setDeviceVolume(_volume)
+        }
+    }
+
     /// The cast configuration.
     public var configuration: CastConfiguration {
         didSet {
@@ -36,9 +42,12 @@ public final class Cast: NSObject, ObservableObject {
     /// The audio output volume of the current device.
     ///
     /// Valid values range from 0 (silent) to 1 (maximum volume).
-    @Published public var volume: Float {
-        didSet {
-            currentSession?.setDeviceVolume(volume)
+    public var volume: Float {
+        get {
+            _volume
+        }
+        set {
+            _volume = newValue.clamped(to: 0...1)
         }
     }
 
@@ -96,7 +105,7 @@ public final class Cast: NSObject, ObservableObject {
         currentDevice = currentSession?.device.toCastDevice()
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-        volume = Self.volume(from: currentSession)
+        _volume = Self.volume(from: currentSession)
         isMuted = Self.isMuted(from: currentSession)
 
         super.init()
