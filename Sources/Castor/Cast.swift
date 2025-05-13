@@ -44,6 +44,7 @@ public final class Cast: NSObject, ObservableObject {
             _volume
         }
         set {
+            _volume = newValue
             currentSession?.setDeviceVolume(newValue)
         }
     }
