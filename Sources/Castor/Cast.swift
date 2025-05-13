@@ -14,11 +14,14 @@ public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version
 
+    @Published private var _isMuted = false
+
     private let context = GCKCastContext.sharedInstance()
 
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            isMuted = currentSession?.currentDeviceMuted ?? false
         }
     }
 
@@ -28,6 +31,16 @@ public final class Cast: NSObject, ObservableObject {
     public var configuration: CastConfiguration {
         didSet {
             player?.configuration = configuration
+        }
+    }
+
+    /// A Boolean setting whether the audio output of the player must be muted.
+    public var isMuted: Bool {
+        get {
+            _isMuted
+        }
+        set {
+            currentSession?.setDeviceMuted(newValue)
         }
     }
 
@@ -181,6 +194,11 @@ extension Cast: GCKSessionManagerListener {
     ) {
         currentSession = nil
         currentDevice = nil
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func sessionManager(_ sessionManager: GCKSessionManager, castSession session: GCKCastSession, didReceiveDeviceVolume volume: Float, muted: Bool) {
+        _isMuted = muted
     }
 }
 

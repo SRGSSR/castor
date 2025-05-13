@@ -8,17 +8,17 @@ import Castor
 import SwiftUI
 
 struct MuteButton: View {
-    @ObservedObject var player: CastPlayer
+    @EnvironmentObject var cast: Cast
 
     var body: some View {
         Button {
-            player.isMuted.toggle()
+            cast.isMuted.toggle()
         } label: {
             Image(systemName: imageName)
         }
     }
 
     private var imageName: String {
-        player.isMuted ? "speaker.slash.fill" : "speaker.wave.3.fill"
+        cast.isMuted ? "speaker.slash.fill" : "speaker.wave.3.fill"
     }
 }

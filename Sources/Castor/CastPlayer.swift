@@ -18,13 +18,11 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let speed: CastPlaybackSpeed
     private let `repeat`: CastRepeat
     private let tracks: CastTracks
-    private let mute: CastMute
 
     @Published private var mediaStatus: GCKMediaStatus?
     @Published private var _playbackSpeed: Float = 1
     @Published private var _repeatMode: CastRepeatMode = .off
     @Published private var _activeTracks: [CastMediaTrack] = []
-    @Published private var _isMuted = false
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
@@ -33,16 +31,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
         set {
             `repeat`.request(for: newValue)
-        }
-    }
-
-    /// A Boolean setting whether the audio output of the player must be muted.
-    public var isMuted: Bool {
-        get {
-            _isMuted
-        }
-        set {
-            mute.request(for: newValue)
         }
     }
 
@@ -64,7 +52,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         speed = .init(remoteMediaClient: remoteMediaClient)
         `repeat` = .init(remoteMediaClient: remoteMediaClient)
         tracks = .init(remoteMediaClient: remoteMediaClient)
-        mute = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
@@ -72,7 +59,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         configurePlaybackSpeedPublisher()
         configureRepeatModePublisher()
         configureActiveTracksPublisher()
-        configureMutedPublisher()
     }
 
     private func configurePlaybackSpeedPublisher() {
@@ -99,14 +85,6 @@ public final class CastPlayer: NSObject, ObservableObject {
             .assign(to: &$_activeTracks)
     }
 
-    private func configureMutedPublisher() {
-        Publishers.CombineLatest(mute.$targetMuted, mediaStatusMutedPublisher())
-            .map { targetMuted, mediaStatusMuted in
-                targetMuted ?? mediaStatusMuted
-            }
-            .assign(to: &$_isMuted)
-    }
-
     private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
         $mediaStatus
             .map { $0?.playbackRate ?? 1 }
@@ -124,12 +102,6 @@ public final class CastPlayer: NSObject, ObservableObject {
     private func mediaStatusActiveTracksPublisher() -> AnyPublisher<[CastMediaTrack], Never> {
         $mediaStatus
             .map { Self.activeTracks(from: $0) }
-            .eraseToAnyPublisher()
-    }
-
-    private func mediaStatusMutedPublisher() -> AnyPublisher<Bool, Never> {
-        $mediaStatus
-            .map { $0?.isMuted ?? false }
             .eraseToAnyPublisher()
     }
 

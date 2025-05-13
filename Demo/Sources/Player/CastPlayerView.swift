@@ -31,7 +31,7 @@ struct CastPlayerView: View {
                 stopButton()
             }
             ToolbarItem(placement: .topBarTrailing) {
-                muteButton()
+                MuteButton()
             }
             ToolbarItem(placement: .topBarTrailing) {
                 settingsMenu()
@@ -47,13 +47,6 @@ struct CastPlayerView: View {
             } label: {
                 Text("Stop")
             }
-        }
-    }
-
-    @ViewBuilder
-    private func muteButton() -> some View {
-        if let player = cast.player {
-            MuteButton(player: player)
         }
     }
 
