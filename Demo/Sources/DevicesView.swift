@@ -59,8 +59,14 @@ struct DevicesView: View {
                     Image(systemName: Self.imageName(for: device))
                 }
             }
-            Slider(value: $cast.volume, in: 0...1, step: 0.1)
-                .padding()
+            Slider(value: $cast.volume, in: 0...1, step: 0.1) {
+                Text("Volume")
+            } minimumValueLabel: {
+                Image(systemName: "speaker.wave.1.fill")
+            } maximumValueLabel: {
+                Image(systemName: "speaker.wave.3.fill")
+            }
+            .padding()
         }
     }
 
