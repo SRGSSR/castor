@@ -17,6 +17,7 @@ struct MuteButton: View {
             Image(systemName: imageName)
         }
         .opacity(cast.connectionState == .connected ? 1 : 0)
+        .animation(.default, value: cast.connectionState)
     }
 
     private var imageName: String {
