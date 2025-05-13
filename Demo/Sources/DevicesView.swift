@@ -51,12 +51,16 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
-        List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
-            Label {
-                label(for: device)
-            } icon: {
-                Image(systemName: Self.imageName(for: device))
+        VStack {
+            List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
+                Label {
+                    label(for: device)
+                } icon: {
+                    Image(systemName: Self.imageName(for: device))
+                }
             }
+            Slider(value: $cast.volume)
+                .padding()
         }
     }
 
