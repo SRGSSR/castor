@@ -19,15 +19,19 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            volume = Self.volume(from: currentSession)
-            isMuted = Self.isMuted(from: currentSession)
+            nonRequestedVolume = Self.volume(from: currentSession)
+            nonRequestedIsMuted = Self.isMuted(from: currentSession)
         }
     }
+
+    private var canRequestVolume = false
+    private var canRequestMuted = false
 
     private var targetDevice: CastDevice?
 
     @Published private var _volume: Float {
         didSet {
+            guard canRequestVolume else { return }
             currentSession?.setDeviceVolume(_volume)
         }
     }
@@ -51,6 +55,17 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
+    private var nonRequestedVolume: Float {
+        get {
+            _volume
+        }
+        set {
+            canRequestVolume = false
+            _volume = newValue
+            canRequestVolume = true
+        }
+    }
+
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
         currentSession != nil ? 0...1 : 0...0
@@ -59,7 +74,19 @@ public final class Cast: NSObject, ObservableObject {
     /// A Boolean setting whether the audio output of the current device must be muted.
     @Published public var isMuted: Bool {
         didSet {
+            guard canRequestMuted else { return }
             currentSession?.setDeviceMuted(isMuted)
+        }
+    }
+
+    private var nonRequestedIsMuted: Bool {
+        get {
+            isMuted
+        }
+        set {
+            canRequestMuted = false
+            isMuted = newValue
+            canRequestMuted = true
         }
     }
 
@@ -228,8 +255,8 @@ extension Cast: GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, castSession session: GCKCastSession, didReceiveDeviceVolume volume: Float, muted: Bool) {
-        self.volume = volume
-        isMuted = muted
+        nonRequestedVolume = volume
+        nonRequestedIsMuted = muted
     }
 }
 
