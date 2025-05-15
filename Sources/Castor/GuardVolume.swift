@@ -29,7 +29,7 @@ class GuardVolume: NSObject {
     }
 
     init?(sessionManager: GCKSessionManager, session: GCKCastSession?) {
-        guard let session else { return nil }
+        guard let session, session.device.hasCapabilities(.masterOrFixedVolume) else { return nil }
         self.session = session
         self.volume = session.currentDeviceVolume
         super.init()
