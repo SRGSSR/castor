@@ -19,7 +19,7 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            guardVolume = .init(sessionManager: context.sessionManager)
+            guardVolume = .init(sessionManager: context.sessionManager, session: currentSession)
             nonRequestedIsMuted = Self.isMuted(from: currentSession)
         }
     }

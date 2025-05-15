@@ -28,12 +28,16 @@ class GuardVolume: NSObject {
         }
     }
 
-    init?(sessionManager: GCKSessionManager) {
-        guard let session = sessionManager.currentCastSession else { return nil }
+    init?(sessionManager: GCKSessionManager, session: GCKCastSession?) {
+        guard let session else { return nil }
         self.session = session
         self.volume = session.currentDeviceVolume
         super.init()
         sessionManager.add(self)
+    }
+
+    convenience init?(sessionManager: GCKSessionManager) {
+        self.init(sessionManager: sessionManager, session: sessionManager.currentCastSession)
     }
 
     private func volumeRequest(to volume: Float) -> GCKRequest {
