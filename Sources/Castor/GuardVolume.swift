@@ -11,7 +11,7 @@ protocol GuardVolumeDelegate: AnyObject {
 }
 
 class GuardVolume: NSObject {
-    private let sessionManager: GCKSessionManager
+    private let session: GCKCastSession
     weak var delegate: GuardVolumeDelegate?
 
     private weak var request: GCKRequest?
@@ -20,7 +20,7 @@ class GuardVolume: NSObject {
 
     var volume: Float {
         didSet {
-            guard sessionManager.currentCastSession?.currentDeviceVolume != volume else { return }
+            guard session.currentDeviceVolume != volume else { return }
             if request == nil {
                 request = volumeRequest(to: volume)
             }
@@ -28,16 +28,17 @@ class GuardVolume: NSObject {
         }
     }
 
-    init(sessionManager: GCKSessionManager) {
-        self.sessionManager = sessionManager
-        self.volume = sessionManager.currentCastSession?.currentDeviceVolume ?? 0
+    init?(sessionManager: GCKSessionManager) {
+        guard let session = sessionManager.currentCastSession else { return nil }
+        self.session = session
+        self.volume = session.currentDeviceVolume
         super.init()
         sessionManager.add(self)
     }
 
-    private func volumeRequest(to volume: Float) -> GCKRequest? {
-        let request = sessionManager.currentCastSession?.setDeviceVolume(volume)
-        request?.delegate = self
+    private func volumeRequest(to volume: Float) -> GCKRequest {
+        let request = session.setDeviceVolume(volume)
+        request.delegate = self
         requestVolume = volume
         return request
     }

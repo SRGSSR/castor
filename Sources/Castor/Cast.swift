@@ -19,6 +19,7 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            guardVolume = .init(sessionManager: context.sessionManager)
             nonRequestedIsMuted = Self.isMuted(from: currentSession)
         }
     }
@@ -34,23 +35,23 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    private let guardVolume: GuardVolume
+    private var guardVolume: GuardVolume?
 
     /// The audio output volume of the current device.
     ///
     /// Valid values range from 0 (silent) to 1 (maximum volume).
     public var volume: Float {
         get {
-            guardVolume.volume
+            guardVolume?.volume ?? 0
         }
         set {
-            guardVolume.volume = newValue.clamped(to: volumeRange)
+            guardVolume?.volume = newValue.clamped(to: volumeRange)
         }
     }
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        currentSession != nil ? 0...1 : 0...0
+        guardVolume != nil ? 0...1 : 0...0
     }
 
     /// A Boolean setting whether the audio output of the current device must be muted.
@@ -128,7 +129,7 @@ public final class Cast: NSObject, ObservableObject {
         context.discoveryManager.startDiscovery()
 
         context.sessionManager.add(self)
-        guardVolume.delegate = self
+        guardVolume?.delegate = self
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
