@@ -14,23 +14,17 @@ class GuardVolume: NSObject {
     private let sessionManager: GCKSessionManager
     weak var delegate: GuardVolumeDelegate?
 
-    private var canRequestVolume = false
+    private weak var request: GCKRequest?
+    private var requestVolume: Float?
+    private var pendingRequestVolume: Float?
 
     var volume: Float {
         didSet {
-            guard canRequestVolume else { return }
-            sessionManager.currentCastSession?.setDeviceVolume(volume)
-        }
-    }
-
-    private var nonRequestedVolume: Float {
-        get {
-            volume
-        }
-        set {
-            canRequestVolume = false
-            volume = newValue
-            canRequestVolume = true
+            guard sessionManager.currentCastSession?.currentDeviceVolume != volume else { return }
+            if request == nil {
+                request = volumeRequest(to: volume)
+            }
+            pendingRequestVolume = volume
         }
     }
 
@@ -39,6 +33,13 @@ class GuardVolume: NSObject {
         self.volume = sessionManager.currentCastSession?.currentDeviceVolume ?? 0
         super.init()
         sessionManager.add(self)
+    }
+
+    private func volumeRequest(to volume: Float) -> GCKRequest? {
+        let request = sessionManager.currentCastSession?.setDeviceVolume(volume)
+        request?.delegate = self
+        requestVolume = volume
+        return request
     }
 }
 
@@ -49,7 +50,23 @@ extension GuardVolume: GCKSessionManagerListener {
         didReceiveDeviceVolume volume: Float,
         muted: Bool
     ) {
-        nonRequestedVolume = volume
-        delegate?.didReceiveDeviceVolume()
+        if let pendingRequestVolume {
+            if volume == pendingRequestVolume {
+                delegate?.didReceiveDeviceVolume()
+                self.pendingRequestVolume = nil
+            }
+        }
+        else {
+            self.volume = volume
+            delegate?.didReceiveDeviceVolume()
+        }
+    }
+}
+
+extension GuardVolume: GCKRequestDelegate {
+    // swiftlint:disable:next missing_docs
+    public func requestDidComplete(_ request: GCKRequest) {
+        guard let pendingRequestVolume, pendingRequestVolume != requestVolume else { return }
+        self.request = volumeRequest(to: pendingRequestVolume)
     }
 }
