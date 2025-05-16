@@ -22,7 +22,7 @@ struct DevicesView: View {
     @EnvironmentObject private var cast: Cast
 
     private var minimumValueImageName: String {
-        cast.isMuted ? "speaker.slash.fill" : "speaker.wave.1.fill"
+        cast.volume == 0 ? "speaker.slash.fill" : "speaker.wave.1.fill"
     }
 
     var body: some View {
