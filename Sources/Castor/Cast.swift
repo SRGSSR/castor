@@ -19,8 +19,8 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            guardVolume = .init(sessionManager: context.sessionManager, session: currentSession)
-            guardVolume?.delegate = self
+            castVolume = .init(sessionManager: context.sessionManager, session: currentSession)
+            castVolume?.delegate = self
             nonRequestedIsMuted = Self.isMuted(from: currentSession)
         }
     }
@@ -36,23 +36,23 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    private var guardVolume: GuardVolume?
+    private var castVolume: CastVolume?
 
     /// The audio output volume of the current device.
     ///
     /// Valid values range from 0 (silent) to 1 (maximum volume).
     public var volume: Float {
         get {
-            guardVolume?.volume ?? 0
+            castVolume?.value ?? 0
         }
         set {
-            guardVolume?.volume = newValue.clamped(to: volumeRange)
+            castVolume?.value = newValue.clamped(to: volumeRange)
         }
     }
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        guardVolume != nil ? 0...1 : 0...0
+        castVolume?.range ?? 0...0
     }
 
     /// A Boolean setting whether the audio output of the current device must be muted.
@@ -121,7 +121,7 @@ public final class Cast: NSObject, ObservableObject {
         currentDevice = currentSession?.device.toCastDevice()
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-        guardVolume = .init(sessionManager: context.sessionManager)
+        castVolume = .init(sessionManager: context.sessionManager)
         isMuted = Self.isMuted(from: currentSession)
 
         super.init()
@@ -130,7 +130,7 @@ public final class Cast: NSObject, ObservableObject {
         context.discoveryManager.startDiscovery()
 
         context.sessionManager.add(self)
-        guardVolume?.delegate = self
+        castVolume?.delegate = self
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
@@ -265,8 +265,8 @@ private extension Cast {
     }
 }
 
-extension Cast: GuardVolumeDelegate {
-    func didReceiveDeviceVolume() {
+extension Cast: ChangeDelegate {
+    func didChange() {
         objectWillChange.send()
     }
 }
