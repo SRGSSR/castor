@@ -245,11 +245,6 @@ extension Cast: GCKSessionManagerListener {
         currentSession = nil
         currentDevice = nil
     }
-
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, castSession session: GCKCastSession, didReceiveDeviceVolume volume: Float, muted: Bool) {
-        isMuted = muted
-    }
 }
 
 private extension Cast {
