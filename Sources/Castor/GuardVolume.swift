@@ -56,7 +56,7 @@ extension GuardVolume: GCKSessionManagerListener {
         muted: Bool
     ) {
         if let pendingRequestVolume {
-            if volume == pendingRequestVolume {
+            if abs(volume - pendingRequestVolume) < 0.01 {
                 delegate?.didReceiveDeviceVolume()
                 self.pendingRequestVolume = nil
             }
