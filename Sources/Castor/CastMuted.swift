@@ -17,8 +17,6 @@ final class CastMuted: NSObject {
         }
     }
 
-    let range: ClosedRange<Float> = 0...1
-
     init(sessionManager: GCKSessionManager, session: GCKCastSession) {
         self.session = session
         self.value = session.currentDeviceMuted
