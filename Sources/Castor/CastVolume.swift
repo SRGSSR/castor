@@ -22,7 +22,7 @@ final class CastVolume: NSObject {
         didSet {
             guard session.currentDeviceVolume != value else { return }
             if request == nil {
-                request = makeRequest(to: value)
+                request = request(to: value)
             }
             pendingRequestValue = value
         }
@@ -42,7 +42,7 @@ final class CastVolume: NSObject {
         self.init(sessionManager: sessionManager, session: sessionManager.currentCastSession)
     }
 
-    private func makeRequest(to value: Float) -> GCKRequest {
+    private func request(to value: Float) -> GCKRequest {
         let request = session.setDeviceVolume(value)
         request.delegate = self
         requestValue = value
@@ -73,6 +73,6 @@ extension CastVolume: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
         guard let pendingRequestValue, pendingRequestValue != requestValue else { return }
-        self.request = makeRequest(to: pendingRequestValue)
+        self.request = self.request(to: pendingRequestValue)
     }
 }
