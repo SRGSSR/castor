@@ -16,7 +16,7 @@ struct MuteButton: View {
         } label: {
             Image(systemName: imageName)
         }
-        .disabled(!cast.canControlVolume)
+        .disabled(!cast.canAdjustVolume)
     }
 
     private var imageName: String {

@@ -76,8 +76,7 @@ struct DevicesView: View {
             Image(systemName: "speaker.wave.3.fill")
         }
         .padding()
-        .disabled(!cast.canControlVolume)
-        .animation(.default, value: cast.canControlVolume)
+        .disabled(!cast.canAdjustVolume)
         .animation(.default, value: cast.volume)
     }
 

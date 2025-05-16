@@ -69,10 +69,10 @@ public final class Cast: NSObject, ObservableObject {
         castVolume?.range ?? 0...0
     }
 
-    /// A Boolean indicating whether the volume/mute can be controlled.
-    public var canControlVolume: Bool {
+    /// A Boolean indicating whether the volume/mute can be adjusted.
+    public var canAdjustVolume: Bool {
         guard let currentSession else { return false }
-        return Self.canControlVolume(for: currentSession)
+        return Self.canAdjustVolume(for: currentSession)
     }
 
     /// The current device.
@@ -161,19 +161,19 @@ public final class Cast: NSObject, ObservableObject {
 }
 
 private extension Cast {
-    static func canControlVolume(for session: GCKCastSession) -> Bool {
+    static func canAdjustVolume(for session: GCKCastSession) -> Bool {
         session.device.hasCapabilities(.masterOrFixedVolume)
     }
 
     func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastMuted? {
-        guard let session, Self.canControlVolume(for: session) else { return nil }
+        guard let session, Self.canAdjustVolume(for: session) else { return nil }
         let cast = CastMuted(sessionManager: sessionManager, session: session)
         cast.delegate = self
         return cast
     }
 
     func castVolume(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastVolume? {
-        guard let session, Self.canControlVolume(for: session) else { return nil }
+        guard let session, Self.canAdjustVolume(for: session) else { return nil }
         let cast = CastVolume(sessionManager: sessionManager, session: session)
         cast.delegate = self
         return cast
