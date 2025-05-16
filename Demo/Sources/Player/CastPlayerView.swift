@@ -31,7 +31,9 @@ struct CastPlayerView: View {
                 stopButton()
             }
             ToolbarItem(placement: .topBarTrailing) {
-                MuteButton()
+                if cast.canControlVolume {
+                    MuteButton()
+                }
             }
             ToolbarItem(placement: .topBarTrailing) {
                 settingsMenu()

@@ -19,16 +19,11 @@ final class CastMuted: NSObject {
 
     let range: ClosedRange<Float> = 0...1
 
-    init?(sessionManager: GCKSessionManager, session: GCKCastSession?) {
-        guard let session, session.device.hasCapabilities(.masterOrFixedVolume) else { return nil }
+    init(sessionManager: GCKSessionManager, session: GCKCastSession) {
         self.session = session
         self.value = session.currentDeviceMuted
         super.init()
         sessionManager.add(self)
-    }
-
-    convenience init?(sessionManager: GCKSessionManager) {
-        self.init(sessionManager: sessionManager, session: sessionManager.currentCastSession)
     }
 }
 

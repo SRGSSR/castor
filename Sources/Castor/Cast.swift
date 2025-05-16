@@ -22,8 +22,7 @@ public final class Cast: NSObject, ObservableObject {
             castVolume = .init(sessionManager: context.sessionManager, session: currentSession)
             castVolume?.delegate = self
 
-            castMuted = .init(sessionManager: context.sessionManager, session: currentSession)
-            castMuted?.delegate = self
+            castMuted = castMuted(from: context.sessionManager, session: currentSession)
         }
     }
 
@@ -66,6 +65,12 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
+    /// A Boolean indicating whether the volume/mute can be controlled.
+    public var canControlVolume: Bool {
+        guard let currentSession else { return false }
+        return Self.canControlVolume(for: currentSession)
+    }
+
     /// The current device.
     ///
     /// Ends the session if set to `nil`.
@@ -103,7 +108,7 @@ public final class Cast: NSObject, ObservableObject {
     @Published public private(set) var connectionState: GCKConnectionState
 
     /// Default initializer.
-    /// 
+    ///
     /// - Parameter configuration: The configuration to apply to the cast.
     public init(configuration: CastConfiguration = .default) {
         self.configuration = configuration
@@ -115,7 +120,6 @@ public final class Cast: NSObject, ObservableObject {
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
         castVolume = .init(sessionManager: context.sessionManager)
-        castMuted = .init(sessionManager: context.sessionManager)
 
         super.init()
 
@@ -125,7 +129,8 @@ public final class Cast: NSObject, ObservableObject {
         context.sessionManager.add(self)
 
         castVolume?.delegate = self
-        castMuted?.delegate = self
+
+        castMuted = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
@@ -151,6 +156,19 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
         currentDevice == device
+    }
+}
+
+private extension Cast {
+    static func canControlVolume(for session: GCKCastSession) -> Bool {
+        session.device.hasCapabilities(.masterOrFixedVolume)
+    }
+
+    func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastMuted? {
+        guard let session, Self.canControlVolume(for: session) else { return nil }
+        let castMuted = CastMuted(sessionManager: sessionManager, session: session)
+        castMuted.delegate = self
+        return castMuted
     }
 }
 
