@@ -25,7 +25,7 @@ final class CastPlaybackSpeed: NSObject {
     }
 
     var range: ClosedRange<Float> {
-        Self.range(for: remoteMediaClient.mediaStatus)
+        Self.range(for: remoteMediaClient.mediaStatus) ?? 1...1
     }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
@@ -36,14 +36,24 @@ final class CastPlaybackSpeed: NSObject {
     }
 
     private static func value(for mediaStatus: GCKMediaStatus?) -> Float {
-        (mediaStatus?.playbackRate ?? 1).clamped(to: Self.range(for: mediaStatus))
+        if let range = Self.range(for: mediaStatus) {
+            (mediaStatus?.playbackRate ?? 1).clamped(to: range)
+        }
+        else {
+            mediaStatus?.playbackRate ?? 1
+        }
     }
 
-    private static func range(for mediaStatus: GCKMediaStatus?) -> ClosedRange<Float> {
-        guard let mediaStatus, let mediaInformation = mediaStatus.mediaInformation, mediaInformation.streamType == .buffered else {
+    private static func range(for mediaStatus: GCKMediaStatus?) -> ClosedRange<Float>? {
+        guard let mediaStatus, let mediaInformation = mediaStatus.mediaInformation else { return nil }
+        switch mediaInformation.streamType {
+        case .buffered:
+            return 0.5...2
+        case .live:
             return 1...1
+        default:
+            return nil
         }
-        return 0.5...2
     }
 
     private func makeRequest(to value: Float) -> GCKRequest {
