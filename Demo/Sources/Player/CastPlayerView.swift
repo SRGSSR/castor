@@ -30,8 +30,8 @@ struct CastPlayerView: View {
             ToolbarItem(placement: .topBarLeading) {
                 stopButton()
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                if cast.canControlVolume {
+            if cast.canControlVolume {
+                ToolbarItem(placement: .topBarTrailing) {
                     MuteButton()
                 }
             }
