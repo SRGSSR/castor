@@ -21,11 +21,11 @@ public final class Cast: NSObject, ObservableObject {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
             castVolume = .init(sessionManager: context.sessionManager, session: currentSession)
             castVolume?.delegate = self
-            nonRequestedIsMuted = Self.isMuted(from: currentSession)
+
+            castMuted = .init(sessionManager: context.sessionManager, session: currentSession)
+            castMuted?.delegate = self
         }
     }
-
-    private var canRequestMuted = false
 
     private var targetDevice: CastDevice?
 
@@ -37,6 +37,7 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     private var castVolume: CastVolume?
+    private var castMuted: CastMuted?
 
     /// The audio output volume of the current device.
     ///
@@ -56,21 +57,12 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     /// A Boolean setting whether the audio output of the current device must be muted.
-    @Published public var isMuted: Bool {
-        didSet {
-            guard canRequestMuted else { return }
-            currentSession?.setDeviceMuted(isMuted)
-        }
-    }
-
-    private var nonRequestedIsMuted: Bool {
+    public var isMuted: Bool {
         get {
-            isMuted
+            castMuted?.value ?? false
         }
         set {
-            canRequestMuted = false
-            isMuted = newValue
-            canRequestMuted = true
+            castMuted?.value = newValue
         }
     }
 
@@ -121,8 +113,9 @@ public final class Cast: NSObject, ObservableObject {
         currentDevice = currentSession?.device.toCastDevice()
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+
         castVolume = .init(sessionManager: context.sessionManager)
-        isMuted = Self.isMuted(from: currentSession)
+        castMuted = .init(sessionManager: context.sessionManager)
 
         super.init()
 
@@ -130,7 +123,9 @@ public final class Cast: NSObject, ObservableObject {
         context.discoveryManager.startDiscovery()
 
         context.sessionManager.add(self)
+
         castVolume?.delegate = self
+        castMuted?.delegate = self
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
@@ -138,14 +133,6 @@ public final class Cast: NSObject, ObservableObject {
         )
         context.sessionManager.publisher(for: \.connectionState)
             .assign(to: &$connectionState)
-    }
-
-    private static func volume(from session: GCKSession?) -> Float {
-        session?.currentDeviceVolume ?? 0
-    }
-
-    private static func isMuted(from session: GCKSession?) -> Bool {
-        session?.currentDeviceMuted ?? false
     }
 
     /// Starts a new session with the given device.
@@ -240,7 +227,7 @@ extension Cast: GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, castSession session: GCKCastSession, didReceiveDeviceVolume volume: Float, muted: Bool) {
-        nonRequestedIsMuted = muted
+        isMuted = muted
     }
 }
 
