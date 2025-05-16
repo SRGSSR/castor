@@ -50,13 +50,10 @@ extension CastVolume: GCKSessionManagerListener {
     ) {
         if let pendingRequestValue {
             guard abs(volume - pendingRequestValue) < 0.01 else { return }
-            delegate?.didChange()
             self.pendingRequestValue = nil
         }
-        else {
-            value = volume
-            delegate?.didChange()
-        }
+        value = volume
+        delegate?.didChange()
     }
 }
 
