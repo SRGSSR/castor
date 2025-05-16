@@ -21,6 +21,10 @@ private struct NoDevicesView: View {
 struct DevicesView: View {
     @EnvironmentObject private var cast: Cast
 
+    private var minimumValueImageName: String {
+        cast.volume == 0 ? "speaker.slash.fill" : "speaker.wave.1.fill"
+    }
+
     var body: some View {
         ZStack {
             if cast.devices.isEmpty {
@@ -51,6 +55,13 @@ struct DevicesView: View {
     }
 
     private func devicesView() -> some View {
+        VStack {
+            devicesList()
+            volumeSlider()
+        }
+    }
+
+    private func devicesList() -> some View {
         List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
             Label {
                 label(for: device)
@@ -58,6 +69,19 @@ struct DevicesView: View {
                 Image(systemName: Self.imageName(for: device))
             }
         }
+    }
+
+    private func volumeSlider() -> some View {
+        Slider(value: $cast.volume, in: cast.volumeRange) {
+            Text("Volume")
+        } minimumValueLabel: {
+            Image(systemName: minimumValueImageName)
+        } maximumValueLabel: {
+            Image(systemName: "speaker.wave.3.fill")
+        }
+        .padding()
+        .disabled(!cast.canAdjustVolume)
+        .animation(.default, value: cast.volume)
     }
 
     private func label(for device: CastDevice) -> some View {

@@ -34,6 +34,7 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
     private func configureGoogleCast() {
         let criteria = GCKDiscoveryCriteria(applicationID: UserDefaults.standard.receiver.identifier)
         let options = GCKCastOptions(discoveryCriteria: criteria)
+        options.physicalVolumeButtonsWillControlDeviceVolume = true
         GCKCastContext.setSharedInstanceWith(options)
         GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     }

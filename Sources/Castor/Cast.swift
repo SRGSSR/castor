@@ -19,6 +19,9 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+
+            castMuted = castMuted(from: context.sessionManager, session: currentSession)
+            castVolume = castVolume(from: context.sessionManager, session: currentSession)
         }
     }
 
@@ -31,11 +34,52 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
+    private var castMuted: CastMuted?
+    private var castVolume: CastVolume?
+
+    /// A Boolean setting whether the audio output of the current device must be muted.
+    public var isMuted: Bool {
+        get {
+            guard let castMuted, let castVolume else { return false }
+            return castMuted.value || castVolume.value == 0
+        }
+        set {
+            guard let castMuted, let castVolume else { return }
+            if !newValue, castVolume.value == 0 {
+                castVolume.value = 0.1
+            }
+            castMuted.value = newValue
+        }
+    }
+
+    /// The audio output volume of the current device.
+    ///
+    /// Valid values range from 0 (silent) to 1 (maximum volume).
+    public var volume: Float {
+        get {
+            castVolume?.value ?? 0
+        }
+        set {
+            castVolume?.value = newValue.clamped(to: volumeRange)
+        }
+    }
+
+    /// The allowed range for volume values.
+    public var volumeRange: ClosedRange<Float> {
+        castVolume?.range ?? 0...0
+    }
+
+    /// A Boolean indicating whether the volume/mute can be adjusted.
+    public var canAdjustVolume: Bool {
+        guard let currentSession else { return false }
+        return Self.canAdjustVolume(for: currentSession)
+    }
+
     /// The current device.
     ///
     /// Ends the session if set to `nil`.
     ///
-    /// > Important: On iOS 18.3 and below use `currentDeviceSelection` to manage selection in a `List`.
+    /// > Important: On iOS 18.3 and below use ``currentDeviceSelection`` to manage selection in a `List`.
     @Published public var currentDevice: CastDevice? {
         didSet {
             if let currentDevice {
@@ -68,7 +112,7 @@ public final class Cast: NSObject, ObservableObject {
     @Published public private(set) var connectionState: GCKConnectionState
 
     /// Default initializer.
-    /// 
+    ///
     /// - Parameter configuration: The configuration to apply to the cast.
     public init(configuration: CastConfiguration = .default) {
         self.configuration = configuration
@@ -76,6 +120,7 @@ public final class Cast: NSObject, ObservableObject {
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
         currentDevice = currentSession?.device.toCastDevice()
+
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
         super.init()
@@ -84,6 +129,9 @@ public final class Cast: NSObject, ObservableObject {
         context.discoveryManager.startDiscovery()
 
         context.sessionManager.add(self)
+
+        castMuted = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
+        castVolume = castVolume(from: context.sessionManager, session: context.sessionManager.currentCastSession)
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
@@ -109,6 +157,26 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
         currentDevice == device
+    }
+}
+
+private extension Cast {
+    static func canAdjustVolume(for session: GCKCastSession) -> Bool {
+        session.device.hasCapabilities(.masterOrFixedVolume)
+    }
+
+    func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastMuted? {
+        guard let session, Self.canAdjustVolume(for: session) else { return nil }
+        let cast = CastMuted(sessionManager: sessionManager, session: session)
+        cast.delegate = self
+        return cast
+    }
+
+    func castVolume(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastVolume? {
+        guard let session, Self.canAdjustVolume(for: session) else { return nil }
+        let cast = CastVolume(sessionManager: sessionManager, session: session)
+        cast.delegate = self
+        return cast
     }
 }
 
@@ -202,5 +270,11 @@ private extension Cast {
         else {
             context.sessionManager.startSession(with: currentDevice.rawDevice)
         }
+    }
+}
+
+extension Cast: ChangeDelegate {
+    func didChange() {
+        objectWillChange.send()
     }
 }
