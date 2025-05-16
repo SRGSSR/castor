@@ -76,8 +76,9 @@ struct DevicesView: View {
             Image(systemName: "speaker.wave.3.fill")
         }
         .padding()
-        .opacity(cast.connectionState == .connected ? 1 : 0)
-        .animation(.default, value: cast.connectionState)
+        .disabled(!cast.canControlVolume)
+        .animation(.default, value: cast.canControlVolume)
+        .animation(.default, value: cast.volume)
     }
 
     private func label(for device: CastDevice) -> some View {
