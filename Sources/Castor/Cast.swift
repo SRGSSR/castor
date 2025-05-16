@@ -20,6 +20,7 @@ public final class Cast: NSObject, ObservableObject {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
             guardVolume = .init(sessionManager: context.sessionManager, session: currentSession)
+            guardVolume?.delegate = self
             nonRequestedIsMuted = Self.isMuted(from: currentSession)
         }
     }
