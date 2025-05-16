@@ -7,14 +7,44 @@
 import Castor
 import SwiftUI
 
+private struct MainView: View {
+    @ObservedObject var player: CastPlayer
+    let device: CastDevice?
+
+    var body: some View {
+        VStack {
+            ControlsView(player: player, device: device)
+            PlaylistView(player: player, queue: player.queue)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                stopButton()
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                MuteButton()
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                SettingsMenu(player: player)
+            }
+        }
+    }
+
+    private func stopButton() -> some View {
+        Button {
+            player.stop()
+        } label: {
+            Text("Stop")
+        }
+    }
+}
+
 struct CastPlayerView: View {
     @EnvironmentObject private var cast: Cast
 
     var body: some View {
-        VStack {
+        ZStack {
             if let player = cast.player {
-                ControlsView(player: player, device: cast.currentDevice)
-                PlaylistView(player: player, queue: player.queue)
+                MainView(player: player, device: cast.currentDevice)
             }
             else {
                 MessageView(message: "Not connected", icon: .system("play.slash.fill"))
@@ -26,37 +56,6 @@ struct CastPlayerView: View {
             }
         }
         .animation(.default, value: cast.player)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                stopButton()
-            }
-            if cast.canControlVolume {
-                ToolbarItem(placement: .topBarTrailing) {
-                    MuteButton()
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                settingsMenu()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func stopButton() -> some View {
-        if let player = cast.player {
-            Button {
-                player.stop()
-            } label: {
-                Text("Stop")
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func settingsMenu() -> some View {
-        if let player = cast.player {
-            SettingsMenu(player: player)
-        }
     }
 }
 
