@@ -20,7 +20,6 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let tracks: CastTracks
 
     @Published private var mediaStatus: GCKMediaStatus?
-    @Published private var _playbackSpeed: Float = 1
     @Published private var _repeatMode: CastRepeatMode = .off
     @Published private var _activeTracks: [CastMediaTrack] = []
 
@@ -56,17 +55,11 @@ public final class CastPlayer: NSObject, ObservableObject {
         super.init()
 
         remoteMediaClient.add(self)
-        configurePlaybackSpeedPublisher()
+
+        speed.delegate = self
+
         configureRepeatModePublisher()
         configureActiveTracksPublisher()
-    }
-
-    private func configurePlaybackSpeedPublisher() {
-        Publishers.CombineLatest(speed.$targetValue, mediaStatusPlaybackSpeedPublisher())
-            .map { targetSpeed, mediaStatusSpeed in
-                targetSpeed ?? mediaStatusSpeed
-            }
-            .assign(to: &$_playbackSpeed)
     }
 
     private func configureRepeatModePublisher() {
@@ -83,13 +76,6 @@ public final class CastPlayer: NSObject, ObservableObject {
                 targetActiveTracks ?? mediaStatusActiveTracks
             }
             .assign(to: &$_activeTracks)
-    }
-
-    private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
-        $mediaStatus
-            .map { $0?.playbackRate ?? 1 }
-            .filter { $0 != 0 }
-            .eraseToAnyPublisher()
     }
 
     private func mediaStatusRepeatModePublisher() -> AnyPublisher<CastRepeatMode, Never> {
@@ -140,12 +126,12 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The currently applicable playback speed.
     var effectivePlaybackSpeed: Float {
-        _playbackSpeed.clamped(to: playbackSpeedRange)
+        speed.value
     }
 
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
-        mediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
+        speed.range
     }
 
     /// A binding to read and write the current playback speed.
@@ -164,7 +150,7 @@ public extension CastPlayer {
     /// This value might not be applied immediately or might not be applicable at all. You must check
     /// `effectivePlaybackSpeed` to obtain the actually applied speed.
     func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
-        speed.request(for: playbackSpeed)
+        speed.value = playbackSpeed
     }
 }
 
@@ -459,6 +445,12 @@ extension CastPlayer {
                 TimeProperties(time: time, timeRange: player.seekableTimeRange())
             }
             .eraseToAnyPublisher()
+    }
+}
+
+extension CastPlayer: ChangeDelegate {
+    func didChange() {
+        objectWillChange.send()
     }
 }
 
