@@ -21,6 +21,10 @@ private struct NoDevicesView: View {
 struct DevicesView: View {
     @EnvironmentObject private var cast: Cast
 
+    private var minimumValueImageName: String {
+        cast.isMuted ? "speaker.slash.fill" : "speaker.wave.1.fill"
+    }
+
     var body: some View {
         ZStack {
             if cast.devices.isEmpty {
@@ -71,7 +75,7 @@ struct DevicesView: View {
         Slider(value: $cast.volume, in: cast.volumeRange) {
             Text("Volume")
         } minimumValueLabel: {
-            Image(systemName: "speaker.wave.1.fill")
+            Image(systemName: minimumValueImageName)
         } maximumValueLabel: {
             Image(systemName: "speaker.wave.3.fill")
         }
