@@ -40,10 +40,15 @@ public final class Cast: NSObject, ObservableObject {
     /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
         get {
-            castMuted?.value ?? false
+            guard let castMuted, let castVolume else { return false }
+            return castMuted.value || castVolume.value == 0
         }
         set {
-            castMuted?.value = newValue
+            guard let castMuted, let castVolume else { return }
+            if !newValue, castVolume.value == 0 {
+                castVolume.value = 0.1
+            }
+            castMuted.value = newValue
         }
     }
 
