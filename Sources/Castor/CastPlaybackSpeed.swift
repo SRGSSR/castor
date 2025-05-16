@@ -36,7 +36,7 @@ final class CastPlaybackSpeed: NSObject {
     }
 
     private static func value(for mediaStatus: GCKMediaStatus?) -> Float {
-        mediaStatus?.playbackRate ?? 1
+        (mediaStatus?.playbackRate ?? 1).clamped(to: Self.range(for: mediaStatus))
     }
 
     private static func range(for mediaStatus: GCKMediaStatus?) -> ClosedRange<Float> {
