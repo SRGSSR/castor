@@ -6,10 +6,6 @@
 
 import GoogleCast
 
-protocol ChangeDelegate: AnyObject {
-    func didChange()
-}
-
 final class CastVolume: NSObject {
     private let session: GCKCastSession
     weak var delegate: ChangeDelegate?
@@ -63,7 +59,7 @@ extension CastVolume: GCKSessionManagerListener {
             self.pendingRequestValue = nil
         }
         else {
-            self.value = volume
+            value = volume
             delegate?.didChange()
         }
     }
