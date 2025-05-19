@@ -17,7 +17,7 @@ public enum CastRepeatMode {
     /// Repeat all items.
     case all
 
-    init?(rawMode: GCKMediaRepeatMode) {
+    init?(rawMode: GCKMediaRepeatMode?) {
         switch rawMode {
         case .off:
             self = .off

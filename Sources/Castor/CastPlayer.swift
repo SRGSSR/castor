@@ -20,16 +20,15 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let tracks: CastTracks
 
     @Published private var mediaStatus: GCKMediaStatus?
-    @Published private var _repeatMode: CastRepeatMode = .off
     @Published private var _activeTracks: [CastMediaTrack] = []
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
         get {
-            _repeatMode
+            `repeat`.value
         }
         set {
-            `repeat`.request(for: newValue)
+            `repeat`.value = newValue
         }
     }
 
@@ -57,17 +56,9 @@ public final class CastPlayer: NSObject, ObservableObject {
         remoteMediaClient.add(self)
 
         speed.delegate = self
+        `repeat`.delegate = self
 
-        configureRepeatModePublisher()
         configureActiveTracksPublisher()
-    }
-
-    private func configureRepeatModePublisher() {
-        Publishers.CombineLatest(`repeat`.$targetMode, mediaStatusRepeatModePublisher())
-            .map { targetMode, mediaStatusRepeatMode in
-                targetMode ?? mediaStatusRepeatMode
-            }
-            .assign(to: &$_repeatMode)
     }
 
     private func configureActiveTracksPublisher() {
@@ -76,13 +67,6 @@ public final class CastPlayer: NSObject, ObservableObject {
                 targetActiveTracks ?? mediaStatusActiveTracks
             }
             .assign(to: &$_activeTracks)
-    }
-
-    private func mediaStatusRepeatModePublisher() -> AnyPublisher<CastRepeatMode, Never> {
-        $mediaStatus
-            .compactMap(\.self)
-            .compactMap { .init(rawMode: $0.queueRepeatMode) }
-            .eraseToAnyPublisher()
     }
 
     private func mediaStatusActiveTracksPublisher() -> AnyPublisher<[CastMediaTrack], Never> {
