@@ -15,7 +15,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private let seek: CastSeek
-    private let speed: CastPlaybackSpeed
+    private let playbackSpeedSynchronizer: PlaybackSpeedSynchronizer
     private let repeatModeSynchronizer: RepeatModeSynchronizer
     private let activeTracksSynchronizer: ActiveTracksSynchronizer
 
@@ -46,7 +46,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
-        speed = .init(remoteMediaClient: remoteMediaClient)
+        playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient)
 
@@ -54,7 +54,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         remoteMediaClient.add(self)
 
-        speed.delegate = self
+        playbackSpeedSynchronizer.delegate = self
         repeatModeSynchronizer.delegate = self
         activeTracksSynchronizer.delegate = self
     }
@@ -94,12 +94,12 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The currently applicable playback speed.
     var effectivePlaybackSpeed: Float {
-        speed.value
+        playbackSpeedSynchronizer.speed
     }
 
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
-        speed.range
+        playbackSpeedSynchronizer.range
     }
 
     /// A binding to read and write the current playback speed.
@@ -118,7 +118,7 @@ public extension CastPlayer {
     /// This value might not be applied immediately or might not be applicable at all. You must check
     /// `effectivePlaybackSpeed` to obtain the actually applied speed.
     func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
-        speed.value = playbackSpeed
+        playbackSpeedSynchronizer.speed = playbackSpeed
     }
 }
 

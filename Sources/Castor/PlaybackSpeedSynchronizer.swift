@@ -6,21 +6,21 @@
 
 import GoogleCast
 
-final class CastPlaybackSpeed: NSObject {
+final class PlaybackSpeedSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     weak var delegate: ChangeDelegate?
 
     private weak var request: GCKRequest?
-    private var requestValue: Float?
-    private var pendingRequestValue: Float?
+    private var requestSpeed: Float?
+    private var pendingRequestSpeed: Float?
 
-    var value: Float {
+    var speed: Float {
         didSet {
-            guard remoteMediaClient.mediaStatus?.playbackRate != value else { return }
+            guard remoteMediaClient.mediaStatus?.playbackRate != speed else { return }
             if request == nil {
-                request = makeRequest(to: value)
+                request = makeRequest(to: speed)
             }
-            pendingRequestValue = value
+            pendingRequestSpeed = speed
         }
     }
 
@@ -31,12 +31,12 @@ final class CastPlaybackSpeed: NSObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.value = Self.value(for: remoteMediaClient.mediaStatus)
+        self.speed = Self.speed(for: remoteMediaClient.mediaStatus)
         super.init()
         remoteMediaClient.add(self)
     }
 
-    private static func value(for mediaStatus: GCKMediaStatus?) -> Float {
+    private static func speed(for mediaStatus: GCKMediaStatus?) -> Float {
         guard let mediaStatus else { return 1 }
         if let range = Self.range(for: mediaStatus) {
             return mediaStatus.playbackRate.clamped(to: range)
@@ -57,29 +57,29 @@ final class CastPlaybackSpeed: NSObject {
         }
     }
 
-    private func makeRequest(to value: Float) -> GCKRequest {
-        let request = remoteMediaClient.setPlaybackRate(value)
+    private func makeRequest(to speed: Float) -> GCKRequest {
+        let request = remoteMediaClient.setPlaybackRate(speed)
         request.delegate = self
-        requestValue = value
+        requestSpeed = speed
         return request
     }
 }
 
-extension CastPlaybackSpeed: GCKRemoteMediaClientListener {
+extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        if let mediaStatus, let pendingRequestValue {
-            guard abs(mediaStatus.playbackRate - pendingRequestValue) < 0.01 else { return }
-            self.pendingRequestValue = nil
+        if let mediaStatus, let pendingRequestSpeed {
+            guard abs(mediaStatus.playbackRate - pendingRequestSpeed) < 0.01 else { return }
+            self.pendingRequestSpeed = nil
         }
-        value = Self.value(for: mediaStatus)
+        speed = Self.speed(for: mediaStatus)
         delegate?.didChange()
     }
 }
 
-extension CastPlaybackSpeed: GCKRequestDelegate {
+extension PlaybackSpeedSynchronizer: GCKRequestDelegate {
     // swiftlint:disable:next missing_docs
     public func requestDidComplete(_ request: GCKRequest) {
-        guard let pendingRequestValue, pendingRequestValue != requestValue else { return }
-        self.request = makeRequest(to: pendingRequestValue)
+        guard let pendingRequestSpeed, pendingRequestSpeed != requestSpeed else { return }
+        self.request = makeRequest(to: pendingRequestSpeed)
     }
 }
