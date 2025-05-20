@@ -6,20 +6,29 @@
 
 import GoogleCast
 
-protocol CastCurrentDelegate: AnyObject {
-    func didUpdateItem(withId id: GCKMediaQueueItemID?)
-}
-
-/// This class is a workaround to avoid cast session instabilities when jumps are performed in quick succession.
-/// It should ideally be removed if jumps are made reliable at the Google Cast SDK level directly.
-final class CastCurrent: NSObject {
+final class CurrentItemSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private weak var request: GCKRequest?
     private var requestItemId: GCKMediaQueueItemID?
     private var pendingRequestItemId: GCKMediaQueueItemID?
 
-    weak var delegate: CastCurrentDelegate?
+    weak var delegate: ChangeDelegate?
+
+    var currentItemId: GCKMediaQueueItemID? {
+        didSet {
+            guard remoteMediaClient.mediaStatus?.currentItemID != currentItemId else { return }
+            if let currentItemId {
+                if request == nil {
+                    request = makeRequest(to: currentItemId)
+                }
+            }
+            else {
+                remoteMediaClient.stop()
+            }
+            pendingRequestItemId = currentItemId
+        }
+    }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
@@ -27,15 +36,7 @@ final class CastCurrent: NSObject {
         remoteMediaClient.add(self)
     }
 
-    func jump(to itemId: GCKMediaQueueItemID) {
-        guard remoteMediaClient.mediaStatus?.currentItemID != itemId else { return }
-        if request == nil {
-            request = jumpRequest(to: itemId)
-        }
-        pendingRequestItemId = itemId
-    }
-
-    private func jumpRequest(to itemID: GCKMediaQueueItemID) -> GCKRequest {
+    private func makeRequest(to itemID: GCKMediaQueueItemID) -> GCKRequest {
         let request = remoteMediaClient.queueJumpToItem(withID: itemID)
         request.delegate = self
         requestItemId = itemID
@@ -43,30 +44,34 @@ final class CastCurrent: NSObject {
     }
 }
 
-extension CastCurrent: GCKRemoteMediaClientListener {
+extension CurrentItemSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if let mediaStatus {
             if let pendingRequestItemId {
                 let isPendingItemReached = mediaStatus.currentItemID == pendingRequestItemId
                 let isPendingItemMissing = client.mediaQueue.indexOfItem(withID: pendingRequestItemId) == NSNotFound
                 if isPendingItemReached || isPendingItemMissing {
-                    delegate?.didUpdateItem(withId: mediaStatus.currentItemID)
+                    currentItemId = mediaStatus.currentItemID
+                    delegate?.didChange()
                     self.pendingRequestItemId = nil
                 }
             }
             else {
-                delegate?.didUpdateItem(withId: mediaStatus.currentItemID)
+                currentItemId = mediaStatus.currentItemID
+                delegate?.didChange()
             }
         }
         else {
-            delegate?.didUpdateItem(withId: nil)
+            currentItemId = nil
+            delegate?.didChange()
         }
     }
 }
 
-extension CastCurrent: GCKRequestDelegate {
+extension CurrentItemSynchronizer: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
+        /// Performing a jump while another one is already performed might lead to the session stopping.
         guard let pendingRequestItemId, pendingRequestItemId != requestItemId else { return }
-        self.request = jumpRequest(to: pendingRequestItemId)
+        self.request = makeRequest(to: pendingRequestItemId)
     }
 }
