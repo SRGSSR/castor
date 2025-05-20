@@ -6,33 +6,33 @@
 
 import GoogleCast
 
-final class CastMuted: NSObject {
+final class MutedSynchronizer: NSObject {
     private let session: GCKCastSession
     weak var delegate: ChangeDelegate?
 
-    var value: Bool {
+    var isMuted: Bool {
         didSet {
-            guard session.currentDeviceMuted != value else { return }
-            session.setDeviceMuted(value)
+            guard session.currentDeviceMuted != isMuted else { return }
+            session.setDeviceMuted(isMuted)
         }
     }
 
     init(sessionManager: GCKSessionManager, session: GCKCastSession) {
         self.session = session
-        self.value = session.currentDeviceMuted
+        self.isMuted = session.currentDeviceMuted
         super.init()
         sessionManager.add(self)
     }
 }
 
-extension CastMuted: GCKSessionManagerListener {
+extension MutedSynchronizer: GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
         didReceiveDeviceVolume volume: Float,
         muted: Bool
     ) {
-        value = muted
+        isMuted = muted
         delegate?.didChange()
     }
 }

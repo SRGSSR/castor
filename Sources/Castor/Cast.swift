@@ -20,7 +20,7 @@ public final class Cast: NSObject, ObservableObject {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
-            castMuted = castMuted(from: context.sessionManager, session: currentSession)
+            mutedSynchronizer = castMuted(from: context.sessionManager, session: currentSession)
             volumeSynchronizer = castVolume(from: context.sessionManager, session: currentSession)
         }
     }
@@ -34,21 +34,21 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    private var castMuted: CastMuted?
+    private var mutedSynchronizer: MutedSynchronizer?
     private var volumeSynchronizer: VolumeSynchronizer?
 
     /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
         get {
-            guard let castMuted, let volumeSynchronizer else { return false }
-            return castMuted.value || volumeSynchronizer.volume == 0
+            guard let mutedSynchronizer, let volumeSynchronizer else { return false }
+            return mutedSynchronizer.isMuted || volumeSynchronizer.volume == 0
         }
         set {
-            guard let castMuted, let volumeSynchronizer else { return }
+            guard let mutedSynchronizer, let volumeSynchronizer else { return }
             if !newValue, volumeSynchronizer.volume == 0 {
                 volumeSynchronizer.volume = 0.1
             }
-            castMuted.value = newValue
+            mutedSynchronizer.isMuted = newValue
         }
     }
 
@@ -130,7 +130,7 @@ public final class Cast: NSObject, ObservableObject {
 
         context.sessionManager.add(self)
 
-        castMuted = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
+        mutedSynchronizer = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
         volumeSynchronizer = castVolume(from: context.sessionManager, session: context.sessionManager.currentCastSession)
 
         assert(
@@ -165,9 +165,9 @@ private extension Cast {
         session.device.hasCapabilities(.masterOrFixedVolume)
     }
 
-    func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastMuted? {
+    func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> MutedSynchronizer? {
         guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        let cast = CastMuted(sessionManager: sessionManager, session: session)
+        let cast = MutedSynchronizer(sessionManager: sessionManager, session: session)
         cast.delegate = self
         return cast
     }
