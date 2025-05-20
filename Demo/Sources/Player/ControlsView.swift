@@ -39,7 +39,7 @@ struct ControlsView: View {
     }
 
     private var imageName: String {
-        player.state == .playing ? "pause.fill" : "play.fill"
+        player.shouldPlay ? "pause.fill" : "play.fill"
     }
 
     private var title: String? {

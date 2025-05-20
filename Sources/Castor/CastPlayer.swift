@@ -16,11 +16,21 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let timeManager: TimeManager
 
+    private let playbackSynchronizer: PlaybackSynchronizer
     private let playbackSpeedSynchronizer: PlaybackSpeedSynchronizer
     private let repeatModeSynchronizer: RepeatModeSynchronizer
     private let activeTracksSynchronizer: ActiveTracksSynchronizer
 
     @Published private var mediaStatus: GCKMediaStatus?
+
+    public var shouldPlay: Bool {
+        get {
+            playbackSynchronizer.shouldPlay
+        }
+        set {
+            playbackSynchronizer.shouldPlay = newValue
+        }
+    }
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
@@ -49,6 +59,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         timeManager = .init(remoteMediaClient: remoteMediaClient)
 
+        playbackSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient)
@@ -57,6 +68,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         remoteMediaClient.add(self)
 
+        playbackSynchronizer.delegate = self
         playbackSpeedSynchronizer.delegate = self
         repeatModeSynchronizer.delegate = self
         activeTracksSynchronizer.delegate = self
@@ -70,22 +82,17 @@ public final class CastPlayer: NSObject, ObservableObject {
 public extension CastPlayer {
     /// Plays.
     func play() {
-        remoteMediaClient.play()
+        shouldPlay = true
     }
 
     /// Pauses.
     func pause() {
-        remoteMediaClient.pause()
+        shouldPlay = false
     }
 
     /// Toggles between play and pause.
     func togglePlayPause() {
-        if state == .playing {
-            pause()
-        }
-        else {
-            play()
-        }
+        shouldPlay.toggle()
     }
 
     /// Stops.
