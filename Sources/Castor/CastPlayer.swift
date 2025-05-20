@@ -17,10 +17,9 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
     private let `repeat`: CastRepeat
-    private let tracks: CastTracks
+    private let activeTracksSynchronizer: ActiveTracksSynchronizer
 
     @Published private var mediaStatus: GCKMediaStatus?
-    @Published private var _activeTracks: [CastMediaTrack] = []
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
@@ -49,7 +48,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         seek = .init(remoteMediaClient: remoteMediaClient)
         speed = .init(remoteMediaClient: remoteMediaClient)
         `repeat` = .init(remoteMediaClient: remoteMediaClient)
-        tracks = .init(remoteMediaClient: remoteMediaClient)
+        activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
@@ -57,22 +56,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         speed.delegate = self
         `repeat`.delegate = self
-
-        configureActiveTracksPublisher()
-    }
-
-    private func configureActiveTracksPublisher() {
-        Publishers.CombineLatest(tracks.$targetActiveTracks, mediaStatusActiveTracksPublisher())
-            .map { targetActiveTracks, mediaStatusActiveTracks in
-                targetActiveTracks ?? mediaStatusActiveTracks
-            }
-            .assign(to: &$_activeTracks)
-    }
-
-    private func mediaStatusActiveTracksPublisher() -> AnyPublisher<[CastMediaTrack], Never> {
-        $mediaStatus
-            .map { Self.activeTracks(from: $0) }
-            .eraseToAnyPublisher()
+        activeTracksSynchronizer.delegate = self
     }
 
     deinit {
@@ -149,14 +133,6 @@ public extension CastPlayer {
         return rawTracks.map { .init(rawTrack: $0) }
     }
 
-    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
-            return []
-        }
-        // swiftlint:disable:next legacy_objc_type
-        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
-    }
-
     /// Selects a media option for a characteristic.
     ///
     /// - Parameters:
@@ -166,7 +142,7 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var activeTracks = tracks.targetActiveTracks ?? Self.activeTracks(from: mediaStatus)
+        var activeTracks = activeTracksSynchronizer.tracks
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
         case .off:
@@ -174,7 +150,7 @@ public extension CastPlayer {
         case let .on(track):
             activeTracks.append(track)
         }
-        tracks.request(for: activeTracks)
+        activeTracksSynchronizer.tracks = activeTracks
     }
 
     /// The list of media options associated with a characteristic.
@@ -230,7 +206,9 @@ public extension CastPlayer {
     func currentMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         switch characteristic {
         case .audible, .legible:
-            guard let track = _activeTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
+            guard let track = activeTracksSynchronizer.tracks.first(where: { $0.mediaCharacteristic == characteristic }) else {
+                return .off
+            }
             return .on(track)
         default:
             return .off
