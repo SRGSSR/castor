@@ -42,7 +42,8 @@ public struct CastMediaTrack: Hashable {
         rawTrack.type.mediaCharacteristic()
     }
 
-    var displayName: String {
+    /// A name suitable for display.
+    public var displayName: String {
         if let displayName = rawTrack.name {
             return displayName
         }
