@@ -21,7 +21,7 @@ public final class Cast: NSObject, ObservableObject {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
             castMuted = castMuted(from: context.sessionManager, session: currentSession)
-            castVolume = castVolume(from: context.sessionManager, session: currentSession)
+            volumeSynchronizer = castVolume(from: context.sessionManager, session: currentSession)
         }
     }
 
@@ -35,18 +35,18 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     private var castMuted: CastMuted?
-    private var castVolume: CastVolume?
+    private var volumeSynchronizer: VolumeSynchronizer?
 
     /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
         get {
-            guard let castMuted, let castVolume else { return false }
-            return castMuted.value || castVolume.value == 0
+            guard let castMuted, let volumeSynchronizer else { return false }
+            return castMuted.value || volumeSynchronizer.volume == 0
         }
         set {
-            guard let castMuted, let castVolume else { return }
-            if !newValue, castVolume.value == 0 {
-                castVolume.value = 0.1
+            guard let castMuted, let volumeSynchronizer else { return }
+            if !newValue, volumeSynchronizer.volume == 0 {
+                volumeSynchronizer.volume = 0.1
             }
             castMuted.value = newValue
         }
@@ -57,16 +57,16 @@ public final class Cast: NSObject, ObservableObject {
     /// Valid values range from 0 (silent) to 1 (maximum volume).
     public var volume: Float {
         get {
-            castVolume?.value ?? 0
+            volumeSynchronizer?.volume ?? 0
         }
         set {
-            castVolume?.value = newValue.clamped(to: volumeRange)
+            volumeSynchronizer?.volume = newValue.clamped(to: volumeRange)
         }
     }
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        castVolume?.range ?? 0...0
+        volumeSynchronizer?.range ?? 0...0
     }
 
     /// A Boolean indicating whether the volume/mute can be adjusted.
@@ -131,7 +131,7 @@ public final class Cast: NSObject, ObservableObject {
         context.sessionManager.add(self)
 
         castMuted = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
-        castVolume = castVolume(from: context.sessionManager, session: context.sessionManager.currentCastSession)
+        volumeSynchronizer = castVolume(from: context.sessionManager, session: context.sessionManager.currentCastSession)
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
@@ -172,9 +172,9 @@ private extension Cast {
         return cast
     }
 
-    func castVolume(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastVolume? {
+    func castVolume(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> VolumeSynchronizer? {
         guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        let cast = CastVolume(sessionManager: sessionManager, session: session)
+        let cast = VolumeSynchronizer(sessionManager: sessionManager, session: session)
         cast.delegate = self
         return cast
     }
