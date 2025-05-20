@@ -6,33 +6,33 @@
 
 import GoogleCast
 
-final class CastRepeat: NSObject {
+final class RepeatModeSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     weak var delegate: ChangeDelegate?
 
-    var value: CastRepeatMode {
+    var repeatMode: CastRepeatMode {
         didSet {
-            guard Self.value(for: remoteMediaClient.mediaStatus) != value else { return }
-            remoteMediaClient.queueSetRepeatMode(value.rawMode())
+            guard Self.repeatMode(for: remoteMediaClient.mediaStatus) != repeatMode else { return }
+            remoteMediaClient.queueSetRepeatMode(repeatMode.rawMode())
         }
     }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.value = Self.value(for: remoteMediaClient.mediaStatus)
+        self.repeatMode = Self.repeatMode(for: remoteMediaClient.mediaStatus)
         super.init()
         remoteMediaClient.add(self)
     }
 
-    private static func value(for mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
+    private static func repeatMode(for mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
         guard let mediaStatus, let repeatMode = CastRepeatMode(rawMode: mediaStatus.queueRepeatMode) else { return .off }
         return repeatMode
     }
 }
 
-extension CastRepeat: GCKRemoteMediaClientListener {
+extension RepeatModeSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        self.value = Self.value(for: mediaStatus)
+        self.repeatMode = Self.repeatMode(for: mediaStatus)
         delegate?.didChange()
     }
 }

@@ -16,7 +16,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
-    private let `repeat`: CastRepeat
+    private let repeatModeSynchronizer: RepeatModeSynchronizer
     private let activeTracksSynchronizer: ActiveTracksSynchronizer
 
     @Published private var mediaStatus: GCKMediaStatus?
@@ -24,10 +24,10 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
         get {
-            `repeat`.value
+            repeatModeSynchronizer.repeatMode
         }
         set {
-            `repeat`.value = newValue
+            repeatModeSynchronizer.repeatMode = newValue
         }
     }
 
@@ -47,7 +47,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
         speed = .init(remoteMediaClient: remoteMediaClient)
-        `repeat` = .init(remoteMediaClient: remoteMediaClient)
+        repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
@@ -55,7 +55,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         remoteMediaClient.add(self)
 
         speed.delegate = self
-        `repeat`.delegate = self
+        repeatModeSynchronizer.delegate = self
         activeTracksSynchronizer.delegate = self
     }
 
