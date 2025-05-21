@@ -19,9 +19,6 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-
-            mutedSynchronizer = castMuted(from: context.sessionManager, session: currentSession)
-            volumeSynchronizer = castVolume(from: context.sessionManager, session: currentSession)
         }
     }
 
@@ -34,39 +31,30 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    private var mutedSynchronizer: MutedSynchronizer?
-    private var volumeSynchronizer: VolumeSynchronizer?
-
     /// A Boolean setting whether the audio output of the current device must be muted.
-    public var isMuted: Bool {
-        get {
-            guard let mutedSynchronizer, let volumeSynchronizer else { return false }
-            return mutedSynchronizer.isMuted || volumeSynchronizer.volume == 0
-        }
-        set {
-            guard let mutedSynchronizer, let volumeSynchronizer else { return }
-            if !newValue, volumeSynchronizer.volume == 0 {
-                volumeSynchronizer.volume = 0.1
+    @Published public var isMuted: Bool {
+        didSet {
+            guard isMuted != oldValue, let currentSession else { return }
+            if !isMuted && currentSession.currentDeviceVolume == 0 {
+                currentSession.setDeviceVolume(0.1)
             }
-            mutedSynchronizer.isMuted = newValue
+            currentSession.setDeviceMuted(isMuted)
         }
     }
 
     /// The audio output volume of the current device.
     ///
     /// Valid values range from 0 (silent) to 1 (maximum volume).
-    public var volume: Float {
-        get {
-            volumeSynchronizer?.volume ?? 0
-        }
-        set {
-            volumeSynchronizer?.volume = newValue.clamped(to: volumeRange)
+    @Published public var volume: Float {
+        didSet {
+            guard volume != oldValue, let currentSession else { return }
+            currentSession.setDeviceVolume(volume)
         }
     }
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        volumeSynchronizer?.range ?? 0...0
+        currentSession != nil ? 0...1 : 0...0
     }
 
     /// A Boolean indicating whether the volume/mute can be adjusted.
@@ -123,15 +111,15 @@ public final class Cast: NSObject, ObservableObject {
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
+        volume = Self.volume(from: currentSession)
+        isMuted = Self.isMuted(from: currentSession)
+
         super.init()
 
         context.discoveryManager.add(self)
         context.discoveryManager.startDiscovery()
 
         context.sessionManager.add(self)
-
-        mutedSynchronizer = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
-        volumeSynchronizer = castVolume(from: context.sessionManager, session: context.sessionManager.currentCastSession)
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
@@ -165,14 +153,14 @@ private extension Cast {
         session.device.hasCapabilities(.masterOrFixedVolume)
     }
 
-    func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> MutedSynchronizer? {
-        guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        return MutedSynchronizer(sessionManager: sessionManager, session: session)
+    static func volume(from session: GCKCastSession?) -> Float {
+        guard let session, Self.canAdjustVolume(for: session) else { return 0 }
+        return session.currentDeviceVolume
     }
 
-    func castVolume(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> VolumeSynchronizer? {
-        guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        return VolumeSynchronizer(sessionManager: sessionManager, session: session)
+    static func isMuted(from session: GCKCastSession?) -> Bool {
+        guard let session, Self.canAdjustVolume(for: session) else { return false }
+        return session.currentDeviceMuted
     }
 }
 
@@ -245,6 +233,16 @@ extension Cast: GCKSessionManagerListener {
     ) {
         currentSession = nil
         currentDevice = nil
+    }
+
+    public func sessionManager(
+        _ sessionManager: GCKSessionManager,
+        castSession session: GCKCastSession,
+        didReceiveDeviceVolume volume: Float,
+        muted: Bool
+    ) {
+        self.volume = volume
+        self.isMuted = muted
     }
 }
 
