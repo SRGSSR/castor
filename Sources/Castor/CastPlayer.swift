@@ -19,7 +19,6 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let itemsSynchronizer: ItemsSynchronizer
     private let currentItemSynchronizer: CurrentItemSynchronizer
     private let playbackSpeedSynchronizer: PlaybackSpeedSynchronizer
-    private let repeatModeSynchronizer: RepeatModeSynchronizer
     private let activeTracksSynchronizer: ActiveTracksSynchronizer
 
     @Published private var mediaStatus: GCKMediaStatus?
@@ -65,12 +64,10 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     /// The mode with which the player repeats playback of items in its queue.
-    public var repeatMode: CastRepeatMode {
-        get {
-            repeatModeSynchronizer.repeatMode
-        }
-        set {
-            repeatModeSynchronizer.repeatMode = newValue
+    @Published public var repeatMode: CastRepeatMode {
+        didSet {
+            guard repeatMode != oldValue else { return }
+            remoteMediaClient.queueSetRepeatMode(repeatMode.rawMode())
         }
     }
 
@@ -83,13 +80,13 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.configuration = configuration
 
         mediaStatus = remoteMediaClient.mediaStatus
+        repeatMode = Self.repeatMode(from: remoteMediaClient.mediaStatus)
 
         timeManager = .init(remoteMediaClient: remoteMediaClient)
 
         itemsSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         currentItemSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient)
-        repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
@@ -409,9 +406,16 @@ extension CastPlayer {
 }
 
 extension CastPlayer: GCKRemoteMediaClientListener {
+    private static func repeatMode(from mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
+        guard let mediaStatus, let repeatMode = CastRepeatMode(rawMode: mediaStatus.queueRepeatMode) else { return .off }
+        return repeatMode
+    }
+
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
+        repeatMode = Self.repeatMode(from: mediaStatus)
+
         updateCurrentItem()
     }
 
