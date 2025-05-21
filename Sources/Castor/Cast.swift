@@ -19,6 +19,7 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            soundSettings = Self.soundSettings(from: currentSession)
         }
     }
 
@@ -31,24 +32,38 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    /// A Boolean setting whether the audio output of the current device must be muted.
-    @Published public var isMuted: Bool {
+    @Published private var soundSettings: SoundSettings {
         didSet {
-            guard isMuted != oldValue, let currentSession else { return }
-            if !isMuted && currentSession.currentDeviceVolume == 0 {
+            guard let currentSession, soundSettings != oldValue else { return }
+            if !soundSettings.isMuted && soundSettings.volume == 0 {
                 currentSession.setDeviceVolume(0.1)
             }
-            currentSession.setDeviceMuted(isMuted)
+            else {
+                currentSession.setDeviceVolume(soundSettings.volume)
+            }
+            currentSession.setDeviceMuted(soundSettings.isMuted)
+        }
+    }
+
+    /// A Boolean setting whether the audio output of the current device must be muted.
+    public var isMuted: Bool {
+        get {
+            soundSettings.isMuted || soundSettings.volume == 0
+        }
+        set {
+            soundSettings = .init(volume: soundSettings.volume, isMuted: newValue)
         }
     }
 
     /// The audio output volume of the current device.
     ///
     /// Valid values range from 0 (silent) to 1 (maximum volume).
-    @Published public var volume: Float {
-        didSet {
-            guard volume != oldValue, let currentSession else { return }
-            currentSession.setDeviceVolume(volume)
+    public var volume: Float {
+        get {
+            soundSettings.volume
+        }
+        set {
+            soundSettings = .init(volume: newValue, isMuted: soundSettings.isMuted)
         }
     }
 
@@ -111,8 +126,7 @@ public final class Cast: NSObject, ObservableObject {
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
-        volume = Self.volume(from: currentSession)
-        isMuted = Self.isMuted(from: currentSession)
+        soundSettings = Self.soundSettings(from: currentSession)
 
         super.init()
 
@@ -153,14 +167,9 @@ private extension Cast {
         session.device.hasCapabilities(.masterOrFixedVolume)
     }
 
-    static func volume(from session: GCKCastSession?) -> Float {
-        guard let session, Self.canAdjustVolume(for: session) else { return 0 }
-        return session.currentDeviceVolume
-    }
-
-    static func isMuted(from session: GCKCastSession?) -> Bool {
-        guard let session, Self.canAdjustVolume(for: session) else { return false }
-        return session.currentDeviceMuted
+    static func soundSettings(from session: GCKCastSession?) -> SoundSettings {
+        guard let session, Self.canAdjustVolume(for: session) else { return .init(volume: 0, isMuted: false) }
+        return .init(volume: session.currentDeviceVolume, isMuted: session.currentDeviceMuted)
     }
 }
 
@@ -241,8 +250,7 @@ extension Cast: GCKSessionManagerListener {
         didReceiveDeviceVolume volume: Float,
         muted: Bool
     ) {
-        self.volume = volume
-        self.isMuted = muted
+        soundSettings = Self.soundSettings(from: session)
     }
 }
 
