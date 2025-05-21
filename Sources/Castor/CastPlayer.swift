@@ -28,6 +28,11 @@ public final class CastPlayer: NSObject, ObservableObject {
     ///   be performed asynchronously on the receiver.
     @Published public var items: [CastPlayerItem] = []
 
+    /// A Boolean indicating if the queue is empty.
+    public var isEmpty: Bool {
+        items.isEmpty
+    }
+
     /// The current item.
     ///
     /// Stops playback if set to `nil`.

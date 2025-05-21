@@ -14,7 +14,7 @@ private struct MainView: View {
     var body: some View {
         VStack {
             ControlsView(player: player, device: device)
-            PlaylistView(player: player, queue: player.queue)
+            PlaylistView(player: player)
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
