@@ -47,7 +47,11 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// Stops playback if set to `nil`.
     ///
     /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
-    @Published public var currentItem: CastPlayerItem?
+    @Published public var currentItem: CastPlayerItem? {
+        didSet {
+            currentItemSynchronizer.currentItemId = currentItem?.id
+        }
+    }
 
     /// A binding to the current item, for use as `List` selection.
     @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentItem instead")
@@ -408,5 +412,16 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
+        updateCurrentItem()
+    }
+
+    private func updateCurrentItem() {
+        if let currentItemId = currentItemSynchronizer.currentItemId {
+            guard let item = items.first(where: { $0.id == currentItemId }) else { return }
+            currentItem = item
+        }
+        else {
+            currentItem = nil
+        }
     }
 }

@@ -15,7 +15,7 @@ final class CurrentItemSynchronizer: NSObject {
 
     var currentItemId: GCKMediaQueueItemID? {
         didSet {
-            guard remoteMediaClient.mediaStatus?.currentItemID != currentItemId else { return }
+            guard currentItemId != oldValue else { return }
             if let currentItemId {
                 if request == nil {
                     request = makeRequest(to: currentItemId)
