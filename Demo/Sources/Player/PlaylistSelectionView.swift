@@ -8,7 +8,7 @@ import Castor
 import SwiftUI
 
 struct PlaylistSelectionView: View {
-    let queue: CastQueue
+    let player: CastPlayer
 
     @State private var selectedMedias: Set<Media> = []
     @State private var selectedInsertionOption: InsertionOption = .append
@@ -84,13 +84,13 @@ struct PlaylistSelectionView: View {
         let assets = Array(repeating: selectedMedias, count: multiplier).flatMap(\.self).map { $0.asset() }
         switch selectedInsertionOption {
         case .prepend:
-            queue.prependItems(from: assets)
+            player.prependItems(from: assets)
         case .insertBefore:
-            queue.insertItems(from: assets, before: queue.currentItem)
+            player.insertItems(from: assets, before: player.currentItem)
         case .insertAfter:
-            queue.insertItems(from: assets, after: queue.currentItem)
+            player.insertItems(from: assets, after: player.currentItem)
         case .append:
-            queue.appendItems(from: assets)
+            player.appendItems(from: assets)
         }
         dismiss()
     }

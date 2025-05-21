@@ -151,7 +151,7 @@ private extension PlaylistView {
         }
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
-                PlaylistSelectionView(queue: queue)
+                PlaylistSelectionView(player: player)
             }
         }
     }

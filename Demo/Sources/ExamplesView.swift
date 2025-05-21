@@ -44,7 +44,7 @@ struct ExamplesView: View {
     private func button(for media: Media) -> some View {
         Button {
             if let player = cast.player {
-                player.queue.loadItem(from: media.asset())
+                player.loadItem(from: media.asset())
             }
             else {
                 selectedMedia = media
