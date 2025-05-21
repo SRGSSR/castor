@@ -13,59 +13,14 @@ final class ItemsSynchronizer: NSObject, ObservableObject {
 
     private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
-    private var currentItemId: GCKMediaQueueItemID? {
-        get {
-            currentItemSynchronizer.currentItemId
-        }
-        set {
-            currentItemSynchronizer.currentItemId = newValue
-            updateCurrentItem()
-        }
-    }
-
-    /// The items in the queue.
-    ///
-    /// > Warning: Avoid making significant changes to the item list by mutating this property, as each change will
-    ///   be performed asynchronously on the receiver.
-    @Published var items: [CastPlayerItem] = [] {
+    var items: [CastPlayerItem] = [] {
         didSet {
-            updateCurrentItem()
             guard canRequest else { return }
             requestUpdates(from: oldValue, to: items)
         }
     }
 
-    /// The current item.
-    ///
-    /// Stops playback if set to `nil`.
-    ///
-    /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
-    var currentItem: CastPlayerItem? {
-        get {
-            // FIXME: Should likely consolidate items/current id and store the current result, not calculate it every time
-            items.first { $0.id == currentItemId }
-        }
-        set {
-            guard canJump else { return }
-            currentItemSynchronizer.currentItemId = newValue?.id
-        }
-    }
-
-    /// A binding to the current item, for use as `List` selection.
-    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentItem instead")
-    var currentItemSelection: Binding<CastPlayerItem?> {
-        .init { [weak self] in
-            self?.currentItem
-        } set: { [weak self] item in
-            guard let self, let item else { return }
-            currentItem = item
-        }
-    }
-
     private var canRequest = true
-    private var canJump = true
-
-    private let currentItemSynchronizer: CurrentItemSynchronizer
 
     private var nonRequestedItems: [CastPlayerItem] {
         get {
@@ -91,9 +46,7 @@ final class ItemsSynchronizer: NSObject, ObservableObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.currentItemSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         super.init()
-        self.currentItemSynchronizer.delegate = self
         remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
     }
 
@@ -123,12 +76,6 @@ extension ItemsSynchronizer {
 }
 
 private extension ItemsSynchronizer {
-    func updateCurrentItem() {
-        canJump = false
-        currentItem = items.first { $0.id == currentItemId }
-        canJump = true
-    }
-
     func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
         var updatedItems = items
         queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
@@ -146,9 +93,7 @@ private extension ItemsSynchronizer {
         }
         return updatedItems
     }
-}
 
-private extension ItemsSynchronizer {
     func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
         // Workaround for Google Cast SDK state consistency possibly arising when removing items from a sender while
         // updating them from another one.
@@ -174,20 +119,12 @@ private extension ItemsSynchronizer {
     }
 }
 
-extension ItemsSynchronizer: ChangeDelegate {
-    func didChange() {
-        objectWillChange.send()
-    }
-}
-
 extension ItemsSynchronizer: GCKMediaQueueDelegate {
-    // swiftlint:disable:next missing_docs
     func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         guard !isRequesting else { return }
         nonRequestedItems = items(items, merging: queue)
     }
 
-    // swiftlint:disable:next missing_docs
     func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
         guard !isRequesting else { return }
         nonRequestedItems.insert(
@@ -199,13 +136,13 @@ extension ItemsSynchronizer: GCKMediaQueueDelegate {
         )
     }
 
-    // swiftlint:disable:next legacy_objc_type missing_docs
+    // swiftlint:disable:next legacy_objc_type
     func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         guard !isRequesting else { return }
         nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 
-    // swiftlint:disable:next legacy_objc_type missing_docs
+    // swiftlint:disable:next legacy_objc_type
     func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
         let ids = itemIds(atIndexes: indexes)
         items.forEach { item in
@@ -223,17 +160,14 @@ extension ItemsSynchronizer: GCKMediaQueueDelegate {
 }
 
 extension ItemsSynchronizer: GCKRequestDelegate {
-    // swiftlint:disable:next missing_docs
     func requestDidComplete(_ request: GCKRequest) {
         requests -= 1
     }
 
-    // swiftlint:disable:next missing_docs
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
         requests -= 1
     }
 
-    // swiftlint:disable:next missing_docs
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
         requests -= 1
     }

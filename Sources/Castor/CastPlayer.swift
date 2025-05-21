@@ -17,6 +17,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let timeManager: TimeManager
 
     private let itemsSynchronizer: ItemsSynchronizer
+    private let currentItemSynchronizer: CurrentItemSynchronizer
     private let playbackSpeedSynchronizer: PlaybackSpeedSynchronizer
     private let repeatModeSynchronizer: RepeatModeSynchronizer
     private let activeTracksSynchronizer: ActiveTracksSynchronizer
@@ -75,6 +76,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         timeManager = .init(remoteMediaClient: remoteMediaClient)
 
         itemsSynchronizer = .init(remoteMediaClient: remoteMediaClient)
+        currentItemSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient)
@@ -84,6 +86,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         remoteMediaClient.add(self)
 
         itemsSynchronizer.delegate = self
+        currentItemSynchronizer.delegate = self
         playbackSpeedSynchronizer.delegate = self
         repeatModeSynchronizer.delegate = self
         activeTracksSynchronizer.delegate = self
