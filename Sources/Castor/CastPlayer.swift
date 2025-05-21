@@ -13,16 +13,16 @@ import SwiftUI
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
+    private let requestManager: RequestManager
 
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
-    private let `repeat`: CastRepeat
     private let tracks: CastTracks
 
-    @Published private var mediaStatus: GCKMediaStatus?
-    @Published private var _playbackSpeed: Float = 1
-    @Published private var _repeatMode: CastRepeatMode = .off
-    @Published private var _activeTracks: [CastMediaTrack] = []
+    private var mediaStatus: GCKMediaStatus?
+    private var _playbackSpeed: Float = 1
+    private var _repeatMode: CastRepeatMode = .off
+    private var _activeTracks: [CastMediaTrack] = []
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
@@ -30,7 +30,10 @@ public final class CastPlayer: NSObject, ObservableObject {
             _repeatMode
         }
         set {
-            `repeat`.request(for: newValue)
+            requestManager.setRepeatMode(newValue) { [weak self] in
+                guard let self else { return }
+                _repeatMode = newValue
+            }
         }
     }
 
@@ -45,64 +48,18 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
 
+        requestManager = .init(remoteMediaClient: remoteMediaClient)
+
         mediaStatus = remoteMediaClient.mediaStatus
 
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
         speed = .init(remoteMediaClient: remoteMediaClient)
-        `repeat` = .init(remoteMediaClient: remoteMediaClient)
         tracks = .init(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
         remoteMediaClient.add(self)
-        configurePlaybackSpeedPublisher()
-        configureRepeatModePublisher()
-        configureActiveTracksPublisher()
-    }
-
-    private func configurePlaybackSpeedPublisher() {
-        Publishers.CombineLatest(speed.$targetValue, mediaStatusPlaybackSpeedPublisher())
-            .map { targetSpeed, mediaStatusSpeed in
-                targetSpeed ?? mediaStatusSpeed
-            }
-            .assign(to: &$_playbackSpeed)
-    }
-
-    private func configureRepeatModePublisher() {
-        Publishers.CombineLatest(`repeat`.$targetMode, mediaStatusRepeatModePublisher())
-            .map { targetMode, mediaStatusRepeatMode in
-                targetMode ?? mediaStatusRepeatMode
-            }
-            .assign(to: &$_repeatMode)
-    }
-
-    private func configureActiveTracksPublisher() {
-        Publishers.CombineLatest(tracks.$targetActiveTracks, mediaStatusActiveTracksPublisher())
-            .map { targetActiveTracks, mediaStatusActiveTracks in
-                targetActiveTracks ?? mediaStatusActiveTracks
-            }
-            .assign(to: &$_activeTracks)
-    }
-
-    private func mediaStatusPlaybackSpeedPublisher() -> AnyPublisher<Float, Never> {
-        $mediaStatus
-            .map { $0?.playbackRate ?? 1 }
-            .filter { $0 != 0 }
-            .eraseToAnyPublisher()
-    }
-
-    private func mediaStatusRepeatModePublisher() -> AnyPublisher<CastRepeatMode, Never> {
-        $mediaStatus
-            .compactMap(\.self)
-            .compactMap { .init(rawMode: $0.queueRepeatMode) }
-            .eraseToAnyPublisher()
-    }
-
-    private func mediaStatusActiveTracksPublisher() -> AnyPublisher<[CastMediaTrack], Never> {
-        $mediaStatus
-            .map { Self.activeTracks(from: $0) }
-            .eraseToAnyPublisher()
     }
 
     deinit {
@@ -441,7 +398,7 @@ extension CastPlayer {
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest3(
             seek.$targetTime,
-            $mediaStatus,
+            objectWillChange,
             pulsePublisher(interval: interval)
         )
         .weakCapture(self)
@@ -466,6 +423,13 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.mediaStatus = mediaStatus
+        _repeatMode = Self.repeatMode(for: mediaStatus)
+        objectWillChange.send()
+    }
+
+    private static func repeatMode(for mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
+        guard let mediaStatus, let repeatMode = CastRepeatMode(rawMode: mediaStatus.queueRepeatMode) else { return .off }
+        return repeatMode
     }
 }
 

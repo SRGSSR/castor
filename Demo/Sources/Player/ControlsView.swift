@@ -35,7 +35,7 @@ struct ControlsView: View {
             visualView()
             controls()
         }
-        .bind(progressTracker, to: player)
+        // .bind(progressTracker, to: player)
     }
 
     private var imageName: String {
