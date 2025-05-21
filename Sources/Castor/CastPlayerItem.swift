@@ -11,7 +11,7 @@ public final class CastPlayerItem: ObservableObject {
     /// The id.
     public let id: GCKMediaQueueItemID
 
-    private weak var queue: CastQueue?
+    private weak var queue: ItemsSynchronizer?
 
     // swiftlint:disable:next legacy_objc_type
     var idNumber: NSNumber {
@@ -26,7 +26,7 @@ public final class CastPlayerItem: ObservableObject {
         return .init(rawMetadata: rawItem.mediaInformation.metadata)
     }
 
-    init(id: GCKMediaQueueItemID, queue: CastQueue) {
+    init(id: GCKMediaQueueItemID, queue: ItemsSynchronizer) {
         self.id = id
         self.queue = queue
     }

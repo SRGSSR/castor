@@ -16,6 +16,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let timeManager: TimeManager
 
+    private let itemsSynchronizer: ItemsSynchronizer
     private let playbackSpeedSynchronizer: PlaybackSpeedSynchronizer
     private let repeatModeSynchronizer: RepeatModeSynchronizer
     private let activeTracksSynchronizer: ActiveTracksSynchronizer
@@ -61,9 +62,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
     }
 
-    /// The queue managing player items.
-    public let queue: CastQueue
-
     var configuration: CastConfiguration
 
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
@@ -74,10 +72,9 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         mediaStatus = remoteMediaClient.mediaStatus
 
-        queue = .init(remoteMediaClient: remoteMediaClient)
-
         timeManager = .init(remoteMediaClient: remoteMediaClient)
 
+        itemsSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient)
         activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient)
@@ -86,13 +83,14 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         remoteMediaClient.add(self)
 
+        itemsSynchronizer.delegate = self
         playbackSpeedSynchronizer.delegate = self
         repeatModeSynchronizer.delegate = self
         activeTracksSynchronizer.delegate = self
     }
 
     deinit {
-        queue.release()
+        itemsSynchronizer.release()
     }
 }
 
