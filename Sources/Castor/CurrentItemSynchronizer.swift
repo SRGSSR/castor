@@ -13,8 +13,6 @@ final class CurrentItemSynchronizer: NSObject {
     private var requestItemId: GCKMediaQueueItemID?
     private var pendingRequestItemId: GCKMediaQueueItemID?
 
-    weak var delegate: ChangeDelegate?
-
     var currentItemId: GCKMediaQueueItemID? {
         didSet {
             guard remoteMediaClient.mediaStatus?.currentItemID != currentItemId else { return }
@@ -52,18 +50,15 @@ extension CurrentItemSynchronizer: GCKRemoteMediaClientListener {
                 let isPendingItemMissing = client.mediaQueue.indexOfItem(withID: pendingRequestItemId) == NSNotFound
                 if isPendingItemReached || isPendingItemMissing {
                     currentItemId = mediaStatus.currentItemID
-                    delegate?.didChange()
                     self.pendingRequestItemId = nil
                 }
             }
             else {
                 currentItemId = mediaStatus.currentItemID
-                delegate?.didChange()
             }
         }
         else {
             currentItemId = nil
-            delegate?.didChange()
         }
     }
 }

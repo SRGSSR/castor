@@ -167,16 +167,12 @@ private extension Cast {
 
     func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> MutedSynchronizer? {
         guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        let cast = MutedSynchronizer(sessionManager: sessionManager, session: session)
-        cast.delegate = self
-        return cast
+        return MutedSynchronizer(sessionManager: sessionManager, session: session)
     }
 
     func castVolume(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> VolumeSynchronizer? {
         guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        let cast = VolumeSynchronizer(sessionManager: sessionManager, session: session)
-        cast.delegate = self
-        return cast
+        return VolumeSynchronizer(sessionManager: sessionManager, session: session)
     }
 }
 
@@ -270,11 +266,5 @@ private extension Cast {
         else {
             context.sessionManager.startSession(with: currentDevice.rawDevice)
         }
-    }
-}
-
-extension Cast: ChangeDelegate {
-    func didChange() {
-        objectWillChange.send()
     }
 }

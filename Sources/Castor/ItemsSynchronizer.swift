@@ -7,10 +7,8 @@
 import GoogleCast
 import SwiftUI
 
-final class ItemsSynchronizer: NSObject, ObservableObject {
+final class ItemsSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    weak var delegate: ChangeDelegate?
-
     private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
     func updateItems(_ items: [CastPlayerItem]) {
@@ -19,18 +17,6 @@ final class ItemsSynchronizer: NSObject, ObservableObject {
     }
 
     private(set) var items: [CastPlayerItem] = []
-
-    private var requests = 0 {
-        didSet {
-            guard requests == 0, oldValue != 0 else { return }
-            items = items(items, merging: remoteMediaClient.mediaQueue)
-            delegate?.didChange()
-        }
-    }
-
-    private var isRequesting: Bool {
-        requests != 0
-    }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
@@ -93,28 +79,22 @@ private extension ItemsSynchronizer {
         let previousIds = previousItems.map(\.idNumber)
         let currentIds = currentItems.map(\.idNumber)
 
-        requests += 2
-
         let removedIds = Array(Set(previousIds).subtracting(currentIds))
-        let removeRequest = remoteMediaClient.queueRemoveItems(withIDs: removedIds)
-        removeRequest.delegate = self
+        remoteMediaClient.queueRemoveItems(withIDs: removedIds)
 
-        let reorderRequest = remoteMediaClient.queueReorderItems(
+        remoteMediaClient.queueReorderItems(
             withIDs: currentIds,
             insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
         )
-        reorderRequest.delegate = self
     }
 }
 
 extension ItemsSynchronizer: GCKMediaQueueDelegate {
     func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        guard !isRequesting else { return }
         items = items(items, merging: queue)
     }
 
     func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        guard !isRequesting else { return }
         items.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
@@ -126,7 +106,6 @@ extension ItemsSynchronizer: GCKMediaQueueDelegate {
 
     // swiftlint:disable:next legacy_objc_type
     func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        guard !isRequesting else { return }
         items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 
@@ -144,19 +123,5 @@ extension ItemsSynchronizer: GCKMediaQueueDelegate {
         indexes.map { index in
             remoteMediaClient.mediaQueue.itemID(at: UInt(truncating: index))
         }
-    }
-}
-
-extension ItemsSynchronizer: GCKRequestDelegate {
-    func requestDidComplete(_ request: GCKRequest) {
-        requests -= 1
-    }
-
-    func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        requests -= 1
-    }
-
-    func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        requests -= 1
     }
 }

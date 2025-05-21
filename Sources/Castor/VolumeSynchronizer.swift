@@ -8,7 +8,6 @@ import GoogleCast
 
 final class VolumeSynchronizer: NSObject {
     private let session: GCKCastSession
-    weak var delegate: ChangeDelegate?
 
     private weak var request: GCKRequest?
     private var requestVolume: Float?
@@ -53,7 +52,6 @@ extension VolumeSynchronizer: GCKSessionManagerListener {
             self.pendingRequestVolume = nil
         }
         self.volume = volume
-        delegate?.didChange()
     }
 }
 

@@ -8,7 +8,6 @@ import GoogleCast
 
 final class MutedSynchronizer: NSObject {
     private let session: GCKCastSession
-    weak var delegate: ChangeDelegate?
 
     var isMuted: Bool {
         didSet {
@@ -33,6 +32,5 @@ extension MutedSynchronizer: GCKSessionManagerListener {
         muted: Bool
     ) {
         isMuted = muted
-        delegate?.didChange()
     }
 }

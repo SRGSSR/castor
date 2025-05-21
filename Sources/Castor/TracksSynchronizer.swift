@@ -9,7 +9,6 @@ import GoogleCast
 
 final class ActiveTracksSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    weak var delegate: ChangeDelegate?
 
     var tracks: [CastMediaTrack] {
         didSet {
@@ -38,6 +37,5 @@ final class ActiveTracksSynchronizer: NSObject {
 extension ActiveTracksSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         tracks = Self.tracks(for: mediaStatus)
-        delegate?.didChange()
     }
 }

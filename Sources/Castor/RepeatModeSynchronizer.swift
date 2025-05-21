@@ -8,7 +8,6 @@ import GoogleCast
 
 final class RepeatModeSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    weak var delegate: ChangeDelegate?
 
     var repeatMode: CastRepeatMode {
         didSet {
@@ -32,7 +31,6 @@ final class RepeatModeSynchronizer: NSObject {
 
 extension RepeatModeSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        self.repeatMode = Self.repeatMode(for: mediaStatus)
-        delegate?.didChange()
+        repeatMode = Self.repeatMode(for: mediaStatus)
     }
 }

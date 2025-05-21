@@ -91,12 +91,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         super.init()
 
         remoteMediaClient.add(self)
-
-        itemsSynchronizer.delegate = self
-        currentItemSynchronizer.delegate = self
-        playbackSpeedSynchronizer.delegate = self
-        repeatModeSynchronizer.delegate = self
-        activeTracksSynchronizer.delegate = self
     }
 
     deinit {
@@ -407,12 +401,6 @@ public extension CastPlayer {
 extension CastPlayer {
     func timePropertiesPublisher(interval: CMTime) -> AnyPublisher<TimeProperties, Never> {
         timeManager.timePropertiesPublisher(interval: interval)
-    }
-}
-
-extension CastPlayer: ChangeDelegate {
-    func didChange() {
-        objectWillChange.send()
     }
 }
 

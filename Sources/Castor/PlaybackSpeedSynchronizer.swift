@@ -8,7 +8,6 @@ import GoogleCast
 
 final class PlaybackSpeedSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    weak var delegate: ChangeDelegate?
 
     private weak var request: GCKRequest?
     private var requestSpeed: Float?
@@ -72,7 +71,6 @@ extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
             self.pendingRequestSpeed = nil
         }
         speed = Self.speed(for: mediaStatus)
-        delegate?.didChange()
     }
 }
 
