@@ -14,12 +14,8 @@ final class ItemsSynchronizer: NSObject, ObservableObject {
     private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
     func updateItems(_ items: [CastPlayerItem]) {
-        // TODO: - Maybe requestUpdates can be called before setting the items.
-        //       - Maybe add a guard checking if there is at least a change.
-        //       - Maybe self.items = items is not needed anymore (no immediate sync required here)
-        let oldItems = self.items
-        self.items = items
-        requestUpdates(from: oldItems, to: items)
+        guard self.items != items else { return }
+        requestUpdates(from: self.items, to: items)
     }
 
     private(set) var items: [CastPlayerItem] = []
