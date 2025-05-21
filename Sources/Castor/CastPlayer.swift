@@ -28,7 +28,14 @@ public final class CastPlayer: NSObject, ObservableObject {
     ///
     /// > Warning: Avoid making significant changes to the item list by mutating this property, as each change will
     ///   be performed asynchronously on the receiver.
-    @Published public var items: [CastPlayerItem] = []
+    public var items: [CastPlayerItem] {
+        get {
+            itemsSynchronizer.items
+        }
+        set {
+            itemsSynchronizer.updateItems(newValue)
+        }
+    }
 
     /// A Boolean indicating if the queue is empty.
     public var isEmpty: Bool {

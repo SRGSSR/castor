@@ -13,30 +13,22 @@ final class ItemsSynchronizer: NSObject, ObservableObject {
 
     private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
-    var items: [CastPlayerItem] = [] {
-        didSet {
-            guard canRequest else { return }
-            requestUpdates(from: oldValue, to: items)
-        }
+    func updateItems(_ items: [CastPlayerItem]) {
+        // TODO: - Maybe requestUpdates can be called before setting the items.
+        //       - Maybe add a guard checking if there is at least a change.
+        //       - Maybe self.items = items is not needed anymore (no immediate sync required here)
+        let oldItems = self.items
+        self.items = items
+        requestUpdates(from: oldItems, to: items)
     }
 
-    private var canRequest = true
-
-    private var nonRequestedItems: [CastPlayerItem] {
-        get {
-            items
-        }
-        set {
-            canRequest = false
-            items = newValue
-            canRequest = true
-        }
-    }
+    private(set) var items: [CastPlayerItem] = []
 
     private var requests = 0 {
         didSet {
             guard requests == 0, oldValue != 0 else { return }
-            nonRequestedItems = items(items, merging: remoteMediaClient.mediaQueue)
+            items = items(items, merging: remoteMediaClient.mediaQueue)
+            delegate?.didChange()
         }
     }
 
@@ -122,12 +114,12 @@ private extension ItemsSynchronizer {
 extension ItemsSynchronizer: GCKMediaQueueDelegate {
     func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         guard !isRequesting else { return }
-        nonRequestedItems = items(items, merging: queue)
+        items = items(items, merging: queue)
     }
 
     func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
         guard !isRequesting else { return }
-        nonRequestedItems.insert(
+        items.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
                     CastPlayerItem(id: queue.itemID(at: UInt(index)), queue: self)
@@ -139,7 +131,7 @@ extension ItemsSynchronizer: GCKMediaQueueDelegate {
     // swiftlint:disable:next legacy_objc_type
     func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         guard !isRequesting else { return }
-        nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
+        items.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
     }
 
     // swiftlint:disable:next legacy_objc_type
