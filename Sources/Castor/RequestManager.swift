@@ -14,6 +14,15 @@ final class RequestManager: NSObject {
         self.remoteMediaClient = remoteMediaClient
     }
 
+    func setShouldPlay(_ shouldPlay: Bool, completion: @escaping () -> Void) {
+        if shouldPlay {
+            execute(remoteMediaClient.play(), completion: completion)
+        }
+        else {
+            execute(remoteMediaClient.pause(), completion: completion)
+        }
+    }
+
     func setRepeatMode(_ repeatMode: CastRepeatMode, completion: @escaping () -> Void) {
         execute(remoteMediaClient.queueSetRepeatMode(repeatMode.rawMode()), completion: completion)
     }
@@ -22,6 +31,8 @@ final class RequestManager: NSObject {
         request.delegate = self
         completions[request.requestID] = completion
     }
+
+    // TOOD: Could implement a cancel all. Could be called from `CastPlayer.deinit`
 }
 
 extension RequestManager: GCKRequestDelegate {

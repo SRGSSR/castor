@@ -35,11 +35,12 @@ struct ControlsView: View {
             visualView()
             controls()
         }
+        .disabled(!player.isActive)
         // .bind(progressTracker, to: player)
     }
 
     private var imageName: String {
-        player.state == .playing ? "pause.fill" : "play.fill"
+        player.shouldPlay ? "pause.fill" : "play.fill"
     }
 
     private var title: String? {
@@ -170,7 +171,6 @@ private extension ControlsView {
                 .frame(height: Self.side)
         }
         .frame(width: Self.side)
-        .disabled(!player.isActive)
     }
 
     private func skipForwardButton() -> some View {

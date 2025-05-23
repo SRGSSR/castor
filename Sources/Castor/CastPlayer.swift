@@ -20,6 +20,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let tracks: CastTracks
 
     private var _activeMediaStatus: GCKMediaStatus?
+    private var _shouldPlay: Bool
     private var _playbackSpeed: Float = 1
     private var _repeatMode: CastRepeatMode
     private var _activeTracks: [CastMediaTrack] = []
@@ -34,6 +35,19 @@ public final class CastPlayer: NSObject, ObservableObject {
             requestManager.setRepeatMode(newValue) { [weak self] in
                 guard let self else { return }
                 _repeatMode = newValue
+            }
+        }
+    }
+
+    public var shouldPlay: Bool {
+        get {
+            _shouldPlay
+        }
+        set {
+            guard _shouldPlay != newValue else { return }
+            requestManager.setShouldPlay(newValue) { [weak self] in
+                guard let self else { return }
+                _shouldPlay = newValue
             }
         }
     }
@@ -56,6 +70,8 @@ public final class CastPlayer: NSObject, ObservableObject {
         requestManager = .init(remoteMediaClient: remoteMediaClient)
 
         _activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
+
+        _shouldPlay = Self.shouldPlay(for: _activeMediaStatus)
         _repeatMode = Self.repeatMode(for: _activeMediaStatus)
 
         queue = .init(remoteMediaClient: remoteMediaClient)
@@ -76,22 +92,17 @@ public final class CastPlayer: NSObject, ObservableObject {
 public extension CastPlayer {
     /// Plays.
     func play() {
-        remoteMediaClient.play()
+        shouldPlay = true
     }
 
     /// Pauses.
     func pause() {
-        remoteMediaClient.pause()
+        shouldPlay = false
     }
 
     /// Toggles between play and pause.
     func togglePlayPause() {
-        if state == .playing {
-            pause()
-        }
-        else {
-            play()
-        }
+        shouldPlay.toggle()
     }
 
     /// Stops.
@@ -428,14 +439,22 @@ extension CastPlayer {
 extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        _activeMediaStatus = Self.activeMediaStatus(from: _activeMediaStatus)
+        _activeMediaStatus = Self.activeMediaStatus(from: mediaStatus)
+
+        _shouldPlay = Self.shouldPlay(for: _activeMediaStatus)
         _repeatMode = Self.repeatMode(for: _activeMediaStatus)
+
         objectWillChange.send()
     }
 
     private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
         guard let mediaStatus, mediaStatus.mediaSessionID != 0 else { return nil }
         return mediaStatus
+    }
+
+    private static func shouldPlay(for mediaStatus: GCKMediaStatus?) -> Bool {
+        guard let mediaStatus, mediaStatus.playerState == .playing else { return false }
+        return true
     }
 
     private static func repeatMode(for mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
