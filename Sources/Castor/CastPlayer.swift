@@ -13,17 +13,32 @@ import SwiftUI
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private let requestManager: RequestManager
 
     private let seek: CastSeek
     private let speed: CastPlaybackSpeed
     private let tracks: CastTracks
 
-    private var _activeMediaStatus: GCKMediaStatus?
-    private var _shouldPlay: Bool
+    @Published private var _activeMediaStatus: GCKMediaStatus?
+    @Published private var _shouldPlay: Bool
+    @Published private var _repeatMode: CastRepeatMode
     private var _playbackSpeed: Float = 1
-    private var _repeatMode: CastRepeatMode
     private var _activeTracks: [CastMediaTrack] = []
+
+    public var shouldPlay: Bool {
+        get {
+            _shouldPlay
+        }
+        set {
+            guard isActive, _shouldPlay != newValue else { return }
+            _shouldPlay = newValue
+            if newValue {
+                remoteMediaClient.play()
+            }
+            else {
+                remoteMediaClient.pause()
+            }
+        }
+    }
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
@@ -31,24 +46,9 @@ public final class CastPlayer: NSObject, ObservableObject {
             _repeatMode
         }
         set {
-            guard _repeatMode != newValue else { return }
-            requestManager.setRepeatMode(newValue) { [weak self] in
-                guard let self else { return }
-                _repeatMode = newValue
-            }
-        }
-    }
-
-    public var shouldPlay: Bool {
-        get {
-            _shouldPlay
-        }
-        set {
-            guard _shouldPlay != newValue else { return }
-            requestManager.setShouldPlay(newValue) { [weak self] in
-                guard let self else { return }
-                _shouldPlay = newValue
-            }
+            guard isActive, _repeatMode != newValue else { return }
+            _repeatMode = newValue
+            remoteMediaClient.queueSetRepeatMode(newValue.rawMode())
         }
     }
 
@@ -67,12 +67,10 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
 
-        requestManager = .init(remoteMediaClient: remoteMediaClient)
-
-        _activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
-
-        _shouldPlay = Self.shouldPlay(for: _activeMediaStatus)
-        _repeatMode = Self.repeatMode(for: _activeMediaStatus)
+        let activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
+        _activeMediaStatus = activeMediaStatus
+        _shouldPlay = Self.shouldPlay(for: activeMediaStatus)
+        _repeatMode = Self.repeatMode(for: activeMediaStatus)
 
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
@@ -443,8 +441,6 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 
         _shouldPlay = Self.shouldPlay(for: _activeMediaStatus)
         _repeatMode = Self.repeatMode(for: _activeMediaStatus)
-
-        objectWillChange.send()
     }
 
     private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
