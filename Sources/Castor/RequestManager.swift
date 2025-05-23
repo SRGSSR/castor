@@ -19,21 +19,25 @@ final class RequestManager: NSObject {
     }
 
     private func execute(_ request: GCKRequest, completion: @escaping () -> Void) {
+        request.delegate = self
         completions[request.requestID] = completion
     }
 }
 
 extension RequestManager: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
+        print("--> did complete")
         completions[request.requestID]?()
         completions.removeValue(forKey: request.requestID)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        print("--> did abort")
         completions.removeValue(forKey: request.requestID)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        print("--> did fail")
         completions.removeValue(forKey: request.requestID)
     }
 }
