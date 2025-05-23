@@ -18,6 +18,10 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let speed: CastPlaybackSpeed
     private let tracks: CastTracks
 
+    private lazy var playbackSpeedSynchronizer = PlaybackSpeedSynchronizer(remoteMediaClient: remoteMediaClient) { [weak self] playbackSpeed in
+        self?._playbackSpeed = playbackSpeed
+    }
+
     @Published private var _activeMediaStatus: GCKMediaStatus?
     @Published private var _shouldPlay: Bool
     @Published private var _repeatMode: CastRepeatMode
@@ -124,7 +128,7 @@ public extension CastPlayer {
         set {
             guard isActive, _playbackSpeed != newValue else { return }
             _playbackSpeed = newValue
-            remoteMediaClient.setPlaybackRate(newValue)
+            playbackSpeedSynchronizer.requestUpdate(to: newValue)
         }
     }
 }
@@ -430,7 +434,6 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 
         _shouldPlay = Self.shouldPlay(for: _activeMediaStatus)
         _repeatMode = Self.repeatMode(for: _activeMediaStatus)
-        _playbackSpeed = Self.playbackSpeed(for: _activeMediaStatus)
     }
 
     private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {

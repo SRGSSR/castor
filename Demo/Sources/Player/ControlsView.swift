@@ -35,7 +35,7 @@ struct ControlsView: View {
             visualView()
             controls()
         }
-        .disabled(!player.isActive)
+        //.disabled(!player.isActive)
         // .bind(progressTracker, to: player)
     }
 
