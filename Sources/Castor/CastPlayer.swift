@@ -30,6 +30,7 @@ public final class CastPlayer: NSObject, ObservableObject {
             _repeatMode
         }
         set {
+            guard _repeatMode != newValue else { return }
             requestManager.setRepeatMode(newValue) { [weak self] in
                 guard let self else { return }
                 _repeatMode = newValue
