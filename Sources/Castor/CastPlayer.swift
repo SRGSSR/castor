@@ -19,9 +19,9 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let speed: CastPlaybackSpeed
     private let tracks: CastTracks
 
-    private var mediaStatus: GCKMediaStatus?
+    private var _activeMediaStatus: GCKMediaStatus?
     private var _playbackSpeed: Float = 1
-    private var _repeatMode: CastRepeatMode = .off
+    private var _repeatMode: CastRepeatMode
     private var _activeTracks: [CastMediaTrack] = []
 
     /// The mode with which the player repeats playback of items in its queue.
@@ -39,7 +39,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     public var isActive: Bool {
-        mediaStatus != nil
+        _activeMediaStatus != nil
     }
 
     /// The queue managing player items.
@@ -55,7 +55,8 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         requestManager = .init(remoteMediaClient: remoteMediaClient)
 
-        mediaStatus = remoteMediaClient.mediaStatus
+        _activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
+        _repeatMode = Self.repeatMode(for: _activeMediaStatus)
 
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
@@ -107,7 +108,7 @@ public extension CastPlayer {
 
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
-        mediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
+        _activeMediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
     }
 
     /// A binding to read and write the current playback speed.
@@ -133,7 +134,7 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The set of media characteristics for which a media selection is available.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
-        Set(Self.tracks(from: mediaStatus).compactMap(\.mediaCharacteristic))
+        Set(Self.tracks(from: _activeMediaStatus).compactMap(\.mediaCharacteristic))
     }
 
     private static func tracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
@@ -158,7 +159,7 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var activeTracks = tracks.targetActiveTracks ?? Self.activeTracks(from: mediaStatus)
+        var activeTracks = tracks.targetActiveTracks ?? Self.activeTracks(from: _activeMediaStatus)
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
         case .off:
@@ -176,7 +177,7 @@ public extension CastPlayer {
     ///
     /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
-        let tracks = Self.tracks(from: mediaStatus).filter { $0.mediaCharacteristic == characteristic }
+        let tracks = Self.tracks(from: _activeMediaStatus).filter { $0.mediaCharacteristic == characteristic }
         switch characteristic {
         case .audible where tracks.count > 1:
             return tracks.map { .on($0) }
@@ -233,12 +234,12 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Player state.
     var state: GCKMediaPlayerState {
-        mediaStatus?.playerState ?? .unknown
+        _activeMediaStatus?.playerState ?? .unknown
     }
 
     /// Media information.
     var mediaInformation: GCKMediaInformation? {
-        mediaStatus?.mediaInformation
+        _activeMediaStatus?.mediaInformation
     }
 
     /// Returns if the player is busy.
@@ -427,9 +428,14 @@ extension CastPlayer {
 extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        self.mediaStatus = mediaStatus?.mediaSessionID != 0 ? mediaStatus : nil
-        _repeatMode = Self.repeatMode(for: self.mediaStatus)
+        _activeMediaStatus = Self.activeMediaStatus(from: _activeMediaStatus)
+        _repeatMode = Self.repeatMode(for: _activeMediaStatus)
         objectWillChange.send()
+    }
+
+    private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
+        guard let mediaStatus, mediaStatus.mediaSessionID != 0 else { return nil }
+        return mediaStatus
     }
 
     private static func repeatMode(for mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
