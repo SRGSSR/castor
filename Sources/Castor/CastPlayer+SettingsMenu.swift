@@ -33,9 +33,9 @@ private struct PlaybackSpeedMenuContent: View {
 
     private var selection: Binding<Float> {
         .init {
-            player.playbackSpeed.wrappedValue
+            player.playbackSpeed
         } set: { newValue in
-            player.playbackSpeed.wrappedValue = newValue
+            player.playbackSpeed = newValue
             action(newValue)
         }
     }
@@ -92,7 +92,7 @@ private struct SettingsMenuContent: View {
         } label: {
             Button(action: {}) {
                 Text("Playback Speed", bundle: .module, comment: "Playback setting menu title")
-                Text("\(player.playbackSpeed.wrappedValue, specifier: "%g×")", comment: "Speed multiplier")
+                Text("\(player.playbackSpeed, specifier: "%g×")", comment: "Speed multiplier")
                 Image(systemName: "speedometer")
             }
         }

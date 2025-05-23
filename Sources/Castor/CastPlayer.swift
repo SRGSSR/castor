@@ -21,7 +21,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     @Published private var _activeMediaStatus: GCKMediaStatus?
     @Published private var _shouldPlay: Bool
     @Published private var _repeatMode: CastRepeatMode
-    private var _playbackSpeed: Float = 1
+    @Published private var _playbackSpeed: Float
     private var _activeTracks: [CastMediaTrack] = []
 
     public var shouldPlay: Bool {
@@ -71,6 +71,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         _activeMediaStatus = activeMediaStatus
         _shouldPlay = Self.shouldPlay(for: activeMediaStatus)
         _repeatMode = Self.repeatMode(for: activeMediaStatus)
+        _playbackSpeed = Self.playbackSpeed(for: activeMediaStatus)
 
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
@@ -110,33 +111,21 @@ public extension CastPlayer {
 }
 
 public extension CastPlayer {
-    /// The currently applicable playback speed.
-    var effectivePlaybackSpeed: Float {
-        _playbackSpeed.clamped(to: playbackSpeedRange)
-    }
-
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
         _activeMediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
     }
 
-    /// A binding to read and write the current playback speed.
-    var playbackSpeed: Binding<Float> {
-        .init {
-            self.effectivePlaybackSpeed
-        } set: { newValue in
-            self.setDesiredPlaybackSpeed(newValue)
+    /// The currently applicable playback speed.
+    var playbackSpeed: Float {
+        get {
+            _playbackSpeed.clamped(to: playbackSpeedRange)
         }
-    }
-
-    /// Sets the desired playback speed.
-    ///
-    /// - Parameter playbackSpeed: The playback speed. The default value is 1.
-    ///
-    /// This value might not be applied immediately or might not be applicable at all. You must check
-    /// `effectivePlaybackSpeed` to obtain the actually applied speed.
-    func setDesiredPlaybackSpeed(_ playbackSpeed: Float) {
-        speed.request(for: playbackSpeed)
+        set {
+            guard isActive, _playbackSpeed != newValue else { return }
+            _playbackSpeed = newValue
+            remoteMediaClient.setPlaybackRate(newValue)
+        }
     }
 }
 
@@ -441,6 +430,7 @@ extension CastPlayer: GCKRemoteMediaClientListener {
 
         _shouldPlay = Self.shouldPlay(for: _activeMediaStatus)
         _repeatMode = Self.repeatMode(for: _activeMediaStatus)
+        _playbackSpeed = Self.playbackSpeed(for: _activeMediaStatus)
     }
 
     private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
@@ -456,6 +446,10 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     private static func repeatMode(for mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
         guard let mediaStatus, let repeatMode = CastRepeatMode(rawMode: mediaStatus.queueRepeatMode) else { return .off }
         return repeatMode
+    }
+
+    private static func playbackSpeed(for mediaStatus: GCKMediaStatus?) -> Float {
+        mediaStatus?.playbackRate ?? 1
     }
 }
 
