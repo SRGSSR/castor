@@ -37,6 +37,10 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
     }
 
+    public var isActive: Bool {
+        mediaStatus != nil
+    }
+
     /// The queue managing player items.
     public let queue: CastQueue
 
