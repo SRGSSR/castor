@@ -170,6 +170,7 @@ private extension ControlsView {
                 .frame(height: Self.side)
         }
         .frame(width: Self.side)
+        .disabled(!player.isActive)
     }
 
     private func skipForwardButton() -> some View {
