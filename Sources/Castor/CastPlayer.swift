@@ -422,7 +422,7 @@ extension CastPlayer {
 extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        self.mediaStatus = mediaStatus?.queueItemCount != 0 ? mediaStatus : nil
+        self.mediaStatus = mediaStatus?.mediaSessionID != 0 ? mediaStatus : nil
         _repeatMode = Self.repeatMode(for: self.mediaStatus)
         objectWillChange.send()
     }
