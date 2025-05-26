@@ -20,8 +20,29 @@ public final class Cast: NSObject, ObservableObject {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
-            castMuted = castMuted(from: context.sessionManager, session: currentSession)
-            castVolume = castVolume(from: context.sessionManager, session: currentSession)
+            if let currentSession {
+                volumeSynchronizer = .init(sessionManager: context.sessionManager, session: currentSession, builder: { session, volume in
+                    session.setDeviceVolume(volume)
+                }, parser: { volume, _ in
+                    volume
+                })
+                volumeSynchronizer?.update = { [weak self] volume in
+                    self?._volume = volume
+                }
+
+                isMutedSynchronizer = .init(sessionManager: context.sessionManager, session: currentSession, builder: { session, isMuted in
+                    session.setDeviceMuted(isMuted)
+                }, parser: { _, isMuted in
+                    isMuted
+                })
+                isMutedSynchronizer?.update = { [weak self] isMuted in
+                    self?._isMuted = isMuted
+                }
+            }
+            else {
+                volumeSynchronizer = nil
+                isMutedSynchronizer = nil
+            }
         }
     }
 
@@ -34,21 +55,24 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    private var castMuted: CastMuted?
-    private var castVolume: CastVolume?
+    @Published private var _volume: Float
+    @Published private var _isMuted: Bool
+
+    private var volumeSynchronizer: DeviceSynchronizer<Float>?
+    private var isMutedSynchronizer: DeviceSynchronizer<Bool>?
 
     /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
         get {
-            guard let castMuted, let castVolume else { return false }
-            return castMuted.value || castVolume.value == 0
+            _isMuted || _volume == 0
         }
         set {
-            guard let castMuted, let castVolume else { return }
-            if !newValue, castVolume.value == 0 {
-                castVolume.value = 0.1
+            guard _isMuted != newValue || volume == 0 else { return }
+            _isMuted = newValue
+            if !newValue, volume == 0 {
+                volume = 0.1
             }
-            castMuted.value = newValue
+            isMutedSynchronizer?.requestUpdate(to: newValue)
         }
     }
 
@@ -57,16 +81,18 @@ public final class Cast: NSObject, ObservableObject {
     /// Valid values range from 0 (silent) to 1 (maximum volume).
     public var volume: Float {
         get {
-            castVolume?.value ?? 0
+            _volume
         }
         set {
-            castVolume?.value = newValue.clamped(to: volumeRange)
+            guard _volume != newValue else { return }
+            _volume = newValue
+            volumeSynchronizer?.requestUpdate(to: newValue)
         }
     }
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        castVolume?.range ?? 0...0
+        volumeSynchronizer != nil ? 0...1 : 0...0
     }
 
     /// A Boolean indicating whether the volume/mute can be adjusted.
@@ -123,6 +149,27 @@ public final class Cast: NSObject, ObservableObject {
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
+        if let currentSession {
+            volumeSynchronizer = .init(sessionManager: context.sessionManager, session: currentSession, builder: { session, volume in
+                session.setDeviceVolume(volume)
+            }, parser: { volume, _ in
+                volume
+            })
+
+            isMutedSynchronizer = .init(sessionManager: context.sessionManager, session: currentSession, builder: { session, isMuted in
+                session.setDeviceMuted(isMuted)
+            }, parser: { _, isMuted in
+                isMuted
+            })
+        }
+        else {
+            volumeSynchronizer = nil
+            isMutedSynchronizer = nil
+        }
+
+        _volume = currentSession?.currentDeviceVolume ?? 0
+        _isMuted = currentSession?.currentDeviceMuted ?? false
+
         super.init()
 
         context.discoveryManager.add(self)
@@ -130,8 +177,12 @@ public final class Cast: NSObject, ObservableObject {
 
         context.sessionManager.add(self)
 
-        castMuted = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
-        castVolume = castVolume(from: context.sessionManager, session: context.sessionManager.currentCastSession)
+        volumeSynchronizer?.update = { [weak self] volume in
+            self?._volume = volume
+        }
+        isMutedSynchronizer?.update = { [weak self] isMuted in
+            self?._isMuted = isMuted
+        }
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
