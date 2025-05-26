@@ -20,6 +20,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let shouldPlaySynchronizer: Synchronizer<Bool>
     private let playbackSpeedSynchronizer: Synchronizer<Float>
+    private let repeatModeSynchronizer: Synchronizer<CastRepeatMode>
 
     @Published private var _activeMediaStatus: GCKMediaStatus?
     @Published private var _shouldPlay: Bool
@@ -46,7 +47,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         set {
             guard isActive, _repeatMode != newValue else { return }
             _repeatMode = newValue
-            remoteMediaClient.queueSetRepeatMode(newValue.rawMode())
+            repeatModeSynchronizer.requestUpdate(to: newValue)
         }
     }
 
@@ -91,6 +92,12 @@ public final class CastPlayer: NSObject, ObservableObject {
         }, parser: { status in
             status?.playbackRate ?? 1
         })
+        repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, repeatMode in
+            remoteMediaClient.queueSetRepeatMode(repeatMode.rawMode())
+        }, parser: { status in
+            guard let status, let repeatMode = CastRepeatMode(rawMode: status.queueRepeatMode) else { return .off }
+            return repeatMode
+        })
 
         super.init()
 
@@ -99,6 +106,9 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
         playbackSpeedSynchronizer.update = { [weak self] playbackSpeed in
             self?._playbackSpeed = playbackSpeed
+        }
+        repeatModeSynchronizer.update = { [weak self] repeatMode in
+            self?._repeatMode = repeatMode
         }
 
         remoteMediaClient.add(self)
