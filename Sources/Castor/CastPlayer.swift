@@ -18,6 +18,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let speed: CastPlaybackSpeed
     private let tracks: CastTracks
 
+    private let shouldPlaySynchronizer: Synchronizer<Bool>
     private let playbackSpeedSynchronizer: Synchronizer<Float>
 
     @Published private var _activeMediaStatus: GCKMediaStatus?
@@ -33,12 +34,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         set {
             guard isActive, _shouldPlay != newValue else { return }
             _shouldPlay = newValue
-            if newValue {
-                remoteMediaClient.play()
-            }
-            else {
-                remoteMediaClient.pause()
-            }
+            shouldPlaySynchronizer.requestUpdate(to: newValue)
         }
     }
 
@@ -80,6 +76,16 @@ public final class CastPlayer: NSObject, ObservableObject {
         speed = .init(remoteMediaClient: remoteMediaClient)
         tracks = .init(remoteMediaClient: remoteMediaClient)
 
+        shouldPlaySynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, shouldPlay in
+            if shouldPlay {
+                return remoteMediaClient.play()
+            }
+            else {
+                return remoteMediaClient.pause()
+            }
+        }, parser: { status in
+            status?.playerState == .playing
+        })
         playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, speed in
             remoteMediaClient.setPlaybackRate(speed)
         }, parser: { status in
@@ -88,6 +94,9 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         super.init()
 
+        shouldPlaySynchronizer.update = { [weak self] shouldPlay in
+            self?._shouldPlay = shouldPlay
+        }
         playbackSpeedSynchronizer.update = { [weak self] playbackSpeed in
             self?._playbackSpeed = playbackSpeed
         }
@@ -135,7 +144,7 @@ public extension CastPlayer {
         }
         set {
             guard isActive, _playbackSpeed != newValue else { return }
-            _playbackSpeed = newValue
+            _playbackSpeed = newValue       // TODO: Could this be managed by the synchronizer?
             playbackSpeedSynchronizer.requestUpdate(to: newValue)
         }
     }
