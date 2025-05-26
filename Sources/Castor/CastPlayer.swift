@@ -15,11 +15,11 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private let seek: CastSeek
-    private let tracks: CastTracks
 
     private let shouldPlaySynchronizer: Synchronizer<Bool>
     private let playbackSpeedSynchronizer: Synchronizer<Float>
     private let repeatModeSynchronizer: Synchronizer<CastRepeatMode>
+    private let activeTracksSynchronizer: Synchronizer<[CastMediaTrack]>
 
     @Published private var _activeMediaStatus: GCKMediaStatus?
     @Published private var _shouldPlay: Bool
@@ -73,7 +73,6 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
-        tracks = .init(remoteMediaClient: remoteMediaClient)
 
         shouldPlaySynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, shouldPlay in
             if shouldPlay {
@@ -96,6 +95,11 @@ public final class CastPlayer: NSObject, ObservableObject {
             guard let status, let repeatMode = CastRepeatMode(rawMode: status.queueRepeatMode) else { return .off }
             return repeatMode
         })
+        activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, activeTracks in
+            remoteMediaClient.setActiveTrackIDs(activeTracks.map { NSNumber(value: $0.trackIdentifier) })
+        }, parser: { status in
+            Self.activeTracks(from: status)
+        })
 
         super.init()
 
@@ -107,6 +111,9 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
         repeatModeSynchronizer.update = { [weak self] repeatMode in
             self?._repeatMode = repeatMode
+        }
+        activeTracksSynchronizer.update = { [weak self] activeTracks in
+            self?._activeTracks = activeTracks
         }
 
         remoteMediaClient.add(self)
@@ -186,7 +193,7 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var activeTracks = tracks.targetActiveTracks ?? Self.activeTracks(from: _activeMediaStatus)
+        var activeTracks = _activeTracks
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
         case .off:
@@ -194,7 +201,7 @@ public extension CastPlayer {
         case let .on(track):
             activeTracks.append(track)
         }
-        tracks.request(for: activeTracks)
+        activeTracksSynchronizer.requestUpdate(to: activeTracks)
     }
 
     /// The list of media options associated with a characteristic.
