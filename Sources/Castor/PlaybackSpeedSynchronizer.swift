@@ -6,24 +6,29 @@
 
 import GoogleCast
 
-// TODO: Probably possible to make generic with request/parsing result. Then use also for other properties like
-//       shouldPlay or repeat mode
-
-final class PlaybackSpeedSynchronizer: NSObject {
+final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate {
     private let remoteMediaClient: GCKRemoteMediaClient
+    private let builder: (GCKRemoteMediaClient, Value) -> GCKRequest
+    private let parser: (GCKMediaStatus?) -> Value
 
-    var update: ((Float) -> Void)?
+    var update: ((Value) -> Void)?
 
     private weak var currentRequest: GCKRequest?
-    private var pendingPlaybackSpeed: Float?
+    private var pendingPlaybackSpeed: Value?
 
-    init(remoteMediaClient: GCKRemoteMediaClient) {
+    init(
+        remoteMediaClient: GCKRemoteMediaClient,
+        builder: @escaping (GCKRemoteMediaClient, Value) -> GCKRequest,
+        parser: @escaping (GCKMediaStatus?) -> Value
+    ) {
         self.remoteMediaClient = remoteMediaClient
+        self.builder = builder
+        self.parser = parser
         super.init()
         remoteMediaClient.add(self)
     }
 
-    func requestUpdate(to playbackSpeed: Float) {
+    func requestUpdate(to playbackSpeed: Value) {
         if currentRequest == nil {
             currentRequest = makeRequest(to: playbackSpeed)
         }
@@ -32,18 +37,16 @@ final class PlaybackSpeedSynchronizer: NSObject {
         }
     }
 
-    private func makeRequest(to playbackSpeed: Float) -> GCKRequest {
-        update?(playbackSpeed)
-        let request = remoteMediaClient.setPlaybackRate(playbackSpeed)
+    private func makeRequest(to value: Value) -> GCKRequest {
+        update?(value)
+        let request = builder(remoteMediaClient, value)
         request.delegate = self
         return request
     }
-}
 
-extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if currentRequest == nil {
-            let playbackSpeed = Self.playbackSpeed(for: Self.activeMediaStatus(from: mediaStatus))
+            let playbackSpeed = parser(Self.activeMediaStatus(from: mediaStatus))
             update?(playbackSpeed)
         }
     }
@@ -53,12 +56,6 @@ extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
         return mediaStatus
     }
 
-    private static func playbackSpeed(for mediaStatus: GCKMediaStatus?) -> Float {
-        mediaStatus?.playbackRate ?? 1
-    }
-}
-
-extension PlaybackSpeedSynchronizer: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         if let pendingPlaybackSpeed {
             currentRequest = makeRequest(to: pendingPlaybackSpeed)
