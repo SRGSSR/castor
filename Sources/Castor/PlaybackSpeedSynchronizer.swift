@@ -47,7 +47,6 @@ final class PlaybackSpeedSynchronizer: NSObject {
 extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         print("--> media status update")
-        inhibitedCount = max(inhibitedCount - 1, 0)
         if inhibitedCount == 0 {
             let playbackSpeed = Self.playbackSpeed(for: Self.activeMediaStatus(from: mediaStatus))
             update?(playbackSpeed)
@@ -67,10 +66,19 @@ extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
 
 extension PlaybackSpeedSynchronizer: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
+        inhibitedCount = max(inhibitedCount - 1, 0)
         print("--> request did complete")
         if let pendingPlaybackSpeed {
             currentRequest = makeRequest(to: pendingPlaybackSpeed)
             self.pendingPlaybackSpeed = nil
         }
+    }
+
+    func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        inhibitedCount = max(inhibitedCount - 1, 0)
+    }
+
+    func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        inhibitedCount = max(inhibitedCount - 1, 0)
     }
 }
