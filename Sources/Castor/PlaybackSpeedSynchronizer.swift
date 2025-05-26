@@ -11,16 +11,16 @@ import GoogleCast
 
 final class PlaybackSpeedSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private let update: (Float) -> Void
+
+    var update: ((Float) -> Void)?
 
     private weak var currentRequest: GCKRequest?
     private var pendingPlaybackSpeed: Float?
 
     private var inhibitedCount = 0
 
-    init(remoteMediaClient: GCKRemoteMediaClient, update: @escaping (Float) -> Void) {
+    init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.update = update
         super.init()
         remoteMediaClient.add(self)
     }
@@ -35,7 +35,7 @@ final class PlaybackSpeedSynchronizer: NSObject {
     }
 
     private func makeRequest(to playbackSpeed: Float) -> GCKRequest {
-        update(playbackSpeed)
+        update?(playbackSpeed)
         print("--> (optimistic) update to \(playbackSpeed)")
         let request = remoteMediaClient.setPlaybackRate(playbackSpeed)
         request.delegate = self
@@ -50,7 +50,7 @@ extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
         inhibitedCount = max(inhibitedCount - 1, 0)
         if inhibitedCount == 0 {
             let playbackSpeed = Self.playbackSpeed(for: Self.activeMediaStatus(from: mediaStatus))
-            update(playbackSpeed)
+            update?(playbackSpeed)
             print("--> (received) update to \(playbackSpeed)")
         }
     }
