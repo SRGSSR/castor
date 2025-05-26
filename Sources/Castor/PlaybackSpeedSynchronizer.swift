@@ -6,13 +6,17 @@
 
 import GoogleCast
 
+// TODO: Probably possible to make generic with request/parsing result. Then use also for other properties like
+//       shouldPlay or repeat mode
+
 final class PlaybackSpeedSynchronizer: NSObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     private let update: (Float) -> Void
 
     private weak var currentRequest: GCKRequest?
     private var pendingPlaybackSpeed: Float?
-    private var inhibitNextUpdate = false
+
+    private var inhibitedCount = 0
 
     init(remoteMediaClient: GCKRemoteMediaClient, update: @escaping (Float) -> Void) {
         self.remoteMediaClient = remoteMediaClient
@@ -35,19 +39,19 @@ final class PlaybackSpeedSynchronizer: NSObject {
         print("--> (optimistic) update to \(playbackSpeed)")
         let request = remoteMediaClient.setPlaybackRate(playbackSpeed)
         request.delegate = self
+        inhibitedCount += 1
         return request
     }
 }
 
 extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        if !inhibitNextUpdate {
+        print("--> media status update")
+        inhibitedCount = max(inhibitedCount - 1, 0)
+        if inhibitedCount == 0 {
             let playbackSpeed = Self.playbackSpeed(for: Self.activeMediaStatus(from: mediaStatus))
             update(playbackSpeed)
             print("--> (received) update to \(playbackSpeed)")
-        }
-        else {
-            inhibitNextUpdate = false
         }
     }
 
@@ -63,10 +67,10 @@ extension PlaybackSpeedSynchronizer: GCKRemoteMediaClientListener {
 
 extension PlaybackSpeedSynchronizer: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
+        print("--> request did complete")
         if let pendingPlaybackSpeed {
             currentRequest = makeRequest(to: pendingPlaybackSpeed)
             self.pendingPlaybackSpeed = nil
-            inhibitNextUpdate = true
         }
     }
 }
