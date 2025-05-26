@@ -15,7 +15,6 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private let seek: CastSeek
-    private let speed: CastPlaybackSpeed
     private let tracks: CastTracks
 
     private let shouldPlaySynchronizer: Synchronizer<Bool>
@@ -74,7 +73,6 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
-        speed = .init(remoteMediaClient: remoteMediaClient)
         tracks = .init(remoteMediaClient: remoteMediaClient)
 
         shouldPlaySynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, shouldPlay in
@@ -458,9 +456,6 @@ extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         _activeMediaStatus = Self.activeMediaStatus(from: mediaStatus)
-
-        _shouldPlay = Self.shouldPlay(for: _activeMediaStatus)
-        _repeatMode = Self.repeatMode(for: _activeMediaStatus)
     }
 
     private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
