@@ -18,7 +18,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let speed: CastPlaybackSpeed
     private let tracks: CastTracks
 
-    private let playbackSpeedSynchronizer: PlaybackSpeedSynchronizer
+    private let playbackSpeedSynchronizer: Synchronizer<Float>
 
     @Published private var _activeMediaStatus: GCKMediaStatus?
     @Published private var _shouldPlay: Bool
@@ -80,7 +80,11 @@ public final class CastPlayer: NSObject, ObservableObject {
         speed = .init(remoteMediaClient: remoteMediaClient)
         tracks = .init(remoteMediaClient: remoteMediaClient)
 
-        playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient)
+        playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, speed in
+            remoteMediaClient.setPlaybackRate(speed)
+        }, parser: { status in
+            status?.playbackRate ?? 1
+        })
 
         super.init()
 
