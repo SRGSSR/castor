@@ -14,7 +14,7 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
     var update: ((Value) -> Void)?
 
     private weak var currentRequest: GCKRequest?
-    private var pendingPlaybackSpeed: Value?
+    private var pendingValue: Value?
 
     init(
         remoteMediaClient: GCKRemoteMediaClient,
@@ -28,12 +28,12 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
         remoteMediaClient.add(self)
     }
 
-    func requestUpdate(to playbackSpeed: Value) {
+    func requestUpdate(to value: Value) {
         if currentRequest == nil {
-            currentRequest = makeRequest(to: playbackSpeed)
+            currentRequest = makeRequest(to: value)
         }
         else {
-            pendingPlaybackSpeed = playbackSpeed
+            pendingValue = value
         }
     }
 
@@ -46,8 +46,8 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
 
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if currentRequest == nil {
-            let playbackSpeed = parser(Self.activeMediaStatus(from: mediaStatus))
-            update?(playbackSpeed)
+            let value = parser(Self.activeMediaStatus(from: mediaStatus))
+            update?(value)
         }
     }
 
@@ -57,9 +57,9 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
     }
 
     func requestDidComplete(_ request: GCKRequest) {
-        if let pendingPlaybackSpeed {
-            currentRequest = makeRequest(to: pendingPlaybackSpeed)
-            self.pendingPlaybackSpeed = nil
+        if let pendingValue {
+            currentRequest = makeRequest(to: pendingValue)
+            self.pendingValue = nil
         }
     }
 }
