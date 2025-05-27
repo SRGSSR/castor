@@ -90,7 +90,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
         super.init()
 
-        currentItemSynchronizer.updatePublisher.assign(to: &$currentItemId)
+        currentItemSynchronizer.$value.assign(to: &$currentItemId)
 
         remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
     }
