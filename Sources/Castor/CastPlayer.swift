@@ -83,14 +83,14 @@ public final class CastPlayer: NSObject, ObservableObject {
     @Published private var _playbackSpeed: Float = 1
     @Published private var _activeTracks: [CastMediaTrack] = []
 
-    @Synchronized<ShouldPlayRecipe> var shouldPlay2: Bool
+    @Synchronized<ShouldPlayRecipe> var shouldPlay_: Bool
 
     public var shouldPlay: Bool {
         get {
-            shouldPlay2
+            shouldPlay_
         }
         set {
-            shouldPlay2 = newValue
+            shouldPlay_ = newValue
         }
     }
 
@@ -131,7 +131,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
 
-        _shouldPlay2 = Synchronized(remoteMediaClient: remoteMediaClient)
+        _shouldPlay_ = Synchronized(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
