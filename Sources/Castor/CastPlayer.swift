@@ -22,9 +22,9 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let activeTracksSynchronizer: Synchronizer<[CastMediaTrack]>
 
     @Published private var _activeMediaStatus: GCKMediaStatus?
-    @Published private var _shouldPlay: Bool
-    @Published private var _repeatMode: CastRepeatMode
-    @Published private var _playbackSpeed: Float
+    @Published private var _shouldPlay: Bool = false
+    @Published private var _repeatMode: CastRepeatMode = .off
+    @Published private var _playbackSpeed: Float = 1
     @Published private var _activeTracks: [CastMediaTrack] = []
 
     public var shouldPlay: Bool {
@@ -65,12 +65,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
 
-        let activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
-
-        _activeMediaStatus = activeMediaStatus
-        _shouldPlay = Self.getShouldPlay(for: activeMediaStatus)
-        _repeatMode = Self.getRepeatMode(for: activeMediaStatus)
-        _playbackSpeed = Self.getPlaybackSpeed(for: activeMediaStatus)
+        _activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
 
         shouldPlaySynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getShouldPlay, set: Self.setShouldPlay)
         playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getPlaybackSpeed, set: Self.setPlaybackSpeed)
@@ -82,10 +77,10 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         super.init()
 
-        shouldPlaySynchronizer.updatePublisher.assign(to: &$_shouldPlay)
-        playbackSpeedSynchronizer.updatePublisher.assign(to: &$_playbackSpeed)
-        repeatModeSynchronizer.updatePublisher.assign(to: &$_repeatMode)
-        activeTracksSynchronizer.updatePublisher.assign(to: &$_activeTracks)
+        shouldPlaySynchronizer.$value.assign(to: &$_shouldPlay)
+        playbackSpeedSynchronizer.$value.assign(to: &$_playbackSpeed)
+        repeatModeSynchronizer.$value.assign(to: &$_repeatMode)
+        activeTracksSynchronizer.$value.assign(to: &$_activeTracks)
 
         remoteMediaClient.add(self)
     }

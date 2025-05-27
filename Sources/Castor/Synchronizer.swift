@@ -12,10 +12,7 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
     private let get: (GCKRemoteMediaClient, Value) -> GCKRequest
     private let set: (GCKMediaStatus?) -> Value
 
-    private let update = PassthroughSubject<Value, Never>()
-    var updatePublisher: AnyPublisher<Value, Never> {
-        update.eraseToAnyPublisher()
-    }
+    @Published private(set) var value: Value
 
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Value?
@@ -28,6 +25,7 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
         self.remoteMediaClient = remoteMediaClient
         self.get = set
         self.set = get
+        self.value = get(remoteMediaClient.mediaStatus)
         super.init()
         remoteMediaClient.add(self)
     }
@@ -42,7 +40,7 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
     }
 
     private func makeRequest(to value: Value) -> GCKRequest {
-        update.send(value)
+        self.value = value
         let request = get(remoteMediaClient, value)
         request.delegate = self
         return request
@@ -50,8 +48,7 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
 
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if currentRequest == nil {
-            let value = set(Self.activeMediaStatus(from: mediaStatus))
-            update.send(value)
+            value = set(Self.activeMediaStatus(from: mediaStatus))
         }
     }
 
