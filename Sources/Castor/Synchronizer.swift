@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import Combine
 import GoogleCast
 
 final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate {
@@ -11,7 +12,10 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
     private let builder: (GCKRemoteMediaClient, Value) -> GCKRequest
     private let parser: (GCKMediaStatus?) -> Value
 
-    var update: ((Value) -> Void)?
+    private let update = PassthroughSubject<Value, Never>()
+    var updatePublisher: AnyPublisher<Value, Never> {
+        update.eraseToAnyPublisher()
+    }
 
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Value?
@@ -38,7 +42,7 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
     }
 
     private func makeRequest(to value: Value) -> GCKRequest {
-        update?(value)
+        update.send(value)
         let request = builder(remoteMediaClient, value)
         request.delegate = self
         return request
@@ -47,7 +51,7 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if currentRequest == nil {
             let value = parser(Self.activeMediaStatus(from: mediaStatus))
-            update?(value)
+            update.send(value)
         }
     }
 

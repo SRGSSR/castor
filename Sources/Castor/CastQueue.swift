@@ -104,9 +104,7 @@ public final class CastQueue: NSObject, ObservableObject {
         super.init()
         remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
 
-        currentItemSynchronizer.update = { [weak self] itemId in
-            self?.currentItemId = itemId
-        }
+        currentItemSynchronizer.updatePublisher.assign(to: &$currentItemId)
     }
 
     func release() {
