@@ -9,8 +9,8 @@ import GoogleCast
 
 final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private let builder: (GCKRemoteMediaClient, Value) -> GCKRequest
-    private let parser: (GCKMediaStatus?) -> Value
+    private let get: (GCKRemoteMediaClient, Value) -> GCKRequest
+    private let set: (GCKMediaStatus?) -> Value
 
     private let update = PassthroughSubject<Value, Never>()
     var updatePublisher: AnyPublisher<Value, Never> {
@@ -22,12 +22,12 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
 
     init(
         remoteMediaClient: GCKRemoteMediaClient,
-        builder: @escaping (GCKRemoteMediaClient, Value) -> GCKRequest,
-        parser: @escaping (GCKMediaStatus?) -> Value
+        get: @escaping (GCKMediaStatus?) -> Value,
+        set: @escaping (GCKRemoteMediaClient, Value) -> GCKRequest
     ) {
         self.remoteMediaClient = remoteMediaClient
-        self.builder = builder
-        self.parser = parser
+        self.get = set
+        self.set = get
         super.init()
         remoteMediaClient.add(self)
     }
@@ -43,14 +43,14 @@ final class Synchronizer<Value>: NSObject, GCKRemoteMediaClientListener, GCKRequ
 
     private func makeRequest(to value: Value) -> GCKRequest {
         update.send(value)
-        let request = builder(remoteMediaClient, value)
+        let request = get(remoteMediaClient, value)
         request.delegate = self
         return request
     }
 
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if currentRequest == nil {
-            let value = parser(Self.activeMediaStatus(from: mediaStatus))
+            let value = set(Self.activeMediaStatus(from: mediaStatus))
             update.send(value)
         }
     }

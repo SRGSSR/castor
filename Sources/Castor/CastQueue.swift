@@ -85,30 +85,39 @@ public final class CastQueue: NSObject, ObservableObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        currentItemSynchronizer = .init(remoteMediaClient: remoteMediaClient, builder: { remoteMediaClient, itemId in
-            if let itemId {
-                remoteMediaClient.queueJumpToItem(withID: itemId)
-            }
-            else {
-                remoteMediaClient.stop()
-            }
-        }, parser: { status in
-            guard let status else { return nil }
-            if status.loadingItemID != kGCKMediaQueueInvalidItemID {
-                return status.loadingItemID
-            }
-            else {
-                return status.currentItemID
-            }
-        })
+
+        currentItemSynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getCurrentId, set: Self.setCurrentId)
+
         super.init()
-        remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
 
         currentItemSynchronizer.updatePublisher.assign(to: &$currentItemId)
+
+        remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
     }
 
     func release() {
         remoteMediaClient.mediaQueue.remove(self)
+    }
+}
+
+private extension CastQueue {
+    static func getCurrentId(for mediaStatus: GCKMediaStatus?) -> GCKMediaQueueItemID? {
+        guard let mediaStatus else { return nil }
+        if mediaStatus.loadingItemID != kGCKMediaQueueInvalidItemID {
+            return mediaStatus.loadingItemID
+        }
+        else {
+            return mediaStatus.currentItemID
+        }
+    }
+
+    static func setCurrentId(_ remoteMediaClient: GCKRemoteMediaClient, _ itemId: GCKMediaQueueItemID?) -> GCKRequest {
+        if let itemId {
+            remoteMediaClient.queueJumpToItem(withID: itemId)
+        }
+        else {
+            remoteMediaClient.stop()
+        }
     }
 }
 
