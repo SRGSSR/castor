@@ -29,12 +29,12 @@ final class DeviceSynchronizer<Value>: NSObject, GCKSessionManagerListener, GCKR
         sessionManager.add(self)
     }
 
-    func requestUpdate(to playbackSpeed: Value) {
+    func requestUpdate(to value: Value) {
         if currentRequest == nil {
-            currentRequest = makeRequest(to: playbackSpeed)
+            currentRequest = makeRequest(to: value)
         }
         else {
-            pendingPlaybackSpeed = playbackSpeed
+            pendingPlaybackSpeed = value
         }
     }
 
