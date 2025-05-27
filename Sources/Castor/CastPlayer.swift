@@ -10,31 +10,87 @@ import CoreMedia
 import GoogleCast
 import SwiftUI
 
+protocol SynchronizerRecipe {
+    associatedtype Value: Equatable
+    init()
+    func value(from status: GCKMediaStatus?) -> Value
+    func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Value) -> GCKRequest
+}
+
+struct ShouldPlayRecipe: SynchronizerRecipe {
+    func value(from status: GCKMediaStatus?) -> Bool {
+        status?.playerState == .playing
+    }
+
+    func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Bool) -> GCKRequest {
+        if value {
+            return remoteMediaClient.play()
+        }
+        else {
+            return remoteMediaClient.pause()
+        }
+    }
+}
+
+@propertyWrapper
+struct Synchronized<Recipe> where Recipe: SynchronizerRecipe {
+    let recipe = Recipe()
+    let synchronizer: Synchronizer<Recipe.Value>
+    let remoteMediaClient: GCKRemoteMediaClient
+
+    var isActive: Bool {
+        remoteMediaClient.mediaStatus?.mediaSessionID != 0
+    }
+
+    private var value: Recipe.Value
+
+    var wrappedValue: Recipe.Value {
+        get {
+            value
+        }
+        set {
+            guard isActive, value != newValue else { return }
+            value = newValue
+            synchronizer.requestUpdate(to: newValue)
+        }
+    }
+
+    init(remoteMediaClient: GCKRemoteMediaClient) {
+        self.remoteMediaClient = remoteMediaClient
+        self.value = recipe.value(from: remoteMediaClient.mediaStatus)
+        self.synchronizer = .init(remoteMediaClient: remoteMediaClient, get: recipe.value, set: recipe.makeRequest)
+//        configureValuePublisher()
+    }
+
+//    func configureValuePublisher() {
+//        synchronizer.$value.assign(to: &$value)
+//    }
+}
+
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private let seek: CastSeek
-
     private let shouldPlaySynchronizer: Synchronizer<Bool>
     private let playbackSpeedSynchronizer: Synchronizer<Float>
     private let repeatModeSynchronizer: Synchronizer<CastRepeatMode>
     private let activeTracksSynchronizer: Synchronizer<[CastMediaTrack]>
 
     @Published private var _activeMediaStatus: GCKMediaStatus?
-    @Published private var _shouldPlay: Bool = false
+    //@Published private var _shouldPlay: Bool = false
     @Published private var _repeatMode: CastRepeatMode = .off
     @Published private var _playbackSpeed: Float = 1
     @Published private var _activeTracks: [CastMediaTrack] = []
 
+    @Synchronized<ShouldPlayRecipe> var shouldPlay2: Bool
+
     public var shouldPlay: Bool {
         get {
-            _shouldPlay
+            shouldPlay2
         }
         set {
-            guard isActive, _shouldPlay != newValue else { return }
-            _shouldPlay = newValue
-            shouldPlaySynchronizer.requestUpdate(to: newValue)
+            shouldPlay2 = newValue
         }
     }
 
@@ -75,9 +131,11 @@ public final class CastPlayer: NSObject, ObservableObject {
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
 
+        _shouldPlay2 = Synchronized(remoteMediaClient: remoteMediaClient)
+
         super.init()
 
-        shouldPlaySynchronizer.$value.assign(to: &$_shouldPlay)
+        //shouldPlaySynchronizer.$value.assign(to: &$_shouldPlay)
         playbackSpeedSynchronizer.$value.assign(to: &$_playbackSpeed)
         repeatModeSynchronizer.$value.assign(to: &$_repeatMode)
         activeTracksSynchronizer.$value.assign(to: &$_activeTracks)
