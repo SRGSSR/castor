@@ -44,6 +44,10 @@ struct Synchronized<Recipe> where Recipe: SynchronizerRecipe {
 
     private var value: Recipe.Value
 
+    var projectedValue: AnyPublisher<Recipe.Value, Never> {
+        synchronizer.$value.eraseToAnyPublisher()
+    }
+
     var wrappedValue: Recipe.Value {
         get {
             value
@@ -59,12 +63,7 @@ struct Synchronized<Recipe> where Recipe: SynchronizerRecipe {
         self.remoteMediaClient = remoteMediaClient
         self.value = recipe.value(from: remoteMediaClient.mediaStatus)
         self.synchronizer = .init(remoteMediaClient: remoteMediaClient, get: recipe.value, set: recipe.makeRequest)
-//        configureValuePublisher()
     }
-
-//    func configureValuePublisher() {
-//        synchronizer.$value.assign(to: &$value)
-//    }
 }
 
 /// A cast player.
@@ -83,6 +82,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     @Published private var _playbackSpeed: Float = 1
     @Published private var _activeTracks: [CastMediaTrack] = []
 
+    private var cancellables = Set<AnyCancellable>()
     @Synchronized<ShouldPlayRecipe> var shouldPlay_: Bool
 
     public var shouldPlay: Bool {
@@ -133,12 +133,18 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         _shouldPlay_ = Synchronized(remoteMediaClient: remoteMediaClient)
 
+
         super.init()
 
         //shouldPlaySynchronizer.$value.assign(to: &$_shouldPlay)
         playbackSpeedSynchronizer.$value.assign(to: &$_playbackSpeed)
         repeatModeSynchronizer.$value.assign(to: &$_repeatMode)
         activeTracksSynchronizer.$value.assign(to: &$_activeTracks)
+
+        $shouldPlay_.sink { value in
+            print("--> \(value)")
+        }
+        .store(in: &cancellables)
 
         remoteMediaClient.add(self)
     }
