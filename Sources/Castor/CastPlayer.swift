@@ -25,7 +25,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     @Published private var _shouldPlay: Bool
     @Published private var _repeatMode: CastRepeatMode
     @Published private var _playbackSpeed: Float
-    private var _activeTracks: [CastMediaTrack] = []
+    @Published private var _activeTracks: [CastMediaTrack] = []
 
     public var shouldPlay: Bool {
         get {
@@ -103,18 +103,10 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         super.init()
 
-        shouldPlaySynchronizer.update = { [weak self] shouldPlay in
-            self?._shouldPlay = shouldPlay
-        }
-        playbackSpeedSynchronizer.update = { [weak self] playbackSpeed in
-            self?._playbackSpeed = playbackSpeed
-        }
-        repeatModeSynchronizer.update = { [weak self] repeatMode in
-            self?._repeatMode = repeatMode
-        }
-        activeTracksSynchronizer.update = { [weak self] activeTracks in
-            self?._activeTracks = activeTracks
-        }
+        shouldPlaySynchronizer.updatePublisher.assign(to: &$_shouldPlay)
+        playbackSpeedSynchronizer.updatePublisher.assign(to: &$_playbackSpeed)
+        repeatModeSynchronizer.updatePublisher.assign(to: &$_repeatMode)
+        activeTracksSynchronizer.updatePublisher.assign(to: &$_activeTracks)
 
         remoteMediaClient.add(self)
     }
