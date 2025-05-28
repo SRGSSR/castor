@@ -130,6 +130,7 @@ private extension PlaylistView {
         Button(action: toggleRepeatMode) {
             Image(systemName: repeatModeImageName)
         }
+        .disabled(!player.isActive)
     }
 }
 
