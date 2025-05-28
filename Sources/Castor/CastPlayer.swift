@@ -19,7 +19,7 @@ protocol ReceiverService {
 
     var requester: Requester? { get }
 
-    func status(for requester: Requester) -> Status?
+    func status(from requester: Requester) -> Status?
 }
 
 extension GCKRemoteMediaClient: ReceiverService {
@@ -28,7 +28,7 @@ extension GCKRemoteMediaClient: ReceiverService {
         return mediaStatus.isConnected ? self : nil
     }
 
-    func status(for requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
+    func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
         requester.mediaStatus
     }
 }
@@ -44,7 +44,7 @@ extension GCKSessionManager: ReceiverService {
         return currentCastSession.canAdjustVolume ? currentCastSession : nil
     }
 
-    func status(for requester: GCKCastSession) -> DeviceSettings? {
+    func status(from requester: GCKCastSession) -> DeviceSettings? {
         .init(volume: requester.currentDeviceVolume, isMuted: requester.currentDeviceMuted)
     }
 }
@@ -64,7 +64,7 @@ protocol SynchronizerRecipe: AnyObject {
 extension SynchronizerRecipe {
     func value(from service: Service, defaultValue: Value) -> Value {
         guard let requester = service.requester else { return defaultValue }
-        return value(from: service.status(for: requester), defaultValue: defaultValue)
+        return value(from: service.status(from: requester), defaultValue: defaultValue)
     }
 
     func value(from status: Service.Status?, defaultValue: Value) -> Value {
