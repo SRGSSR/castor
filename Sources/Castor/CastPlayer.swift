@@ -32,12 +32,14 @@ struct ShouldPlayRecipe: SynchronizerRecipe {
     }
 }
 
+extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
+    typealias Synchronized<T: SynchronizerRecipe> = _Synchronized<Self, T>
+}
+
 @propertyWrapper
-class Synchronized<Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate where Recipe: SynchronizerRecipe {
+class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     let recipe = Recipe()
     let remoteMediaClient: GCKRemoteMediaClient
-
-    private var cancellables = Set<AnyCancellable>()
 
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Recipe.Value?
@@ -46,21 +48,41 @@ class Synchronized<Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDe
         remoteMediaClient.mediaStatus?.mediaSessionID != 0
     }
 
-    @Published private var value: Recipe.Value
+    weak var enclosingInstance: Instance?
+
+    @Published private var value: Recipe.Value {
+        willSet {
+            enclosingInstance?.objectWillChange.send()
+        }
+    }
 
     var projectedValue: AnyPublisher<Recipe.Value, Never> {
         $value.eraseToAnyPublisher()
     }
 
-    var wrappedValue: Recipe.Value {
+    static subscript(
+        _enclosingInstance instance: Instance,
+        wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, Recipe.Value>,
+        storage storageKeyPath: ReferenceWritableKeyPath<Instance, _Synchronized>
+    ) -> Recipe.Value {
         get {
-            value
+            let synchronizer = instance[keyPath: storageKeyPath]
+            synchronizer.enclosingInstance = instance
+            return synchronizer.value
         }
         set {
-            guard isActive, value != newValue else { return }
-            value = newValue
-            requestUpdate(to: newValue)
+            let synchronizer = instance[keyPath: storageKeyPath]
+            synchronizer.enclosingInstance = instance
+            guard synchronizer.isActive, synchronizer.value != newValue else { return }
+            synchronizer.value = newValue
+            synchronizer.requestUpdate(to: newValue)
         }
+    }
+
+    @available(*, unavailable, message: "@Published can only be applied to classes")
+    var wrappedValue: Recipe.Value {
+        get { fatalError() }
+        set { fatalError() }
     }
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
@@ -98,14 +120,6 @@ class Synchronized<Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDe
             self.pendingValue = nil
         }
     }
-
-    func publishChanges<Object>(on object: Object) where Object: ObservableObject, Object.ObjectWillChangePublisher == ObservableObjectPublisher  {
-        $value
-            .sink { _ in
-                object.objectWillChange.send()
-            }
-            .store(in: &cancellables)
-    }
 }
 
 /// A cast player.
@@ -118,10 +132,10 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let repeatModeSynchronizer: Synchronizer<CastRepeatMode>
     private let activeTracksSynchronizer: Synchronizer<[CastMediaTrack]>
 
-    @Published private var _activeMediaStatus: GCKMediaStatus?
-    @Published private var _repeatMode: CastRepeatMode = .off
-    @Published private var _playbackSpeed: Float = 1
-    @Published private var _activeTracks: [CastMediaTrack] = []
+    private var _activeMediaStatus: GCKMediaStatus?
+    private var _repeatMode: CastRepeatMode = .off
+    private var _playbackSpeed: Float = 1
+    private var _activeTracks: [CastMediaTrack] = []
 
     @Synchronized<ShouldPlayRecipe> var shouldPlay_: Bool
 
@@ -155,6 +169,8 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     var configuration: CastConfiguration
 
+    private var cancellables = Set<AnyCancellable>()
+
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
 
@@ -175,14 +191,19 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         super.init()
 
-        _shouldPlay_.publishChanges(on: self)
+        //_shouldPlay_.publishChanges(on: self)
 
         //shouldPlaySynchronizer.$value.assign(to: &$_shouldPlay)
-        playbackSpeedSynchronizer.$value.assign(to: &$_playbackSpeed)
-        repeatModeSynchronizer.$value.assign(to: &$_repeatMode)
-        activeTracksSynchronizer.$value.assign(to: &$_activeTracks)
+//        playbackSpeedSynchronizer.$value.assign(to: &$_playbackSpeed)
+//        repeatModeSynchronizer.$value.assign(to: &$_repeatMode)
+//        activeTracksSynchronizer.$value.assign(to: &$_activeTracks)
 
         remoteMediaClient.add(self)
+
+        $shouldPlay_.sink { value in
+            print("--> \(value)")
+        }
+        .store(in: &cancellables)
     }
 
     deinit {
@@ -568,7 +589,7 @@ extension CastPlayer {
 extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        _activeMediaStatus = Self.activeMediaStatus(from: mediaStatus)
+        //_activeMediaStatus = Self.activeMediaStatus(from: mediaStatus)
     }
 
     private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
