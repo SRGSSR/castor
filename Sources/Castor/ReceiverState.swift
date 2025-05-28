@@ -17,7 +17,9 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         }
         set {
             if let newValue {
-                let recipe = Recipe(service: newValue, update: update(with:))
+                let recipe = Recipe(service: newValue) { [weak self] status in
+                    self?.update(with: status)
+                }
                 self.recipe = recipe
                 value = recipe.value(from: newValue, defaultValue: Recipe.defaultValue)
             }
