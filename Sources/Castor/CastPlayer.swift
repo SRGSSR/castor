@@ -13,7 +13,11 @@ import SwiftUI
 protocol SynchronizerRecipe {
     associatedtype Value: Equatable
     static func value(from status: GCKMediaStatus?) -> Value
-    static func makeRequest(for value: Value, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest
+    static func makeRequest(for value: Value, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest?
+}
+
+extension SynchronizerRecipe {
+    static func makeRequest(for value: Value, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest? { nil }
 }
 
 struct ShouldPlayRecipe: SynchronizerRecipe {
@@ -21,7 +25,7 @@ struct ShouldPlayRecipe: SynchronizerRecipe {
         status?.playerState == .playing
     }
 
-    static func makeRequest(for value: Bool, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+    static func makeRequest(for value: Bool, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest? {
         if value {
             return remoteMediaClient.play()
         }
@@ -36,7 +40,7 @@ struct PlaybackSpeedRecipe: SynchronizerRecipe {
         status?.playbackRate ?? 1
     }
 
-    static func makeRequest(for value: Float, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+    static func makeRequest(for value: Float, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest? {
         remoteMediaClient.setPlaybackRate(value)
     }
 }
@@ -46,10 +50,6 @@ struct MediaStatusRecipe: SynchronizerRecipe {
         guard let status, status.mediaSessionID != 0 else { return nil }
         return status
     }
-
-    static func makeRequest(for value: GCKMediaStatus?, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
-        .init()
-    }
 }
 
 struct RepeatModeRecipe: SynchronizerRecipe {
@@ -58,7 +58,7 @@ struct RepeatModeRecipe: SynchronizerRecipe {
         return repeatMode
     }
 
-    static func makeRequest(for value: CastRepeatMode, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+    static func makeRequest(for value: CastRepeatMode, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest? {
         remoteMediaClient.queueSetRepeatMode(value.rawMode())
     }
 }
@@ -67,7 +67,7 @@ struct ActiveTracksRecipe: SynchronizerRecipe {
         Self.activeTracks(from: status)
     }
 
-    static func makeRequest(for value: [CastMediaTrack], using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+    static func makeRequest(for value: [CastMediaTrack], using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest? {
         remoteMediaClient.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
     }
 
@@ -148,10 +148,10 @@ class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, G
         }
     }
 
-    private func makeRequest(to value: Recipe.Value) -> GCKRequest {
+    private func makeRequest(to value: Recipe.Value) -> GCKRequest? {
         self.value = value
         let request = Recipe.makeRequest(for: value, using: remoteMediaClient)
-        request.delegate = self
+        request?.delegate = self
         return request
     }
 
