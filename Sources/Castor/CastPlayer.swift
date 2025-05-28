@@ -131,6 +131,30 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
     }
 }
 
+final class MediaStatusRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let service: GCKRemoteMediaClient
+    private let update: (GCKMediaStatus?) -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.service = service
+        self.update = update
+        super.init()
+        service.add(self)
+    }
+
+    func value(from status: GCKMediaStatus) -> GCKMediaStatus? {
+        status
+    }
+
+    func makeRequest(for value: GCKMediaStatus?, using requester: GCKRemoteMediaClient) -> GCKRequest {
+        .init()
+    }
+
+    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+       update(mediaStatus)
+    }
+}
+
 final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
@@ -456,8 +480,7 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    @MediaStatus private var synchronizedMediaStatus: GCKMediaStatus?
-
+    @ReceiverState(MediaStatusRecipe.self) private var synchronizedMediaStatus: GCKMediaStatus? = nil
     @ReceiverState(ShouldPlayRecipe.self) private var synchronizedShouldPlay = false
     @ReceiverState(RepeatModeRecipe.self) private var synchronizedRepeatMode: CastRepeatMode = .off
     @ReceiverState(PlaybackSpeedRecipe.self) private var synchronizedPlaybackSpeed: Float = 1
@@ -500,10 +523,9 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         queue = .init(remoteMediaClient: remoteMediaClient)
 
-        _synchronizedMediaStatus = MediaStatus(remoteMediaClient: remoteMediaClient)
-
         super.init()
 
+        _synchronizedMediaStatus.service = remoteMediaClient
         _synchronizedShouldPlay.service = remoteMediaClient
         _synchronizedRepeatMode.service = remoteMediaClient
         _synchronizedPlaybackSpeed.service = remoteMediaClient
