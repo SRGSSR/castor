@@ -70,12 +70,12 @@ struct ActiveTracksRecipe: SynchronizerRecipe {
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias Synchronized<Recipe: SynchronizerRecipe> = _Synchronized<Self, Recipe>
-    typealias ReceiverState = _ReceiverState<Self>
+    typealias ReceiverState<Recipe: SynchronizerRecipe> = _ReceiverState<Self, Recipe>
+    typealias MediaStatus = _MediaStatus<Self>
 }
 
 @propertyWrapper
-final class _ReceiverState<Instance>: NSObject, GCKRemoteMediaClientListener where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+final class _MediaStatus<Instance>: NSObject, GCKRemoteMediaClientListener where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private weak var enclosingInstance: Instance?
@@ -89,7 +89,7 @@ final class _ReceiverState<Instance>: NSObject, GCKRemoteMediaClientListener whe
     static subscript(
         _enclosingInstance instance: Instance,
         wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, GCKMediaStatus?>,
-        storage storageKeyPath: ReferenceWritableKeyPath<Instance, _ReceiverState>
+        storage storageKeyPath: ReferenceWritableKeyPath<Instance, _MediaStatus>
     ) -> GCKMediaStatus? {
         get {
             let synchronizer = instance[keyPath: storageKeyPath]
@@ -117,9 +117,8 @@ final class _ReceiverState<Instance>: NSObject, GCKRemoteMediaClientListener whe
     }
 }
 
-// TODO: RemoteState/MutableRemoteState?
 @propertyWrapper
-final class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+final class _ReceiverState<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private weak var currentRequest: GCKRequest?
@@ -144,7 +143,7 @@ final class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListe
     static subscript(
         _enclosingInstance instance: Instance,
         wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, Recipe.Value>,
-        storage storageKeyPath: ReferenceWritableKeyPath<Instance, _Synchronized>
+        storage storageKeyPath: ReferenceWritableKeyPath<Instance, _ReceiverState>
     ) -> Recipe.Value {
         get {
             let synchronizer = instance[keyPath: storageKeyPath]
@@ -209,11 +208,12 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let seek: CastSeek
 
-    @ReceiverState private var synchronizedMediaStatus: GCKMediaStatus?
-    @Synchronized<ShouldPlayRecipe> private var synchronizedShouldPlay: Bool
-    @Synchronized<RepeatModeRecipe> private var synchronizedRepeatMode: CastRepeatMode
-    @Synchronized<PlaybackSpeedRecipe> private var synchronizedPlaybackSpeed: Float
-    @Synchronized<ActiveTracksRecipe> private var synchronizedActiveTracks: [CastMediaTrack]
+    @MediaStatus private var synchronizedMediaStatus: GCKMediaStatus?
+
+    @ReceiverState<ShouldPlayRecipe> private var synchronizedShouldPlay: Bool
+    @ReceiverState<RepeatModeRecipe> private var synchronizedRepeatMode: CastRepeatMode
+    @ReceiverState<PlaybackSpeedRecipe> private var synchronizedPlaybackSpeed: Float
+    @ReceiverState<ActiveTracksRecipe> private var synchronizedActiveTracks: [CastMediaTrack]
 
     public var shouldPlay: Bool {
         get {
@@ -252,11 +252,11 @@ public final class CastPlayer: NSObject, ObservableObject {
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
 
-        _synchronizedMediaStatus = ReceiverState(remoteMediaClient: remoteMediaClient)
-        _synchronizedShouldPlay = Synchronized(remoteMediaClient: remoteMediaClient)
-        _synchronizedRepeatMode = Synchronized(remoteMediaClient: remoteMediaClient)
-        _synchronizedActiveTracks = Synchronized(remoteMediaClient: remoteMediaClient)
-        _synchronizedPlaybackSpeed = Synchronized(remoteMediaClient: remoteMediaClient)
+        _synchronizedMediaStatus = MediaStatus(remoteMediaClient: remoteMediaClient)
+        _synchronizedShouldPlay = ReceiverState(remoteMediaClient: remoteMediaClient)
+        _synchronizedRepeatMode = ReceiverState(remoteMediaClient: remoteMediaClient)
+        _synchronizedActiveTracks = ReceiverState(remoteMediaClient: remoteMediaClient)
+        _synchronizedPlaybackSpeed = ReceiverState(remoteMediaClient: remoteMediaClient)
 
         super.init()
     }
