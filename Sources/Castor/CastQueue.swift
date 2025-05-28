@@ -60,7 +60,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var canRequest = true
 
-    @ReceiverState(CurrentItemRecipe.self) private var synchronizedCurrentItemId: GCKMediaQueueItemID = kGCKMediaQueueInvalidItemID
+    @ReceiverState(CurrentItemRecipe.self)private var synchronizedCurrentItemId: GCKMediaQueueItemID = kGCKMediaQueueInvalidItemID
 
     private var nonRequestedItems: [CastPlayerItem] {
         get {
