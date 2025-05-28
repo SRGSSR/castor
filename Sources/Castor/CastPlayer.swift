@@ -13,7 +13,7 @@ import SwiftUI
 protocol SynchronizerRecipe {
     associatedtype Value: Equatable
     static func value(from status: GCKMediaStatus?) -> Value
-    static func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Value) -> GCKRequest
+    static func makeRequest(for value: Value, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest
 }
 
 struct ShouldPlayRecipe: SynchronizerRecipe {
@@ -21,13 +21,50 @@ struct ShouldPlayRecipe: SynchronizerRecipe {
         status?.playerState == .playing
     }
 
-    static func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Bool) -> GCKRequest {
+    static func makeRequest(for value: Bool, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
         if value {
             return remoteMediaClient.play()
         }
         else {
             return remoteMediaClient.pause()
         }
+    }
+}
+
+struct PlaybackSpeedRecipe: SynchronizerRecipe {
+    static func value(from status: GCKMediaStatus?) -> Float {
+        status?.playbackRate ?? 1
+    }
+
+    static func makeRequest(for value: Float, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+        remoteMediaClient.setPlaybackRate(value)
+    }
+}
+struct RepeatModeRecipe: SynchronizerRecipe {
+    static func value(from status: GCKMediaStatus?) -> CastRepeatMode {
+        guard let status, let repeatMode = CastRepeatMode(rawMode: status.queueRepeatMode) else { return .off }
+        return repeatMode
+    }
+
+    static func makeRequest(for value: CastRepeatMode, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+        remoteMediaClient.queueSetRepeatMode(value.rawMode())
+    }
+}
+struct ActiveTracksRecipe: SynchronizerRecipe {
+    static func value(from status: GCKMediaStatus?) -> [CastMediaTrack] {
+        Self.activeTracks(from: status)
+    }
+
+    static func makeRequest(for value: [CastMediaTrack], using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+        remoteMediaClient.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
+    }
+
+    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
+            return []
+        }
+        // swiftlint:disable:next legacy_objc_type
+        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
     }
 }
 
@@ -101,7 +138,7 @@ class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, G
 
     private func makeRequest(to value: Recipe.Value) -> GCKRequest {
         self.value = value
-        let request = Recipe.makeRequest(remoteMediaClient: remoteMediaClient, value: value)
+        let request = Recipe.makeRequest(for: value, using: remoteMediaClient)
         request.delegate = self
         return request
     }
@@ -125,36 +162,30 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     private let seek: CastSeek
-    private let shouldPlaySynchronizer: Synchronizer<Bool>
-    private let playbackSpeedSynchronizer: Synchronizer<Float>
-    private let repeatModeSynchronizer: Synchronizer<CastRepeatMode>
-    private let activeTracksSynchronizer: Synchronizer<[CastMediaTrack]>
 
-    private var _activeMediaStatus: GCKMediaStatus?
-    private var _repeatMode: CastRepeatMode = .off
-    private var _playbackSpeed: Float = 1
-    private var _activeTracks: [CastMediaTrack] = []
+    @Published private var _activeMediaStatus: GCKMediaStatus?
 
-    @Synchronized<ShouldPlayRecipe> var shouldPlay_: Bool
+    @Synchronized<ShouldPlayRecipe> var synchronizedShouldPlay: Bool
+    @Synchronized<RepeatModeRecipe> var synchronizedRepeatMode: CastRepeatMode
+    @Synchronized<PlaybackSpeedRecipe> var synchronizedPlaybackSpeed: Float
+    @Synchronized<ActiveTracksRecipe> var synchronizedActiveTracks: [CastMediaTrack]
 
     public var shouldPlay: Bool {
         get {
-            shouldPlay_
+            synchronizedShouldPlay
         }
         set {
-            shouldPlay_ = newValue
+            synchronizedShouldPlay = newValue
         }
     }
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
         get {
-            _repeatMode
+            synchronizedRepeatMode
         }
         set {
-            guard isActive, _repeatMode != newValue else { return }
-            _repeatMode = newValue
-            repeatModeSynchronizer.requestUpdate(to: newValue)
+            synchronizedRepeatMode = newValue
         }
     }
 
@@ -167,41 +198,24 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     var configuration: CastConfiguration
 
-    private var cancellables = Set<AnyCancellable>()
-
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
 
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
 
-        _activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
-
-        shouldPlaySynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getShouldPlay, set: Self.setShouldPlay)
-        playbackSpeedSynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getPlaybackSpeed, set: Self.setPlaybackSpeed)
-        repeatModeSynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getRepeatMode, set: Self.setRepeatMode)
-        activeTracksSynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getActiveTracks, set: Self.setActiveTracks)
-
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
 
-        _shouldPlay_ = Synchronized(remoteMediaClient: remoteMediaClient)
+        _activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
+        _synchronizedShouldPlay = Synchronized(remoteMediaClient: remoteMediaClient)
+        _synchronizedRepeatMode = Synchronized(remoteMediaClient: remoteMediaClient)
+        _synchronizedActiveTracks = Synchronized(remoteMediaClient: remoteMediaClient)
+        _synchronizedPlaybackSpeed = Synchronized(remoteMediaClient: remoteMediaClient)
 
         super.init()
 
-        //_shouldPlay_.publishChanges(on: self)
-
-        //shouldPlaySynchronizer.$value.assign(to: &$_shouldPlay)
-//        playbackSpeedSynchronizer.$value.assign(to: &$_playbackSpeed)
-//        repeatModeSynchronizer.$value.assign(to: &$_repeatMode)
-//        activeTracksSynchronizer.$value.assign(to: &$_activeTracks)
-
         remoteMediaClient.add(self)
-
-        $shouldPlay_.sink { value in
-            print("--> \(value)")
-        }
-        .store(in: &cancellables)
     }
 
     deinit {
@@ -280,12 +294,10 @@ public extension CastPlayer {
     /// The currently applicable playback speed.
     var playbackSpeed: Float {
         get {
-            _playbackSpeed.clamped(to: playbackSpeedRange)
+            synchronizedPlaybackSpeed
         }
         set {
-            guard isActive, _playbackSpeed != newValue else { return }
-            _playbackSpeed = newValue       // TODO: Could this be managed by the synchronizer?
-            playbackSpeedSynchronizer.requestUpdate(to: newValue)
+            synchronizedPlaybackSpeed = newValue
         }
     }
 }
@@ -318,7 +330,7 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var activeTracks = _activeTracks
+        var activeTracks = synchronizedActiveTracks
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
         case .off:
@@ -326,7 +338,7 @@ public extension CastPlayer {
         case let .on(track):
             activeTracks.append(track)
         }
-        activeTracksSynchronizer.requestUpdate(to: activeTracks)
+        synchronizedActiveTracks = activeTracks
     }
 
     /// The list of media options associated with a characteristic.
@@ -382,7 +394,7 @@ public extension CastPlayer {
     func currentMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         switch characteristic {
         case .audible, .legible:
-            guard let track = _activeTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
+            guard let track = synchronizedActiveTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
             return .on(track)
         default:
             return .off
@@ -587,7 +599,7 @@ extension CastPlayer {
 extension CastPlayer: GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        //_activeMediaStatus = Self.activeMediaStatus(from: mediaStatus)
+        _activeMediaStatus = Self.activeMediaStatus(from: mediaStatus)
     }
 
     private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
