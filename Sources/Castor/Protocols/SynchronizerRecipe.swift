@@ -17,7 +17,7 @@ protocol SynchronizerRecipe: AnyObject {
     init(service: Service, update: @escaping (Service.Status?) -> Void)
 
     func value(from status: Service.Status) -> Value
-    func makeRequest(for value: Value, using requester: Service.Requester) -> GCKRequest
+    func makeRequest(for value: Value, using requester: Service.Requester) -> GCKRequest?
 }
 
 extension SynchronizerRecipe {
