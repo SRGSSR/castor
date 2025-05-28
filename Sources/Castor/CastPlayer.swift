@@ -21,7 +21,8 @@ extension GCKRemoteMediaClient: ReceiverService {
     typealias Status = GCKMediaStatus
 
     var isConnected: Bool {
-        mediaStatus?.mediaSessionID != 0
+        guard let mediaStatus else { return false }
+        return mediaStatus.mediaSessionID != 0
     }
 
     var status: GCKMediaStatus? {
