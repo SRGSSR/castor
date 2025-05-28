@@ -40,6 +40,18 @@ struct PlaybackSpeedRecipe: SynchronizerRecipe {
         remoteMediaClient.setPlaybackRate(value)
     }
 }
+
+struct MediaStatusRecipe: SynchronizerRecipe {
+    static func value(from status: GCKMediaStatus?) -> GCKMediaStatus? {
+        guard let status, status.mediaSessionID != 0 else { return nil }
+        return status
+    }
+
+    static func makeRequest(for value: GCKMediaStatus?, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+        .init()
+    }
+}
+
 struct RepeatModeRecipe: SynchronizerRecipe {
     static func value(from status: GCKMediaStatus?) -> CastRepeatMode {
         guard let status, let repeatMode = CastRepeatMode(rawMode: status.queueRepeatMode) else { return .off }
@@ -163,12 +175,11 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let seek: CastSeek
 
-    @Published private var _activeMediaStatus: GCKMediaStatus?
-
-    @Synchronized<ShouldPlayRecipe> var synchronizedShouldPlay: Bool
-    @Synchronized<RepeatModeRecipe> var synchronizedRepeatMode: CastRepeatMode
-    @Synchronized<PlaybackSpeedRecipe> var synchronizedPlaybackSpeed: Float
-    @Synchronized<ActiveTracksRecipe> var synchronizedActiveTracks: [CastMediaTrack]
+    @Synchronized<MediaStatusRecipe> private var synchronizedMediaStatus: GCKMediaStatus?
+    @Synchronized<ShouldPlayRecipe> private var synchronizedShouldPlay: Bool
+    @Synchronized<RepeatModeRecipe> private var synchronizedRepeatMode: CastRepeatMode
+    @Synchronized<PlaybackSpeedRecipe> private var synchronizedPlaybackSpeed: Float
+    @Synchronized<ActiveTracksRecipe> private var synchronizedActiveTracks: [CastMediaTrack]
 
     public var shouldPlay: Bool {
         get {
@@ -190,7 +201,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     public var isActive: Bool {
-        _activeMediaStatus != nil
+        synchronizedMediaStatus != nil
     }
 
     /// The queue managing player items.
@@ -207,59 +218,17 @@ public final class CastPlayer: NSObject, ObservableObject {
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
 
-        _activeMediaStatus = Self.activeMediaStatus(from: remoteMediaClient.mediaStatus)
+        _synchronizedMediaStatus = Synchronized(remoteMediaClient: remoteMediaClient)
         _synchronizedShouldPlay = Synchronized(remoteMediaClient: remoteMediaClient)
         _synchronizedRepeatMode = Synchronized(remoteMediaClient: remoteMediaClient)
         _synchronizedActiveTracks = Synchronized(remoteMediaClient: remoteMediaClient)
         _synchronizedPlaybackSpeed = Synchronized(remoteMediaClient: remoteMediaClient)
 
         super.init()
-
-        remoteMediaClient.add(self)
     }
 
     deinit {
         queue.release()
-    }
-}
-
-private extension CastPlayer {
-    static func getShouldPlay(for mediaStatus: GCKMediaStatus?) -> Bool {
-        Self.activeMediaStatus(from: mediaStatus)?.playerState == .playing
-    }
-
-    static func setShouldPlay(_ remoteMediaClient: GCKRemoteMediaClient, _ shouldPlay: Bool) -> GCKRequest {
-        if shouldPlay {
-            return remoteMediaClient.play()
-        }
-        else {
-            return remoteMediaClient.pause()
-        }
-    }
-
-    static func getPlaybackSpeed(for mediaStatus: GCKMediaStatus?) -> Float {
-        Self.activeMediaStatus(from: mediaStatus)?.playbackRate ?? 1
-    }
-
-    static func setPlaybackSpeed(_ remoteMediaClient: GCKRemoteMediaClient, _ speed: Float) -> GCKRequest {
-        remoteMediaClient.setPlaybackRate(speed)
-    }
-
-    static func getRepeatMode(for mediaStatus: GCKMediaStatus?) -> CastRepeatMode {
-        guard let mediaStatus = Self.activeMediaStatus(from: mediaStatus), let repeatMode = CastRepeatMode(rawMode: mediaStatus.queueRepeatMode) else { return .off }
-        return repeatMode
-    }
-
-    static func setRepeatMode(_ remoteMediaClient: GCKRemoteMediaClient, _ repeatMode: CastRepeatMode) -> GCKRequest {
-        remoteMediaClient.queueSetRepeatMode(repeatMode.rawMode())
-    }
-
-    static func getActiveTracks(for mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        Self.activeTracks(from: mediaStatus)
-    }
-
-    static func setActiveTracks(_ remoteMediaClient: GCKRemoteMediaClient, _ activeTracks: [CastMediaTrack]) -> GCKRequest {
-        remoteMediaClient.setActiveTrackIDs(activeTracks.map { NSNumber(value: $0.trackIdentifier) })
     }
 }
 
@@ -288,7 +257,7 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
-        _activeMediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
+        synchronizedMediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
     }
 
     /// The currently applicable playback speed.
@@ -305,20 +274,12 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The set of media characteristics for which a media selection is available.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
-        Set(Self.tracks(from: _activeMediaStatus).compactMap(\.mediaCharacteristic))
+        Set(Self.tracks(from: synchronizedMediaStatus).compactMap(\.mediaCharacteristic))
     }
 
     private static func tracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
         guard let rawTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
         return rawTracks.map { .init(rawTrack: $0) }
-    }
-
-    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        guard let mediaStatus = Self.activeMediaStatus(from: mediaStatus), let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
-            return []
-        }
-        // swiftlint:disable:next legacy_objc_type
-        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
     }
 
     /// Selects a media option for a characteristic.
@@ -348,7 +309,7 @@ public extension CastPlayer {
     ///
     /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
-        let tracks = Self.tracks(from: _activeMediaStatus).filter { $0.mediaCharacteristic == characteristic }
+        let tracks = Self.tracks(from: synchronizedMediaStatus).filter { $0.mediaCharacteristic == characteristic }
         switch characteristic {
         case .audible where tracks.count > 1:
             return tracks.map { .on($0) }
@@ -405,12 +366,12 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Player state.
     var state: GCKMediaPlayerState {
-        _activeMediaStatus?.playerState ?? .unknown
+        synchronizedMediaStatus?.playerState ?? .unknown
     }
 
     /// Media information.
     var mediaInformation: GCKMediaInformation? {
-        _activeMediaStatus?.mediaInformation
+        synchronizedMediaStatus?.mediaInformation
     }
 
     /// Returns if the player is busy.
@@ -593,18 +554,6 @@ extension CastPlayer {
                 TimeProperties(time: time, timeRange: player.seekableTimeRange())
             }
             .eraseToAnyPublisher()
-    }
-}
-
-extension CastPlayer: GCKRemoteMediaClientListener {
-    // swiftlint:disable:next missing_docs
-    public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        _activeMediaStatus = Self.activeMediaStatus(from: mediaStatus)
-    }
-
-    private static func activeMediaStatus(from mediaStatus: GCKMediaStatus?) -> GCKMediaStatus? {
-        guard let mediaStatus, mediaStatus.mediaSessionID != 0 else { return nil }
-        return mediaStatus
     }
 }
 
