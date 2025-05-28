@@ -12,17 +12,16 @@ import SwiftUI
 
 protocol SynchronizerRecipe {
     associatedtype Value: Equatable
-    init()
-    func value(from status: GCKMediaStatus?) -> Value
-    func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Value) -> GCKRequest
+    static func value(from status: GCKMediaStatus?) -> Value
+    static func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Value) -> GCKRequest
 }
 
 struct ShouldPlayRecipe: SynchronizerRecipe {
-    func value(from status: GCKMediaStatus?) -> Bool {
+    static func value(from status: GCKMediaStatus?) -> Bool {
         status?.playerState == .playing
     }
 
-    func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Bool) -> GCKRequest {
+    static func makeRequest(remoteMediaClient: GCKRemoteMediaClient, value: Bool) -> GCKRequest {
         if value {
             return remoteMediaClient.play()
         }
@@ -38,7 +37,6 @@ extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPu
 
 @propertyWrapper
 class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    let recipe = Recipe()
     let remoteMediaClient: GCKRemoteMediaClient
 
     private weak var currentRequest: GCKRequest?
@@ -87,7 +85,7 @@ class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, G
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.value = recipe.value(from: remoteMediaClient.mediaStatus)
+        self.value = Recipe.value(from: remoteMediaClient.mediaStatus)
         super.init()
         remoteMediaClient.add(self)
     }
@@ -103,14 +101,14 @@ class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, G
 
     private func makeRequest(to value: Recipe.Value) -> GCKRequest {
         self.value = value
-        let request = recipe.makeRequest(remoteMediaClient: remoteMediaClient, value: value)
+        let request = Recipe.makeRequest(remoteMediaClient: remoteMediaClient, value: value)
         request.delegate = self
         return request
     }
 
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         if currentRequest == nil {
-            value = recipe.value(from: mediaStatus)
+            value = Recipe.value(from: mediaStatus)
         }
     }
 
