@@ -75,7 +75,7 @@ extension SynchronizerRecipe {
 
 final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
     let service: GCKSessionManager
-    let update: (DeviceSettings?) -> Void
+    private let update: (DeviceSettings?) -> Void
 
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
         self.service = service
@@ -104,7 +104,7 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListene
 
 final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
     let service: GCKSessionManager
-    let update: (DeviceSettings?) -> Void
+    private let update: (DeviceSettings?) -> Void
 
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
         self.service = service
@@ -133,7 +133,7 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
 
 final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
     let service: GCKRemoteMediaClient
-    let update: (GCKMediaStatus?) -> Void
+    private let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
@@ -162,7 +162,7 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
 
 final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
     let service: GCKRemoteMediaClient
-    let update: (GCKMediaStatus?) -> Void
+    private let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
@@ -186,7 +186,7 @@ final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaCli
 
 final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
     let service: GCKRemoteMediaClient
-    let update: (GCKMediaStatus?) -> Void
+    private let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
@@ -210,7 +210,7 @@ final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
 
 final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
     let service: GCKRemoteMediaClient
-    let update: (GCKMediaStatus?) -> Void
+    private let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
@@ -242,7 +242,7 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
 
 final class CurrentItemRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
     let service: GCKRemoteMediaClient
-    let update: (GCKMediaStatus?) -> Void
+    private let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
