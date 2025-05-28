@@ -37,6 +37,8 @@ class Synchronized<Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDe
     let recipe = Recipe()
     let remoteMediaClient: GCKRemoteMediaClient
 
+    private var cancellables = Set<AnyCancellable>()
+
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Recipe.Value?
 
@@ -96,6 +98,14 @@ class Synchronized<Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDe
             self.pendingValue = nil
         }
     }
+
+    func publishChanges<Object>(on object: Object) where Object: ObservableObject, Object.ObjectWillChangePublisher == ObservableObjectPublisher  {
+        $value
+            .sink { _ in
+                object.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
 }
 
 /// A cast player.
@@ -109,7 +119,6 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let activeTracksSynchronizer: Synchronizer<[CastMediaTrack]>
 
     @Published private var _activeMediaStatus: GCKMediaStatus?
-    //@Published private var _shouldPlay: Bool = false
     @Published private var _repeatMode: CastRepeatMode = .off
     @Published private var _playbackSpeed: Float = 1
     @Published private var _activeTracks: [CastMediaTrack] = []
@@ -164,8 +173,9 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         _shouldPlay_ = Synchronized(remoteMediaClient: remoteMediaClient)
 
-
         super.init()
+
+        _shouldPlay_.publishChanges(on: self)
 
         //shouldPlaySynchronizer.$value.assign(to: &$_shouldPlay)
         playbackSpeedSynchronizer.$value.assign(to: &$_playbackSpeed)
