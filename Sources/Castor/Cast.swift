@@ -31,8 +31,8 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    @ReceiverState<VolumeRecipe> private var synchronizedVolume: Float
-    @ReceiverState<MutedRecipe> private var synchronizedIsMuted: Bool
+    @ReceiverState<VolumeRecipe> private var synchronizedVolume: Float = 0
+    @ReceiverState<MutedRecipe> private var synchronizedIsMuted: Bool = false
 
     /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
@@ -121,8 +121,8 @@ public final class Cast: NSObject, ObservableObject {
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
-        _synchronizedVolume = .init(service: context.sessionManager, defaultValue: 0)
-        _synchronizedIsMuted = .init(service: context.sessionManager, defaultValue: false)
+        _synchronizedVolume.recipe = VolumeRecipe(service: context.sessionManager)
+        _synchronizedIsMuted.recipe = MutedRecipe(service: context.sessionManager)
 
         super.init()
 

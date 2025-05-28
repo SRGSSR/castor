@@ -60,7 +60,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var canRequest = true
 
-    @ReceiverState<CurrentItemRecipe> private var synchronizedCurrentItemId: GCKMediaQueueItemID
+    @ReceiverState<CurrentItemRecipe> private var synchronizedCurrentItemId: GCKMediaQueueItemID = kGCKMediaQueueInvalidItemID
 
     private var nonRequestedItems: [CastPlayerItem] {
         get {
@@ -86,7 +86,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        _synchronizedCurrentItemId = .init(service: remoteMediaClient, defaultValue: kGCKMediaQueueInvalidItemID)
+        _synchronizedCurrentItemId.recipe = .init(service: remoteMediaClient)
         super.init()
         remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
     }
