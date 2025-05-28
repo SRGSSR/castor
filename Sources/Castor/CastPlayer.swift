@@ -10,6 +10,9 @@ import CoreMedia
 import GoogleCast
 import SwiftUI
 
+// TODO:
+//   - Can likely adopt the same property approach to sync item list
+
 protocol ReceiverService {
     associatedtype Status
     associatedtype Requester
@@ -49,6 +52,8 @@ protocol SynchronizerRecipe: AnyObject {
     associatedtype Service: ReceiverService
     associatedtype Value: Equatable
 
+    var service: Service { get }
+
     init(service: Service, update: @escaping (Service.Status?) -> Void)
 
     func value(from status: Service.Status) -> Value
@@ -68,9 +73,11 @@ extension SynchronizerRecipe {
 }
 
 final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+    let service: GCKSessionManager
     let update: (DeviceSettings?) -> Void
 
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
+        self.service = service
         self.update = update
         super.init()
         service.add(self)
@@ -95,9 +102,11 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListene
 }
 
 final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+    let service: GCKSessionManager
     let update: (DeviceSettings?) -> Void
 
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
+        self.service = service
         self.update = update
         super.init()
         service.add(self)
@@ -122,9 +131,11 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
 }
 
 final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let service: GCKRemoteMediaClient
     let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.service = service
         self.update = update
         super.init()
         service.add(self)
@@ -149,9 +160,11 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
 }
 
 final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let service: GCKRemoteMediaClient
     let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.service = service
         self.update = update
         super.init()
         service.add(self)
@@ -171,9 +184,11 @@ final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaCli
 }
 
 final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let service: GCKRemoteMediaClient
     let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.service = service
         self.update = update
         super.init()
         service.add(self)
@@ -193,9 +208,11 @@ final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
 }
 
 final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let service: GCKRemoteMediaClient
     let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.service = service
         self.update = update
         super.init()
         service.add(self)
@@ -223,9 +240,11 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
 }
 
 final class CurrentItemRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let service: GCKRemoteMediaClient
     let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.service = service
         self.update = update
         super.init()
         service.add(self)
@@ -299,20 +318,31 @@ final class _MediaStatus<Instance>: NSObject, GCKRemoteMediaClientListener where
 
 @propertyWrapper
 final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    private let service: Recipe.Service
     private let defaultValue: Recipe.Value
+    private var recipe: Recipe?
 
-    private lazy var recipe: Recipe = {
-        .init(service: service) { [weak self] status in
-            self?.update(with: status)
+    var service: Recipe.Service? {
+        get {
+            recipe?.service
         }
-    }()
+        set {
+            if let newValue {
+                let recipe = Recipe(service: newValue, update: update(with:))
+                self.recipe = recipe
+                value = recipe.value(from: newValue, defaultValue: defaultValue)
+            }
+            else {
+                recipe = nil
+                value = defaultValue
+            }
+        }
+    }
 
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Recipe.Value?
 
     var isConnected: Bool {
-        service.requester != nil
+        service?.requester != nil
     }
 
     private weak var enclosingInstance: Instance?
@@ -350,12 +380,9 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         set { fatalError() }
     }
 
-    init(service: Recipe.Service, defaultValue: Recipe.Value) {
-        self.service = service
+    init(wrappedValue defaultValue: Recipe.Value, _ recipe: Recipe.Type) {
         self.value = defaultValue
         self.defaultValue = defaultValue
-        super.init()
-        self.value = recipe.value(from: service, defaultValue: defaultValue)
     }
 
     func requestUpdate(to value: Recipe.Value) {
@@ -371,12 +398,12 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     }
 
     private func update(with status: Recipe.Service.Status?) {
-        guard currentRequest == nil else { return }
+        guard let recipe, currentRequest == nil else { return }
         value = recipe.value(from: status, defaultValue: defaultValue)
     }
 
     private func makeRequest(to value: Recipe.Value) -> GCKRequest? {
-        guard let requester = service.requester else { return nil }
+        guard let recipe, let requester = recipe.service.requester else { return nil }
         self.value = value
         let request = recipe.makeRequest(for: value, using: requester)
         request.delegate = self
@@ -391,6 +418,16 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     }
 }
 
+@propertyWrapper struct Capitalized {
+    var wrappedValue: String {
+        didSet { wrappedValue = wrappedValue.capitalized }
+    }
+
+    init(wrappedValue: String) {
+        self.wrappedValue = wrappedValue.capitalized
+    }
+}
+
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
@@ -399,10 +436,10 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @MediaStatus private var synchronizedMediaStatus: GCKMediaStatus?
 
-    @ReceiverState<ShouldPlayRecipe> private var synchronizedShouldPlay: Bool
-    @ReceiverState<RepeatModeRecipe> private var synchronizedRepeatMode: CastRepeatMode
-    @ReceiverState<PlaybackSpeedRecipe> private var synchronizedPlaybackSpeed: Float
-    @ReceiverState<ActiveTracksRecipe> private var synchronizedActiveTracks: [CastMediaTrack]
+    @ReceiverState(ShouldPlayRecipe.self) private var synchronizedShouldPlay = false
+    @ReceiverState(RepeatModeRecipe.self) private var synchronizedRepeatMode: CastRepeatMode = .off
+    @ReceiverState(PlaybackSpeedRecipe.self) private var synchronizedPlaybackSpeed: Float = 1
+    @ReceiverState(ActiveTracksRecipe.self) private var synchronizedActiveTracks: [CastMediaTrack] = []
 
     public var shouldPlay: Bool {
         get {
@@ -442,12 +479,13 @@ public final class CastPlayer: NSObject, ObservableObject {
         seek = .init(remoteMediaClient: remoteMediaClient)
 
         _synchronizedMediaStatus = MediaStatus(remoteMediaClient: remoteMediaClient)
-        _synchronizedShouldPlay = ReceiverState(service: remoteMediaClient, defaultValue: false)
-        _synchronizedRepeatMode = ReceiverState(service: remoteMediaClient, defaultValue: .off)
-        _synchronizedActiveTracks = ReceiverState(service: remoteMediaClient, defaultValue: [])
-        _synchronizedPlaybackSpeed = ReceiverState(service: remoteMediaClient, defaultValue: 1)
 
         super.init()
+
+        _synchronizedShouldPlay.service = remoteMediaClient
+        _synchronizedRepeatMode.service = remoteMediaClient
+        _synchronizedPlaybackSpeed.service = remoteMediaClient
+        _synchronizedActiveTracks.service = remoteMediaClient
     }
 
     deinit {
