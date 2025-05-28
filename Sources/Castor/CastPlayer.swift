@@ -14,11 +14,11 @@ protocol ReceiverService {
     associatedtype Status
 
     var isConnected: Bool { get }
-    var status: Status { get }
+    var status: Status? { get }
 }
 
 extension GCKRemoteMediaClient: ReceiverService {
-    typealias Status = GCKMediaStatus?
+    typealias Status = GCKMediaStatus
 
     var isConnected: Bool {
         mediaStatus?.mediaSessionID != 0
@@ -33,10 +33,17 @@ protocol SynchronizerRecipe: AnyObject {
     associatedtype Service: ReceiverService
     associatedtype Value: Equatable
 
-    init(service: Service, update: @escaping (Service.Status) -> Void)
+    init(service: Service, update: @escaping (Service.Status?) -> Void)
 
     func value(from status: Service.Status) -> Value
     func makeRequest(for value: Value, using service: Service) -> GCKRequest
+}
+
+extension SynchronizerRecipe {
+    func value(from status: Service.Status?, defaultValue: Value) -> Value {
+        guard let status else { return defaultValue }
+        return value(from: status)
+    }
 }
 
 final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
@@ -48,8 +55,8 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         service.add(self)
     }
 
-    func value(from status: GCKMediaStatus?) -> Bool {
-        status?.playerState == .playing
+    func value(from status: GCKMediaStatus) -> Bool {
+        status.playerState == .playing
     }
 
     func makeRequest(for value: Bool, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
@@ -75,8 +82,8 @@ final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaCli
         service.add(self)
     }
 
-    func value(from status: GCKMediaStatus?) -> Float {
-        status?.playbackRate ?? 1
+    func value(from status: GCKMediaStatus) -> Float {
+        status.playbackRate
     }
 
     func makeRequest(for value: Float, using service: GCKRemoteMediaClient) -> GCKRequest {
@@ -97,9 +104,8 @@ final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         service.add(self)
     }
 
-    func value(from status: GCKMediaStatus?) -> CastRepeatMode {
-        guard let status, let repeatMode = CastRepeatMode(rawMode: status.queueRepeatMode) else { return .off }
-        return repeatMode
+    func value(from status: GCKMediaStatus) -> CastRepeatMode {
+        CastRepeatMode(rawMode: status.queueRepeatMode) ?? .off
     }
 
     func makeRequest(for value: CastRepeatMode, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
@@ -120,7 +126,7 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
         service.add(self)
     }
 
-    func value(from status: GCKMediaStatus?) -> [CastMediaTrack] {
+    func value(from status: GCKMediaStatus) -> [CastMediaTrack] {
         Self.activeTracks(from: status)
     }
 
@@ -192,12 +198,11 @@ final class _MediaStatus<Instance>: NSObject, GCKRemoteMediaClientListener where
 @propertyWrapper
 final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let service: Recipe.Service
+    private let defaultValue: Recipe.Value
 
     private lazy var recipe: Recipe = {
         .init(service: service) { [weak self] status in
-            if let self, currentRequest == nil {
-                value = recipe.value(from: status)
-            }
+            self?.update(with: status)
         }
     }()
 
@@ -248,8 +253,9 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     init(service: Recipe.Service, defaultValue: Recipe.Value) {
         self.service = service
         self.value = defaultValue
+        self.defaultValue = defaultValue
         super.init()
-        self.value = recipe.value(from: service.status)
+        self.value = recipe.value(from: service.status, defaultValue: defaultValue)
     }
 
     func requestUpdate(to value: Recipe.Value) {
@@ -259,6 +265,11 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         else {
             pendingValue = value
         }
+    }
+
+    private func update(with status: Recipe.Service.Status?) {
+        guard currentRequest == nil else { return }
+        value = recipe.value(from: status, defaultValue: defaultValue)
     }
 
     private func makeRequest(to value: Recipe.Value) -> GCKRequest? {
