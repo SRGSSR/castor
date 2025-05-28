@@ -342,8 +342,6 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         set {
             let synchronizer = instance[keyPath: storageKeyPath]
             synchronizer.enclosingInstance = instance
-            guard synchronizer.isConnected, synchronizer.value != newValue else { return }
-            synchronizer.value = newValue
             synchronizer.requestUpdate(to: newValue)
         }
     }
@@ -363,6 +361,9 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     }
 
     func requestUpdate(to value: Recipe.Value) {
+        guard isConnected, self.value != value else { return }
+        self.value = value
+
         if currentRequest == nil {
             currentRequest = makeRequest(to: value)
         }
