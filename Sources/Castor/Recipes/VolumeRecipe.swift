@@ -23,7 +23,7 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListene
         status.volume
     }
 
-    func makeRequest(for value: Float, using requester: GCKCastSession) -> GCKRequest {
+    func makeRequest(for value: Float, using requester: GCKCastSession) -> GCKRequest? {
         requester.setDeviceVolume(value)
     }
 

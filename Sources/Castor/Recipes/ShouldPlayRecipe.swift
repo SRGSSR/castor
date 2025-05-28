@@ -23,7 +23,7 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         status.playerState == .playing
     }
 
-    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) -> GCKRequest {
+    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) -> GCKRequest? {
         if value {
             return requester.play()
         }

@@ -92,9 +92,12 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     }
 
     private func makeRequest(to value: Recipe.Value) -> GCKRequest? {
-        guard let recipe, let requester = recipe.service.requester else { return nil }
+        guard let recipe,
+              let requester = recipe.service.requester,
+              let request = recipe.makeRequest(for: value, using: requester) else {
+            return nil
+        }
         self.value = value
-        let request = recipe.makeRequest(for: value, using: requester)
         request.delegate = self
         return request
     }

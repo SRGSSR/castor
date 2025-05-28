@@ -28,7 +28,7 @@ final class CurrentItemRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClien
         }
     }
 
-    func makeRequest(for value: GCKMediaQueueItemID, using requester: GCKRemoteMediaClient) -> GCKRequest {
+    func makeRequest(for value: GCKMediaQueueItemID, using requester: GCKRemoteMediaClient) -> GCKRequest? {
         requester.queueJumpToItem(withID: value)
     }
 
