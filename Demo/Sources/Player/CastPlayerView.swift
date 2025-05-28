@@ -28,6 +28,7 @@ private struct MainView: View {
                 SettingsMenu(player: player)
             }
         }
+        ._debugBodyCounter()
     }
 
     private func stopButton() -> some View {
