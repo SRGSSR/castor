@@ -424,16 +424,6 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     }
 }
 
-@propertyWrapper struct Capitalized {
-    var wrappedValue: String {
-        didSet { wrappedValue = wrappedValue.capitalized }
-    }
-
-    init(wrappedValue: String) {
-        self.wrappedValue = wrappedValue.capitalized
-    }
-}
-
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
