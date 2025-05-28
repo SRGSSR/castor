@@ -24,7 +24,7 @@ final class TargetSeekRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         nil
     }
 
-    func makeRequest(for value: CMTime?, using requester: GCKRemoteMediaClient) -> GCKRequest {
+    func makeRequest(for value: CMTime?, using requester: GCKRemoteMediaClient) -> GCKRequest? {
         let options = GCKMediaSeekOptions()
         if let value {
             options.interval = value.seconds

@@ -23,8 +23,8 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClien
         status
     }
 
-    func makeRequest(for value: GCKMediaStatus?, using requester: GCKRemoteMediaClient) -> GCKRequest {
-        .init()
+    func makeRequest(for value: GCKMediaStatus?, using requester: GCKRemoteMediaClient) -> GCKRequest? {
+        nil
     }
 
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
