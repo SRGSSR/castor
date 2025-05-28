@@ -81,21 +81,66 @@ struct ActiveTracksRecipe: SynchronizerRecipe {
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias Synchronized<T: SynchronizerRecipe> = _Synchronized<Self, T>
+    typealias Synchronized<Recipe: SynchronizerRecipe> = _Synchronized<Self, Recipe>
+    typealias ReceiverState = _ReceiverState<Self>
 }
 
 @propertyWrapper
-class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    let remoteMediaClient: GCKRemoteMediaClient
+final class _ReceiverState<Instance>: NSObject, GCKRemoteMediaClientListener where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+    private let remoteMediaClient: GCKRemoteMediaClient
+
+    private weak var enclosingInstance: Instance?
+
+    @Published private var value: GCKMediaStatus? {
+        willSet {
+            enclosingInstance?.objectWillChange.send()
+        }
+    }
+
+    static subscript(
+        _enclosingInstance instance: Instance,
+        wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, GCKMediaStatus?>,
+        storage storageKeyPath: ReferenceWritableKeyPath<Instance, _ReceiverState>
+    ) -> GCKMediaStatus? {
+        get {
+            let synchronizer = instance[keyPath: storageKeyPath]
+            synchronizer.enclosingInstance = instance
+            return synchronizer.value
+        }
+        set {}
+    }
+
+    @available(*, unavailable, message: "@ReceiverState can only be applied to classes")
+    var wrappedValue: GCKMediaStatus? {
+        get { fatalError() }
+        set { fatalError() }
+    }
+
+    init(remoteMediaClient: GCKRemoteMediaClient) {
+        self.remoteMediaClient = remoteMediaClient
+        self.value = remoteMediaClient.mediaStatus
+        super.init()
+        remoteMediaClient.add(self)
+    }
+
+    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        value = mediaStatus
+    }
+}
+
+// TODO: RemoteState/MutableRemoteState?
+@propertyWrapper
+final class _Synchronized<Instance, Recipe>: NSObject, GCKRemoteMediaClientListener, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+    private let remoteMediaClient: GCKRemoteMediaClient
 
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Recipe.Value?
 
-    var isActive: Bool {
+    private var isActive: Bool {
         remoteMediaClient.mediaStatus?.mediaSessionID != 0
     }
 
-    weak var enclosingInstance: Instance?
+    private weak var enclosingInstance: Instance?
 
     @Published private var value: Recipe.Value {
         willSet {
@@ -175,7 +220,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private let seek: CastSeek
 
-    @Synchronized<MediaStatusRecipe> private var synchronizedMediaStatus: GCKMediaStatus?
+    @ReceiverState private var synchronizedMediaStatus: GCKMediaStatus?
     @Synchronized<ShouldPlayRecipe> private var synchronizedShouldPlay: Bool
     @Synchronized<RepeatModeRecipe> private var synchronizedRepeatMode: CastRepeatMode
     @Synchronized<PlaybackSpeedRecipe> private var synchronizedPlaybackSpeed: Float
@@ -218,7 +263,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         queue = .init(remoteMediaClient: remoteMediaClient)
         seek = .init(remoteMediaClient: remoteMediaClient)
 
-        _synchronizedMediaStatus = Synchronized(remoteMediaClient: remoteMediaClient)
+        _synchronizedMediaStatus = ReceiverState(remoteMediaClient: remoteMediaClient)
         _synchronizedShouldPlay = Synchronized(remoteMediaClient: remoteMediaClient)
         _synchronizedRepeatMode = Synchronized(remoteMediaClient: remoteMediaClient)
         _synchronizedActiveTracks = Synchronized(remoteMediaClient: remoteMediaClient)
