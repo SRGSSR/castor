@@ -240,6 +240,34 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
     }
 }
 
+final class TargetSeekRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let service: GCKRemoteMediaClient
+    private let update: (GCKMediaStatus?) -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.service = service
+        self.update = update
+        super.init()
+        service.add(self)
+    }
+
+    func value(from status: GCKMediaStatus) -> CMTime? {
+        nil
+    }
+
+    func makeRequest(for value: CMTime?, using requester: GCKRemoteMediaClient) -> GCKRequest {
+        let options = GCKMediaSeekOptions()
+        if let value {
+            options.interval = value.seconds
+        }
+        return requester.seek(with: options)
+    }
+
+    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+       update(mediaStatus)
+    }
+}
+
 final class CurrentItemRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
@@ -428,14 +456,13 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    private let seek: CastSeek
-
     @MediaStatus private var synchronizedMediaStatus: GCKMediaStatus?
 
     @ReceiverState(ShouldPlayRecipe.self) private var synchronizedShouldPlay = false
     @ReceiverState(RepeatModeRecipe.self) private var synchronizedRepeatMode: CastRepeatMode = .off
     @ReceiverState(PlaybackSpeedRecipe.self) private var synchronizedPlaybackSpeed: Float = 1
     @ReceiverState(ActiveTracksRecipe.self) private var synchronizedActiveTracks: [CastMediaTrack] = []
+    @ReceiverState(TargetSeekRecipe.self) private var synchronizedTargetSeek: CMTime? = nil
 
     public var shouldPlay: Bool {
         get {
@@ -472,7 +499,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.configuration = configuration
 
         queue = .init(remoteMediaClient: remoteMediaClient)
-        seek = .init(remoteMediaClient: remoteMediaClient)
 
         _synchronizedMediaStatus = MediaStatus(remoteMediaClient: remoteMediaClient)
 
@@ -482,6 +508,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         _synchronizedRepeatMode.service = remoteMediaClient
         _synchronizedPlaybackSpeed.service = remoteMediaClient
         _synchronizedActiveTracks.service = remoteMediaClient
+        _synchronizedTargetSeek.service = remoteMediaClient
     }
 
     deinit {
@@ -665,7 +692,7 @@ public extension CastPlayer {
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        seek.request(for: time)
+        synchronizedTargetSeek = time
     }
 }
 
@@ -703,7 +730,7 @@ public extension CastPlayer {
     func canSkipForward() -> Bool {
         let seekableTimeRange = seekableTimeRange()
         guard seekableTimeRange.isValidAndNotEmpty else { return false }
-        let currentTime = seek.targetTime ?? time()
+        let currentTime = synchronizedTargetSeek ?? time()
         return canSeek(to: currentTime + forwardSkipTime)
     }
 
@@ -743,13 +770,13 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Skips backward.
     func skipBackward() {
-        let currentTime = seek.targetTime ?? time()
+        let currentTime = synchronizedTargetSeek ?? time()
         seek(to: CMTimeClampToRange(currentTime + backwardSkipTime, range: seekableTimeRange()))
     }
 
     /// Skips forward.
     func skipForward() {
-        let currentTime = seek.targetTime ?? time()
+        let currentTime = synchronizedTargetSeek ?? time()
         seek(to: CMTimeClampToRange(currentTime + forwardSkipTime, range: seekableTimeRange()))
     }
 
@@ -792,7 +819,7 @@ extension CastPlayer {
 
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest3(
-            seek.$targetTime,
+            $synchronizedTargetSeek,
             objectWillChange,
             pulsePublisher(interval: interval)
         )
