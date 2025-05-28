@@ -307,13 +307,18 @@ final class _MediaStatus<Instance>: NSObject, GCKRemoteMediaClientListener where
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-        self.value = remoteMediaClient.mediaStatus
+        self.value = Self.connectedStatus(from: remoteMediaClient.mediaStatus)
         super.init()
         remoteMediaClient.add(self)
     }
 
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        value = mediaStatus
+        value = Self.connectedStatus(from: mediaStatus)
+    }
+
+    private static func connectedStatus(from status: GCKMediaStatus?) -> GCKMediaStatus? {
+        guard let status else { return nil }
+        return status.isConnected ? status : nil
     }
 }
 
