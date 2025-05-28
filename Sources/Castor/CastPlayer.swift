@@ -11,7 +11,7 @@ import GoogleCast
 import SwiftUI
 
 // TODO:
-//   - Can likely adopt the same property approach to sync item list
+//   - Can likely adopt the same property wrapper approach to sync item list
 
 protocol ReceiverService {
     associatedtype Status
@@ -40,7 +40,8 @@ struct DeviceSettings {
 
 extension GCKSessionManager: ReceiverService {
     var requester: GCKCastSession? {
-        currentCastSession
+        guard let currentCastSession else { return nil }
+        return currentCastSession.canAdjustVolume ? currentCastSession : nil
     }
 
     func status(for requester: GCKCastSession) -> DeviceSettings? {

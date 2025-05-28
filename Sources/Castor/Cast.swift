@@ -63,14 +63,12 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        // TODO: Likely use canAdjust consistently to return correct values publicly
         _synchronizedVolume.isConnected ? 0...1 : 0...0
     }
 
     /// A Boolean indicating whether the volume/mute can be adjusted.
     public var canAdjustVolume: Bool {
-        guard let currentSession else { return false }
-        return Self.canAdjustVolume(for: currentSession)
+        _synchronizedVolume.isConnected
     }
 
     /// The current device.
@@ -155,12 +153,6 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
         currentDevice == device
-    }
-}
-
-private extension Cast {
-    static func canAdjustVolume(for session: GCKCastSession) -> Bool {
-        session.device.hasCapabilities(.masterOrFixedVolume)
     }
 }
 
