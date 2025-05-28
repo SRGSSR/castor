@@ -29,6 +29,24 @@ extension GCKRemoteMediaClient: ReceiverService {
     }
 }
 
+struct DeviceSettings {
+    let volume: Float
+    let isMuted: Bool
+}
+
+extension GCKSessionManager: ReceiverService {
+    typealias Status = DeviceSettings
+
+    var isConnected: Bool {
+        currentCastSession != nil
+    }
+
+    var status: DeviceSettings? {
+        guard let currentCastSession else { return nil }
+        return .init(volume: currentCastSession.currentDeviceVolume, isMuted: currentCastSession.currentDeviceMuted)
+    }
+}
+
 protocol SynchronizerRecipe: AnyObject {
     associatedtype Service: ReceiverService
     associatedtype Value: Equatable
@@ -43,6 +61,64 @@ extension SynchronizerRecipe {
     func value(from status: Service.Status?, defaultValue: Value) -> Value {
         guard let status else { return defaultValue }
         return value(from: status)
+    }
+}
+
+final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+    let update: (DeviceSettings?) -> Void
+
+    init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
+        self.update = update
+        super.init()
+        service.add(self)
+    }
+
+    func value(from status: DeviceSettings) -> Float {
+        status.volume
+    }
+
+    func makeRequest(for value: Float, using service: GCKSessionManager) -> GCKRequest {
+        // TODO: Deal with potential unavailability, possibly with ReceiverService / a getter replacing isConnected
+        //       that returns the requester to use
+        service.currentCastSession?.setDeviceVolume(value) ?? .init()
+    }
+
+    func sessionManager(
+        _ sessionManager: GCKSessionManager,
+        castSession session: GCKCastSession,
+        didReceiveDeviceVolume volume: Float,
+        muted: Bool
+    ) {
+        update(.init(volume: volume, isMuted: muted))
+    }
+}
+
+final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+    let update: (DeviceSettings?) -> Void
+
+    init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
+        self.update = update
+        super.init()
+        service.add(self)
+    }
+
+    func value(from status: DeviceSettings) -> Bool {
+        status.isMuted
+    }
+
+    func makeRequest(for value: Bool, using service: GCKSessionManager) -> GCKRequest {
+        // TODO: Deal with potential unavailability, possibly with ReceiverService / a getter replacing isConnected
+        //       that returns the requester to use
+        service.currentCastSession?.setDeviceMuted(value) ?? .init()
+    }
+
+    func sessionManager(
+        _ sessionManager: GCKSessionManager,
+        castSession session: GCKCastSession,
+        didReceiveDeviceVolume volume: Float,
+        muted: Bool
+    ) {
+        update(.init(volume: volume, isMuted: muted))
     }
 }
 
