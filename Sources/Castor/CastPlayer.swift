@@ -53,6 +53,8 @@ protocol SynchronizerRecipe: AnyObject {
     associatedtype Service: ReceiverService
     associatedtype Value: Equatable
 
+    static var defaultValue: Value { get }
+
     var service: Service { get }
 
     init(service: Service, update: @escaping (Service.Status?) -> Void)
@@ -74,6 +76,8 @@ extension SynchronizerRecipe {
 }
 
 final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+    static let defaultValue: Float = 0
+
     let service: GCKSessionManager
     private let update: (DeviceSettings?) -> Void
 
@@ -103,6 +107,8 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListene
 }
 
 final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+    static let defaultValue = false
+
     let service: GCKSessionManager
     private let update: (DeviceSettings?) -> Void
 
@@ -132,6 +138,8 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
 }
 
 final class MediaStatusRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    static let defaultValue: GCKMediaStatus? = nil
+
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
 
@@ -156,6 +164,8 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClien
 }
 
 final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    static let defaultValue = false
+
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
 
@@ -185,6 +195,8 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
 }
 
 final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    static let defaultValue: Float = 1
+
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
 
@@ -209,6 +221,8 @@ final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaCli
 }
 
 final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    static let defaultValue: CastRepeatMode = .off
+
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
 
@@ -233,6 +247,8 @@ final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
 }
 
 final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    static let defaultValue: [CastMediaTrack] = []
+
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
 
@@ -265,6 +281,8 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
 }
 
 final class TargetSeekRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    static let defaultValue: CMTime? = nil
+
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
 
@@ -293,6 +311,8 @@ final class TargetSeekRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
 }
 
 final class CurrentItemRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    static let defaultValue = kGCKMediaQueueInvalidItemID
+
     let service: GCKRemoteMediaClient
     private let update: (GCKMediaStatus?) -> Void
 
@@ -376,7 +396,6 @@ final class _MediaStatus<Instance>: NSObject, GCKRemoteMediaClientListener where
 
 @propertyWrapper
 final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    private let defaultValue: Recipe.Value
     private var recipe: Recipe?
 
     var service: Recipe.Service? {
@@ -387,11 +406,11 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
             if let newValue {
                 let recipe = Recipe(service: newValue, update: update(with:))
                 self.recipe = recipe
-                value = recipe.value(from: newValue, defaultValue: defaultValue)
+                value = recipe.value(from: newValue, defaultValue: Recipe.defaultValue)
             }
             else {
                 recipe = nil
-                value = defaultValue
+                value = Recipe.defaultValue
             }
         }
     }
@@ -438,9 +457,8 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         set { fatalError() }
     }
 
-    init(wrappedValue defaultValue: Recipe.Value, _ recipe: Recipe.Type) {
-        self.value = defaultValue
-        self.defaultValue = defaultValue
+    init(_ recipe: Recipe.Type) {
+        self.value = Recipe.defaultValue
     }
 
     func requestUpdate(to value: Recipe.Value) {
@@ -457,7 +475,7 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
 
     private func update(with status: Recipe.Service.Status?) {
         guard let recipe, currentRequest == nil else { return }
-        value = recipe.value(from: status, defaultValue: defaultValue)
+        value = recipe.value(from: status, defaultValue: Recipe.defaultValue)
     }
 
     private func makeRequest(to value: Recipe.Value) -> GCKRequest? {
@@ -480,12 +498,12 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    @ReceiverState(MediaStatusRecipe.self) private var synchronizedMediaStatus: GCKMediaStatus? = nil
-    @ReceiverState(ShouldPlayRecipe.self) private var synchronizedShouldPlay = false
-    @ReceiverState(RepeatModeRecipe.self) private var synchronizedRepeatMode: CastRepeatMode = .off
-    @ReceiverState(PlaybackSpeedRecipe.self) private var synchronizedPlaybackSpeed: Float = 1
-    @ReceiverState(ActiveTracksRecipe.self) private var synchronizedActiveTracks: [CastMediaTrack] = []
-    @ReceiverState(TargetSeekRecipe.self) private var synchronizedTargetSeek: CMTime? = nil
+    @ReceiverState(MediaStatusRecipe.self) private var synchronizedMediaStatus
+    @ReceiverState(ShouldPlayRecipe.self) private var synchronizedShouldPlay
+    @ReceiverState(RepeatModeRecipe.self) private var synchronizedRepeatMode
+    @ReceiverState(PlaybackSpeedRecipe.self) private var synchronizedPlaybackSpeed
+    @ReceiverState(ActiveTracksRecipe.self) private var synchronizedActiveTracks
+    @ReceiverState(TargetSeekRecipe.self) private var synchronizedTargetSeek
 
     public var shouldPlay: Bool {
         get {
