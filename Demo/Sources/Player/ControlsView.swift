@@ -35,8 +35,8 @@ struct ControlsView: View {
             visualView()
             controls()
         }
-        //.disabled(!player.isActive)
-        // .bind(progressTracker, to: player)
+        .disabled(!player.isActive)
+        .bind(progressTracker, to: player)
     }
 
     private var imageName: String {
