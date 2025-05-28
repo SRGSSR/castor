@@ -223,6 +223,33 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
     }
 }
 
+final class CurrentItemRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+    let update: (GCKMediaStatus?) -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+        self.update = update
+        super.init()
+        service.add(self)
+    }
+
+    func value(from status: GCKMediaStatus) -> GCKMediaQueueItemID {
+        if status.loadingItemID != kGCKMediaQueueInvalidItemID {
+            return status.loadingItemID
+        }
+        else {
+            return status.currentItemID
+        }
+    }
+
+    func makeRequest(for value: GCKMediaQueueItemID, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
+        remoteMediaClient.queueJumpToItem(withID: value)
+    }
+
+    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        update(mediaStatus)
+    }
+}
+
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
     typealias ReceiverState<Recipe: SynchronizerRecipe> = _ReceiverState<Self, Recipe>
     typealias MediaStatus = _MediaStatus<Self>
@@ -285,7 +312,7 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Recipe.Value?
 
-    private var isConnected: Bool {
+    var isConnected: Bool {
         service.isConnected
     }
 

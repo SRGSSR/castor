@@ -12,8 +12,6 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
     private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
-    @Published private var currentItemId: GCKMediaQueueItemID?
-
     /// The items in the queue.
     ///
     /// > Warning: Avoid making significant changes to the item list by mutating this property, as each change will
@@ -37,12 +35,15 @@ public final class CastQueue: NSObject, ObservableObject {
     /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
     public var currentItem: CastPlayerItem? {
         get {
-            items.first { $0.id == currentItemId }
+            items.first { $0.id == synchronizedCurrentItemId }
         }
         set {
-            guard currentItemId != newValue?.id else { return }
-            currentItemId = newValue?.id
-            currentItemSynchronizer.requestUpdate(to: newValue?.id)
+            if let newValue {
+                synchronizedCurrentItemId = newValue.id
+            }
+            else {
+                remoteMediaClient.stop()
+            }
         }
     }
 
@@ -59,7 +60,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var canRequest = true
 
-    private let currentItemSynchronizer: Synchronizer<GCKMediaQueueItemID?>
+    @ReceiverState<CurrentItemRecipe> private var synchronizedCurrentItemId: GCKMediaQueueItemID
 
     private var nonRequestedItems: [CastPlayerItem] {
         get {
@@ -85,39 +86,13 @@ public final class CastQueue: NSObject, ObservableObject {
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
-
-        currentItemSynchronizer = .init(remoteMediaClient: remoteMediaClient, get: Self.getCurrentId, set: Self.setCurrentId)
-
+        _synchronizedCurrentItemId = .init(service: remoteMediaClient, defaultValue: kGCKMediaQueueInvalidItemID)
         super.init()
-
-        currentItemSynchronizer.$value.assign(to: &$currentItemId)
-
         remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
     }
 
     func release() {
         remoteMediaClient.mediaQueue.remove(self)
-    }
-}
-
-private extension CastQueue {
-    static func getCurrentId(for mediaStatus: GCKMediaStatus?) -> GCKMediaQueueItemID? {
-        guard let mediaStatus else { return nil }
-        if mediaStatus.loadingItemID != kGCKMediaQueueInvalidItemID {
-            return mediaStatus.loadingItemID
-        }
-        else {
-            return mediaStatus.currentItemID
-        }
-    }
-
-    static func setCurrentId(_ remoteMediaClient: GCKRemoteMediaClient, _ itemId: GCKMediaQueueItemID?) -> GCKRequest {
-        if let itemId {
-            remoteMediaClient.queueJumpToItem(withID: itemId)
-        }
-        else {
-            remoteMediaClient.stop()
-        }
     }
 }
 
