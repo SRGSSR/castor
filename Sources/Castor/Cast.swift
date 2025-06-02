@@ -25,8 +25,6 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    private var targetDevice: CastDevice?
-
     /// The cast configuration.
     public var configuration: CastConfiguration {
         didSet {
@@ -34,6 +32,7 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
+    @ReceiverState(CurrentDeviceRecipe.self) private var synchronizedCurrentDevice
     @ReceiverState(VolumeRecipe.self) private var synchronizedVolume
     @ReceiverState(MutedRecipe.self) private var synchronizedIsMuted
 
@@ -84,25 +83,12 @@ public final class Cast: NSObject, ObservableObject {
     /// Ends the session if set to `nil`.
     ///
     /// > Important: On iOS 18.3 and below use ``currentDeviceSelection`` to manage selection in a `List`.
-    @Published public var currentDevice: CastDevice? {
-        didSet {
-            if let currentDevice {
-                moveSession(from: oldValue, to: currentDevice)
-            }
-            else {
-                endSession()
-            }
+    public var currentDevice: CastDevice? {
+        get {
+            synchronizedCurrentDevice
         }
-    }
-
-    /// A binding to the current device, for use as `List` selection.
-    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentDevice instead")
-    public var currentDeviceSelection: Binding<CastDevice?> {
-        .init { [weak self] in
-            self?.currentDevice
-        } set: { [weak self] device in
-            guard let self, let device else { return }
-            currentDevice = device
+        set {
+            synchronizedCurrentDevice = newValue
         }
     }
 
@@ -123,12 +109,12 @@ public final class Cast: NSObject, ObservableObject {
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
         devices = Self.devices(from: context.discoveryManager)
-        currentDevice = currentSession?.device.toCastDevice()
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
         super.init()
 
+        _synchronizedCurrentDevice.service = context.sessionManager
         _synchronizedVolume.service = context.sessionManager
         _synchronizedIsMuted.service = context.sessionManager
 
@@ -148,12 +134,12 @@ public final class Cast: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
-        moveSession(from: currentDevice, to: device)
+        currentDevice = device
     }
 
     /// Ends the current session and stops casting if one sender device is connected.
     public func endSession() {
-        context.sessionManager.endSession()
+        currentDevice = nil
     }
 
     /// Check if the given device if currently casting.
@@ -191,7 +177,6 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session
-        currentDevice = session.device.toCastDevice()
     }
 
     // swiftlint:disable:next missing_docs
@@ -216,13 +201,6 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentSession = sessionManager.currentCastSession
-        if let targetDevice {
-            sessionManager.startSession(with: targetDevice.rawDevice)
-            self.targetDevice = nil
-        }
-        else {
-            currentDevice = nil
-        }
     }
 
     // swiftlint:disable:next missing_docs
@@ -232,7 +210,6 @@ extension Cast: GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-        currentDevice = nil
     }
 }
 
@@ -243,16 +220,5 @@ private extension Cast {
             devices.append(discoveryManager.device(at: index).toCastDevice())
         }
         return devices
-    }
-
-    private func moveSession(from previousDevice: CastDevice?, to currentDevice: CastDevice) {
-        guard previousDevice != currentDevice else { return }
-        if previousDevice != nil {
-            targetDevice = currentDevice
-            endSession()
-        }
-        else {
-            context.sessionManager.startSession(with: currentDevice.rawDevice)
-        }
     }
 }
