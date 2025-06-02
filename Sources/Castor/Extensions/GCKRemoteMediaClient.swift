@@ -8,11 +8,16 @@ import GoogleCast
 
 extension GCKRemoteMediaClient: ReceiverService {
     var requester: GCKRemoteMediaClient? {
-        guard let mediaStatus else { return nil }
-        return mediaStatus.isConnected ? self : nil
+        self
     }
 
     func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
         requester.mediaStatus
+    }
+}
+
+extension GCKRemoteMediaClient: ReceiverRequester {
+    var canRequest: Bool {
+        mediaStatus?.isConnected == true
     }
 }

@@ -45,7 +45,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     public var isActive: Bool {
-        _synchronizedMediaStatus.isConnected
+        remoteMediaClient.canRequest
     }
 
     /// The queue managing player items.

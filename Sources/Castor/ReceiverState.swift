@@ -34,7 +34,7 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     private var pendingValue: Recipe.Value?
 
     var isConnected: Bool {
-        service?.requester != nil
+        service?.isConnected == true
     }
 
     private weak var enclosingInstance: Instance?
