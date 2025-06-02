@@ -6,15 +6,18 @@
 
 import GoogleCast
 
-final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+final class RepeatModeRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: CastRepeatMode = .off
 
     let service: GCKRemoteMediaClient
-    private let update: (GCKMediaStatus?) -> Void
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    private let update: (GCKMediaStatus?) -> Void
+    private let completion: () -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -27,11 +30,20 @@ final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         requester.canMakeRequest()
     }
 
-    func makeRequest(for value: CastRepeatMode, using requester: GCKRemoteMediaClient) -> GCKRequest? {
-        requester.queueSetRepeatMode(value.rawMode())
+    func makeRequest(for value: CastRepeatMode, using requester: GCKRemoteMediaClient) {
+        let request = requester.queueSetRepeatMode(value.rawMode())
+        request.delegate = self
     }
+}
 
+extension RepeatModeRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         update(mediaStatus)
+    }
+}
+
+extension RepeatModeRecipe: GCKRequestDelegate {
+    func requestDidComplete(_ request: GCKRequest) {
+        completion()
     }
 }

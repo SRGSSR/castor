@@ -5,10 +5,10 @@
 //
 
 import Combine
-import GoogleCast
+import Foundation
 
 @propertyWrapper
-final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+final class _ReceiverState<Instance, Recipe>: NSObject where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private var recipe: Recipe?
 
     var service: Recipe.Service? {
@@ -19,6 +19,8 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
             if let newValue {
                 let recipe = Recipe(service: newValue) { [weak self] status in
                     self?.update(with: status)
+                } completion: { [weak self] in
+                    self?.completion()
                 }
                 self.recipe = recipe
                 value = recipe.value(from: newValue, defaultValue: Recipe.defaultValue)
@@ -30,7 +32,7 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         }
     }
 
-    private weak var currentRequest: GCKRequest?
+    private var isRequesting = false
     private var pendingValue: Recipe.Value?
 
     private weak var enclosingInstance: Instance?
@@ -74,8 +76,9 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
 
     func requestUpdate(to value: Recipe.Value) {
         guard canMakeRequest(), self.value != value else { return }
-        if currentRequest == nil {
-            currentRequest = makeRequest(to: value)
+        if !isRequesting {
+            isRequesting = true
+            makeRequest(to: value)
         }
         else {
             self.value = value
@@ -84,8 +87,18 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     }
 
     private func update(with status: Recipe.Service.Status?) {
-        guard let recipe, currentRequest == nil else { return }
+        guard let recipe, !isRequesting else { return }
         value = recipe.value(from: status, defaultValue: Recipe.defaultValue)
+    }
+
+    private func completion() {
+        if let pendingValue {
+            makeRequest(to: pendingValue)
+            self.pendingValue = nil
+        }
+        else {
+            isRequesting = false
+        }
     }
 
     func canMakeRequest() -> Bool {
@@ -93,23 +106,10 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         return recipe.canMakeRequest(using: requester)
     }
 
-    // TODO: Should probably be static, with recipe as parameter and self.value/delegate set by the caller.
-    private func makeRequest(to value: Recipe.Value) -> GCKRequest? {
-        guard let recipe,
-              let requester = recipe.service.requester,
-              let request = recipe.makeRequest(for: value, using: requester) else {
-            return nil
-        }
+    private func makeRequest(to value: Recipe.Value) {
+        guard let recipe, let requester = recipe.service.requester else { return }
         self.value = value
-        request.delegate = self
-        return request
-    }
-
-    func requestDidComplete(_ request: GCKRequest) {
-        if let pendingValue {
-            currentRequest = makeRequest(to: pendingValue)
-            self.pendingValue = nil
-        }
+        recipe.makeRequest(for: value, using: requester)
     }
 }
 

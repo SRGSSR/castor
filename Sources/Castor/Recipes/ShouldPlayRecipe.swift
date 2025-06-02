@@ -6,15 +6,18 @@
 
 import GoogleCast
 
-final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+final class ShouldPlayRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue = false
 
     let service: GCKRemoteMediaClient
-    private let update: (GCKMediaStatus?) -> Void
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    private let update: (GCKMediaStatus?) -> Void
+    private let completion: () -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -27,7 +30,12 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         requester.canMakeRequest()
     }
 
-    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) -> GCKRequest? {
+    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) {
+        let request = Self.request(for: value, using: requester)
+        request.delegate = self
+    }
+
+    private static func request(for value: Bool, using requester: GCKRemoteMediaClient) -> GCKRequest {
         if value {
             return requester.play()
         }
@@ -35,8 +43,16 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
             return requester.pause()
         }
     }
+}
 
+extension ShouldPlayRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         update(mediaStatus)
+    }
+}
+
+extension ShouldPlayRecipe: GCKRequestDelegate {
+    func requestDidComplete(_ request: GCKRequest) {
+        completion()
     }
 }

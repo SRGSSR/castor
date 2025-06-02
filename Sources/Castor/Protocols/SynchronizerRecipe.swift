@@ -14,12 +14,12 @@ protocol SynchronizerRecipe: AnyObject {
 
     var service: Service { get }
 
-    init(service: Service, update: @escaping (Service.Status?) -> Void)
+    init(service: Service, update: @escaping (Service.Status?) -> Void, completion: @escaping () -> Void)
 
     // TODO: Could likely be static methods
     func value(from status: Service.Status) -> Value
     func canMakeRequest(using requester: Service.Requester) -> Bool
-    func makeRequest(for value: Value, using requester: Service.Requester) -> GCKRequest?
+    func makeRequest(for value: Value, using requester: Service.Requester)
 }
 
 extension SynchronizerRecipe {

@@ -6,15 +6,18 @@
 
 import GoogleCast
 
-final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+final class ActiveTracksRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: [CastMediaTrack] = []
 
     let service: GCKRemoteMediaClient
-    private let update: (GCKMediaStatus?) -> Void
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    private let update: (GCKMediaStatus?) -> Void
+    private let completion: () -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -27,12 +30,9 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
         requester.canMakeRequest()
     }
 
-    func makeRequest(for value: [CastMediaTrack], using requester: GCKRemoteMediaClient) -> GCKRequest? {
-        requester.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
-    }
-
-    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        update(mediaStatus)
+    func makeRequest(for value: [CastMediaTrack], using requester: GCKRemoteMediaClient) {
+        let request = requester.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
+        request.delegate = self
     }
 
     private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
@@ -41,5 +41,17 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
         }
         // swiftlint:disable:next legacy_objc_type
         return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
+    }
+}
+
+extension ActiveTracksRecipe: GCKRemoteMediaClientListener {
+    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        update(mediaStatus)
+    }
+}
+
+extension ActiveTracksRecipe: GCKRequestDelegate {
+    func requestDidComplete(_ request: GCKRequest) {
+        completion()
     }
 }

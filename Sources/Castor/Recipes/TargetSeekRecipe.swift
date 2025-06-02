@@ -7,15 +7,18 @@
 import CoreMedia
 import GoogleCast
 
-final class TargetSeekRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+final class TargetSeekRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: CMTime? = nil
 
     let service: GCKRemoteMediaClient
-    private let update: (GCKMediaStatus?) -> Void
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    private let update: (GCKMediaStatus?) -> Void
+    private let completion: () -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -28,15 +31,24 @@ final class TargetSeekRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         requester.canMakeRequest()
     }
 
-    func makeRequest(for value: CMTime?, using requester: GCKRemoteMediaClient) -> GCKRequest? {
+    func makeRequest(for value: CMTime?, using requester: GCKRemoteMediaClient) {
         let options = GCKMediaSeekOptions()
         if let value {
             options.interval = value.seconds
         }
-        return requester.seek(with: options)
+        let request = requester.seek(with: options)
+        request.delegate = self
     }
+}
 
+extension TargetSeekRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
        update(mediaStatus)
+    }
+}
+
+extension TargetSeekRecipe: GCKRequestDelegate {
+    func requestDidComplete(_ request: GCKRequest) {
+        completion()
     }
 }

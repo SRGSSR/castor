@@ -6,15 +6,18 @@
 
 import GoogleCast
 
-final class MediaStatusRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClientListener {
+final class MediaStatusRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: GCKMediaStatus? = nil
 
     let service: GCKRemoteMediaClient
-    private let update: (GCKMediaStatus?) -> Void
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    private let update: (GCKMediaStatus?) -> Void
+    private let completion: () -> Void
+
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -27,11 +30,17 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClien
         requester.canMakeRequest()
     }
 
-    func makeRequest(for value: GCKMediaStatus?, using requester: GCKRemoteMediaClient) -> GCKRequest? {
-        nil
-    }
+    func makeRequest(for value: GCKMediaStatus?, using requester: GCKRemoteMediaClient) {}
+}
 
+extension MediaStatusRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
        update(mediaStatus)
+    }
+}
+
+extension MediaStatusRecipe: GCKRequestDelegate {
+    func requestDidComplete(_ request: GCKRequest) {
+        completion()
     }
 }

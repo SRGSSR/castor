@@ -6,15 +6,18 @@
 
 import GoogleCast
 
-final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+final class MutedRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue = false
 
     let service: GCKSessionManager
-    private let update: (DeviceSettings?) -> Void
 
-    init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
+    private let update: (DeviceSettings?) -> Void
+    private let completion: () -> Void
+
+    init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -27,10 +30,13 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
         requester.traits?.supportsMuting == true
     }
 
-    func makeRequest(for value: Bool, using requester: GCKCastSession) -> GCKRequest? {
-        requester.setDeviceMuted(value)
+    func makeRequest(for value: Bool, using requester: GCKCastSession) {
+        let request = requester.setDeviceMuted(value)
+        request.delegate = self
     }
+}
 
+extension MutedRecipe: GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -42,5 +48,11 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
 
     func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
         update(nil)
+    }
+}
+
+extension MutedRecipe: GCKRequestDelegate {
+    func requestDidComplete(_ request: GCKRequest) {
+        completion()
     }
 }
