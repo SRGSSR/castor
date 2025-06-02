@@ -34,7 +34,7 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    @ReceiverState(VolumeRecipe.self) private var synchronizedVolume: Float
+    @ReceiverState(VolumeRecipe.self) private var synchronizedVolume
     @ReceiverState(MutedRecipe.self) private var synchronizedIsMuted
 
     /// A Boolean setting whether the audio output of the current device must be muted.
