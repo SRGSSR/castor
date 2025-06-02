@@ -14,12 +14,20 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe {
     private let update: (GCKMediaStatus?) -> Void
     private let completion: () -> Void
 
+    var requester: GCKRemoteMediaClient? {
+        service
+    }
+
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
         self.completion = completion
         super.init()
         service.add(self)
+    }
+
+    func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
+        requester.mediaStatus
     }
 
     func value(from status: GCKMediaStatus) -> GCKMediaStatus? {

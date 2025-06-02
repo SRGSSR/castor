@@ -14,12 +14,20 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe {
     private let update: (DeviceSettings?) -> Void
     private let completion: () -> Void
 
+    var requester: GCKCastSession? {
+        service.currentCastSession
+    }
+
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
         self.completion = completion
         super.init()
         service.add(self)
+    }
+
+    func status(from requester: GCKCastSession) -> DeviceSettings? {
+        .init(volume: requester.currentDeviceVolume, isMuted: requester.currentDeviceMuted)
     }
 
     func value(from status: DeviceSettings) -> Float {

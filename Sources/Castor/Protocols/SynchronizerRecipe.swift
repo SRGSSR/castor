@@ -7,28 +7,35 @@
 import GoogleCast
 
 protocol SynchronizerRecipe: AnyObject {
-    associatedtype Service: ReceiverService
+    associatedtype Service
+    associatedtype Requester
+
+    associatedtype Status
     associatedtype Value: Equatable
 
     static var defaultValue: Value { get }
 
     var service: Service { get }
+    var requester: Requester? { get }
 
-    init(service: Service, update: @escaping (Service.Status?) -> Void, completion: @escaping () -> Void)
+    init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
 
     // TODO: Could likely be static methods
-    func value(from status: Service.Status) -> Value
-    func canMakeRequest(using requester: Service.Requester) -> Bool
-    func makeRequest(for value: Value, using requester: Service.Requester)
+    
+    func status(from requester: Requester) -> Status?
+    func value(from status: Status) -> Value
+
+    func canMakeRequest(using requester: Requester) -> Bool
+    func makeRequest(for value: Value, using requester: Requester)
 }
 
 extension SynchronizerRecipe {
     func value(from service: Service, defaultValue: Value) -> Value {
-        guard let requester = service.requester else { return defaultValue }
-        return value(from: service.status(from: requester), defaultValue: defaultValue)
+        guard let requester else { return defaultValue }
+        return value(from: status(from: requester), defaultValue: defaultValue)
     }
 
-    func value(from status: Service.Status?, defaultValue: Value) -> Value {
+    func value(from status: Status?, defaultValue: Value) -> Value {
         guard let status else { return defaultValue }
         return value(from: status)
     }
