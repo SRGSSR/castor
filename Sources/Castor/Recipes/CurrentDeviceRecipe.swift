@@ -6,13 +6,18 @@
 
 import GoogleCast
 
+// TODO: Can build a recipe for the device list. Possibly for the session as well (though in
+//       this case we just need to instantiate the player, so maybe not that useful/meaningful).
+
 final class CurrentDeviceRecipe: NSObject, SynchronizerRecipe {
-    static let defaultValue: GCKDevice? = nil
+    static let defaultValue: CastDevice? = nil
 
     let service: GCKSessionManager
 
     private let update: (GCKCastSession?) -> Void
     private let completion: () -> Void
+
+    private var targetDevice: CastDevice?
 
     var requester: GCKSessionManager? {
         service
@@ -30,18 +35,23 @@ final class CurrentDeviceRecipe: NSObject, SynchronizerRecipe {
         requester.currentCastSession
     }
 
-    static func value(from session: GCKCastSession) -> GCKDevice? {
-        session.device
+    static func value(from session: GCKCastSession) -> CastDevice? {
+        session.device.toCastDevice()
     }
 
     func canMakeRequest(using requester: GCKSessionManager) -> Bool {
         true
     }
 
-    func makeRequest(for value: GCKDevice?, using requester: GCKSessionManager) {
+    func makeRequest(for value: CastDevice?, using requester: GCKSessionManager) {
         if let value {
-            // TODO: Probably wait for graceful shutdown first.
-            requester.startSession(with: value)
+            if requester.hasConnectedSession() {
+                targetDevice = value
+                requester.endSession()
+            }
+            else {
+                requester.startSession(with: value.rawDevice)
+            }
         }
         else {
             requester.endSession()
@@ -56,6 +66,7 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
 
     func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         update(session)
+        completion()
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
@@ -71,7 +82,14 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
-        update(session)
+        update(sessionManager.currentCastSession)
+        if let targetDevice {
+            sessionManager.startSession(with: targetDevice.rawDevice)
+            self.targetDevice = nil
+        }
+        else {
+            completion()
+        }
     }
 
     func sessionManager(
