@@ -8,8 +8,7 @@ import GoogleCast
 
 extension GCKSessionManager: ReceiverService {
     var requester: GCKCastSession? {
-        guard let currentCastSession else { return nil }
-        return currentCastSession.canAdjustVolume ? currentCastSession : nil
+        currentCastSession
     }
 
     func status(from requester: GCKCastSession) -> DeviceSettings? {

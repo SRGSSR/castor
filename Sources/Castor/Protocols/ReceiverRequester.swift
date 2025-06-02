@@ -4,10 +4,6 @@
 //  License information is available from the LICENSE file.
 //
 
-import GoogleCast
-
-extension GCKMediaStatus {
-    var isConnected: Bool {
-        queueItemCount != 0
-    }
+protocol ReceiverRequester {
+    var canRequest: Bool { get }
 }

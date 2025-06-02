@@ -6,8 +6,8 @@
 
 import GoogleCast
 
-extension GCKCastSession {
-    var canAdjustVolume: Bool {
+extension GCKCastSession: ReceiverRequester {
+    var canRequest: Bool {
         device.hasCapabilities(.masterOrFixedVolume)
     }
 }
