@@ -256,9 +256,3 @@ private extension Cast {
         }
     }
 }
-
-extension Cast: ChangeDelegate {
-    func didChange() {
-        objectWillChange.send()
-    }
-}
