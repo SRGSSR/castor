@@ -35,4 +35,8 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
     ) {
         update(.init(volume: volume, isMuted: muted))
     }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
+        update(nil)
+    }
 }
