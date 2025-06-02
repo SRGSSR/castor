@@ -26,11 +26,11 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe {
         service.add(self)
     }
 
-    func status(from requester: GCKCastSession) -> DeviceSettings? {
+    static func status(from requester: GCKCastSession) -> DeviceSettings? {
         .init(volume: requester.currentDeviceVolume, isMuted: requester.currentDeviceMuted)
     }
 
-    func value(from status: DeviceSettings) -> Float {
+    static func value(from status: DeviceSettings) -> Float {
         status.volume
     }
 
