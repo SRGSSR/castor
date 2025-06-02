@@ -23,6 +23,10 @@ final class MutedRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener
         status.isMuted
     }
 
+    func canMakeRequest(using requester: GCKCastSession) -> Bool {
+        requester.traits?.supportsMuting == true
+    }
+
     func makeRequest(for value: Bool, using requester: GCKCastSession) -> GCKRequest? {
         requester.setDeviceMuted(value)
     }

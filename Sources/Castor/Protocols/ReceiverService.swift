@@ -6,15 +6,9 @@
 
 protocol ReceiverService {
     associatedtype Status
-    associatedtype Requester: ReceiverRequester
+    associatedtype Requester
 
     var requester: Requester? { get }
 
     func status(from requester: Requester) -> Status?
-}
-
-extension ReceiverService {
-    var isConnected: Bool {
-        requester?.canRequest == true
-    }
 }

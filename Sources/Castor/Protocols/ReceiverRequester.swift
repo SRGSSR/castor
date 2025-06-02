@@ -3,7 +3,3 @@
 //
 //  License information is available from the LICENSE file.
 //
-
-protocol ReceiverRequester {
-    var canRequest: Bool { get }
-}

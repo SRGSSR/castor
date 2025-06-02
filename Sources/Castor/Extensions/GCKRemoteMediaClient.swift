@@ -16,8 +16,8 @@ extension GCKRemoteMediaClient: ReceiverService {
     }
 }
 
-extension GCKRemoteMediaClient: ReceiverRequester {
-    var canRequest: Bool {
+extension GCKRemoteMediaClient {
+    func canMakeRequest() -> Bool {
         mediaStatus?.isConnected == true
     }
 }

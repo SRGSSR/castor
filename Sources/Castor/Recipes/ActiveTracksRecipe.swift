@@ -23,6 +23,10 @@ final class ActiveTracksRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClie
         Self.activeTracks(from: status)
     }
 
+    func canMakeRequest(using requester: GCKRemoteMediaClient) -> Bool {
+        requester.canMakeRequest()
+    }
+
     func makeRequest(for value: [CastMediaTrack], using requester: GCKRemoteMediaClient) -> GCKRequest? {
         requester.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
     }
