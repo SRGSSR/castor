@@ -6,15 +6,18 @@
 
 import GoogleCast
 
-final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListener {
+final class VolumeRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: Float = 0
 
     let service: GCKSessionManager
-    private let update: (DeviceSettings?) -> Void
 
-    init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void) {
+    private let update: (DeviceSettings?) -> Void
+    private let completion: () -> Void
+
+    init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -27,10 +30,13 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListene
         service.currentCastSession?.traits?.isFixedVolume() == false
     }
 
-    func makeRequest(for value: Float, using requester: GCKCastSession) -> GCKRequest? {
-        requester.setDeviceVolume(value)
+    func makeRequest(for value: Float, using requester: GCKCastSession) {
+        let request = requester.setDeviceVolume(value)
+        request.delegate = self
     }
+}
 
+extension VolumeRecipe: GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -42,5 +48,11 @@ final class VolumeRecipe: NSObject, SynchronizerRecipe, GCKSessionManagerListene
 
     func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
         update(nil)
+    }
+}
+
+extension VolumeRecipe: GCKRequestDelegate {
+    func requestDidComplete(_ request: GCKRequest) {
+        completion()
     }
 }
