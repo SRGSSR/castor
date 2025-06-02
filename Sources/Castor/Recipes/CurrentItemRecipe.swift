@@ -26,11 +26,11 @@ final class CurrentItemRecipe: NSObject, SynchronizerRecipe {
         service.add(self)
     }
 
-    func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
+    static func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
         requester.mediaStatus
     }
 
-    func value(from status: GCKMediaStatus) -> GCKMediaQueueItemID {
+    static func value(from status: GCKMediaStatus) -> GCKMediaQueueItemID {
         if status.loadingItemID != kGCKMediaQueueInvalidItemID {
             return status.loadingItemID
         }

@@ -26,11 +26,11 @@ final class ShouldPlayRecipe: NSObject, SynchronizerRecipe {
         service.add(self)
     }
 
-    func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
+    static func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
         requester.mediaStatus
     }
 
-    func value(from status: GCKMediaStatus) -> Bool {
+    static func value(from status: GCKMediaStatus) -> Bool {
         status.playerState == .playing
     }
 
