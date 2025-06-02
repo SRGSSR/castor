@@ -86,7 +86,7 @@ final class _ReceiverState<Instance, Recipe>: NSObject where Recipe: Synchronize
         }
     }
 
-    private func update(with status: Recipe.Service.Status?) {
+    private func update(with status: Recipe.Status?) {
         guard let recipe, !isRequesting else { return }
         value = recipe.value(from: status, defaultValue: Recipe.defaultValue)
     }
@@ -102,12 +102,12 @@ final class _ReceiverState<Instance, Recipe>: NSObject where Recipe: Synchronize
     }
 
     func canMakeRequest() -> Bool {
-        guard let recipe, let requester = recipe.service.requester else { return false }
+        guard let recipe, let requester = recipe.requester else { return false }
         return recipe.canMakeRequest(using: requester)
     }
 
     private func makeRequest(to value: Recipe.Value) {
-        guard let recipe, let requester = recipe.service.requester else { return }
+        guard let recipe, let requester = recipe.requester else { return }
         self.value = value
         recipe.makeRequest(for: value, using: requester)
     }
