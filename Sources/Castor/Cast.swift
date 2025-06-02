@@ -9,6 +9,9 @@ import Foundation
 import GoogleCast
 import SwiftUI
 
+// TODO:
+//   - Can likely adopt the same property wrapper approach to sync current session
+
 /// This object that handles everything related to Google Cast.
 public final class Cast: NSObject, ObservableObject {
     /// The package version.
