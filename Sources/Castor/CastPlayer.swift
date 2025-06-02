@@ -45,7 +45,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     public var isActive: Bool {
-        synchronizedMediaStatus != nil
+        _synchronizedMediaStatus.isConnected
     }
 
     /// The queue managing player items.
