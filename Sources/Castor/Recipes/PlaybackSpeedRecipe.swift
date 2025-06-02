@@ -23,6 +23,10 @@ final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaCli
         status.playbackRate
     }
 
+    func canMakeRequest(using requester: GCKRemoteMediaClient) -> Bool {
+        requester.canMakeRequest()
+    }
+
     func makeRequest(for value: Float, using requester: GCKRemoteMediaClient) -> GCKRequest? {
         requester.setPlaybackRate(value)
     }

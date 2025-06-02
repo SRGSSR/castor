@@ -23,6 +23,10 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClien
         status
     }
 
+    func canMakeRequest(using requester: GCKRemoteMediaClient) -> Bool {
+        requester.canMakeRequest()
+    }
+
     func makeRequest(for value: GCKMediaStatus?, using requester: GCKRemoteMediaClient) -> GCKRequest? {
         nil
     }

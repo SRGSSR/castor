@@ -23,6 +23,10 @@ final class RepeatModeRecipe: NSObject, SynchronizerRecipe, GCKRemoteMediaClient
         CastRepeatMode(rawMode: status.queueRepeatMode) ?? .off
     }
 
+    func canMakeRequest(using requester: GCKRemoteMediaClient) -> Bool {
+        requester.canMakeRequest()
+    }
+
     func makeRequest(for value: CastRepeatMode, using requester: GCKRemoteMediaClient) -> GCKRequest? {
         requester.queueSetRepeatMode(value.rawMode())
     }

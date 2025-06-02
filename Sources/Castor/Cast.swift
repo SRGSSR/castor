@@ -66,12 +66,17 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        _synchronizedVolume.isConnected ? 0...1 : 0...0
+        canAdjustVolume ? 0...1 : 0...0
     }
 
-    /// A Boolean indicating whether the volume/mute can be adjusted.
+    /// A Boolean indicating whether the volume can be adjusted.
     public var canAdjustVolume: Bool {
-        currentSession?.canRequest == true
+        _synchronizedVolume.canMakeRequest()
+    }
+
+    /// A Boolean indicating whether the device can be muted.
+    public var canMute: Bool {
+        _synchronizedIsMuted.canMakeRequest()
     }
 
     /// The current device.

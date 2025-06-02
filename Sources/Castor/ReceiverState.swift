@@ -33,10 +33,6 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     private weak var currentRequest: GCKRequest?
     private var pendingValue: Recipe.Value?
 
-    var isConnected: Bool {
-        service?.isConnected == true
-    }
-
     private weak var enclosingInstance: Instance?
 
     @Published private var value: Recipe.Value {
@@ -77,13 +73,12 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
     }
 
     func requestUpdate(to value: Recipe.Value) {
-        guard isConnected, self.value != value else { return }
-        self.value = value
-
+        guard canMakeRequest(), self.value != value else { return }
         if currentRequest == nil {
             currentRequest = makeRequest(to: value)
         }
         else {
+            self.value = value
             pendingValue = value
         }
     }
@@ -93,6 +88,12 @@ final class _ReceiverState<Instance, Recipe>: NSObject, GCKRequestDelegate where
         value = recipe.value(from: status, defaultValue: Recipe.defaultValue)
     }
 
+    func canMakeRequest() -> Bool {
+        guard let recipe, let requester = recipe.service.requester else { return false }
+        return recipe.canMakeRequest(using: requester)
+    }
+
+    // TODO: Should probably be static, with recipe as parameter and self.value/delegate set by the caller.
     private func makeRequest(to value: Recipe.Value) -> GCKRequest? {
         guard let recipe,
               let requester = recipe.service.requester,
