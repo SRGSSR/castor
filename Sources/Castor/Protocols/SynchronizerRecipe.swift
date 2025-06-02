@@ -16,6 +16,8 @@ protocol SynchronizerRecipe: AnyObject {
     static var defaultValue: Value { get }
 
     var service: Service { get }
+
+    // TODO: Is this really needed now???
     var requester: Requester? { get }
 
     init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
