@@ -71,7 +71,7 @@ public final class Cast: NSObject, ObservableObject {
 
     /// A Boolean indicating whether the volume/mute can be adjusted.
     public var canAdjustVolume: Bool {
-        _synchronizedVolume.isConnected
+        currentSession?.canRequest == true
     }
 
     /// The current device.

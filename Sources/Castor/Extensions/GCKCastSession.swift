@@ -8,6 +8,6 @@ import GoogleCast
 
 extension GCKCastSession: ReceiverRequester {
     var canRequest: Bool {
-        device.hasCapabilities(.masterOrFixedVolume)
+        traits?.isFixedVolume() == false
     }
 }
