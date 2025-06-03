@@ -27,20 +27,22 @@ final class TargetSeekRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaStatus
     }
 
+    // TODO: This feels out of place
     static func value(from status: GCKMediaStatus) -> CMTime? {
         nil
     }
 
-    func canMakeRequest(using service: GCKRemoteMediaClient) -> Bool {
-        service.canMakeRequest()
+    func requester(for service: GCKRemoteMediaClient) -> GCKRemoteMediaClient? {
+        service.canMakeRequest() ? service : nil
     }
 
-    func makeRequest(for value: CMTime?, using service: GCKRemoteMediaClient) {
+
+    func makeRequest(for value: CMTime?, using requester: GCKRemoteMediaClient) {
         let options = GCKMediaSeekOptions()
         if let value {
             options.interval = value.seconds
         }
-        let request = service.seek(with: options)
+        let request = requester.seek(with: options)
         request.delegate = self
     }
 }

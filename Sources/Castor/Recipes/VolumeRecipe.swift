@@ -31,15 +31,14 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
         status.volume
     }
 
-    func canMakeRequest(using service: GCKSessionManager) -> Bool {
-        service.currentCastSession?.traits?.isFixedVolume() == false
+    func requester(for service: GCKSessionManager) -> GCKCastSession? {
+        guard let session = service.currentCastSession else { return nil }
+        return session.isFixedVolume() ? session : nil
     }
 
-    func makeRequest(for value: Float, using service: GCKSessionManager) {
-        if let session = service.currentCastSession {
-            let request = session.setDeviceVolume(value)
-            request.delegate = self
-        }
+    func makeRequest(for value: Float, using requester: GCKCastSession) {
+        let request = requester.setDeviceVolume(value)
+        request.delegate = self
     }
 }
 

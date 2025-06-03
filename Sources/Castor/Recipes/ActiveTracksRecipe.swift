@@ -30,12 +30,12 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
         Self.activeTracks(from: status)
     }
 
-    func canMakeRequest(using service: GCKRemoteMediaClient) -> Bool {
-        service.canMakeRequest()
+    func requester(for service: GCKRemoteMediaClient) -> GCKRemoteMediaClient? {
+        service.canMakeRequest() ? service : nil
     }
 
-    func makeRequest(for value: [CastMediaTrack], using service: GCKRemoteMediaClient) {
-        let request = service.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
+    func makeRequest(for value: [CastMediaTrack], using requester: GCKRemoteMediaClient) {
+        let request = requester.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
         request.delegate = self
     }
 

@@ -30,12 +30,12 @@ final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
         status.playerState == .playing
     }
 
-    func canMakeRequest(using service: GCKRemoteMediaClient) -> Bool {
-        service.canMakeRequest()
+    func requester(for service: GCKRemoteMediaClient) -> GCKRemoteMediaClient? {
+        service.canMakeRequest() ? service : nil
     }
-
-    func makeRequest(for value: Bool, using service: GCKRemoteMediaClient) {
-        let request = Self.request(for: value, using: service)
+    
+    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) {
+        let request = Self.request(for: value, using: requester)
         request.delegate = self
     }
 

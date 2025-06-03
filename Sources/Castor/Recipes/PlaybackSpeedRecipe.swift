@@ -30,12 +30,12 @@ final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
         status.playbackRate
     }
 
-    func canMakeRequest(using service: GCKRemoteMediaClient) -> Bool {
-        service.canMakeRequest()
+    func requester(for service: GCKRemoteMediaClient) -> GCKRemoteMediaClient? {
+        service.canMakeRequest() ? service : nil
     }
 
-    func makeRequest(for value: Float, using service: GCKRemoteMediaClient) {
-        let request = service.setPlaybackRate(value)
+    func makeRequest(for value: Float, using requester: GCKRemoteMediaClient) {
+        let request = requester.setPlaybackRate(value)
         request.delegate = self
     }
 }
