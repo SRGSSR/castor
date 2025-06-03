@@ -6,6 +6,7 @@
 
 import GoogleCast
 
+// TODO: Status? vs Status in signatures
 protocol SynchronizerRecipe: AnyObject {
     associatedtype Service
     associatedtype Requester
@@ -22,11 +23,11 @@ protocol SynchronizerRecipe: AnyObject {
 
     init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
 
-    // TODO: Could likely be static methods
-
+    // TODO: Could we merge these two methods somehow?
     static func status(from requester: Requester) -> Status?
     static func value(from status: Status) -> Value
 
+    // TODO: Maybe there is a better way to handle request availability?
     func canMakeRequest(using requester: Requester) -> Bool
     func makeRequest(for value: Value, using requester: Requester)
 }

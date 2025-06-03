@@ -9,9 +9,6 @@ import Foundation
 import GoogleCast
 import SwiftUI
 
-// TODO:
-//   - Can likely adopt the same property wrapper approach to sync current session/devices
-
 /// This object that handles everything related to Google Cast.
 public final class Cast: NSObject, ObservableObject {
     /// The package version.
@@ -32,6 +29,7 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
+    @ReceiverState(DevicesRecipe.self) private var synchronizedDevices
     @ReceiverState(CurrentDeviceRecipe.self) private var synchronizedCurrentDevice
     @ReceiverState(VolumeRecipe.self) private var synchronizedVolume
     @ReceiverState(MutedRecipe.self) private var synchronizedIsMuted
@@ -94,7 +92,9 @@ public final class Cast: NSObject, ObservableObject {
     @Published public private(set) var player: CastPlayer?
 
     /// The devices found in the local network.
-    @Published public private(set) var devices: [CastDevice]
+    public var devices: [CastDevice] {
+        synchronizedDevices
+    }
 
     /// The connection state to a device.
     @Published public private(set) var connectionState: GCKConnectionState
@@ -106,18 +106,15 @@ public final class Cast: NSObject, ObservableObject {
         self.configuration = configuration
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
-        devices = Self.devices(from: context.discoveryManager)
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
         super.init()
 
+        _synchronizedDevices.service = context.discoveryManager
         _synchronizedCurrentDevice.service = context.sessionManager
         _synchronizedVolume.service = context.sessionManager
         _synchronizedIsMuted.service = context.sessionManager
-
-        context.discoveryManager.add(self)
-        context.discoveryManager.startDiscovery()
 
         context.sessionManager.add(self)
 
@@ -145,29 +142,6 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
         currentDevice == device
-    }
-}
-
-extension Cast: GCKDiscoveryManagerListener {
-    // swiftlint:disable:next missing_docs
-    public func didInsert(_ device: GCKDevice, at index: UInt) {
-        devices.insert(device.toCastDevice(), at: Int(index))
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func didRemove(_ device: GCKDevice, at index: UInt) {
-        devices.remove(at: Int(index))
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func didUpdate(_ device: GCKDevice, at index: UInt, andMoveTo newIndex: UInt) {
-        devices.move(from: Int(index), to: Int(index))
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func didUpdate(_ device: GCKDevice, at index: UInt) {
-        devices.remove(at: Int(index))
-        devices.insert(device.toCastDevice(), at: Int(index))
     }
 }
 
@@ -208,15 +182,5 @@ extension Cast: GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-    }
-}
-
-private extension Cast {
-    static func devices(from discoveryManager: GCKDiscoveryManager) -> [CastDevice] {
-        var devices: [CastDevice] = []
-        for index in 0..<discoveryManager.deviceCount {
-            devices.append(discoveryManager.device(at: index).toCastDevice())
-        }
-        return devices
     }
 }
