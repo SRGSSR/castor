@@ -17,6 +17,7 @@ protocol MutableSynchronizerRecipe: AnyObject {
 
     var service: Service { get }
 
+    // TODO: Is there a better/safer way to handle completion?
     init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
 
     static func status(from service: Service) -> Status?
