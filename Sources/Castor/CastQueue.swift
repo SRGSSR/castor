@@ -10,7 +10,6 @@ import SwiftUI
 /// A queue managing player items.
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
-    private var rawItemCache: [GCKMediaQueueItemID: GCKMediaQueueItem] = [:]
 
     /// The items in the queue.
     ///
@@ -300,26 +299,6 @@ public extension CastQueue {
     }
 }
 
-extension CastQueue {
-    func fetch(_ item: CastPlayerItem) {
-        guard rawItem(for: item) == nil else { return }
-        remoteMediaClient.mediaQueue.item(withID: item.id)
-    }
-
-    func rawItem(for item: CastPlayerItem) -> GCKMediaQueueItem? {
-        if let rawItem = rawItemCache[item.id] {
-            return rawItem
-        }
-        else if let rawItem = remoteMediaClient.mediaQueue.item(withID: item.id, fetchIfNeeded: false) {
-            rawItemCache[item.id] = rawItem
-            return rawItem
-        }
-        else {
-            return nil
-        }
-    }
-}
-
 private extension CastQueue {
     func canMove(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
         guard items.contains(item) else { return false }
@@ -356,7 +335,7 @@ private extension CastQueue {
                     updatedItems.insert(items[associatedWith], at: offset)
                 }
                 else {
-                    updatedItems.insert(.init(id: element, queue: self), at: offset)
+                    updatedItems.insert(.init(id: element, queue: queue), at: offset)
                 }
             case let .remove(offset: offset, element: _, associatedWith: _):
                 updatedItems.remove(at: offset)
@@ -420,7 +399,7 @@ extension CastQueue: GCKMediaQueueDelegate {
         nonRequestedItems.insert(
             contentsOf: (range.lowerBound..<range.upperBound)
                 .map { index in
-                    CastPlayerItem(id: queue.itemID(at: UInt(index)), queue: self)
+                    CastPlayerItem(id: queue.itemID(at: UInt(index)), queue: queue)
                 },
             at: range.location
         )
@@ -430,22 +409,6 @@ extension CastQueue: GCKMediaQueueDelegate {
     public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
         guard !isRequesting else { return }
         nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
-    }
-
-    // swiftlint:disable:next legacy_objc_type missing_docs
-    public func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
-        let ids = itemIds(atIndexes: indexes)
-        items.forEach { item in
-            guard ids.contains(item.id) else { return }
-            item.notifyUpdate()
-        }
-    }
-
-    // swiftlint:disable:next legacy_objc_type
-    private func itemIds(atIndexes indexes: [NSNumber]) -> [GCKMediaQueueItemID] {
-        indexes.map { index in
-            remoteMediaClient.mediaQueue.itemID(at: UInt(truncating: index))
-        }
     }
 }
 
