@@ -8,7 +8,8 @@ import Combine
 import Foundation
 
 @propertyWrapper
-final class _ReceiverState<Instance, Recipe>: NSObject where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+final class ReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
+where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private var recipe: Recipe?
 
     var service: Recipe.Service? {
@@ -47,34 +48,18 @@ final class _ReceiverState<Instance, Recipe>: NSObject where Recipe: Synchronize
         $value.eraseToAnyPublisher()
     }
 
-    static subscript(
-        _enclosingInstance instance: Instance,
-        wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, Recipe.Value>,
-        storage storageKeyPath: ReferenceWritableKeyPath<Instance, _ReceiverState>
-    ) -> Recipe.Value {
-        get {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            return synchronizer.value
-        }
-        set {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            synchronizer.requestUpdate(to: newValue)
-        }
-    }
-
     @available(*, unavailable, message: "@ReceiverState can only be applied to classes")
     var wrappedValue: Recipe.Value {
-        get { fatalError() }
-        set { fatalError() }
+        get { fatalError("Not available") }
+        // swiftlint:disable:next unused_setter_value
+        set { fatalError("Not available") }
     }
 
     init(_ recipe: Recipe.Type) {
         self.value = Recipe.defaultValue
     }
 
-    func requestUpdate(to value: Recipe.Value) {
+    private func requestUpdate(to value: Recipe.Value) {
         guard canMakeRequest(), self.value != value else { return }
         if !isRequesting {
             isRequesting = true
@@ -111,8 +96,25 @@ final class _ReceiverState<Instance, Recipe>: NSObject where Recipe: Synchronize
         self.value = value
         recipe.makeRequest(for: value, using: requester)
     }
+
+    static subscript(
+        _enclosingInstance instance: Instance,
+        wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, Recipe.Value>,
+        storage storageKeyPath: ReferenceWritableKeyPath<Instance, ReceiverStatePropertyWrapper>
+    ) -> Recipe.Value {
+        get {
+            let synchronizer = instance[keyPath: storageKeyPath]
+            synchronizer.enclosingInstance = instance
+            return synchronizer.value
+        }
+        set {
+            let synchronizer = instance[keyPath: storageKeyPath]
+            synchronizer.enclosingInstance = instance
+            synchronizer.requestUpdate(to: newValue)
+        }
+    }
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias ReceiverState<Recipe: SynchronizerRecipe> = _ReceiverState<Self, Recipe>
+    typealias ReceiverState<Recipe: SynchronizerRecipe> = ReceiverStatePropertyWrapper<Self, Recipe>
 }
