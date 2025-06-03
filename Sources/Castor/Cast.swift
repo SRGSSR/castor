@@ -29,7 +29,7 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    @MutableReceiverState(DevicesRecipe.self) private var synchronizedDevices
+    @ReceiverState(DevicesRecipe.self) private var synchronizedDevices
     @MutableReceiverState(CurrentDeviceRecipe.self) private var synchronizedCurrentDevice
     @MutableReceiverState(VolumeRecipe.self) private var synchronizedVolume
     @MutableReceiverState(MutedRecipe.self) private var synchronizedIsMuted
