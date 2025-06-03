@@ -31,8 +31,6 @@ public final class CastQueue: NSObject, ObservableObject {
     /// The current item.
     ///
     /// Stops playback if set to `nil`.
-    ///
-    /// > Important: On iOS 18.3 and below use `currentItemSelection` to manage selection in a `List`.
     public var currentItem: CastPlayerItem? {
         get {
             items.first { $0.id == synchronizedCurrentItemId }
@@ -60,7 +58,8 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var canRequest = true
 
-    @ReceiverState(CurrentItemRecipe.self) private var synchronizedCurrentItemId
+    @ReceiverState(CurrentItemRecipe.self)
+    private var synchronizedCurrentItemId
 
     private var nonRequestedItems: [CastPlayerItem] {
         get {
