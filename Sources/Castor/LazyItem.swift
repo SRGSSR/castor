@@ -62,5 +62,5 @@ final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate w
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias LazyItems = LazyItemPropertyWrapper<Self>
+    typealias LazyItem = LazyItemPropertyWrapper<Self>
 }
