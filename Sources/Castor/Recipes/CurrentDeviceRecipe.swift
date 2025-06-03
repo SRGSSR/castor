@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class CurrentDeviceRecipe: NSObject, SynchronizerRecipe {
+final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: CastDevice? = nil
 
     let service: GCKSessionManager

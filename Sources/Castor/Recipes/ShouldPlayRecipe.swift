@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class ShouldPlayRecipe: NSObject, SynchronizerRecipe {
+final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue = false
 
     let service: GCKRemoteMediaClient

@@ -7,7 +7,7 @@
 import CoreMedia
 import GoogleCast
 
-final class TargetSeekRecipe: NSObject, SynchronizerRecipe {
+final class TargetSeekRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: CMTime? = nil
 
     let service: GCKRemoteMediaClient

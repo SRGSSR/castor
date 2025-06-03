@@ -7,7 +7,7 @@
 import GoogleCast
 
 // TODO: Status? vs Status in signatures
-protocol SynchronizerRecipe: AnyObject {
+protocol MutableSynchronizerRecipe: AnyObject {
     associatedtype Service
     associatedtype Requester
 
@@ -32,7 +32,7 @@ protocol SynchronizerRecipe: AnyObject {
     func makeRequest(for value: Value, using requester: Requester)
 }
 
-extension SynchronizerRecipe {
+extension MutableSynchronizerRecipe {
     func value(from service: Service, defaultValue: Value) -> Value {
         guard let requester else { return defaultValue }
         return value(from: Self.status(from: requester), defaultValue: defaultValue)

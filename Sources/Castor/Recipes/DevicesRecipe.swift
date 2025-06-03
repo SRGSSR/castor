@@ -5,7 +5,7 @@
 
 import GoogleCast
 
-final class DevicesRecipe: NSObject, SynchronizerRecipe {
+final class DevicesRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: [CastDevice] = []
 
     let service: GCKDiscoveryManager

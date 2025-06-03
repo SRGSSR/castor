@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class ActiveTracksRecipe: NSObject, SynchronizerRecipe {
+final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: [CastMediaTrack] = []
 
     let service: GCKRemoteMediaClient

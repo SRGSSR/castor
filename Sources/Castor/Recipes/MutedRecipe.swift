@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class MutedRecipe: NSObject, SynchronizerRecipe {
+final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue = false
 
     let service: GCKSessionManager
