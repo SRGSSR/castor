@@ -6,9 +6,6 @@
 
 import GoogleCast
 
-// TODO: Can build a recipe for the device list. Possibly for the session as well (though in
-//       this case we just need to instantiate the player, so maybe not that useful/meaningful).
-
 final class CurrentDeviceRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: CastDevice? = nil
 
