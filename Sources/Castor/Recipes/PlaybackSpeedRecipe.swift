@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class PlaybackSpeedRecipe: NSObject, SynchronizerRecipe {
+final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: Float = 1
 
     let service: GCKRemoteMediaClient

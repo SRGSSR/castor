@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class CurrentItemRecipe: NSObject, SynchronizerRecipe {
+final class CurrentItemRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue = kGCKMediaQueueInvalidItemID
 
     let service: GCKRemoteMediaClient

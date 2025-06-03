@@ -58,7 +58,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     private var canRequest = true
 
-    @ReceiverState(CurrentItemRecipe.self)
+    @MutableReceiverState(CurrentItemRecipe.self)
     private var synchronizedCurrentItemId
 
     private var nonRequestedItems: [CastPlayerItem] {
