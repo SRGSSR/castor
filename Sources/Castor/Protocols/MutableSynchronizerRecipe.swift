@@ -6,7 +6,6 @@
 
 import GoogleCast
 
-// TODO: Status? vs Status in signatures
 protocol MutableSynchronizerRecipe: AnyObject {
     associatedtype Service
     associatedtype Requester
@@ -22,8 +21,7 @@ protocol MutableSynchronizerRecipe: AnyObject {
     var requester: Requester? { get }
 
     init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
-
-    // TODO: Could we merge these two methods somehow?
+    
     static func status(from requester: Requester) -> Status?
     static func value(from status: Status) -> Value
 
