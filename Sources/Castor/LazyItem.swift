@@ -28,6 +28,7 @@ final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate w
         self.id = id
         self.queue = queue
         super.init()
+        value = queue.item(at: id, fetchIfNeeded: false)
         queue.add(self)
     }
 
