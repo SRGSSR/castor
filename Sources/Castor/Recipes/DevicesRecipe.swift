@@ -5,13 +5,12 @@
 
 import GoogleCast
 
-final class DevicesRecipe: NSObject, MutableSynchronizerRecipe {
+final class DevicesRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: [CastDevice] = []
 
     let service: GCKDiscoveryManager
 
     private let update: ([CastDevice]) -> Void
-    private let completion: () -> Void
 
     private var devices: [CastDevice] = [] {
         didSet {
@@ -23,19 +22,18 @@ final class DevicesRecipe: NSObject, MutableSynchronizerRecipe {
         service
     }
 
-    init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]?) -> Void, completion: @escaping () -> Void) {
+    init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]?) -> Void) {
         self.service = service
         self.update = update
-        self.completion = completion
         super.init()
         service.add(self)
         service.startDiscovery()
     }
 
-    static func status(from requester: GCKDiscoveryManager) -> [CastDevice]? {
+    static func status(from service: GCKDiscoveryManager) -> [CastDevice]? {
         var devices: [CastDevice] = []
-        for index in 0..<requester.deviceCount {
-            devices.append(requester.device(at: index).toCastDevice())
+        for index in 0..<service.deviceCount {
+            devices.append(service.device(at: index).toCastDevice())
         }
         return devices
     }
@@ -43,12 +41,6 @@ final class DevicesRecipe: NSObject, MutableSynchronizerRecipe {
     static func value(from status: [CastDevice]) -> [CastDevice] {
         status
     }
-
-    func canMakeRequest(using requester: GCKDiscoveryManager) -> Bool {
-        false
-    }
-
-    func makeRequest(for value: [CastDevice], using requester: GCKDiscoveryManager) {}
 }
 
 extension DevicesRecipe: GCKDiscoveryManagerListener {

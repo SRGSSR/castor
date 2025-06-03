@@ -14,7 +14,7 @@ import SwiftUI
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    @MutableReceiverState(MediaStatusRecipe.self) private var synchronizedMediaStatus
+    @ReceiverState(MediaStatusRecipe.self) private var synchronizedMediaStatus
     @MutableReceiverState(ShouldPlayRecipe.self) private var synchronizedShouldPlay
     @MutableReceiverState(RepeatModeRecipe.self) private var synchronizedRepeatMode
     @MutableReceiverState(PlaybackSpeedRecipe.self) private var synchronizedPlaybackSpeed
