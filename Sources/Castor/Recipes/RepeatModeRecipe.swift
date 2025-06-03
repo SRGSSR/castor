@@ -30,12 +30,12 @@ final class RepeatModeRecipe: NSObject, MutableSynchronizerRecipe {
         CastRepeatMode(rawMode: status.queueRepeatMode) ?? .off
     }
 
-    func canMakeRequest(using service: GCKRemoteMediaClient) -> Bool {
-        service.canMakeRequest()
+    func requester(for service: GCKRemoteMediaClient) -> GCKRemoteMediaClient? {
+        service.canMakeRequest() ? service : nil
     }
 
-    func makeRequest(for value: CastRepeatMode, using service: GCKRemoteMediaClient) {
-        let request = service.queueSetRepeatMode(value.rawMode())
+    func makeRequest(for value: CastRepeatMode, using requester: GCKRemoteMediaClient) {
+        let request = requester.queueSetRepeatMode(value.rawMode())
         request.delegate = self
     }
 }

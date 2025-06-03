@@ -32,18 +32,22 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
         session.device.toCastDevice()
     }
 
-    func makeRequest(for value: CastDevice?, using service: GCKSessionManager) {
+    func requester(for service: GCKSessionManager) -> GCKSessionManager? {
+        service
+    }
+
+    func makeRequest(for value: CastDevice?, using requester: GCKSessionManager) {
         if let value {
-            if service.hasConnectedSession() {
+            if requester.hasConnectedSession() {
                 targetDevice = value
-                service.endSession()
+                requester.endSession()
             }
             else {
-                service.startSession(with: value.rawDevice)
+                requester.startSession(with: value.rawDevice)
             }
         }
         else {
-            service.endSession()
+            requester.endSession()
         }
     }
 }

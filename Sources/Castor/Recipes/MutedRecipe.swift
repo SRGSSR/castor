@@ -31,15 +31,14 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         status.isMuted
     }
 
-    func canMakeRequest(using service: GCKSessionManager) -> Bool {
-        service.currentCastSession?.traits?.supportsMuting == true
+    func requester(for service: GCKSessionManager) -> GCKCastSession? {
+        guard let session = service.currentCastSession else { return nil }
+        return session.supportsMuting() ? session : nil
     }
 
-    func makeRequest(for value: Bool, using service: GCKSessionManager) {
-        if let session = service.currentCastSession {
-            let request = session.setDeviceMuted(value)
-            request.delegate = self
-        }
+    func makeRequest(for value: Bool, using requester: GCKCastSession) {
+        let request = requester.setDeviceMuted(value)
+        request.delegate = self
     }
 }
 

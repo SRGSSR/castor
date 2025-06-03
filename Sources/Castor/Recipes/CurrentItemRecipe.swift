@@ -35,12 +35,12 @@ final class CurrentItemRecipe: NSObject, MutableSynchronizerRecipe {
         }
     }
 
-    func canMakeRequest(using service: GCKRemoteMediaClient) -> Bool {
-        service.canMakeRequest()
+    func requester(for service: GCKRemoteMediaClient) -> GCKRemoteMediaClient? {
+        service.canMakeRequest() ? service : nil
     }
 
-    func makeRequest(for value: GCKMediaQueueItemID, using service: GCKRemoteMediaClient) {
-        let request = service.queueJumpToItem(withID: value)
+    func makeRequest(for value: GCKMediaQueueItemID, using requester: GCKRemoteMediaClient) {
+        let request = requester.queueJumpToItem(withID: value)
         request.delegate = self
     }
 }

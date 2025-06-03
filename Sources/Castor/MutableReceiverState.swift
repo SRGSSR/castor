@@ -60,10 +60,11 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
     }
 
     private func requestUpdate(to value: Recipe.Value) {
-        guard canMakeRequest(), self.value != value else { return }
+        guard self.value != value, let recipe, let requester = recipe.requester() else { return }
         if !isRequesting {
             isRequesting = true
-            makeRequest(to: value)
+            self.value = value
+            recipe.makeRequest(for: value, using: requester)
         }
         else {
             self.value = value
@@ -78,7 +79,10 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
 
     private func completion() {
         if let pendingValue {
-            makeRequest(to: pendingValue)
+            if let recipe, let requester = recipe.requester() {
+                self.value = pendingValue
+                recipe.makeRequest(for: pendingValue, using: requester)
+            }
             self.pendingValue = nil
         }
         else {
@@ -87,14 +91,7 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
     }
 
     func canMakeRequest() -> Bool {
-        guard let recipe else { return false }
-        return recipe.canMakeRequest(using: recipe.service)
-    }
-
-    private func makeRequest(to value: Recipe.Value) {
-        guard let recipe else { return }
-        self.value = value
-        recipe.makeRequest(for: value, using: recipe.service)
+        recipe?.requester() != nil
     }
 
     static subscript(
