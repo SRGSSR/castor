@@ -35,6 +35,10 @@ public final class CastPlayerItem: ObservableObject {
     public func fetch() {
         _item.fetch()
     }
+
+    deinit {
+        _item.release()
+    }
 }
 
 extension CastPlayerItem: Hashable {
