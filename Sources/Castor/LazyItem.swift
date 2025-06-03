@@ -55,6 +55,10 @@ final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate w
         }
     }
 
+    func release() {
+        queue.remove(self)
+    }
+
     func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
         if let item = queue.item(withID: id, fetchIfNeeded: false) {
             value = item
