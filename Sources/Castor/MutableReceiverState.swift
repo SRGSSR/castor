@@ -87,14 +87,14 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
     }
 
     func canMakeRequest() -> Bool {
-        guard let recipe, let requester = recipe.requester else { return false }
-        return recipe.canMakeRequest(using: requester)
+        guard let recipe else { return false }
+        return recipe.canMakeRequest(using: recipe.service)
     }
 
     private func makeRequest(to value: Recipe.Value) {
-        guard let recipe, let requester = recipe.requester else { return }
+        guard let recipe else { return }
         self.value = value
-        recipe.makeRequest(for: value, using: requester)
+        recipe.makeRequest(for: value, using: recipe.service)
     }
 
     static subscript(

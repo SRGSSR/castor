@@ -8,7 +8,6 @@ import GoogleCast
 
 protocol MutableSynchronizerRecipe: AnyObject {
     associatedtype Service
-    associatedtype Requester
 
     associatedtype Status
     associatedtype Value: Equatable
@@ -17,23 +16,25 @@ protocol MutableSynchronizerRecipe: AnyObject {
 
     var service: Service { get }
 
-    // TODO: Is this really needed now???
-    var requester: Requester? { get }
-
     init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
-    
-    static func status(from requester: Requester) -> Status?
+
+    static func status(from service: Service) -> Status?
     static func value(from status: Status) -> Value
 
     // TODO: Maybe there is a better way to handle request availability?
-    func canMakeRequest(using requester: Requester) -> Bool
-    func makeRequest(for value: Value, using requester: Requester)
+    func canMakeRequest(using service: Service) -> Bool
+    func makeRequest(for value: Value, using service: Service)
+}
+
+extension MutableSynchronizerRecipe {
+    func canMakeRequest(using requester: GCKSessionManager) -> Bool {
+        true
+    }
 }
 
 extension MutableSynchronizerRecipe {
     func value(from service: Service, defaultValue: Value) -> Value {
-        guard let requester else { return defaultValue }
-        return value(from: Self.status(from: requester), defaultValue: defaultValue)
+        return value(from: Self.status(from: service), defaultValue: defaultValue)
     }
 
     func value(from status: Status?, defaultValue: Value) -> Value {

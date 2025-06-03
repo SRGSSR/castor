@@ -14,10 +14,6 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
     private let update: (DeviceSettings?) -> Void
     private let completion: () -> Void
 
-    var requester: GCKCastSession? {
-        service.currentCastSession
-    }
-
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
@@ -26,21 +22,24 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         service.add(self)
     }
 
-    static func status(from requester: GCKCastSession) -> DeviceSettings? {
-        .init(volume: requester.currentDeviceVolume, isMuted: requester.currentDeviceMuted)
+    static func status(from service: GCKSessionManager) -> DeviceSettings? {
+        guard let session = service.currentCastSession else { return nil }
+        return .init(volume: session.currentDeviceVolume, isMuted: session.currentDeviceMuted)
     }
 
     static func value(from status: DeviceSettings) -> Bool {
         status.isMuted
     }
 
-    func canMakeRequest(using requester: GCKCastSession) -> Bool {
-        requester.traits?.supportsMuting == true
+    func canMakeRequest(using service: GCKSessionManager) -> Bool {
+        service.currentCastSession?.traits?.supportsMuting == true
     }
 
-    func makeRequest(for value: Bool, using requester: GCKCastSession) {
-        let request = requester.setDeviceMuted(value)
-        request.delegate = self
+    func makeRequest(for value: Bool, using service: GCKSessionManager) {
+        if let session = service.currentCastSession {
+            let request = session.setDeviceMuted(value)
+            request.delegate = self
+        }
     }
 }
 
