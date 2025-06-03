@@ -14,10 +14,6 @@ final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
     private let update: (GCKMediaStatus?) -> Void
     private let completion: () -> Void
 
-    var requester: GCKRemoteMediaClient? {
-        service
-    }
-
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
@@ -26,20 +22,20 @@ final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
         service.add(self)
     }
 
-    static func status(from requester: GCKRemoteMediaClient) -> GCKMediaStatus? {
-        requester.mediaStatus
+    static func status(from service: GCKRemoteMediaClient) -> GCKMediaStatus? {
+        service.mediaStatus
     }
 
     static func value(from status: GCKMediaStatus) -> Float {
         status.playbackRate
     }
 
-    func canMakeRequest(using requester: GCKRemoteMediaClient) -> Bool {
-        requester.canMakeRequest()
+    func canMakeRequest(using service: GCKRemoteMediaClient) -> Bool {
+        service.canMakeRequest()
     }
 
-    func makeRequest(for value: Float, using requester: GCKRemoteMediaClient) {
-        let request = requester.setPlaybackRate(value)
+    func makeRequest(for value: Float, using service: GCKRemoteMediaClient) {
+        let request = service.setPlaybackRate(value)
         request.delegate = self
     }
 }
