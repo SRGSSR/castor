@@ -6,7 +6,6 @@
 
 import GoogleCast
 
-// TODO: Status? vs Status in signatures
 protocol SynchronizerRecipe: AnyObject {
     associatedtype Service
 
@@ -19,7 +18,6 @@ protocol SynchronizerRecipe: AnyObject {
 
     init(service: Service, update: @escaping (Status?) -> Void)
 
-    // TODO: Could we merge these two methods somehow?
     static func status(from service: Service) -> Status?
     static func value(from status: Status) -> Value
 }
