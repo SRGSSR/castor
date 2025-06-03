@@ -10,10 +10,6 @@ import CoreMedia
 import GoogleCast
 import SwiftUI
 
-// TODO:
-//   - Can likely adopt the same property wrapper approach to sync item list. Would need recipe to declare the number
-//     of requests, add to the count and track when it goes to 0
-
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
