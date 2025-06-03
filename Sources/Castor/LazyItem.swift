@@ -44,6 +44,7 @@ final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate w
         set {}
     }
 
+    // TODO: Maybe we can refresh the cache now with each fetch.
     func fetch() {
         guard value == nil else { return }
         if let item = queue.item(withID: id, fetchIfNeeded: false) {
