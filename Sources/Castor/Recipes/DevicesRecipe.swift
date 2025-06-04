@@ -18,10 +18,6 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
         }
     }
 
-    var requester: GCKDiscoveryManager? {
-        service
-    }
-
     init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]?) -> Void) {
         self.service = service
         self.update = update
@@ -36,11 +32,6 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
             devices.append(service.device(at: index).toCastDevice())
         }
         return devices
-    }
-
-    // TODO: Feels a bit awkward. Could maybe have a default implementation if value and status types match
-    static func value(from status: [CastDevice]) -> [CastDevice] {
-        status
     }
 }
 

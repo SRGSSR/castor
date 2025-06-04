@@ -22,6 +22,18 @@ protocol SynchronizerRecipe: AnyObject {
     static func value(from status: Status) -> Value
 }
 
+extension SynchronizerRecipe where Status == Value {
+    static func value(from status: Status) -> Value {
+        status
+    }
+}
+
+extension SynchronizerRecipe where Optional<Status> == Value {
+    static func value(from status: Status) -> Value {
+        status
+    }
+}
+
 extension SynchronizerRecipe {
     func value(from service: Service, defaultValue: Value) -> Value {
         value(from: Self.status(from: service), defaultValue: defaultValue)

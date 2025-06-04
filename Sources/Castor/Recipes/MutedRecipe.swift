@@ -27,6 +27,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         service.add(self)
     }
 
+    // TODO: Can likely extract muted directly
     static func status(from service: GCKSessionManager) -> DeviceSettings? {
         guard let session = service.currentCastSession else { return nil }
         return .init(volume: session.currentDeviceVolume, isMuted: session.currentDeviceMuted)
