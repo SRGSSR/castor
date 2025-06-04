@@ -11,6 +11,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
 
     let service: GCKSessionManager
 
+    // swiftlint:disable:next discouraged_optional_boolean
     private let update: (Bool?) -> Void
     private let completion: () -> Void
 
@@ -19,6 +20,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         return session.supportsMuting() ? session : nil
     }
 
+    // swiftlint:disable:next discouraged_optional_boolean
     init(service: GCKSessionManager, update: @escaping (Bool?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
@@ -27,6 +29,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         service.add(self)
     }
 
+    // swiftlint:disable:next discouraged_optional_boolean
     static func status(from service: GCKSessionManager) -> Bool? {
         service.currentCastSession?.currentDeviceMuted
     }

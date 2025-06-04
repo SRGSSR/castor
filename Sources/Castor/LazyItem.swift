@@ -8,7 +8,8 @@ import Combine
 import GoogleCast
 
 @propertyWrapper
-final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate
+where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let id: GCKMediaQueueItemID
     private let queue: GCKMediaQueue
     private weak var enclosingInstance: Instance?
@@ -32,6 +33,23 @@ final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate w
         queue.add(self)
     }
 
+    func fetch() {
+        queue.item(withID: id)
+    }
+
+    func release() {
+        queue.remove(self)
+    }
+
+    // swiftlint:disable:next legacy_objc_type
+    func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
+        // swiftlint:disable:next legacy_objc_type
+        let index = NSNumber(value: queue.indexOfItem(withID: id))
+        if indexes.contains(index), let item = queue.item(withID: id, fetchIfNeeded: false) {
+            value = item
+        }
+    }
+
     static subscript(
         _enclosingInstance instance: Instance,
         wrapped wrappedKeyPath: KeyPath<Instance, GCKMediaQueueItem?>,
@@ -42,22 +60,8 @@ final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate w
             wrapper.enclosingInstance = instance
             return wrapper.value
         }
+        // swiftlint:disable:next unused_setter_value
         set {}
-    }
-
-    func fetch() {
-        queue.item(withID: id)
-    }
-
-    func release() {
-        queue.remove(self)
-    }
-
-    func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
-        let index = NSNumber(value: queue.indexOfItem(withID: id))
-        if indexes.contains(index), let item = queue.item(withID: id, fetchIfNeeded: false) {
-            value = item
-        }
     }
 }
 
