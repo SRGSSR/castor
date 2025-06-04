@@ -10,7 +10,7 @@ import Foundation
 @propertyWrapper
 final class ReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
 where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    private var recipe: Recipe?
+    private(set) var recipe: Recipe?
 
     var service: Recipe.Service? {
         get {
