@@ -16,21 +16,15 @@ protocol MutableSynchronizerRecipe: AnyObject {
     static var defaultValue: Value { get }
 
     var service: Service { get }
+    var requester: Requester? { get }
 
     // TODO: Is there a better/safer way to handle completion?
     init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
 
     static func status(from service: Service) -> Status?
     static func value(from status: Status) -> Value
-
-    func requester(for service: Service) -> Requester?
+    
     func makeRequest(for value: Value, using requester: Requester)
-}
-
-extension MutableSynchronizerRecipe {
-    func requester() -> Requester? {
-        requester(for: service)
-    }
 }
 
 extension MutableSynchronizerRecipe {
