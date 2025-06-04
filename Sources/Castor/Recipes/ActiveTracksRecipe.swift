@@ -34,17 +34,18 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
         Self.activeTracks(from: status)
     }
 
-    func makeRequest(for value: [CastMediaTrack], using requester: GCKRemoteMediaClient) {
-        let request = requester.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
-        request.delegate = self
-    }
-
     private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
         guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
             return []
         }
         // swiftlint:disable:next legacy_objc_type
         return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
+    }
+
+    func makeRequest(for value: [CastMediaTrack], using requester: GCKRemoteMediaClient) {
+        // swiftlint:disable:next legacy_objc_type
+        let request = requester.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
+        request.delegate = self
     }
 }
 

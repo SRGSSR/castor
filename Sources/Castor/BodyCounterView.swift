@@ -7,22 +7,6 @@
 import SwiftUI
 import UIKit
 
-private struct BodyCounterView: UIViewRepresentable {
-    let color: UIColor
-
-    private let id = UUID()         // Force view updates
-
-    func makeUIView(context: Context) -> _BodyCounterView {
-        let view = _BodyCounterView()
-        view.color = color
-        return view
-    }
-
-    func updateUIView(_ uiView: _BodyCounterView, context: Context) {
-        uiView.count += 1
-    }
-}
-
 private class _BodyCounterView: UIView {
     private var label = UILabel()
 
@@ -63,6 +47,22 @@ private class _BodyCounterView: UIView {
             label.topAnchor.constraint(equalTo: topAnchor),
             label.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
+    }
+}
+
+private struct BodyCounterView: UIViewRepresentable {
+    let color: UIColor
+
+    private let id = UUID()         // Force view updates
+
+    func makeUIView(context: Context) -> _BodyCounterView {
+        let view = _BodyCounterView()
+        view.color = color
+        return view
+    }
+
+    func updateUIView(_ uiView: _BodyCounterView, context: Context) {
+        uiView.count += 1
     }
 }
 

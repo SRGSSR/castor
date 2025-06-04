@@ -33,11 +33,6 @@ final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
     static func value(from status: GCKMediaStatus) -> Bool {
         status.playerState == .playing
     }
-    
-    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) {
-        let request = Self.request(for: value, using: requester)
-        request.delegate = self
-    }
 
     private static func request(for value: Bool, using requester: GCKRemoteMediaClient) -> GCKRequest {
         if value {
@@ -46,6 +41,11 @@ final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
         else {
             return requester.pause()
         }
+    }
+
+    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) {
+        let request = Self.request(for: value, using: requester)
+        request.delegate = self
     }
 }
 
