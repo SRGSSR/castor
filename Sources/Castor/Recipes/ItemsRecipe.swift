@@ -55,7 +55,14 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
 
-        requests += 2
+        // Workaround for Google Cast SDK state consistency possibly arising when removing items from a sender while
+        // updating them from another one.
+        if requests < 2 {
+            requests = 2
+        }
+        else {
+            requests += 2
+        }
 
         let removedIds = Array(Set(previousIds).subtracting(currentIds))
         let removeRequest = service.queueRemoveItems(withIDs: removedIds)
