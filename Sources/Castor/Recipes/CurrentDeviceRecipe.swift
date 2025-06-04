@@ -16,6 +16,11 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
 
     private var targetDevice: CastDevice?
 
+    // TODO: Default implementation returns service
+    var requester: GCKSessionManager? {
+        service
+    }
+
     init(service: GCKSessionManager, update: @escaping (GCKCastSession?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
@@ -30,10 +35,6 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
 
     static func value(from session: GCKCastSession) -> CastDevice? {
         session.device.toCastDevice()
-    }
-
-    func requester(for service: GCKSessionManager) -> GCKSessionManager? {
-        service
     }
 
     func makeRequest(for value: CastDevice?, using requester: GCKSessionManager) {

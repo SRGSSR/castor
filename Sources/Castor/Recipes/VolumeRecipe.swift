@@ -14,6 +14,11 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
     private let update: (DeviceSettings?) -> Void
     private let completion: () -> Void
 
+    var requester: GCKCastSession? {
+        guard let session = service.currentCastSession else { return nil }
+        return session.isFixedVolume() ? session : nil
+    }
+
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
@@ -29,11 +34,6 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
 
     static func value(from status: DeviceSettings) -> Float {
         status.volume
-    }
-
-    func requester(for service: GCKSessionManager) -> GCKCastSession? {
-        guard let session = service.currentCastSession else { return nil }
-        return session.isFixedVolume() ? session : nil
     }
 
     func makeRequest(for value: Float, using requester: GCKCastSession) {

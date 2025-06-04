@@ -15,6 +15,10 @@ final class TargetSeekRecipe: NSObject, MutableSynchronizerRecipe {
     private let update: (GCKMediaStatus?) -> Void
     private let completion: () -> Void
 
+    var requester: GCKRemoteMediaClient? {
+        service.canMakeRequest() ? service : nil
+    }
+
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
@@ -31,11 +35,6 @@ final class TargetSeekRecipe: NSObject, MutableSynchronizerRecipe {
     static func value(from status: GCKMediaStatus) -> CMTime? {
         nil
     }
-
-    func requester(for service: GCKRemoteMediaClient) -> GCKRemoteMediaClient? {
-        service.canMakeRequest() ? service : nil
-    }
-
 
     func makeRequest(for value: CMTime?, using requester: GCKRemoteMediaClient) {
         let options = GCKMediaSeekOptions()
