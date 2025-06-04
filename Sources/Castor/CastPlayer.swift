@@ -14,13 +14,25 @@ import SwiftUI
 public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
-    @ReceiverState(MediaStatusRecipe.self) private var synchronizedMediaStatus
-    @MutableReceiverState(ShouldPlayRecipe.self) private var synchronizedShouldPlay
-    @MutableReceiverState(RepeatModeRecipe.self) private var synchronizedRepeatMode
-    @MutableReceiverState(PlaybackSpeedRecipe.self) private var synchronizedPlaybackSpeed
-    @MutableReceiverState(ActiveTracksRecipe.self) private var synchronizedActiveTracks
-    @MutableReceiverState(TargetSeekRecipe.self) private var synchronizedTargetSeek
+    @ReceiverState(MediaStatusRecipe.self)
+    private var synchronizedMediaStatus
 
+    @MutableReceiverState(ShouldPlayRecipe.self)
+    private var synchronizedShouldPlay
+
+    @MutableReceiverState(RepeatModeRecipe.self)
+    private var synchronizedRepeatMode
+
+    @MutableReceiverState(PlaybackSpeedRecipe.self)
+    private var synchronizedPlaybackSpeed
+
+    @MutableReceiverState(ActiveTracksRecipe.self)
+    private var synchronizedActiveTracks
+
+    @MutableReceiverState(TargetSeekRecipe.self)
+    private var synchronizedTargetSeek
+
+    /// A Boolean value whether the player should play content when possible.
     public var shouldPlay: Bool {
         get {
             synchronizedShouldPlay
@@ -40,6 +52,10 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
     }
 
+    /// A Boolean value whether the player is active.
+    ///
+    /// Actions performed on an inactive player will usually do nothing. User interfaces should usually disable or hide
+    /// controls when a player is not active.
     public var isActive: Bool {
         remoteMediaClient.canMakeRequest()
     }

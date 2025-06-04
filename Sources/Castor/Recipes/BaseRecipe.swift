@@ -18,13 +18,13 @@ protocol BaseSynchronizerRecipe: AnyObject {
     static func value(from status: Status) -> Value
 }
 
-extension BaseSynchronizerRecipe where Status == Value {
+extension BaseSynchronizerRecipe where Value == Status {
     static func value(from status: Status) -> Value {
         status
     }
 }
 
-extension BaseSynchronizerRecipe where Optional<Status> == Value {
+extension BaseSynchronizerRecipe where Value == Status? {
     static func value(from status: Status) -> Value {
         status
     }

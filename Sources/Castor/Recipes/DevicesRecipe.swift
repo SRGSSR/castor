@@ -2,6 +2,7 @@
 //  Copyright (c) SRG SSR. All rights reserved.
 //
 //  License information is available from the LICENSE file.
+//
 
 import GoogleCast
 
@@ -18,6 +19,7 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
         }
     }
 
+    // swiftlint:disable:next discouraged_optional_collection
     init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]?) -> Void) {
         self.service = service
         self.update = update
@@ -26,6 +28,7 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
         service.startDiscovery()
     }
 
+    // swiftlint:disable:next discouraged_optional_collection
     static func status(from service: GCKDiscoveryManager) -> [CastDevice]? {
         var devices: [CastDevice] = []
         for index in 0..<service.deviceCount {

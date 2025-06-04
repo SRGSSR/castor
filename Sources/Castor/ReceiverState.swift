@@ -67,6 +67,7 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
             synchronizer.enclosingInstance = instance
             return synchronizer.value
         }
+        // swiftlint:disable:next unused_setter_value
         set {}
     }
 }
