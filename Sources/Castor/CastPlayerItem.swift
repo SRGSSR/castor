@@ -11,7 +11,7 @@ public final class CastPlayerItem: ObservableObject {
     /// The id.
     public let id: GCKMediaQueueItemID
 
-    @LazyItem private var item: GCKMediaQueueItem?
+    @LazyItem private var rawItem: GCKMediaQueueItem?
 
     // swiftlint:disable:next legacy_objc_type
     var idNumber: NSNumber {
@@ -22,22 +22,22 @@ public final class CastPlayerItem: ObservableObject {
     ///
     /// Metadata must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.
     public var metadata: CastMetadata? {
-        guard let item else { return nil }
-        return .init(rawMetadata: item.mediaInformation.metadata)
+        guard let rawItem else { return nil }
+        return .init(rawMetadata: rawItem.mediaInformation.metadata)
     }
 
     init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
         self.id = id
-        _item = .init(id: id, queue: queue)
+        _rawItem = .init(id: id, queue: queue)
     }
 
     /// Fetch complete item information from the receiver.
     public func fetch() {
-        _item.fetch()
+        _rawItem.fetch()
     }
 
     deinit {
-        _item.release()
+        _rawItem.release()
     }
 }
 
