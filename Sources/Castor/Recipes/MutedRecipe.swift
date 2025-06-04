@@ -11,7 +11,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
 
     let service: GCKSessionManager
 
-    private let update: (DeviceSettings?) -> Void
+    private let update: (Bool?) -> Void
     private let completion: () -> Void
 
     var requester: GCKCastSession? {
@@ -19,7 +19,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         return session.supportsMuting() ? session : nil
     }
 
-    init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void, completion: @escaping () -> Void) {
+    init(service: GCKSessionManager, update: @escaping (Bool?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
         self.completion = completion
@@ -27,14 +27,8 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         service.add(self)
     }
 
-    // TODO: Can likely extract muted directly
-    static func status(from service: GCKSessionManager) -> DeviceSettings? {
-        guard let session = service.currentCastSession else { return nil }
-        return .init(volume: session.currentDeviceVolume, isMuted: session.currentDeviceMuted)
-    }
-
-    static func value(from status: DeviceSettings) -> Bool {
-        status.isMuted
+    static func status(from service: GCKSessionManager) -> Bool? {
+        service.currentCastSession?.currentDeviceMuted
     }
 
     func makeRequest(for value: Bool, using requester: GCKCastSession) {
@@ -50,7 +44,7 @@ extension MutedRecipe: GCKSessionManagerListener {
         didReceiveDeviceVolume volume: Float,
         muted: Bool
     ) {
-        update(.init(volume: volume, isMuted: muted))
+        update(muted)
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
