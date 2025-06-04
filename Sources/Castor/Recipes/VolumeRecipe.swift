@@ -16,7 +16,7 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
 
     var requester: GCKCastSession? {
         guard let session = service.currentCastSession else { return nil }
-        return session.isFixedVolume() ? session : nil
+        return !session.isFixedVolume() ? session : nil
     }
 
     init(service: GCKSessionManager, update: @escaping (DeviceSettings?) -> Void, completion: @escaping () -> Void) {
