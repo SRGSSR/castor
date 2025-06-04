@@ -56,7 +56,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         // updating them from another one.
         guard !value.isEmpty else {
             service.stop()
-            completion()
+            requests = 0
             return
         }
 
