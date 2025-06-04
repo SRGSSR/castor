@@ -11,6 +11,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
 
     let service: GCKRemoteMediaClient
 
+    // swiftlint:disable:next discouraged_optional_collection
     private let update: ([CastPlayerItem]?) -> Void
     private let completion: () -> Void
 
@@ -36,6 +37,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         service.canMakeRequest() ? service : nil
     }
 
+    // swiftlint:disable:next discouraged_optional_collection
     init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]?) -> Void, completion: @escaping () -> Void) {
         self.service = service
         self.update = update
@@ -44,10 +46,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaQueue.add(self)          // The delegate is retained
     }
 
-    func release() {
-        service.mediaQueue.remove(self)
-    }
-
+    // swiftlint:disable:next discouraged_optional_collection
     static func status(from service: GCKRemoteMediaClient) -> [CastPlayerItem]? {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
@@ -74,6 +73,10 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
             insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
         )
         reorderRequest.delegate = self
+    }
+
+    func release() {
+        service.mediaQueue.remove(self)
     }
 }
 
