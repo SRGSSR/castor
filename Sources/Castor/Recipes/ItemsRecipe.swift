@@ -24,8 +24,8 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     private var requests = 0 {
         didSet {
             guard requests == 0, oldValue != 0 else { return }
-            items = items(items, merging: service.mediaQueue)
             completion()
+            items = items(items, merging: service.mediaQueue)
         }
     }
 
