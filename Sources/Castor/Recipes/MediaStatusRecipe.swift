@@ -13,10 +13,6 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe {
 
     private let update: (GCKMediaStatus?) -> Void
 
-    var requester: GCKRemoteMediaClient? {
-        service
-    }
-
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
         self.update = update
@@ -26,10 +22,6 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe {
 
     static func status(from service: GCKRemoteMediaClient) -> GCKMediaStatus? {
         service.mediaStatus
-    }
-
-    static func value(from status: GCKMediaStatus) -> GCKMediaStatus? {
-        status
     }
 }
 

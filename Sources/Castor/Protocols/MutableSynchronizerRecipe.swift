@@ -6,6 +6,7 @@
 
 import GoogleCast
 
+// TODO: Inherit from SynchronizerRecipe
 protocol MutableSynchronizerRecipe: AnyObject {
     associatedtype Service
     associatedtype Requester
@@ -25,6 +26,12 @@ protocol MutableSynchronizerRecipe: AnyObject {
     static func value(from status: Status) -> Value
     
     func makeRequest(for value: Value, using requester: Requester)
+}
+
+extension MutableSynchronizerRecipe where Service == Requester {
+    var requester: Requester? {
+        service
+    }
 }
 
 extension MutableSynchronizerRecipe {
