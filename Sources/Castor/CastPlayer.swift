@@ -82,10 +82,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         _synchronizedActiveTracks.service = remoteMediaClient
         _synchronizedTargetSeek.service = remoteMediaClient
     }
-
-    deinit {
-        queue.release()
-    }
 }
 
 public extension CastPlayer {

@@ -12,13 +12,12 @@ public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     /// The items in the queue.
-    ///
-    /// > Warning: Avoid making significant changes to the item list by mutating this property, as each change will
-    ///   be performed asynchronously on the receiver.
-    @Published public var items: [CastPlayerItem] = [] {
-        didSet {
-            guard canRequest else { return }
-            requestUpdates(from: oldValue, to: items)
+    public var items: [CastPlayerItem] {
+        get {
+            synchronizedItems
+        }
+        set {
+            synchronizedItems = newValue
         }
     }
 
@@ -44,42 +43,21 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
-    private var canRequest = true
+    @MutableReceiverState(ItemsRecipe.self)
+    private var synchronizedItems
 
     @MutableReceiverState(CurrentItemRecipe.self)
     private var synchronizedCurrentItemId
 
-    private var nonRequestedItems: [CastPlayerItem] {
-        get {
-            items
-        }
-        set {
-            canRequest = false
-            items = newValue
-            canRequest = true
-        }
-    }
-
-    private var requests = 0 {
-        didSet {
-            guard requests == 0, oldValue != 0 else { return }
-            nonRequestedItems = items(items, merging: remoteMediaClient.mediaQueue)
-        }
-    }
-
-    private var isRequesting: Bool {
-        requests != 0
-    }
-
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
         super.init()
+        _synchronizedItems.service = remoteMediaClient
         _synchronizedCurrentItemId.service = remoteMediaClient
-        remoteMediaClient.mediaQueue.add(self)          // The delegate is retained
     }
 
-    func release() {
-        remoteMediaClient.mediaQueue.remove(self)
+    deinit {
+        _synchronizedItems.recipe?.release()
     }
 }
 
@@ -315,26 +293,6 @@ private extension CastQueue {
 }
 
 private extension CastQueue {
-    func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
-        var updatedItems = items
-        queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
-            switch change {
-            case let .insert(offset: offset, element: element, associatedWith: associatedWith):
-                if let associatedWith {
-                    updatedItems.insert(items[associatedWith], at: offset)
-                }
-                else {
-                    updatedItems.insert(.init(id: element, queue: queue), at: offset)
-                }
-            case let .remove(offset: offset, element: _, associatedWith: _):
-                updatedItems.remove(at: offset)
-            }
-        }
-        return updatedItems
-    }
-}
-
-private extension CastQueue {
     static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
         guard let itemIndex = items.firstIndex(of: item) else { return nil }
         let nextIndex = items.index(after: itemIndex)
@@ -346,74 +304,5 @@ private extension CastQueue {
             return nil
         }
         return items.index(before: itemIndex)
-    }
-}
-
-private extension CastQueue {
-    func requestUpdates(from previousItems: [CastPlayerItem], to currentItems: [CastPlayerItem]) {
-        // Workaround for Google Cast SDK state consistency possibly arising when removing items from a sender while
-        // updating them from another one.
-        guard !currentItems.isEmpty else {
-            remoteMediaClient.stop()
-            return
-        }
-
-        let previousIds = previousItems.map(\.idNumber)
-        let currentIds = currentItems.map(\.idNumber)
-
-        requests += 2
-
-        let removedIds = Array(Set(previousIds).subtracting(currentIds))
-        let removeRequest = remoteMediaClient.queueRemoveItems(withIDs: removedIds)
-        removeRequest.delegate = self
-
-        let reorderRequest = remoteMediaClient.queueReorderItems(
-            withIDs: currentIds,
-            insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
-        )
-        reorderRequest.delegate = self
-    }
-}
-
-extension CastQueue: GCKMediaQueueDelegate {
-    // swiftlint:disable:next missing_docs
-    public func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
-        guard !isRequesting else { return }
-        nonRequestedItems = items(items, merging: queue)
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func mediaQueue(_ queue: GCKMediaQueue, didInsertItemsIn range: NSRange) {
-        guard !isRequesting else { return }
-        nonRequestedItems.insert(
-            contentsOf: (range.lowerBound..<range.upperBound)
-                .map { index in
-                    CastPlayerItem(id: queue.itemID(at: UInt(index)), queue: queue)
-                },
-            at: range.location
-        )
-    }
-
-    // swiftlint:disable:next legacy_objc_type missing_docs
-    public func mediaQueue(_ queue: GCKMediaQueue, didRemoveItemsAtIndexes indexes: [NSNumber]) {
-        guard !isRequesting else { return }
-        nonRequestedItems.remove(atOffsets: IndexSet(indexes.map(\.intValue)))
-    }
-}
-
-extension CastQueue: GCKRequestDelegate {
-    // swiftlint:disable:next missing_docs
-    public func requestDidComplete(_ request: GCKRequest) {
-        requests -= 1
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        requests -= 1
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        requests -= 1
     }
 }
