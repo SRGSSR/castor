@@ -52,14 +52,6 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     func makeRequest(for value: [CastPlayerItem], using requester: GCKRemoteMediaClient) {
-        // Workaround for Google Cast SDK state consistency possibly arising when removing items from a sender while
-        // updating them from another one.
-        guard !value.isEmpty else {
-            service.stop()
-            requests = 0
-            return
-        }
-
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
 
