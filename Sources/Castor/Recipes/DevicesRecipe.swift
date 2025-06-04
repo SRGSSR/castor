@@ -38,6 +38,7 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
         return devices
     }
 
+    // TODO: Feels a bit awkward. Could maybe have a default implementation if value and status types match
     static func value(from status: [CastDevice]) -> [CastDevice] {
         status
     }
