@@ -44,17 +44,6 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
-    /// A binding to the current item, for use as `List` selection.
-    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentItem instead")
-    public var currentItemSelection: Binding<CastPlayerItem?> {
-        .init { [weak self] in
-            self?.currentItem
-        } set: { [weak self] item in
-            guard let self, let item else { return }
-            currentItem = item
-        }
-    }
-
     private var canRequest = true
 
     @MutableReceiverState(CurrentItemRecipe.self)
