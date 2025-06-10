@@ -12,14 +12,6 @@ final class ReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
 where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private(set) var recipe: Recipe?
 
-    func attach(to service: Recipe.Service) {
-        let recipe = Recipe(service: service) { [weak self] status in
-            self?.update(with: status)
-        }
-        self.recipe = recipe
-        value = recipe.value(from: service, defaultValue: Recipe.defaultValue)
-    }
-
     private weak var enclosingInstance: Instance?
 
     @Published private var value: Recipe.Value {
@@ -39,6 +31,14 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
 
     init(_ recipe: Recipe.Type) {
         self.value = Recipe.defaultValue
+    }
+
+    func attach(to service: Recipe.Service) {
+        let recipe = Recipe(service: service) { [weak self] status in
+            self?.update(with: status)
+        }
+        self.recipe = recipe
+        value = recipe.value(from: service, defaultValue: Recipe.defaultValue)
     }
 
     private func update(with status: Recipe.Status?) {

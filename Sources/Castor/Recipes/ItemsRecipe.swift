@@ -51,7 +51,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
 
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
-        
+
         requests += 2
 
         let removedIds = Array(Set(previousIds).subtracting(currentIds))
