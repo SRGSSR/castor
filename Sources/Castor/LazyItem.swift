@@ -30,7 +30,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         self.queue = queue
         super.init()
         value = queue.item(at: id, fetchIfNeeded: false)
-        queue.add(MediaQueueDelegate(wrapped: self, queue: queue))
+        queue.add(self)
     }
 
     func fetch() {

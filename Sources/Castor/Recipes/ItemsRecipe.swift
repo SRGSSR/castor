@@ -38,7 +38,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         self.update = update
         self.completion = completion
         super.init()
-        service.mediaQueue.add(MediaQueueDelegate(wrapped: self, queue: service.mediaQueue))          // The delegate is retained
+        service.mediaQueue.add(self)
     }
 
     // swiftlint:disable:next discouraged_optional_collection
