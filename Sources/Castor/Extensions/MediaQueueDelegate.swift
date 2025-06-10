@@ -10,11 +10,17 @@ import GoogleCast
 /// its delegate.
 final class MediaQueueDelegate: NSObject {
     private weak var wrapped: GCKMediaQueueDelegate?
+    private weak var queue: GCKMediaQueue?
 
     init(wrapped: GCKMediaQueueDelegate?, queue: GCKMediaQueue) {
         self.wrapped = wrapped
+        self.queue = queue
         super.init()
         queue.add(self)         // The delegate is retained
+    }
+
+    deinit {
+        queue?.remove(self)
     }
 }
 
