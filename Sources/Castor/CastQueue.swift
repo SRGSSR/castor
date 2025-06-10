@@ -57,6 +57,7 @@ public final class CastQueue: NSObject, ObservableObject {
     }
 
     deinit {
+        // TODO: Weak wrapper? Hide release if possible
         _synchronizedItems.recipe?.release()
     }
 }
