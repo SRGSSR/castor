@@ -28,18 +28,14 @@ public final class CastQueue: NSObject, ObservableObject {
 
     /// The current item.
     ///
-    /// Stops playback if set to `nil`.
+    /// Does nothing if setting to `nil` or to an item that does not belong to the list.
     public var currentItem: CastPlayerItem? {
         get {
             items.first { $0.id == synchronizedCurrentItemId }
         }
         set {
-            if let newValue {
-                synchronizedCurrentItemId = newValue.id
-            }
-            else {
-                remoteMediaClient.stop()
-            }
+            guard let newValue, items.contains(newValue) else { return }
+            synchronizedCurrentItemId = newValue.id
         }
     }
 
