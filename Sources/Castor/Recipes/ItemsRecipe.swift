@@ -23,9 +23,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
 
     private var requests = 0 {
         didSet {
-            print("--> requests: \(requests)")
             guard requests == 0, oldValue != 0 else { return }
-            print("--> call completion")
             items = items(items, merging: service.mediaQueue)
         }
     }
@@ -61,7 +59,6 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         requests += 2
 
         let removedIds = Array(Set(previousIds).subtracting(currentIds))
-        print("--> remove \(removedIds)")
         let removeRequest = service.queueRemoveItems(withIDs: removedIds)
         removeRequest.delegate = self
 
@@ -69,7 +66,6 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
             withIDs: currentIds,
             insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
         )
-        print("--> reorder: \(currentIds)")
         reorderRequest.delegate = self
     }
 
@@ -101,7 +97,6 @@ extension ItemsRecipe: GCKMediaQueueDelegate {
 
 extension ItemsRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        print("--> complete")
         if requests == 1 {
             completion(true)
         }
@@ -109,7 +104,6 @@ extension ItemsRecipe: GCKRequestDelegate {
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        print("--> abort: \(abortReason)")
         if requests == 1 {
             completion(false)
         }
@@ -117,7 +111,6 @@ extension ItemsRecipe: GCKRequestDelegate {
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        print("--> fail: \(error)")
         if requests == 1 {
             completion(false)
         }
