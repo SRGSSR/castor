@@ -79,6 +79,7 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
 
     private func completion() {
         if let pendingValue {
+            print("--> deal with pending")
             if let recipe, let requester = recipe.requester {
                 self.value = pendingValue
                 recipe.makeRequest(for: pendingValue, using: requester)
@@ -86,6 +87,7 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
             self.pendingValue = nil
         }
         else {
+            print("--> requesting = false")
             isRequesting = false
         }
     }
