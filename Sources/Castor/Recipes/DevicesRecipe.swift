@@ -9,8 +9,6 @@ import GoogleCast
 final class DevicesRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: [CastDevice] = []
 
-    let service: GCKDiscoveryManager
-
     private let update: ([CastDevice]) -> Void
 
     private var devices: [CastDevice] = [] {
@@ -21,7 +19,6 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
 
     // swiftlint:disable:next discouraged_optional_collection
     init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]?) -> Void) {
-        self.service = service
         self.update = update
         super.init()
         service.add(self)

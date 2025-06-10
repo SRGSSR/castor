@@ -9,14 +9,10 @@ import GoogleCast
 final class RepeatModeRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: CastRepeatMode = .off
 
-    let service: GCKRemoteMediaClient
+    private weak var service: GCKRemoteMediaClient?
 
     private let update: (GCKMediaStatus?) -> Void
     private let completion: (Bool) -> Void
-
-    var requester: GCKRemoteMediaClient? {
-        service.canMakeRequest() ? service : nil
-    }
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
@@ -34,9 +30,11 @@ final class RepeatModeRecipe: NSObject, MutableSynchronizerRecipe {
         CastRepeatMode(rawMode: status.queueRepeatMode) ?? .off
     }
 
-    func makeRequest(for value: CastRepeatMode, using requester: GCKRemoteMediaClient) {
-        let request = requester.queueSetRepeatMode(value.rawMode())
+    func makeRequest(for value: CastRepeatMode) -> Bool {
+        guard let service, service.canMakeRequest() else { return false }
+        let request = service.queueSetRepeatMode(value.rawMode())
         request.delegate = self
+        return true
     }
 }
 

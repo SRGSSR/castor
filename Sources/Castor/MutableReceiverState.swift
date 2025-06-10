@@ -12,25 +12,14 @@ final class MutableReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
 where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private var recipe: Recipe?
 
-    var service: Recipe.Service? {
-        get {
-            recipe?.service
+    func attach(to service: Recipe.Service) {
+        let recipe = Recipe(service: service) { [weak self] status in
+            self?.update(with: status)
+        } completion: { [weak self] success in
+            self?.completion(success)
         }
-        set {
-            if let newValue {
-                let recipe = Recipe(service: newValue) { [weak self] status in
-                    self?.update(with: status)
-                } completion: { [weak self] success in
-                    self?.completion(success)
-                }
-                self.recipe = recipe
-                value = recipe.value(from: newValue, defaultValue: Recipe.defaultValue)
-            }
-            else {
-                recipe = nil
-                value = Recipe.defaultValue
-            }
-        }
+        self.recipe = recipe
+        value = recipe.value(from: service, defaultValue: Recipe.defaultValue)
     }
 
     private var isRequesting = false
@@ -60,11 +49,11 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
     }
 
     private func requestUpdate(to value: Recipe.Value) {
-        guard self.value != value, let recipe, let requester = recipe.requester else { return }
+        guard self.value != value, let recipe else { return }
         if !isRequesting {
+            guard recipe.makeRequest(for: value) else { return }
             isRequesting = true
             self.value = value
-            recipe.makeRequest(for: value, using: requester)
         }
         else {
             self.value = value
@@ -85,19 +74,14 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
         }
 
         if let pendingValue {
-            if let recipe, let requester = recipe.requester {
+            if let recipe, recipe.makeRequest(for: pendingValue) {
                 self.value = pendingValue
-                recipe.makeRequest(for: pendingValue, using: requester)
             }
             self.pendingValue = nil
         }
         else {
             isRequesting = false
         }
-    }
-
-    func canMakeRequest() -> Bool {
-        recipe?.requester != nil
     }
 
     static subscript(

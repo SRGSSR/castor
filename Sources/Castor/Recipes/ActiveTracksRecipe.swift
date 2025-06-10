@@ -9,14 +9,10 @@ import GoogleCast
 final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: [CastMediaTrack] = []
 
-    let service: GCKRemoteMediaClient
+    private weak var service: GCKRemoteMediaClient?
 
     private let update: (GCKMediaStatus?) -> Void
     private let completion: (Bool) -> Void
-
-    var requester: GCKRemoteMediaClient? {
-        service.canMakeRequest() ? service : nil
-    }
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
@@ -42,10 +38,12 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
         return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
     }
 
-    func makeRequest(for value: [CastMediaTrack], using requester: GCKRemoteMediaClient) {
+    func makeRequest(for value: [CastMediaTrack]) -> Bool {
+        guard let service, service.canMakeRequest() else { return false }
         // swiftlint:disable:next legacy_objc_type
-        let request = requester.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
+        let request = service.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
         request.delegate = self
+        return true
     }
 }
 

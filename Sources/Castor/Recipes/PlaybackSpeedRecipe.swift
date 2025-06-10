@@ -9,14 +9,10 @@ import GoogleCast
 final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: Float = 1
 
-    let service: GCKRemoteMediaClient
+    private weak var service: GCKRemoteMediaClient?
 
     private let update: (GCKMediaStatus?) -> Void
     private let completion: (Bool) -> Void
-
-    var requester: GCKRemoteMediaClient? {
-        service.canMakeRequest() ? service : nil
-    }
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
@@ -34,9 +30,11 @@ final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
         status.playbackRate
     }
 
-    func makeRequest(for value: Float, using requester: GCKRemoteMediaClient) {
-        let request = requester.setPlaybackRate(value)
+    func makeRequest(for value: Float) -> Bool {
+        guard let service, service.canMakeRequest() else { return false }
+        let request = service.setPlaybackRate(value)
         request.delegate = self
+        return true
     }
 }
 

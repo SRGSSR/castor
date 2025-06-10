@@ -9,15 +9,10 @@ import GoogleCast
 final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: Float = 0
 
-    let service: GCKSessionManager
+    private weak var service: GCKSessionManager?
 
     private let update: (Float?) -> Void
     private let completion: (Bool) -> Void
-
-    var requester: GCKCastSession? {
-        guard let session = service.currentCastSession else { return nil }
-        return !session.isFixedVolume() ? session : nil
-    }
 
     init(service: GCKSessionManager, update: @escaping (Float?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
@@ -31,9 +26,11 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
         service.currentCastSession?.currentDeviceVolume
     }
 
-    func makeRequest(for value: Float, using requester: GCKCastSession) {
-        let request = requester.setDeviceVolume(value)
+    func makeRequest(for value: Float) -> Bool {
+        guard let session = service?.currentCastSession, !session.isFixedVolume() else { return false }
+        let request = session.setDeviceVolume(value)
         request.delegate = self
+        return true
     }
 }
 

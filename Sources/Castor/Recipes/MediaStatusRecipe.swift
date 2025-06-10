@@ -9,12 +9,9 @@ import GoogleCast
 final class MediaStatusRecipe: NSObject, SynchronizerRecipe {
     static let defaultValue: GCKMediaStatus? = nil
 
-    let service: GCKRemoteMediaClient
-
     private let update: (GCKMediaStatus?) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
-        self.service = service
         self.update = update
         super.init()
         service.add(self)

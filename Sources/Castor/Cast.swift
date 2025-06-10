@@ -75,12 +75,12 @@ public final class Cast: NSObject, ObservableObject {
 
     /// A Boolean indicating whether the volume can be adjusted.
     public var canAdjustVolume: Bool {
-        _synchronizedVolume.canMakeRequest()
+        currentSession?.isFixedVolume() == false
     }
 
     /// A Boolean indicating whether the device can be muted.
     public var canMute: Bool {
-        _synchronizedIsMuted.canMakeRequest()
+        currentSession?.supportsMuting() == true
     }
 
     /// The current device.
@@ -121,10 +121,10 @@ public final class Cast: NSObject, ObservableObject {
 
         super.init()
 
-        _synchronizedDevices.service = context.discoveryManager
-        _synchronizedCurrentDevice.service = context.sessionManager
-        _synchronizedVolume.service = context.sessionManager
-        _synchronizedIsMuted.service = context.sessionManager
+        _synchronizedDevices.attach(to: context.discoveryManager)
+        _synchronizedCurrentDevice.attach(to: context.sessionManager)
+        _synchronizedVolume.attach(to: context.sessionManager)
+        _synchronizedIsMuted.attach(to: context.sessionManager)
 
         context.sessionManager.add(self)
 

@@ -12,8 +12,6 @@ protocol BaseSynchronizerRecipe: AnyObject {
 
     static var defaultValue: Value { get }
 
-    var service: Service { get }
-
     static func status(from service: Service) -> Status?
     static func value(from status: Status) -> Value
 }

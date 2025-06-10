@@ -9,14 +9,10 @@ import GoogleCast
 final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue = false
 
-    let service: GCKRemoteMediaClient
+    private weak var service: GCKRemoteMediaClient?
 
     private let update: (GCKMediaStatus?) -> Void
     private let completion: (Bool) -> Void
-
-    var requester: GCKRemoteMediaClient? {
-        service.canMakeRequest() ? service : nil
-    }
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
@@ -34,18 +30,20 @@ final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
         status.playerState == .playing
     }
 
-    private static func request(for value: Bool, using requester: GCKRemoteMediaClient) -> GCKRequest {
+    private static func request(for value: Bool, using service: GCKRemoteMediaClient) -> GCKRequest {
         if value {
-            return requester.play()
+            return service.play()
         }
         else {
-            return requester.pause()
+            return service.pause()
         }
     }
 
-    func makeRequest(for value: Bool, using requester: GCKRemoteMediaClient) {
-        let request = Self.request(for: value, using: requester)
+    func makeRequest(for value: Bool) -> Bool {
+        guard let service, service.canMakeRequest() else { return false }
+        let request = Self.request(for: value, using: service)
         request.delegate = self
+        return true
     }
 }
 
