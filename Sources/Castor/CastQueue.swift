@@ -51,11 +51,6 @@ public final class CastQueue: NSObject, ObservableObject {
         _synchronizedItems.service = remoteMediaClient
         _synchronizedCurrentItemId.service = remoteMediaClient
     }
-
-    deinit {
-        // TODO: Weak wrapper? Hide release if possible
-        _synchronizedItems.recipe?.release()
-    }
 }
 
 public extension CastQueue {

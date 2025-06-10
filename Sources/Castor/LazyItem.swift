@@ -30,15 +30,11 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         self.queue = queue
         super.init()
         value = queue.item(at: id, fetchIfNeeded: false)
-        queue.add(self)          // The delegate is retained
+        queue.add(MediaQueueDelegate(wrapped: self, queue: queue))
     }
 
     func fetch() {
         queue.item(withID: id)
-    }
-
-    func release() {
-        queue.remove(self)
     }
 
     // swiftlint:disable:next legacy_objc_type

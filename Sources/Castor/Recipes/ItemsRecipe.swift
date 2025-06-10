@@ -42,7 +42,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         self.update = update
         self.completion = completion
         super.init()
-        service.mediaQueue.add(self)          // The delegate is retained
+        service.mediaQueue.add(MediaQueueDelegate(wrapped: self, queue: service.mediaQueue))          // The delegate is retained
     }
 
     // swiftlint:disable:next discouraged_optional_collection
@@ -65,10 +65,6 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
             insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
         )
         reorderRequest.delegate = self
-    }
-
-    func release() {
-        service.mediaQueue.remove(self)
     }
 }
 
