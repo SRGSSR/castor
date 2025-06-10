@@ -85,12 +85,15 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The current device.
     ///
-    /// Ends the session if set to `nil`.
+    /// Ends the session if set to `nil`. Does nothing if the device does not belong to the device list.
     public var currentDevice: CastDevice? {
         get {
             synchronizedCurrentDevice
         }
         set {
+            if let newValue, !devices.contains(newValue) {
+                return
+            }
             synchronizedCurrentDevice = newValue
         }
     }
