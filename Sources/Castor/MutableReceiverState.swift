@@ -20,8 +20,8 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
             if let newValue {
                 let recipe = Recipe(service: newValue) { [weak self] status in
                     self?.update(with: status)
-                } completion: { [weak self] in
-                    self?.completion()
+                } completion: { [weak self] success in
+                    self?.completion(success)
                 }
                 self.recipe = recipe
                 value = recipe.value(from: newValue, defaultValue: Recipe.defaultValue)
@@ -77,17 +77,24 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
         value = recipe.value(from: status, defaultValue: Recipe.defaultValue)
     }
 
-    private func completion() {
-        if let pendingValue {
-            print("--> deal with pending")
-            if let recipe, let requester = recipe.requester {
-                self.value = pendingValue
-                recipe.makeRequest(for: pendingValue, using: requester)
+    private func completion(_ success: Bool) {
+        if success {
+            if let pendingValue {
+                print("--> deal with pending")
+                if let recipe, let requester = recipe.requester {
+                    self.value = pendingValue
+                    recipe.makeRequest(for: pendingValue, using: requester)
+                }
+                self.pendingValue = nil
             }
-            self.pendingValue = nil
+            else {
+                print("--> requesting = false")
+                isRequesting = false
+            }
         }
         else {
-            print("--> requesting = false")
+            print("--> reset state")
+            pendingValue = nil
             isRequesting = false
         }
     }

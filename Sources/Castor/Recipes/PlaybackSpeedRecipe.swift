@@ -12,13 +12,13 @@ final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
     let service: GCKRemoteMediaClient
 
     private let update: (GCKMediaStatus?) -> Void
-    private let completion: () -> Void
+    private let completion: (Bool) -> Void
 
     var requester: GCKRemoteMediaClient? {
         service.canMakeRequest() ? service : nil
     }
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping () -> Void) {
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
         self.completion = completion
@@ -48,6 +48,14 @@ extension PlaybackSpeedRecipe: GCKRemoteMediaClientListener {
 
 extension PlaybackSpeedRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion()
+        completion(true)
+    }
+
+    func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
+        completion(false)
+    }
+
+    func request(_ request: GCKRequest, didFailWithError error: GCKError) {
+        completion(false)
     }
 }

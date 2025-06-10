@@ -13,7 +13,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
 
     // swiftlint:disable:next discouraged_optional_collection
     private let update: ([CastPlayerItem]?) -> Void
-    private let completion: () -> Void
+    private let completion: (Bool) -> Void
 
     private var items: [CastPlayerItem] = [] {
         didSet {
@@ -23,10 +23,9 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
 
     private var requests = 0 {
         didSet {
-            print("--> requests: \(requests), old: \(oldValue)")
+            print("--> requests: \(requests)")
             guard requests == 0, oldValue != 0 else { return }
             print("--> call completion")
-            completion()
             items = items(items, merging: service.mediaQueue)
         }
     }
@@ -40,7 +39,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     // swiftlint:disable:next discouraged_optional_collection
-    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]?) -> Void, completion: @escaping () -> Void) {
+    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
         self.completion = completion
@@ -59,12 +58,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
 
         // Workaround for Google Cast SDK state consistency possibly arising when removing items from a sender while
         // updating them from another one.
-        if requests < 2 {
-            requests = 2
-        }
-        else {
-            requests += 2
-        }
+        requests += 2
 
         let removedIds = Array(Set(previousIds).subtracting(currentIds))
         print("--> remove \(removedIds)")
@@ -108,16 +102,25 @@ extension ItemsRecipe: GCKMediaQueueDelegate {
 extension ItemsRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         print("--> complete")
+        if requests == 1 {
+            completion(true)
+        }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
         print("--> abort: \(abortReason)")
+        if requests == 1 {
+            completion(false)
+        }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
         print("--> fail: \(error)")
+        if requests == 1 {
+            completion(false)
+        }
         requests -= 1
     }
 }

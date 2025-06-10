@@ -11,7 +11,7 @@ protocol MutableSynchronizerRecipe: BaseSynchronizerRecipe {
 
     var requester: Requester? { get }
 
-    init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping () -> Void)
+    init(service: Service, update: @escaping (Status?) -> Void, completion: @escaping (Bool) -> Void)
 
     func makeRequest(for value: Value, using requester: Requester)
 }

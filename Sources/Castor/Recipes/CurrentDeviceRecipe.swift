@@ -12,7 +12,7 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
     let service: GCKSessionManager
 
     private let update: (GCKCastSession?) -> Void
-    private let completion: () -> Void
+    private let completion: (Bool) -> Void
 
     private var targetDevice: CastDevice?
 
@@ -21,7 +21,7 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
         service
     }
 
-    init(service: GCKSessionManager, update: @escaping (GCKCastSession?) -> Void, completion: @escaping () -> Void) {
+    init(service: GCKSessionManager, update: @escaping (GCKCastSession?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
         self.completion = completion
@@ -60,7 +60,7 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
 
     func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         update(session)
-        completion()
+        completion(true)
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
@@ -82,7 +82,7 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
             self.targetDevice = nil
         }
         else {
-            completion()
+            completion(true)
         }
     }
 
@@ -92,5 +92,6 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
         withError error: any Error
     ) {
         update(nil)
+        completion(false)
     }
 }
