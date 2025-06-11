@@ -37,7 +37,7 @@ public final class CastPlayerItem: ObservableObject {
     }
 
     deinit {
-        _rawItem.detach()
+        _rawItem.release()
     }
 }
 

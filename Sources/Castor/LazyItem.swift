@@ -37,7 +37,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         queue.item(withID: id)
     }
 
-    func detach() {
+    func release() {
         queue.remove(self)
     }
 

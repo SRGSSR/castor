@@ -28,7 +28,7 @@ public final class CastQueue: NSObject, ObservableObject {
 
     /// The current item.
     ///
-    /// Does nothing if setting to `nil` or to an item that does not belong to the list.
+    /// Does nothing if set to `nil` or to an item that does not belong to the list.
     public var currentItem: CastPlayerItem? {
         get {
             items.first { $0.id == synchronizedCurrentItemId }
