@@ -14,6 +14,8 @@ protocol BaseSynchronizerRecipe: AnyObject {
 
     static func status(from service: Service) -> Status?
     static func value(from status: Status) -> Value
+
+    func detach()
 }
 
 extension BaseSynchronizerRecipe where Value == Status {
@@ -26,6 +28,10 @@ extension BaseSynchronizerRecipe where Value == Status? {
     static func value(from status: Status) -> Value {
         status
     }
+}
+
+extension BaseSynchronizerRecipe {
+    func detach() {}
 }
 
 extension BaseSynchronizerRecipe {

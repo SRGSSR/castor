@@ -82,6 +82,15 @@ public final class CastPlayer: NSObject, ObservableObject {
         _synchronizedActiveTracks.attach(to: remoteMediaClient)
         _synchronizedTargetSeek.attach(to: remoteMediaClient)
     }
+
+    deinit {
+        _synchronizedMediaStatus.detach()
+        _synchronizedShouldPlay.detach()
+        _synchronizedRepeatMode.detach()
+        _synchronizedPlaybackSpeed.detach()
+        _synchronizedActiveTracks.detach()
+        _synchronizedTargetSeek.detach()
+    }
 }
 
 public extension CastPlayer {

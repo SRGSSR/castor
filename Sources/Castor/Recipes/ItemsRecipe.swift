@@ -9,7 +9,7 @@ import GoogleCast
 final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: [CastPlayerItem] = []
 
-    private weak var service: GCKRemoteMediaClient?
+    private let service: GCKRemoteMediaClient
 
     // swiftlint:disable:next discouraged_optional_collection
     private let update: ([CastPlayerItem]?) -> Void
@@ -24,7 +24,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     private var requests = 0 {
         didSet {
             guard requests == 0, oldValue != 0 else { return }
-            items = items(items, merging: service?.mediaQueue)
+            items = items(items, merging: service.mediaQueue)
         }
     }
 
@@ -38,7 +38,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         self.update = update
         self.completion = completion
         super.init()
-        service.mediaQueue.add(self)
+        service.mediaQueue.add(self)     // The delegate is retained
     }
 
     // swiftlint:disable:next discouraged_optional_collection
@@ -47,7 +47,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     func makeRequest(for value: [CastPlayerItem]) -> Bool {
-        guard let service, service.canMakeRequest() else { return false }
+        guard service.canMakeRequest() else { return false }
 
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
@@ -64,6 +64,10 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         )
         reorderRequest.delegate = self
         return true
+    }
+
+    func detach() {
+        service.mediaQueue.remove(self)
     }
 }
 
@@ -112,8 +116,7 @@ extension ItemsRecipe: GCKRequestDelegate {
 }
 
 private extension ItemsRecipe {
-    func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue?) -> [CastPlayerItem] {
-        guard let queue else { return items }
+    func items(_ items: [CastPlayerItem], merging queue: GCKMediaQueue) -> [CastPlayerItem] {
         var updatedItems = items
         queue.itemIDs().difference(from: items.map(\.id)).inferringMoves().forEach { change in
             switch change {

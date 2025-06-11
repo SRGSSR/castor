@@ -9,7 +9,7 @@ import GoogleCast
 final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: CastDevice? = nil
 
-    private weak var service: GCKSessionManager?
+    private let service: GCKSessionManager
 
     private let update: (GCKCastSession?) -> Void
     private let completion: (Bool) -> Void
@@ -33,7 +33,6 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     func makeRequest(for value: CastDevice?) -> Bool {
-        guard let service else { return false }
         if let value {
             if service.hasConnectedSession() {
                 targetDevice = value

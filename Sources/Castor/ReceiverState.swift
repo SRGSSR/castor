@@ -41,6 +41,10 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
         value = recipe.value(from: service, defaultValue: Recipe.defaultValue)
     }
 
+    func detach() {
+        recipe?.detach()
+    }
+
     private func update(with status: Recipe.Status?) {
         guard let recipe else { return }
         value = recipe.value(from: status, defaultValue: Recipe.defaultValue)

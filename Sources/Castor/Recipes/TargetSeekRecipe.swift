@@ -10,7 +10,7 @@ import GoogleCast
 final class TargetSeekRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: CMTime? = nil
 
-    private weak var service: GCKRemoteMediaClient?
+    private let service: GCKRemoteMediaClient
 
     private let update: (GCKMediaStatus?) -> Void
     private let completion: (Bool) -> Void
@@ -33,7 +33,7 @@ final class TargetSeekRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     func makeRequest(for value: CMTime?) -> Bool {
-        guard let service, service.canMakeRequest() else { return false }
+        guard service.canMakeRequest() else { return false }
         let options = GCKMediaSeekOptions()
         if let value {
             options.interval = value.seconds

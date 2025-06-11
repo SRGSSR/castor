@@ -9,7 +9,7 @@ import GoogleCast
 final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue = false
 
-    private weak var service: GCKSessionManager?
+    private let service: GCKSessionManager
 
     // swiftlint:disable:next discouraged_optional_boolean
     private let update: (Bool?) -> Void
@@ -30,7 +30,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     func makeRequest(for value: Bool) -> Bool {
-        guard let session = service?.currentCastSession, session.supportsMuting() else { return false }
+        guard let session = service.currentCastSession, session.supportsMuting() else { return false }
         let request = session.setDeviceMuted(value)
         request.delegate = self
         return true

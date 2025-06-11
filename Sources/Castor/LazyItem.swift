@@ -11,7 +11,7 @@ import GoogleCast
 final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let id: GCKMediaQueueItemID
-    private weak var queue: GCKMediaQueue?
+    private let queue: GCKMediaQueue
     private weak var enclosingInstance: Instance?
 
     @available(*, unavailable, message: "@LazyItem can only be applied to classes")
@@ -30,11 +30,15 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         self.queue = queue
         super.init()
         value = queue.item(at: id, fetchIfNeeded: false)
-        queue.add(self)
+        queue.add(self)     // The delegate is retained
     }
 
     func fetch() {
-        queue?.item(withID: id)
+        queue.item(withID: id)
+    }
+
+    func detach() {
+        queue.remove(self)
     }
 
     // swiftlint:disable:next legacy_objc_type

@@ -9,7 +9,7 @@ import GoogleCast
 final class CurrentItemRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue = kGCKMediaQueueInvalidItemID
 
-    private weak var service: GCKRemoteMediaClient?
+    private let service: GCKRemoteMediaClient
 
     private let update: (GCKMediaStatus?) -> Void
     private let completion: (Bool) -> Void
@@ -36,7 +36,7 @@ final class CurrentItemRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     func makeRequest(for value: GCKMediaQueueItemID) -> Bool {
-        guard let service, service.canMakeRequest() else { return false }
+        guard service.canMakeRequest() else { return false }
         let request = service.queueJumpToItem(withID: value)
         request.delegate = self
         return true

@@ -9,7 +9,7 @@ import GoogleCast
 final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue = false
 
-    private weak var service: GCKRemoteMediaClient?
+    private let service: GCKRemoteMediaClient
 
     private let update: (GCKMediaStatus?) -> Void
     private let completion: (Bool) -> Void
@@ -40,7 +40,7 @@ final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     func makeRequest(for value: Bool) -> Bool {
-        guard let service, service.canMakeRequest() else { return false }
+        guard service.canMakeRequest() else { return false }
         let request = Self.request(for: value, using: service)
         request.delegate = self
         return true

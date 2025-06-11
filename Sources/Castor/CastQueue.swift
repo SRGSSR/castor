@@ -51,6 +51,11 @@ public final class CastQueue: NSObject, ObservableObject {
         _synchronizedItems.attach(to: remoteMediaClient)
         _synchronizedCurrentItemId.attach(to: remoteMediaClient)
     }
+
+    deinit {
+        _synchronizedItems.detach()
+        _synchronizedCurrentItemId.detach()
+    }
 }
 
 public extension CastQueue {
