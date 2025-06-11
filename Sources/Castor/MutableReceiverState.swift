@@ -41,8 +41,6 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
     func attach(to service: Recipe.Service) {
         let recipe = Recipe(service: service) { [weak self] status in
             self?.update(with: status)
-        } completion: { [weak self] success in
-            self?.completion(success)
         }
         self.recipe = recipe
         value = recipe.value(from: service, defaultValue: Recipe.defaultValue)
@@ -57,13 +55,19 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
     private func requestUpdate(to value: Recipe.Value) {
         guard self.value != value, let recipe else { return }
         if !isRequesting {
-            guard recipe.makeRequest(for: value) else { return }
+            guard makeRequest(to: value, with: recipe) else { return }
             isRequesting = true
             self.value = value
         }
         else {
             self.value = value
             pendingValue = value
+        }
+    }
+
+    private func makeRequest(to value: Recipe.Value, with recipe: Recipe) -> Bool {
+        recipe.makeRequest(for: value) { [weak self] success in
+            self?.completion(success)
         }
     }
 
@@ -80,7 +84,7 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
         }
 
         if let pendingValue {
-            if let recipe, recipe.makeRequest(for: pendingValue) {
+            if let recipe, makeRequest(to: pendingValue, with: recipe) {
                 self.value = pendingValue
             }
             self.pendingValue = nil

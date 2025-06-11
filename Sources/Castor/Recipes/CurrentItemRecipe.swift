@@ -12,12 +12,11 @@ final class CurrentItemRecipe: NSObject, MutableSynchronizerRecipe {
     private let service: GCKRemoteMediaClient
 
     private let update: (GCKMediaStatus?) -> Void
-    private let completion: (Bool) -> Void
+    private var completion: ((Bool) -> Void)?
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
         self.update = update
-        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -35,8 +34,9 @@ final class CurrentItemRecipe: NSObject, MutableSynchronizerRecipe {
         }
     }
 
-    func makeRequest(for value: GCKMediaQueueItemID) -> Bool {
+    func makeRequest(for value: GCKMediaQueueItemID, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
+        self.completion = completion
         let request = service.queueJumpToItem(withID: value)
         request.delegate = self
         return true
@@ -51,14 +51,14 @@ extension CurrentItemRecipe: GCKRemoteMediaClientListener {
 
 extension CurrentItemRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion(true)
+        completion?(true)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion(false)
+        completion?(false)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion(false)
+        completion?(false)
     }
 }

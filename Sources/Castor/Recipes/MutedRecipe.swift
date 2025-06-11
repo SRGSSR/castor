@@ -13,13 +13,12 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
 
     // swiftlint:disable:next discouraged_optional_boolean
     private let update: (Bool?) -> Void
-    private let completion: (Bool) -> Void
+    private var completion: ((Bool) -> Void)?
 
     // swiftlint:disable:next discouraged_optional_boolean
-    init(service: GCKSessionManager, update: @escaping (Bool?) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKSessionManager, update: @escaping (Bool?) -> Void) {
         self.service = service
         self.update = update
-        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -29,7 +28,7 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         service.currentCastSession?.currentDeviceMuted
     }
 
-    func makeRequest(for value: Bool) -> Bool {
+    func makeRequest(for value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
         guard let session = service.currentCastSession, session.supportsMuting() else { return false }
         let request = session.setDeviceMuted(value)
         request.delegate = self
@@ -54,14 +53,14 @@ extension MutedRecipe: GCKSessionManagerListener {
 
 extension MutedRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion(true)
+        completion?(true)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion(false)
+        completion?(false)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion(false)
+        completion?(false)
     }
 }

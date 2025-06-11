@@ -12,12 +12,11 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
     private let service: GCKRemoteMediaClient
 
     private let update: (GCKMediaStatus?) -> Void
-    private let completion: (Bool) -> Void
+    private var completion: ((Bool) -> Void)?
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.service = service
         self.update = update
-        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -38,8 +37,9 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
         return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
     }
 
-    func makeRequest(for value: [CastMediaTrack]) -> Bool {
+    func makeRequest(for value: Value, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
+        self.completion = completion
         // swiftlint:disable:next legacy_objc_type
         let request = service.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
         request.delegate = self
@@ -55,14 +55,14 @@ extension ActiveTracksRecipe: GCKRemoteMediaClientListener {
 
 extension ActiveTracksRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion(true)
+        completion?(true)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion(false)
+        completion?(false)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion(false)
+        completion?(false)
     }
 }

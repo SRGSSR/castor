@@ -13,7 +13,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
 
     // swiftlint:disable:next discouraged_optional_collection
     private let update: ([CastPlayerItem]?) -> Void
-    private let completion: (Bool) -> Void
+    private var completion: ((Bool) -> Void)?
 
     private var items: [CastPlayerItem] = [] {
         didSet {
@@ -33,10 +33,9 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     // swiftlint:disable:next discouraged_optional_collection
-    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]?) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]?) -> Void) {
         self.service = service
         self.update = update
-        self.completion = completion
         super.init()
         service.mediaQueue.add(self)     // The delegate is retained
     }
@@ -46,8 +45,9 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
 
-    func makeRequest(for value: [CastPlayerItem]) -> Bool {
+    func makeRequest(for value: [CastPlayerItem], completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
+        self.completion = completion
 
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
@@ -95,21 +95,21 @@ extension ItemsRecipe: GCKMediaQueueDelegate {
 extension ItemsRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         if requests == 1 {
-            completion(true)
+            completion?(true)
         }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
         if requests == 1 {
-            completion(false)
+            completion?(false)
         }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
         if requests == 1 {
-            completion(false)
+            completion?(false)
         }
         requests -= 1
     }

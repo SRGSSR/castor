@@ -12,12 +12,11 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
     private let service: GCKSessionManager
 
     private let update: (Float?) -> Void
-    private let completion: (Bool) -> Void
+    private var completion: ((Bool) -> Void)?
 
-    init(service: GCKSessionManager, update: @escaping (Float?) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKSessionManager, update: @escaping (Float?) -> Void) {
         self.service = service
         self.update = update
-        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -26,8 +25,9 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
         service.currentCastSession?.currentDeviceVolume
     }
 
-    func makeRequest(for value: Float) -> Bool {
+    func makeRequest(for value: Float, completion: @escaping (Bool) -> Void) -> Bool {
         guard let session = service.currentCastSession, !session.isFixedVolume() else { return false }
+        self.completion = completion
         let request = session.setDeviceVolume(value)
         request.delegate = self
         return true
@@ -51,14 +51,14 @@ extension VolumeRecipe: GCKSessionManagerListener {
 
 extension VolumeRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion(true)
+        completion?(true)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion(false)
+        completion?(false)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion(false)
+        completion?(false)
     }
 }

@@ -12,14 +12,13 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
     private let service: GCKSessionManager
 
     private let update: (GCKCastSession?) -> Void
-    private let completion: (Bool) -> Void
+    private var completion: ((Bool) -> Void)?
 
     private var targetDevice: CastDevice?
 
-    init(service: GCKSessionManager, update: @escaping (GCKCastSession?) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKSessionManager, update: @escaping (GCKCastSession?) -> Void) {
         self.service = service
         self.update = update
-        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -32,7 +31,7 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
         session.device.toCastDevice()
     }
 
-    func makeRequest(for value: CastDevice?) -> Bool {
+    func makeRequest(for value: Value, completion: @escaping (Bool) -> Void) -> Bool {
         if let value {
             if service.hasConnectedSession() {
                 targetDevice = value
@@ -45,6 +44,7 @@ final class CurrentDeviceRecipe: NSObject, MutableSynchronizerRecipe {
         else {
             service.endSession()
         }
+        self.completion = completion
         return true
     }
 }
@@ -56,7 +56,7 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
 
     func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         update(session)
-        completion(true)
+        completion?(true)
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
@@ -78,7 +78,7 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
             self.targetDevice = nil
         }
         else {
-            completion(true)
+            completion?(true)
         }
     }
 
@@ -88,6 +88,6 @@ extension CurrentDeviceRecipe: GCKSessionManagerListener {
         withError error: any Error
     ) {
         update(nil)
-        completion(false)
+        completion?(false)
     }
 }
