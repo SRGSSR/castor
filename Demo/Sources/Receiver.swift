@@ -13,6 +13,7 @@ enum Receiver: Int, CaseIterable {
     case drm
     case srgssr
     case amtins
+    case androidTv
 
     var identifier: String {
         switch self {
@@ -24,6 +25,8 @@ enum Receiver: Int, CaseIterable {
             "1AC2931D"
         case .amtins:
             "EB05B588"
+        case .androidTv:
+            "5718ACDA"
         }
     }
 
@@ -37,12 +40,14 @@ enum Receiver: Int, CaseIterable {
             "SRG SSR"
         case .amtins:
             "amtins"
+        case .androidTv:
+            "Android TV"
         }
     }
 
     var isSupportingUrns: Bool {
         switch self {
-        case .srgssr, .amtins:
+        case .srgssr, .amtins, .androidTv:
             true
         default:
             false
