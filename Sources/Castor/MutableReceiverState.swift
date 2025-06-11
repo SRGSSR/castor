@@ -50,6 +50,8 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
 
     func detach() {
         recipe?.detach()
+        recipe = nil
+        value = Recipe.defaultValue
     }
 
     private func requestUpdate(to value: Recipe.Value) {

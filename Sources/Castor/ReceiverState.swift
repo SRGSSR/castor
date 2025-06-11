@@ -43,6 +43,8 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
 
     func detach() {
         recipe?.detach()
+        recipe = nil
+        value = Recipe.defaultValue
     }
 
     private func update(with status: Recipe.Status?) {
