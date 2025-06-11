@@ -25,11 +25,6 @@ final class MutedRecipe: NSObject, MutableSynchronizerRecipe {
         service.currentCastSession?.currentDeviceMuted ?? defaultValue
     }
 
-    // TODO: Remove via default implementation
-    static func value(from status: Bool) -> Bool {
-        status
-    }
-
     func makeRequest(for value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
         guard let session = service.currentCastSession, session.supportsMuting() else { return false }
         let request = session.setDeviceMuted(value)

@@ -38,11 +38,6 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
 
-    // TODO: Remove via default implementation
-    static func value(from status: [CastPlayerItem]) -> [CastPlayerItem] {
-        status
-    }
-
     func makeRequest(for value: [CastPlayerItem], completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion

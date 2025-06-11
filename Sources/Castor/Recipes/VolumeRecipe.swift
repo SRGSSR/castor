@@ -25,11 +25,6 @@ final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
         service.currentCastSession?.currentDeviceVolume ?? defaultValue
     }
 
-    // TODO: Remove via default implementation
-    static func value(from status: Float) -> Float {
-        status
-    }
-
     func makeRequest(for value: Float, completion: @escaping (Bool) -> Void) -> Bool {
         guard let session = service.currentCastSession, !session.isFixedVolume() else { return false }
         self.completion = completion

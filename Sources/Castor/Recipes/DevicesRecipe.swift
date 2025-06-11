@@ -31,11 +31,6 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
         }
         return devices
     }
-
-    // TODO: Remove via default implementation
-    static func value(from status: [CastDevice]) -> [CastDevice] {
-        status
-    }
 }
 
 extension DevicesRecipe: GCKDiscoveryManagerListener {

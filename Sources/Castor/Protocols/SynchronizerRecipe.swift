@@ -34,3 +34,9 @@ extension SynchronizerRecipe {
         return value(from: status)
     }
 }
+
+extension SynchronizerRecipe where Status == Value {
+    static func value(from status: Status) -> Value {
+        status
+    }
+}
