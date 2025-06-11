@@ -27,7 +27,7 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
         $value.eraseToAnyPublisher()
     }
 
-    @available(*, unavailable, message: "@MutableReceiverState can only be applied to classes")
+    @available(*, unavailable, message: "This property wrapper can only be applied to classes")
     var wrappedValue: Recipe.Value {
         get { fatalError("Not available") }
         // swiftlint:disable:next unused_setter_value

@@ -14,7 +14,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     private let queue: GCKMediaQueue
     private weak var enclosingInstance: Instance?
 
-    @available(*, unavailable, message: "@LazyItem can only be applied to classes")
+    @available(*, unavailable, message: "This property wrapper can only be applied to classes")
     var wrappedValue: GCKMediaQueueItem? {
         fatalError("Not available")
     }

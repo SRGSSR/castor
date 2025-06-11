@@ -32,8 +32,7 @@ public final class Cast: NSObject, ObservableObject {
     @ReceiverState(DevicesRecipe.self)
     private var synchronizedDevices
 
-    @MutableReceiverState(CurrentDeviceRecipe.self)
-    private var synchronizedCurrentDevice
+    @CurrentDevice private var synchronizedCurrentDevice: CastDevice?
 
     @MutableReceiverState(VolumeRecipe.self)
     private var synchronizedVolume
@@ -119,10 +118,11 @@ public final class Cast: NSObject, ObservableObject {
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
+        _synchronizedCurrentDevice = .init(service: context.sessionManager)
+
         super.init()
 
         _synchronizedDevices.attach(to: context.discoveryManager)
-        _synchronizedCurrentDevice.attach(to: context.sessionManager)
         _synchronizedVolume.attach(to: context.sessionManager)
         _synchronizedIsMuted.attach(to: context.sessionManager)
 
@@ -156,7 +156,6 @@ public final class Cast: NSObject, ObservableObject {
 
     deinit {
         _synchronizedDevices.detach()
-        _synchronizedCurrentDevice.detach()
         _synchronizedVolume.detach()
         _synchronizedIsMuted.detach()
     }

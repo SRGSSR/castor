@@ -24,7 +24,7 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
         $value.eraseToAnyPublisher()
     }
 
-    @available(*, unavailable, message: "@ReceiverState can only be applied to classes")
+    @available(*, unavailable, message: "This property wrapper can only be applied to classes")
     var wrappedValue: Recipe.Value {
         fatalError("Not available")
     }
