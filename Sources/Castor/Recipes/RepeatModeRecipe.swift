@@ -25,8 +25,9 @@ final class RepeatModeRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaStatus
     }
 
-    static func value(from status: GCKMediaStatus) -> CastRepeatMode {
-        .init(rawMode: status.queueRepeatMode) ?? .off
+    static func value(from status: GCKMediaStatus?) -> CastRepeatMode {
+        guard let status, let mode = CastRepeatMode(rawMode: status.queueRepeatMode) else { return defaultValue }
+        return mode
     }
 
     func makeRequest(for value: CastRepeatMode, completion: @escaping (Bool) -> Void) -> Bool {

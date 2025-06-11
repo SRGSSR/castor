@@ -25,8 +25,8 @@ final class PlaybackSpeedRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaStatus
     }
 
-    static func value(from status: GCKMediaStatus) -> Float {
-        status.playbackRate
+    static func value(from status: GCKMediaStatus?) -> Float {
+        status?.playbackRate ?? defaultValue
     }
 
     func makeRequest(for value: Float, completion: @escaping (Bool) -> Void) -> Bool {

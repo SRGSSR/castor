@@ -25,7 +25,7 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaStatus
     }
 
-    static func value(from status: GCKMediaStatus) -> [CastMediaTrack] {
+    static func value(from status: GCKMediaStatus?) -> [CastMediaTrack] {
         Self.activeTracks(from: status)
     }
 

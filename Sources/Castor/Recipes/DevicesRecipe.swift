@@ -17,21 +17,24 @@ final class DevicesRecipe: NSObject, SynchronizerRecipe {
         }
     }
 
-    // swiftlint:disable:next discouraged_optional_collection
-    init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]?) -> Void) {
+    init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]) -> Void) {
         self.update = update
         super.init()
         service.add(self)
         service.startDiscovery()
     }
 
-    // swiftlint:disable:next discouraged_optional_collection
-    static func status(from service: GCKDiscoveryManager) -> [CastDevice]? {
+    static func status(from service: GCKDiscoveryManager) -> [CastDevice] {
         var devices: [CastDevice] = []
         for index in 0..<service.deviceCount {
             devices.append(service.device(at: index).toCastDevice())
         }
         return devices
+    }
+
+    // TODO: Remove via default implementation
+    static func value(from status: [CastDevice]) -> [CastDevice] {
+        status
     }
 }
 

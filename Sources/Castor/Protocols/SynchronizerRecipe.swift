@@ -12,24 +12,12 @@ protocol SynchronizerRecipe: AnyObject {
 
     static var defaultValue: Value { get }
 
-    init(service: Service, update: @escaping (Status?) -> Void)
+    init(service: Service, update: @escaping (Status) -> Void)
 
-    static func status(from service: Service) -> Status?
+    static func status(from service: Service) -> Status
     static func value(from status: Status) -> Value
 
     func detach()
-}
-
-extension SynchronizerRecipe where Value == Status {
-    static func value(from status: Status) -> Value {
-        status
-    }
-}
-
-extension SynchronizerRecipe where Value == Status? {
-    static func value(from status: Status) -> Value {
-        status
-    }
 }
 
 extension SynchronizerRecipe {
@@ -37,12 +25,12 @@ extension SynchronizerRecipe {
 }
 
 extension SynchronizerRecipe {
-    func value(from service: Service, defaultValue: Value) -> Value {
-        value(from: Self.status(from: service), defaultValue: defaultValue)
+    static func value(from service: Service) -> Value {
+        value(from: status(from: service))
     }
 
-    func value(from status: Status?, defaultValue: Value) -> Value {
+    static func value(from status: Status?) -> Value {
         guard let status else { return defaultValue }
-        return Self.value(from: status)
+        return value(from: status)
     }
 }

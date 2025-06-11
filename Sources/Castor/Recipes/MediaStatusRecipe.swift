@@ -20,6 +20,11 @@ final class MediaStatusRecipe: NSObject, SynchronizerRecipe {
     static func status(from service: GCKRemoteMediaClient) -> GCKMediaStatus? {
         service.mediaStatus
     }
+
+    // TODO: Remove via default implementation
+    static func value(from status: GCKMediaStatus?) -> GCKMediaStatus? {
+        status
+    }
 }
 
 extension MediaStatusRecipe: GCKRemoteMediaClientListener {

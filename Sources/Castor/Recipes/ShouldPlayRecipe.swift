@@ -25,8 +25,8 @@ final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaStatus
     }
 
-    static func value(from status: GCKMediaStatus) -> Bool {
-        status.playerState == .playing
+    static func value(from status: GCKMediaStatus?) -> Bool {
+        status?.playerState == .playing
     }
 
     private static func request(for value: Bool, using service: GCKRemoteMediaClient) -> GCKRequest {

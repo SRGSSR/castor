@@ -43,7 +43,7 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
             self?.update(with: status)
         }
         self.recipe = recipe
-        value = recipe.value(from: service, defaultValue: Recipe.defaultValue)
+        value = Recipe.value(from: service)
     }
 
     func detach() {
@@ -72,8 +72,8 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
     }
 
     private func update(with status: Recipe.Status?) {
-        guard let recipe, !isRequesting else { return }
-        value = recipe.value(from: status, defaultValue: Recipe.defaultValue)
+        guard !isRequesting else { return }
+        value = Recipe.value(from: status)
     }
 
     private func completion(_ success: Bool) {

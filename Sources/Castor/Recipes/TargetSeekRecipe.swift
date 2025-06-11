@@ -27,7 +27,7 @@ final class TargetSeekRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     // TODO: This feels out of place
-    static func value(from status: GCKMediaStatus) -> CMTime? {
+    static func value(from status: GCKMediaStatus?) -> CMTime? {
         nil
     }
 

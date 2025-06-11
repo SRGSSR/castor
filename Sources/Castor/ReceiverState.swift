@@ -38,7 +38,7 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
             self?.update(with: status)
         }
         self.recipe = recipe
-        value = recipe.value(from: service, defaultValue: Recipe.defaultValue)
+        value = Recipe.value(from: service)
     }
 
     func detach() {
@@ -48,8 +48,7 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
     }
 
     private func update(with status: Recipe.Status?) {
-        guard let recipe else { return }
-        value = recipe.value(from: status, defaultValue: Recipe.defaultValue)
+        value = Recipe.value(from: status)
     }
 
     static subscript(

@@ -25,7 +25,8 @@ final class CurrentItemRecipe: NSObject, MutableSynchronizerRecipe {
         service.mediaStatus
     }
 
-    static func value(from status: GCKMediaStatus) -> GCKMediaQueueItemID {
+    static func value(from status: GCKMediaStatus?) -> GCKMediaQueueItemID {
+        guard let status else { return kGCKMediaQueueInvalidItemID }
         if status.loadingItemID != kGCKMediaQueueInvalidItemID {
             return status.loadingItemID
         }
