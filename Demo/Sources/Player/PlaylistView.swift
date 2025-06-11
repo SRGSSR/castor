@@ -65,7 +65,7 @@ struct PlaylistView: View {
     private func list() -> some View {
         ZStack {
             if !queue.items.isEmpty {
-                List($queue.items, id: \.self) { $item in
+                List($queue.items, id: \.self, editActions: .all, selection: $queue.currentItem) { $item in
                     ItemCell(item: item)
                 }
             }
