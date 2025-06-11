@@ -28,10 +28,6 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         }
     }
 
-    private var isRequesting: Bool {
-        requests != 0
-    }
-
     // swiftlint:disable:next discouraged_optional_collection
     init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]?) -> Void) {
         self.service = service
