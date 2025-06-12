@@ -14,7 +14,6 @@ private struct MainView: View {
     var body: some View {
         VStack {
             ControlsView(player: player, device: device)
-            Slider(value: $player.playbackSpeed, in: player.playbackSpeedRange)
             PlaylistView(player: player, queue: player.queue)
         }
         .toolbar {
