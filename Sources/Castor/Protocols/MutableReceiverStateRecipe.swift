@@ -7,5 +7,5 @@
 import GoogleCast
 
 protocol MutableReceiverStateRecipe: ReceiverStateRecipe {
-    func makeRequest(for value: Value, completion: @escaping (Bool) -> Void) -> Bool
+    func requestUpdate(to value: Value, completion: @escaping (Bool) -> Void) -> Bool
 }

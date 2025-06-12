@@ -35,7 +35,7 @@ final class CurrentItemRecipe: NSObject, MutableReceiverStateRecipe {
         }
     }
 
-    func makeRequest(for value: GCKMediaQueueItemID, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: GCKMediaQueueItemID, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
         let request = service.queueJumpToItem(withID: value)

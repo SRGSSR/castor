@@ -30,7 +30,7 @@ final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
         return mode
     }
 
-    func makeRequest(for value: CastRepeatMode, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: CastRepeatMode, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
         let request = service.queueSetRepeatMode(value.rawMode())

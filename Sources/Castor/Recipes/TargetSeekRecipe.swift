@@ -31,7 +31,7 @@ final class TargetSeekRecipe: NSObject, MutableReceiverStateRecipe {
         nil
     }
 
-    func makeRequest(for value: CMTime?, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: CMTime?, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
         let options = GCKMediaSeekOptions()

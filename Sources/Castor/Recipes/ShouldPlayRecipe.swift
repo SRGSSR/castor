@@ -38,7 +38,7 @@ final class ShouldPlayRecipe: NSObject, MutableReceiverStateRecipe {
         }
     }
 
-    func makeRequest(for value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
         let request = Self.request(for: value, using: service)

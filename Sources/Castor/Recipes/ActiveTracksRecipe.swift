@@ -37,7 +37,7 @@ final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
         return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
     }
 
-    func makeRequest(for value: Value, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Value, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
         // swiftlint:disable:next legacy_objc_type

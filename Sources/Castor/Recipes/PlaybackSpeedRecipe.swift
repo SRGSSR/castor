@@ -29,7 +29,7 @@ final class PlaybackSpeedRecipe: NSObject, MutableReceiverStateRecipe {
         status?.playbackRate ?? defaultValue
     }
 
-    func makeRequest(for value: Float, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Float, completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
         let request = service.setPlaybackRate(value)

@@ -39,7 +39,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
 
-    func makeRequest(for value: [CastPlayerItem], completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: [CastPlayerItem], completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
 

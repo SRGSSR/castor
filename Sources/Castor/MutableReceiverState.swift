@@ -49,7 +49,7 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
     private func requestUpdate(to value: Recipe.Value) {
         guard self.value != value, let recipe else { return }
         if !isRequesting {
-            guard makeRequest(to: value, with: recipe) else { return }
+            guard requestUpdate(to: value, with: recipe) else { return }
             isRequesting = true
             self.value = value
         }
@@ -59,8 +59,8 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
         }
     }
 
-    private func makeRequest(to value: Recipe.Value, with recipe: Recipe) -> Bool {
-        recipe.makeRequest(for: value) { [weak self] success in
+    private func requestUpdate(to value: Recipe.Value, with recipe: Recipe) -> Bool {
+        recipe.requestUpdate(to: value) { [weak self] success in
             self?.completion(success)
         }
     }
@@ -78,7 +78,7 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
         }
 
         if let pendingValue {
-            if let recipe, makeRequest(to: pendingValue, with: recipe) {
+            if let recipe, requestUpdate(to: pendingValue, with: recipe) {
                 self.value = pendingValue
             }
             self.pendingValue = nil

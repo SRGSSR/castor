@@ -25,7 +25,7 @@ final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
         service.currentCastSession?.currentDeviceMuted ?? defaultValue
     }
 
-    func makeRequest(for value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
         guard let session = service.currentCastSession, session.supportsMuting() else { return false }
         self.completion = completion
         let request = session.setDeviceMuted(value)

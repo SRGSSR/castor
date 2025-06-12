@@ -25,7 +25,7 @@ final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
         service.currentCastSession?.currentDeviceVolume ?? defaultValue
     }
 
-    func makeRequest(for value: Float, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Float, completion: @escaping (Bool) -> Void) -> Bool {
         guard let session = service.currentCastSession, !session.isFixedVolume() else { return false }
         self.completion = completion
         let request = session.setDeviceVolume(value)
