@@ -29,8 +29,8 @@ public final class CastPlayer: NSObject, ObservableObject {
     @MutableReceiverState(ActiveTracksRecipe.self)
     private var _activeTracks
 
-    @MutableReceiverState(TargetSeekRecipe.self)
-    private var _targetSeek
+    @MutableReceiverState(TargetSeekTimeRecipe.self)
+    private var _targetSeekTime
 
     /// A Boolean value whether the player should play content when possible.
     public var shouldPlay: Bool {
@@ -80,7 +80,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         __repeatMode.bind(to: remoteMediaClient)
         __playbackSpeed.bind(to: remoteMediaClient)
         __activeTracks.bind(to: remoteMediaClient)
-        __targetSeek.bind(to: remoteMediaClient)
+        __targetSeekTime.bind(to: remoteMediaClient)
     }
 }
 
@@ -260,7 +260,7 @@ public extension CastPlayer {
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        _targetSeek = time
+        _targetSeekTime = time
     }
 }
 
@@ -298,7 +298,7 @@ public extension CastPlayer {
     func canSkipForward() -> Bool {
         let seekableTimeRange = seekableTimeRange()
         guard seekableTimeRange.isValidAndNotEmpty else { return false }
-        let currentTime = _targetSeek ?? time()
+        let currentTime = _targetSeekTime ?? time()
         return canSeek(to: currentTime + forwardSkipTime)
     }
 
@@ -338,13 +338,13 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Skips backward.
     func skipBackward() {
-        let currentTime = _targetSeek ?? time()
+        let currentTime = _targetSeekTime ?? time()
         seek(to: CMTimeClampToRange(currentTime + backwardSkipTime, range: seekableTimeRange()))
     }
 
     /// Skips forward.
     func skipForward() {
-        let currentTime = _targetSeek ?? time()
+        let currentTime = _targetSeekTime ?? time()
         seek(to: CMTimeClampToRange(currentTime + forwardSkipTime, range: seekableTimeRange()))
     }
 
@@ -387,7 +387,7 @@ extension CastPlayer {
 
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest3(
-            $_targetSeek,
+            $_targetSeekTime,
             objectWillChange,
             pulsePublisher(interval: interval)
         )
