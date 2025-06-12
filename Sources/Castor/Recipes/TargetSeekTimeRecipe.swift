@@ -26,8 +26,8 @@ final class TargetSeekTimeRecipe: NSObject, MutableReceiverStateRecipe {
         service.mediaStatus
     }
 
-    // TODO: This feels out of place
     static func value(from status: GCKMediaStatus?) -> CMTime? {
+        // Not seeking when updates occur normally.
         nil
     }
 
