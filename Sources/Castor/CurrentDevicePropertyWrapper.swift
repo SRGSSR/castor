@@ -83,14 +83,14 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         storage storageKeyPath: ReferenceWritableKeyPath<Instance, CurrentDevicePropertyWrapper>
     ) -> CastDevice? {
         get {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            return synchronizer.value
+            let storage = instance[keyPath: storageKeyPath]
+            storage.enclosingInstance = instance
+            return storage.value
         }
         set {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            synchronizer.requestUpdate(to: newValue)
+            let storage = instance[keyPath: storageKeyPath]
+            storage.enclosingInstance = instance
+            storage.requestUpdate(to: newValue)
         }
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 
 @propertyWrapper
 final class MutableReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
-where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private var recipe: Recipe?
 
     private var isRequesting = false
@@ -94,18 +94,18 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
         storage storageKeyPath: ReferenceWritableKeyPath<Instance, MutableReceiverStatePropertyWrapper>
     ) -> Recipe.Value {
         get {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            return synchronizer.value
+            let storage = instance[keyPath: storageKeyPath]
+            storage.enclosingInstance = instance
+            return storage.value
         }
         set {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            synchronizer.requestUpdate(to: newValue)
+            let storage = instance[keyPath: storageKeyPath]
+            storage.enclosingInstance = instance
+            storage.requestUpdate(to: newValue)
         }
     }
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias MutableReceiverState<Recipe: MutableSynchronizerRecipe> = MutableReceiverStatePropertyWrapper<Self, Recipe>
+    typealias MutableReceiverState<Recipe: MutableReceiverStateRecipe> = MutableReceiverStatePropertyWrapper<Self, Recipe>
 }

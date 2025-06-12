@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
+final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: [CastPlayerItem] = []
     
     // FIXME: Remove "unowned" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.

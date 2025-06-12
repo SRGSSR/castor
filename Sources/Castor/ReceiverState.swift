@@ -9,7 +9,7 @@ import Foundation
 
 @propertyWrapper
 final class ReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
-where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+where Recipe: ReceiverStateRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private(set) var recipe: Recipe?
 
     private weak var enclosingInstance: Instance?
@@ -51,9 +51,9 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
         storage storageKeyPath: KeyPath<Instance, ReceiverStatePropertyWrapper>
     ) -> Recipe.Value {
         get {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            return synchronizer.value
+            let storage = instance[keyPath: storageKeyPath]
+            storage.enclosingInstance = instance
+            return storage.value
         }
         // swiftlint:disable:next unused_setter_value
         set {}
@@ -61,5 +61,5 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias ReceiverState<Recipe: SynchronizerRecipe> = ReceiverStatePropertyWrapper<Self, Recipe>
+    typealias ReceiverState<Recipe: ReceiverStateRecipe> = ReceiverStatePropertyWrapper<Self, Recipe>
 }

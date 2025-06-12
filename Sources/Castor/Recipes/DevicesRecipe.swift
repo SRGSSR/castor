@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class DevicesRecipe: NSObject, SynchronizerRecipe {
+final class DevicesRecipe: NSObject, ReceiverStateRecipe {
     static let defaultValue: [CastDevice] = []
 
     private let update: ([CastDevice]) -> Void

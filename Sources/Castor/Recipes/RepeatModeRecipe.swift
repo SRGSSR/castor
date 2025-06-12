@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class RepeatModeRecipe: NSObject, MutableSynchronizerRecipe {
+final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: CastRepeatMode = .off
 
     private let service: GCKRemoteMediaClient

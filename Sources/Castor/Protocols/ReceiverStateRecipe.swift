@@ -4,7 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-protocol SynchronizerRecipe: AnyObject {
+protocol ReceiverStateRecipe: AnyObject {
     associatedtype Service
 
     associatedtype Status
@@ -18,7 +18,7 @@ protocol SynchronizerRecipe: AnyObject {
     static func value(from status: Status) -> Value
 }
 
-extension SynchronizerRecipe {
+extension ReceiverStateRecipe {
     static func value(from service: Service) -> Value {
         value(from: status(from: service))
     }
@@ -29,7 +29,7 @@ extension SynchronizerRecipe {
     }
 }
 
-extension SynchronizerRecipe where Status == Value {
+extension ReceiverStateRecipe where Status == Value {
     static func value(from status: Status) -> Value {
         status
     }

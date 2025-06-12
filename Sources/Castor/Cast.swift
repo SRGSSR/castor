@@ -16,6 +16,17 @@ public final class Cast: NSObject, ObservableObject {
 
     private let context = GCKCastContext.sharedInstance()
 
+    @ReceiverState(DevicesRecipe.self)
+    private var _devices
+
+    @CurrentDevice private var _currentDevice: CastDevice?
+
+    @MutableReceiverState(VolumeRecipe.self)
+    private var _volume
+
+    @MutableReceiverState(MutedRecipe.self)
+    private var _isMuted
+
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
@@ -29,25 +40,14 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    @ReceiverState(DevicesRecipe.self)
-    private var synchronizedDevices
-
-    @CurrentDevice private var synchronizedCurrentDevice: CastDevice?
-
-    @MutableReceiverState(VolumeRecipe.self)
-    private var synchronizedVolume
-
-    @MutableReceiverState(MutedRecipe.self)
-    private var synchronizedIsMuted
-
     /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
         get {
-            synchronizedIsMuted || synchronizedVolume == 0
+            _isMuted || _volume == 0
         }
         set {
-            guard synchronizedIsMuted != newValue || volume == 0 else { return }
-            synchronizedIsMuted = newValue
+            guard _isMuted != newValue || volume == 0 else { return }
+            _isMuted = newValue
             if !newValue, volume == 0 {
                 volume = 0.1
             }
@@ -59,11 +59,11 @@ public final class Cast: NSObject, ObservableObject {
     /// Valid values range from 0 (silent) to 1 (maximum volume).
     public var volume: Float {
         get {
-            synchronizedVolume
+            _volume
         }
         set {
-            guard synchronizedVolume != newValue else { return }
-            synchronizedVolume = newValue
+            guard _volume != newValue else { return }
+            _volume = newValue
         }
     }
 
@@ -87,13 +87,13 @@ public final class Cast: NSObject, ObservableObject {
     /// Ends the session if set to `nil`. Does nothing if the device does not belong to the device list.
     public var currentDevice: CastDevice? {
         get {
-            synchronizedCurrentDevice
+            _currentDevice
         }
         set {
             if let newValue, !devices.contains(newValue) {
                 return
             }
-            synchronizedCurrentDevice = newValue
+            _currentDevice = newValue
         }
     }
 
@@ -102,7 +102,7 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The devices found in the local network.
     public var devices: [CastDevice] {
-        synchronizedDevices
+        _devices
     }
 
     /// The connection state to a device.
@@ -118,13 +118,13 @@ public final class Cast: NSObject, ObservableObject {
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
-        _synchronizedCurrentDevice = .init(service: context.sessionManager)
+        __currentDevice = .init(service: context.sessionManager)
 
         super.init()
 
-        _synchronizedDevices.bind(to: context.discoveryManager)
-        _synchronizedVolume.bind(to: context.sessionManager)
-        _synchronizedIsMuted.bind(to: context.sessionManager)
+        __devices.bind(to: context.discoveryManager)
+        __volume.bind(to: context.sessionManager)
+        __isMuted.bind(to: context.sessionManager)
 
         context.sessionManager.add(self)
 

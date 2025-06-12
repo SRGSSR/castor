@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class VolumeRecipe: NSObject, MutableSynchronizerRecipe {
+final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: Float = 0
 
     private let service: GCKSessionManager

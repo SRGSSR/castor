@@ -6,6 +6,6 @@
 
 import GoogleCast
 
-protocol MutableSynchronizerRecipe: SynchronizerRecipe {
+protocol MutableReceiverStateRecipe: ReceiverStateRecipe {
     func makeRequest(for value: Value, completion: @escaping (Bool) -> Void) -> Bool
 }

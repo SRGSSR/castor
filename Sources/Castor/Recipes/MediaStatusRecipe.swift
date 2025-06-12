@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class MediaStatusRecipe: NSObject, SynchronizerRecipe {
+final class MediaStatusRecipe: NSObject, ReceiverStateRecipe {
     static let defaultValue: GCKMediaStatus? = nil
 
     private let update: (GCKMediaStatus?) -> Void

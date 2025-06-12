@@ -11,13 +11,19 @@ import SwiftUI
 public final class CastQueue: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
+    @MutableReceiverState(ItemsRecipe.self)
+    private var _items
+
+    @MutableReceiverState(CurrentItemRecipe.self)
+    private var _currentItemId
+
     /// The items in the queue.
     public var items: [CastPlayerItem] {
         get {
-            synchronizedItems
+            _items
         }
         set {
-            synchronizedItems = newValue
+            _items = newValue
         }
     }
 
@@ -31,25 +37,19 @@ public final class CastQueue: NSObject, ObservableObject {
     /// Does nothing if set to `nil` or to an item that does not belong to the list.
     public var currentItem: CastPlayerItem? {
         get {
-            items.first { $0.id == synchronizedCurrentItemId }
+            items.first { $0.id == _currentItemId }
         }
         set {
             guard let newValue, items.contains(newValue) else { return }
-            synchronizedCurrentItemId = newValue.id
+            _currentItemId = newValue.id
         }
     }
-
-    @MutableReceiverState(ItemsRecipe.self)
-    private var synchronizedItems
-
-    @MutableReceiverState(CurrentItemRecipe.self)
-    private var synchronizedCurrentItemId
 
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
         super.init()
-        _synchronizedItems.bind(to: remoteMediaClient)
-        _synchronizedCurrentItemId.bind(to: remoteMediaClient)
+        __items.bind(to: remoteMediaClient)
+        __currentItemId.bind(to: remoteMediaClient)
     }
 }
 

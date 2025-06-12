@@ -15,40 +15,40 @@ public final class CastPlayer: NSObject, ObservableObject {
     private let remoteMediaClient: GCKRemoteMediaClient
 
     @ReceiverState(MediaStatusRecipe.self)
-    private var synchronizedMediaStatus
+    private var _mediaStatus
 
     @MutableReceiverState(ShouldPlayRecipe.self)
-    private var synchronizedShouldPlay
+    private var _shouldPlay
 
     @MutableReceiverState(RepeatModeRecipe.self)
-    private var synchronizedRepeatMode
+    private var _repeatMode
 
     @MutableReceiverState(PlaybackSpeedRecipe.self)
-    private var synchronizedPlaybackSpeed
+    private var _playbackSpeed
 
     @MutableReceiverState(ActiveTracksRecipe.self)
-    private var synchronizedActiveTracks
+    private var _activeTracks
 
     @MutableReceiverState(TargetSeekRecipe.self)
-    private var synchronizedTargetSeek
+    private var _targetSeek
 
     /// A Boolean value whether the player should play content when possible.
     public var shouldPlay: Bool {
         get {
-            synchronizedShouldPlay
+            _shouldPlay
         }
         set {
-            synchronizedShouldPlay = newValue
+            _shouldPlay = newValue
         }
     }
 
     /// The mode with which the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
         get {
-            synchronizedRepeatMode
+            _repeatMode
         }
         set {
-            synchronizedRepeatMode = newValue
+            _repeatMode = newValue
         }
     }
 
@@ -75,12 +75,12 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         super.init()
 
-        _synchronizedMediaStatus.bind(to: remoteMediaClient)
-        _synchronizedShouldPlay.bind(to: remoteMediaClient)
-        _synchronizedRepeatMode.bind(to: remoteMediaClient)
-        _synchronizedPlaybackSpeed.bind(to: remoteMediaClient)
-        _synchronizedActiveTracks.bind(to: remoteMediaClient)
-        _synchronizedTargetSeek.bind(to: remoteMediaClient)
+        __mediaStatus.bind(to: remoteMediaClient)
+        __shouldPlay.bind(to: remoteMediaClient)
+        __repeatMode.bind(to: remoteMediaClient)
+        __playbackSpeed.bind(to: remoteMediaClient)
+        __activeTracks.bind(to: remoteMediaClient)
+        __targetSeek.bind(to: remoteMediaClient)
     }
 }
 
@@ -109,16 +109,16 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The currently allowed playback speed range.
     var playbackSpeedRange: ClosedRange<Float> {
-        synchronizedMediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
+        _mediaStatus?.mediaInformation?.streamType == .buffered ? 0.5...2 : 1...1
     }
 
     /// The currently applicable playback speed.
     var playbackSpeed: Float {
         get {
-            synchronizedPlaybackSpeed
+            _playbackSpeed
         }
         set {
-            synchronizedPlaybackSpeed = newValue
+            _playbackSpeed = newValue
         }
     }
 }
@@ -126,7 +126,7 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// The set of media characteristics for which a media selection is available.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
-        Set(Self.tracks(from: synchronizedMediaStatus).compactMap(\.mediaCharacteristic))
+        Set(Self.tracks(from: _mediaStatus).compactMap(\.mediaCharacteristic))
     }
 
     private static func tracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
@@ -143,7 +143,7 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var activeTracks = synchronizedActiveTracks
+        var activeTracks = _activeTracks
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
         case .off:
@@ -151,7 +151,7 @@ public extension CastPlayer {
         case let .on(track):
             activeTracks.append(track)
         }
-        synchronizedActiveTracks = activeTracks
+        _activeTracks = activeTracks
     }
 
     /// The list of media options associated with a characteristic.
@@ -161,7 +161,7 @@ public extension CastPlayer {
     ///
     /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
-        let tracks = Self.tracks(from: synchronizedMediaStatus).filter { $0.mediaCharacteristic == characteristic }
+        let tracks = Self.tracks(from: _mediaStatus).filter { $0.mediaCharacteristic == characteristic }
         switch characteristic {
         case .audible where tracks.count > 1:
             return tracks.map { .on($0) }
@@ -207,7 +207,7 @@ public extension CastPlayer {
     func currentMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         switch characteristic {
         case .audible, .legible:
-            guard let track = synchronizedActiveTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
+            guard let track = _activeTracks.first(where: { $0.mediaCharacteristic == characteristic }) else { return .off }
             return .on(track)
         default:
             return .off
@@ -218,12 +218,12 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Player state.
     var state: GCKMediaPlayerState {
-        synchronizedMediaStatus?.playerState ?? .unknown
+        _mediaStatus?.playerState ?? .unknown
     }
 
     /// Media information.
     var mediaInformation: GCKMediaInformation? {
-        synchronizedMediaStatus?.mediaInformation
+        _mediaStatus?.mediaInformation
     }
 
     /// Returns if the player is busy.
@@ -260,7 +260,7 @@ public extension CastPlayer {
     ///
     /// - Parameter time: The time to reach.
     func seek(to time: CMTime) {
-        synchronizedTargetSeek = time
+        _targetSeek = time
     }
 }
 
@@ -298,7 +298,7 @@ public extension CastPlayer {
     func canSkipForward() -> Bool {
         let seekableTimeRange = seekableTimeRange()
         guard seekableTimeRange.isValidAndNotEmpty else { return false }
-        let currentTime = synchronizedTargetSeek ?? time()
+        let currentTime = _targetSeek ?? time()
         return canSeek(to: currentTime + forwardSkipTime)
     }
 
@@ -338,13 +338,13 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Skips backward.
     func skipBackward() {
-        let currentTime = synchronizedTargetSeek ?? time()
+        let currentTime = _targetSeek ?? time()
         seek(to: CMTimeClampToRange(currentTime + backwardSkipTime, range: seekableTimeRange()))
     }
 
     /// Skips forward.
     func skipForward() {
-        let currentTime = synchronizedTargetSeek ?? time()
+        let currentTime = _targetSeek ?? time()
         seek(to: CMTimeClampToRange(currentTime + forwardSkipTime, range: seekableTimeRange()))
     }
 
@@ -387,7 +387,7 @@ extension CastPlayer {
 
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest3(
-            $synchronizedTargetSeek,
+            $_targetSeek,
             objectWillChange,
             pulsePublisher(interval: interval)
         )
