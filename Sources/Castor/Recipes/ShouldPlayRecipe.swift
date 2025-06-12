@@ -29,12 +29,12 @@ final class ShouldPlayRecipe: NSObject, MutableSynchronizerRecipe {
         status?.playerState == .playing
     }
 
-    private static func request(for value: Bool, using service: GCKRemoteMediaClient) -> GCKRequest {
+    private static func request(for value: Bool, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
         if value {
-            return service.play()
+            return remoteMediaClient.play()
         }
         else {
-            return service.pause()
+            return remoteMediaClient.pause()
         }
     }
 

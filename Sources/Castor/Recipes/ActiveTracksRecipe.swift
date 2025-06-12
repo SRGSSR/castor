@@ -26,15 +26,7 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
     }
 
     static func value(from status: GCKMediaStatus?) -> [CastMediaTrack] {
-        Self.activeTracks(from: status)
-    }
-
-    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
-            return []
-        }
-        // swiftlint:disable:next legacy_objc_type
-        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
+        activeTracks(from: status)
     }
 
     func makeRequest(for value: Value, completion: @escaping (Bool) -> Void) -> Bool {
@@ -44,6 +36,14 @@ final class ActiveTracksRecipe: NSObject, MutableSynchronizerRecipe {
         let request = service.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
         request.delegate = self
         return true
+    }
+
+    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
+            return []
+        }
+        // swiftlint:disable:next legacy_objc_type
+        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
     }
 }
 
