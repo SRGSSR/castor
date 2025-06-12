@@ -40,7 +40,14 @@ final class PlaybackSpeedRecipe: NSObject, MutableReceiverStateRecipe {
 
 extension PlaybackSpeedRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        update(mediaStatus)
+        // Trigger an update to an appropriate speed if required. This most notably avoids speeds > 1 being applied
+        // to livestreams during playlist item transitions.
+        if let mediaStatus, mediaStatus.mediaInformation?.streamType == .live, mediaStatus.playbackRate != Self.defaultValue  {
+            service.setPlaybackRate(Self.defaultValue)
+        }
+        else {
+            update(mediaStatus)
+        }
     }
 }
 
