@@ -153,12 +153,6 @@ public final class Cast: NSObject, ObservableObject {
     public func isCasting(on device: CastDevice) -> Bool {
         currentDevice == device
     }
-
-    deinit {
-        _synchronizedDevices.detach()
-        _synchronizedVolume.detach()
-        _synchronizedIsMuted.detach()
-    }
 }
 
 extension Cast: GCKSessionManagerListener {

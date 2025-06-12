@@ -8,93 +8,62 @@ import Combine
 import GoogleCast
 
 @propertyWrapper
-final class CurrentDevicePropertyWrapper<Instance>: NSObject, GCKSessionManagerListener
+final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    private let service: GCKSessionManager
+    private let id: GCKMediaQueueItemID
+
+    // FIXME: Remove "unowned" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
+    private unowned let queue: GCKMediaQueue            // Avoid cyclic reference due to the media queue delegate being retained.
+    
     private weak var enclosingInstance: Instance?
-    private var targetValue: CastDevice?
 
     @available(*, unavailable, message: "This property wrapper can only be applied to classes")
-    var wrappedValue: CastDevice? {
-        get { fatalError("Not available") }
-        // swiftlint:disable:next unused_setter_value
-        set { fatalError("Not available") }
+    var wrappedValue: GCKMediaQueueItem? {
+        fatalError("Not available")
     }
 
-    @Published private var value: CastDevice? {
+    @Published private var value: GCKMediaQueueItem? {
         willSet {
             enclosingInstance?.objectWillChange.send()
         }
     }
 
-    init(service: GCKSessionManager) {
-        self.service = service
+    init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
+        self.id = id
+        self.queue = queue
         super.init()
-        value = Self.device(from: service.currentCastSession)
-        service.add(self)
+        value = queue.item(at: id, fetchIfNeeded: false)
+        queue.add(self)        // The delegate is retained.
     }
 
-    private static func device(from session: GCKCastSession?) -> CastDevice? {
-        session?.device.toCastDevice()
+    func fetch() {
+        queue.item(withID: id)
     }
 
-    private func requestUpdate(to value: CastDevice?) {
-        guard self.value != value else { return }
-        if let value {
-            if self.value != nil {
-                targetValue = value
-                service.endSession()
-            }
-            else {
-                service.startSession(with: value.rawDevice)
-            }
+    // swiftlint:disable:next legacy_objc_type
+    func mediaQueue(_ queue: GCKMediaQueue, didUpdateItemsAtIndexes indexes: [NSNumber]) {
+        // swiftlint:disable:next legacy_objc_type
+        let index = NSNumber(value: queue.indexOfItem(withID: id))
+        if indexes.contains(index), let item = queue.item(withID: id, fetchIfNeeded: false) {
+            value = item
         }
-        else {
-            service.endSession()
-        }
-        self.value = value
-    }
-
-    func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
-        value = Self.device(from: session)
-    }
-
-    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
-        if let targetValue {
-            service.startSession(with: targetValue.rawDevice)
-            self.targetValue = nil
-        }
-        else {
-            value = nil
-        }
-    }
-
-    func sessionManager(
-        _ sessionManager: GCKSessionManager,
-        didFailToStart session: GCKCastSession,
-        withError error: any Error
-    ) {
-        value = nil
     }
 
     static subscript(
         _enclosingInstance instance: Instance,
-        wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, CastDevice?>,
-        storage storageKeyPath: ReferenceWritableKeyPath<Instance, CurrentDevicePropertyWrapper>
-    ) -> CastDevice? {
+        wrapped wrappedKeyPath: KeyPath<Instance, GCKMediaQueueItem?>,
+        storage storageKeyPath: KeyPath<Instance, LazyItemPropertyWrapper>
+    ) -> GCKMediaQueueItem? {
         get {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            return synchronizer.value
+            let wrapper = instance[keyPath: storageKeyPath]
+            wrapper.enclosingInstance = instance
+            return wrapper.value
         }
-        set {
-            let synchronizer = instance[keyPath: storageKeyPath]
-            synchronizer.enclosingInstance = instance
-            synchronizer.requestUpdate(to: newValue)
-        }
+        // swiftlint:disable:next unused_setter_value
+        set {}
     }
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias CurrentDevice = CurrentDevicePropertyWrapper<Self>
+    typealias LazyItem = LazyItemPropertyWrapper<Self>
 }

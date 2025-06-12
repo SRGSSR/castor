@@ -8,8 +8,9 @@ import GoogleCast
 
 final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
     static let defaultValue: [CastPlayerItem] = []
-
-    private let service: GCKRemoteMediaClient
+    
+    // FIXME: Remove "unowned" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
+    private unowned let service: GCKRemoteMediaClient       // Avoid cyclic reference due to the media queue delegate being retained.
 
     private let update: ([CastPlayerItem]) -> Void
     private var completion: ((Bool) -> Void)?
@@ -31,7 +32,7 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         self.service = service
         self.update = update
         super.init()
-        service.mediaQueue.add(self)     // The delegate is retained
+        service.mediaQueue.add(self)        // The delegate is retained.
     }
 
     static func status(from service: GCKRemoteMediaClient) -> [CastPlayerItem] {
@@ -57,10 +58,6 @@ final class ItemsRecipe: NSObject, MutableSynchronizerRecipe {
         )
         reorderRequest.delegate = self
         return true
-    }
-
-    func detach() {
-        service.mediaQueue.remove(self)
     }
 }
 

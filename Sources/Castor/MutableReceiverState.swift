@@ -46,12 +46,6 @@ where Recipe: MutableSynchronizerRecipe, Instance: ObservableObject, Instance.Ob
         value = Recipe.value(from: service)
     }
 
-    func detach() {
-        recipe?.detach()
-        recipe = nil
-        value = Recipe.defaultValue
-    }
-
     private func requestUpdate(to value: Recipe.Value) {
         guard self.value != value, let recipe else { return }
         if !isRequesting {

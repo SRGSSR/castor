@@ -16,12 +16,6 @@ protocol SynchronizerRecipe: AnyObject {
 
     static func status(from service: Service) -> Status
     static func value(from status: Status) -> Value
-
-    func detach()
-}
-
-extension SynchronizerRecipe {
-    func detach() {}
 }
 
 extension SynchronizerRecipe {
