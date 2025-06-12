@@ -14,7 +14,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
 
     // FIXME: Remove "unowned" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
     private unowned let queue: GCKMediaQueue            // Avoid cyclic reference due to the media queue delegate being retained.
-    
+
     private weak var enclosingInstance: Instance?
 
     @available(*, unavailable, message: "This property wrapper can only be applied to classes")

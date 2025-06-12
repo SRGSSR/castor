@@ -42,7 +42,7 @@ extension PlaybackSpeedRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         // Trigger an update to an appropriate speed if required. This most notably avoids speeds > 1 being applied
         // to livestreams during playlist item transitions.
-        if let mediaStatus, mediaStatus.mediaInformation?.streamType == .live, mediaStatus.playbackRate != Self.defaultValue  {
+        if let mediaStatus, mediaStatus.mediaInformation?.streamType == .live, mediaStatus.playbackRate != Self.defaultValue {
             service.setPlaybackRate(Self.defaultValue)
         }
         else {
