@@ -14,7 +14,7 @@ public final class CastQueue: NSObject, ObservableObject {
     @MutableReceiverState(ItemsRecipe.self)
     private var _items
 
-    @MutableReceiverState(CurrentItemRecipe.self)
+    @MutableReceiverState(CurrentItemIdRecipe.self)
     private var _currentItemId
 
     /// The items in the queue.
