@@ -122,9 +122,9 @@ public final class Cast: NSObject, ObservableObject {
 
         super.init()
 
-        _synchronizedDevices.attach(to: context.discoveryManager)
-        _synchronizedVolume.attach(to: context.sessionManager)
-        _synchronizedIsMuted.attach(to: context.sessionManager)
+        _synchronizedDevices.bind(to: context.discoveryManager)
+        _synchronizedVolume.bind(to: context.sessionManager)
+        _synchronizedIsMuted.bind(to: context.sessionManager)
 
         context.sessionManager.add(self)
 

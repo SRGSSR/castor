@@ -48,8 +48,8 @@ public final class CastQueue: NSObject, ObservableObject {
     init(remoteMediaClient: GCKRemoteMediaClient) {
         self.remoteMediaClient = remoteMediaClient
         super.init()
-        _synchronizedItems.attach(to: remoteMediaClient)
-        _synchronizedCurrentItemId.attach(to: remoteMediaClient)
+        _synchronizedItems.bind(to: remoteMediaClient)
+        _synchronizedCurrentItemId.bind(to: remoteMediaClient)
     }
 }
 

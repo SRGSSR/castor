@@ -75,12 +75,12 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         super.init()
 
-        _synchronizedMediaStatus.attach(to: remoteMediaClient)
-        _synchronizedShouldPlay.attach(to: remoteMediaClient)
-        _synchronizedRepeatMode.attach(to: remoteMediaClient)
-        _synchronizedPlaybackSpeed.attach(to: remoteMediaClient)
-        _synchronizedActiveTracks.attach(to: remoteMediaClient)
-        _synchronizedTargetSeek.attach(to: remoteMediaClient)
+        _synchronizedMediaStatus.bind(to: remoteMediaClient)
+        _synchronizedShouldPlay.bind(to: remoteMediaClient)
+        _synchronizedRepeatMode.bind(to: remoteMediaClient)
+        _synchronizedPlaybackSpeed.bind(to: remoteMediaClient)
+        _synchronizedActiveTracks.bind(to: remoteMediaClient)
+        _synchronizedTargetSeek.bind(to: remoteMediaClient)
     }
 }
 

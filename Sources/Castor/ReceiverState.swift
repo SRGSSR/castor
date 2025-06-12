@@ -33,7 +33,7 @@ where Recipe: SynchronizerRecipe, Instance: ObservableObject, Instance.ObjectWil
         self.value = Recipe.defaultValue
     }
 
-    func attach(to service: Recipe.Service) {
+    func bind(to service: Recipe.Service) {
         let recipe = Recipe(service: service) { [weak self] status in
             self?.update(with: status)
         }
