@@ -12,7 +12,7 @@ import SwiftUI
 
 /// A cast player.
 public final class CastPlayer: NSObject, ObservableObject {
-    private let remoteMediaClient: GCKRemoteMediaClient
+    let remoteMediaClient: GCKRemoteMediaClient
 
     @ReceiverState(MediaStatusRecipe.self)
     private var _mediaStatus
@@ -31,6 +31,25 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     @MutableReceiverState(TargetSeekTimeRecipe.self)
     private var _targetSeekTime
+
+    @MutableReceiverState(ItemsRecipe.self)
+    private var _items
+
+    @MutableReceiverState(CurrentItemIdRecipe.self)
+    private var _currentItemId
+
+    /// The current item.
+    ///
+    /// Does nothing if set to `nil` or to an item that does not belong to the list.
+    public var currentItem: CastPlayerItem? {
+        get {
+            items.first { $0.id == _currentItemId }
+        }
+        set {
+            guard let newValue, items.contains(newValue) else { return }
+            _currentItemId = newValue.id
+        }
+    }
 
     /// A Boolean value whether the player should play content when possible.
     public var shouldPlay: Bool {
@@ -60,8 +79,20 @@ public final class CastPlayer: NSObject, ObservableObject {
         remoteMediaClient.canMakeRequest()
     }
 
-    /// The queue managing player items.
-    public let queue: CastQueue
+    /// The items in the queue.
+    public var items: [CastPlayerItem] {
+        get {
+            _items
+        }
+        set {
+            _items = newValue
+        }
+    }
+
+    /// A Boolean indicating if the queue is empty.
+    public var isEmpty: Bool {
+        items.isEmpty
+    }
 
     var configuration: CastConfiguration
 
@@ -71,8 +102,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
 
-        queue = .init(remoteMediaClient: remoteMediaClient)
-
         super.init()
 
         __mediaStatus.bind(to: remoteMediaClient)
@@ -81,6 +110,8 @@ public final class CastPlayer: NSObject, ObservableObject {
         __playbackSpeed.bind(to: remoteMediaClient)
         __activeTracks.bind(to: remoteMediaClient)
         __targetSeekTime.bind(to: remoteMediaClient)
+        __items.bind(to: remoteMediaClient)
+        __currentItemId.bind(to: remoteMediaClient)
     }
 }
 
