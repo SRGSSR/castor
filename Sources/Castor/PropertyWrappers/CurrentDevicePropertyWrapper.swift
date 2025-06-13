@@ -41,18 +41,22 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     private func requestUpdate(to value: CastDevice?) {
         guard self.value != value else { return }
         if let value {
-            if self.value != nil {
-                targetValue = value
-                service.endSession()
-            }
-            else {
-                service.startSession(with: value.rawDevice)
-            }
+            moveSession(from: self.value, to: value)
         }
         else {
             service.endSession()
         }
         self.value = value
+    }
+
+    private func moveSession(from previousValue: CastDevice?, to currentValue: CastDevice) {
+        if previousValue != nil {
+            targetValue = currentValue
+            service.endSession()
+        }
+        else {
+            service.startSession(with: currentValue.rawDevice)
+        }
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
