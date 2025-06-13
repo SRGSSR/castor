@@ -8,7 +8,7 @@ import GoogleCast
 import SwiftUI
 
 public extension CastPlayer {
-    /// The items in the queue.
+    /// The items queued by the player.
     var items: [CastPlayerItem] {
         get {
             _items
