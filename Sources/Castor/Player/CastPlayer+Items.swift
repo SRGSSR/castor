@@ -194,34 +194,6 @@ public extension CastPlayer {
     }
 }
 
-public extension CastPlayer {
-    /// Checks whether returning to the previous item in the queue is possible.
-    ///
-    /// - Returns: `true` if possible.
-    func canReturnToPreviousItem() -> Bool {
-        !items.isEmpty && currentItem?.id != items.first?.id
-    }
-
-    /// Returns to the previous item in the queue.
-    func returnToPreviousItem() {
-        guard canReturnToPreviousItem(), let currentItem, let previousIndex = Self.index(before: currentItem, in: items) else { return }
-        self.currentItem = items[previousIndex]
-    }
-
-    /// Checks whether moving to the next item in the queue is possible.
-    ///
-    /// - Returns: `true` if possible.
-    func canAdvanceToNextItem() -> Bool {
-        !items.isEmpty && currentItem?.id != items.last?.id
-    }
-
-    /// Moves to the next item in the queue.
-    func advanceToNextItem() {
-        guard canAdvanceToNextItem(), let currentItem, let nextIndex = Self.index(after: currentItem, in: items) else { return }
-        self.currentItem = items[nextIndex]
-    }
-}
-
 private extension CastPlayer {
     func canMove(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
         guard items.contains(item) else { return false }
@@ -248,7 +220,7 @@ private extension CastPlayer {
     }
 }
 
-private extension CastPlayer {
+extension CastPlayer {
     static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
         guard let itemIndex = items.firstIndex(of: item) else { return nil }
         let nextIndex = items.index(after: itemIndex)
