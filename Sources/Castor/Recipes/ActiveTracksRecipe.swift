@@ -34,7 +34,7 @@ final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
             return []
         }
         // swiftlint:disable:next legacy_objc_type
-        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map { .init(rawTrack: $0) }
+        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map(CastMediaTrack.init)
     }
 
     func requestUpdate(to value: Value, completion: @escaping (Bool) -> Void) -> Bool {
