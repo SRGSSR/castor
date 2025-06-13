@@ -30,12 +30,7 @@ final class ShouldPlayRecipe: NSObject, MutableReceiverStateRecipe {
     }
 
     private static func request(for value: Bool, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
-        if value {
-            return remoteMediaClient.play()
-        }
-        else {
-            return remoteMediaClient.pause()
-        }
+        value ? remoteMediaClient.play() : remoteMediaClient.pause()
     }
 
     func requestUpdate(to value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
