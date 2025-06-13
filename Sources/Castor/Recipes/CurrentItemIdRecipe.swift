@@ -27,12 +27,7 @@ final class CurrentItemIdRecipe: NSObject, MutableReceiverStateRecipe {
 
     static func value(from status: GCKMediaStatus?) -> GCKMediaQueueItemID {
         guard let status else { return kGCKMediaQueueInvalidItemID }
-        if status.loadingItemID != kGCKMediaQueueInvalidItemID {
-            return status.loadingItemID
-        }
-        else {
-            return status.currentItemID
-        }
+        return status.loadingItemID != kGCKMediaQueueInvalidItemID ? status.loadingItemID : status.currentItemID
     }
 
     func requestUpdate(to value: GCKMediaQueueItemID, completion: @escaping (Bool) -> Void) -> Bool {
