@@ -8,6 +8,16 @@ import GoogleCast
 import SwiftUI
 
 public extension CastPlayer {
+    /// The items in the queue.
+    var items: [CastPlayerItem] {
+        get {
+            _items
+        }
+        set {
+            _items = newValue
+        }
+    }
+
     private static func rawItems(from assets: [CastAsset]) -> [GCKMediaQueueItem] {
         assets.map { $0.rawItem() }
     }
