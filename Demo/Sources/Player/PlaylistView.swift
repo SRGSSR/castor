@@ -40,7 +40,6 @@ private struct ItemCell: View {
 
 struct PlaylistView: View {
     @ObservedObject var player: CastPlayer
-    @ObservedObject var queue: CastQueue
     @State private var isSelectionPresented = false
 
     var body: some View {
@@ -64,8 +63,8 @@ struct PlaylistView: View {
 
     private func list() -> some View {
         ZStack {
-            if !queue.items.isEmpty {
-                List($queue.items, id: \.self, editActions: .all, selection: $queue.currentItem) { $item in
+            if !player.items.isEmpty {
+                List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
                     ItemCell(item: item)
                 }
             }
@@ -73,16 +72,16 @@ struct PlaylistView: View {
                 MessageView(message: "No items", icon: .none)
             }
         }
-        .animation(.linear, value: queue.items)
+        .animation(.linear, value: player.items)
     }
 }
 
 private extension PlaylistView {
     func previousButton() -> some View {
-        Button(action: queue.returnToPreviousItem) {
+        Button(action: player.returnToPreviousItem) {
             Image(systemName: "arrow.left")
         }
-        .disabled(!queue.canReturnToPreviousItem())
+        .disabled(!player.canReturnToPreviousItem())
     }
 
     func managementButtons() -> some View {
@@ -96,10 +95,10 @@ private extension PlaylistView {
     }
 
     func nextButton() -> some View {
-        Button(action: queue.advanceToNextItem) {
+        Button(action: player.advanceToNextItem) {
             Image(systemName: "arrow.right")
         }
-        .disabled(!queue.canAdvanceToNextItem())
+        .disabled(!player.canAdvanceToNextItem())
     }
 }
 
@@ -137,11 +136,11 @@ private extension PlaylistView {
 private extension PlaylistView {
     func shuffleButton() -> some View {
         Button {
-            queue.items.shuffle()
+            player.items.shuffle()
         } label: {
             Image(systemName: "shuffle")
         }
-        .disabled(queue.isEmpty)
+        .disabled(player.items.isEmpty)
     }
 
     func addButton() -> some View {
@@ -152,15 +151,15 @@ private extension PlaylistView {
         }
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
-                PlaylistSelectionView(queue: queue)
+                PlaylistSelectionView(player: player)
             }
         }
     }
 
     func trashButton() -> some View {
-        Button(action: queue.removeAllItems) {
+        Button(action: player.removeAllItems) {
             Image(systemName: "trash")
         }
-        .disabled(queue.isEmpty)
+        .disabled(player.items.isEmpty)
     }
 }

@@ -7,18 +7,9 @@
 import GoogleCast
 import SwiftUI
 
-/// A queue managing player items.
-public final class CastQueue: NSObject, ObservableObject {
-    private let remoteMediaClient: GCKRemoteMediaClient
-
-    @MutableReceiverState(ItemsRecipe.self)
-    private var _items
-
-    @MutableReceiverState(CurrentItemIdRecipe.self)
-    private var _currentItemId
-
-    /// The items in the queue.
-    public var items: [CastPlayerItem] {
+public extension CastPlayer {
+    /// The items queued by the player.
+    var items: [CastPlayerItem] {
         get {
             _items
         }
@@ -27,33 +18,6 @@ public final class CastQueue: NSObject, ObservableObject {
         }
     }
 
-    /// A Boolean indicating if the queue is empty.
-    public var isEmpty: Bool {
-        items.isEmpty
-    }
-
-    /// The current item.
-    ///
-    /// Does nothing if set to `nil` or to an item that does not belong to the list.
-    public var currentItem: CastPlayerItem? {
-        get {
-            items.first { $0.id == _currentItemId }
-        }
-        set {
-            guard let newValue, items.contains(newValue) else { return }
-            _currentItemId = newValue.id
-        }
-    }
-
-    init(remoteMediaClient: GCKRemoteMediaClient) {
-        self.remoteMediaClient = remoteMediaClient
-        super.init()
-        __items.bind(to: remoteMediaClient)
-        __currentItemId.bind(to: remoteMediaClient)
-    }
-}
-
-public extension CastQueue {
     private static func rawItems(from assets: [CastAsset]) -> [GCKMediaQueueItem] {
         assets.map { $0.rawItem() }
     }
@@ -170,7 +134,7 @@ public extension CastQueue {
     }
 }
 
-public extension CastQueue {
+public extension CastPlayer {
     /// Removes an item from the queue.
     ///
     /// - Parameter item: The item to remove.
@@ -184,7 +148,7 @@ public extension CastQueue {
     }
 }
 
-public extension CastQueue {
+public extension CastPlayer {
     /// Moves an item before another one.
     ///
     /// - Parameters:
@@ -230,7 +194,7 @@ public extension CastQueue {
     }
 }
 
-public extension CastQueue {
+public extension CastPlayer {
     /// Checks whether returning to the previous item in the queue is possible.
     ///
     /// - Returns: `true` if possible.
@@ -258,7 +222,7 @@ public extension CastQueue {
     }
 }
 
-private extension CastQueue {
+private extension CastPlayer {
     func canMove(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
         guard items.contains(item) else { return false }
         if let beforeItem {
@@ -284,7 +248,7 @@ private extension CastQueue {
     }
 }
 
-private extension CastQueue {
+private extension CastPlayer {
     static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
         guard let itemIndex = items.firstIndex(of: item) else { return nil }
         let nextIndex = items.index(after: itemIndex)
