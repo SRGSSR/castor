@@ -140,7 +140,7 @@ private extension PlaylistView {
         } label: {
             Image(systemName: "shuffle")
         }
-        .disabled(player.isEmpty)
+        .disabled(player.items.isEmpty)
     }
 
     func addButton() -> some View {
@@ -160,6 +160,6 @@ private extension PlaylistView {
         Button(action: player.removeAllItems) {
             Image(systemName: "trash")
         }
-        .disabled(player.isEmpty)
+        .disabled(player.items.isEmpty)
     }
 }

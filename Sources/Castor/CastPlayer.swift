@@ -89,11 +89,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
     }
 
-    /// A Boolean indicating if the queue is empty.
-    public var isEmpty: Bool {
-        items.isEmpty
-    }
-
     var configuration: CastConfiguration
 
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
