@@ -4,6 +4,10 @@
 //  License information is available from the LICENSE file.
 //
 
-protocol ChangeDelegate: AnyObject {
-    func didChange()
+import GoogleCast
+
+extension GCKMediaStatus {
+    var isConnected: Bool {
+        queueItemCount != 0
+    }
 }

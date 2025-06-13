@@ -8,7 +8,7 @@ import Castor
 import SwiftUI
 
 struct SettingsMenu: View {
-    let player: CastPlayer
+    @ObservedObject var player: CastPlayer
 
     var body: some View {
         Menu {
@@ -18,5 +18,6 @@ struct SettingsMenu: View {
                 .font(.system(size: 20))
         }
         .menuOrder(.fixed)
+        .disabled(!player.isActive)
     }
 }

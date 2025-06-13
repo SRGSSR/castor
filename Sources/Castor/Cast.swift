@@ -16,16 +16,22 @@ public final class Cast: NSObject, ObservableObject {
 
     private let context = GCKCastContext.sharedInstance()
 
+    @ReceiverState(DevicesRecipe.self)
+    private var _devices
+
+    @CurrentDevice private var _currentDevice: CastDevice?
+
+    @MutableReceiverState(VolumeRecipe.self)
+    private var _volume
+
+    @MutableReceiverState(MutedRecipe.self)
+    private var _isMuted
+
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-
-            castMuted = castMuted(from: context.sessionManager, session: currentSession)
-            castVolume = castVolume(from: context.sessionManager, session: currentSession)
         }
     }
-
-    private var targetDevice: CastDevice?
 
     /// The cast configuration.
     public var configuration: CastConfiguration {
@@ -34,21 +40,17 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    private var castMuted: CastMuted?
-    private var castVolume: CastVolume?
-
     /// A Boolean setting whether the audio output of the current device must be muted.
     public var isMuted: Bool {
         get {
-            guard let castMuted, let castVolume else { return false }
-            return castMuted.value || castVolume.value == 0
+            _isMuted || _volume == 0
         }
         set {
-            guard let castMuted, let castVolume else { return }
-            if !newValue, castVolume.value == 0 {
-                castVolume.value = 0.1
+            guard _isMuted != newValue || volume == 0 else { return }
+            _isMuted = newValue
+            if !newValue, volume == 0 {
+                volume = 0.1
             }
-            castMuted.value = newValue
         }
     }
 
@@ -57,48 +59,41 @@ public final class Cast: NSObject, ObservableObject {
     /// Valid values range from 0 (silent) to 1 (maximum volume).
     public var volume: Float {
         get {
-            castVolume?.value ?? 0
+            _volume
         }
         set {
-            castVolume?.value = newValue.clamped(to: volumeRange)
+            guard _volume != newValue else { return }
+            _volume = newValue
         }
     }
 
     /// The allowed range for volume values.
     public var volumeRange: ClosedRange<Float> {
-        castVolume?.range ?? 0...0
+        canAdjustVolume ? 0...1 : 0...0
     }
 
-    /// A Boolean indicating whether the volume/mute can be adjusted.
+    /// A Boolean indicating whether the volume can be adjusted.
     public var canAdjustVolume: Bool {
-        guard let currentSession else { return false }
-        return Self.canAdjustVolume(for: currentSession)
+        currentSession?.isFixedVolume() == false
+    }
+
+    /// A Boolean indicating whether the device can be muted.
+    public var canMute: Bool {
+        currentSession?.supportsMuting() == true
     }
 
     /// The current device.
     ///
-    /// Ends the session if set to `nil`.
-    ///
-    /// > Important: On iOS 18.3 and below use ``currentDeviceSelection`` to manage selection in a `List`.
-    @Published public var currentDevice: CastDevice? {
-        didSet {
-            if let currentDevice {
-                moveSession(from: oldValue, to: currentDevice)
-            }
-            else {
-                endSession()
-            }
+    /// Ends the session if set to `nil`. Does nothing if the device does not belong to the device list.
+    public var currentDevice: CastDevice? {
+        get {
+            _currentDevice
         }
-    }
-
-    /// A binding to the current device, for use as `List` selection.
-    @available(iOS, introduced: 16.0, deprecated: 18.4, message: "Use currentDevice instead")
-    public var currentDeviceSelection: Binding<CastDevice?> {
-        .init { [weak self] in
-            self?.currentDevice
-        } set: { [weak self] device in
-            guard let self, let device else { return }
-            currentDevice = device
+        set {
+            if let newValue, !devices.contains(newValue) {
+                return
+            }
+            _currentDevice = newValue
         }
     }
 
@@ -106,7 +101,9 @@ public final class Cast: NSObject, ObservableObject {
     @Published public private(set) var player: CastPlayer?
 
     /// The devices found in the local network.
-    @Published public private(set) var devices: [CastDevice]
+    public var devices: [CastDevice] {
+        _devices
+    }
 
     /// The connection state to a device.
     @Published public private(set) var connectionState: GCKConnectionState
@@ -118,20 +115,18 @@ public final class Cast: NSObject, ObservableObject {
         self.configuration = configuration
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
-        devices = Self.devices(from: context.discoveryManager)
-        currentDevice = currentSession?.device.toCastDevice()
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
+        __currentDevice = .init(service: context.sessionManager)
+
         super.init()
 
-        context.discoveryManager.add(self)
-        context.discoveryManager.startDiscovery()
+        __devices.bind(to: context.discoveryManager)
+        __volume.bind(to: context.sessionManager)
+        __isMuted.bind(to: context.sessionManager)
 
         context.sessionManager.add(self)
-
-        castMuted = castMuted(from: context.sessionManager, session: context.sessionManager.currentCastSession)
-        castVolume = castVolume(from: context.sessionManager, session: context.sessionManager.currentCastSession)
 
         assert(
             GCKCastContext.isSharedInstanceInitialized(),
@@ -144,12 +139,12 @@ public final class Cast: NSObject, ObservableObject {
     /// Starts a new session with the given device.
     /// - Parameter device: The device to use for this session.
     public func startSession(with device: CastDevice) {
-        moveSession(from: currentDevice, to: device)
+        currentDevice = device
     }
 
     /// Ends the current session and stops casting if one sender device is connected.
     public func endSession() {
-        context.sessionManager.endSession()
+        currentDevice = nil
     }
 
     /// Check if the given device if currently casting.
@@ -160,54 +155,10 @@ public final class Cast: NSObject, ObservableObject {
     }
 }
 
-private extension Cast {
-    static func canAdjustVolume(for session: GCKCastSession) -> Bool {
-        session.device.hasCapabilities(.masterOrFixedVolume)
-    }
-
-    func castMuted(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastMuted? {
-        guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        let cast = CastMuted(sessionManager: sessionManager, session: session)
-        cast.delegate = self
-        return cast
-    }
-
-    func castVolume(from sessionManager: GCKSessionManager, session: GCKCastSession?) -> CastVolume? {
-        guard let session, Self.canAdjustVolume(for: session) else { return nil }
-        let cast = CastVolume(sessionManager: sessionManager, session: session)
-        cast.delegate = self
-        return cast
-    }
-}
-
-extension Cast: GCKDiscoveryManagerListener {
-    // swiftlint:disable:next missing_docs
-    public func didInsert(_ device: GCKDevice, at index: UInt) {
-        devices.insert(device.toCastDevice(), at: Int(index))
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func didRemove(_ device: GCKDevice, at index: UInt) {
-        devices.remove(at: Int(index))
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func didUpdate(_ device: GCKDevice, at index: UInt, andMoveTo newIndex: UInt) {
-        devices.move(from: Int(index), to: Int(index))
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func didUpdate(_ device: GCKDevice, at index: UInt) {
-        devices.remove(at: Int(index))
-        devices.insert(device.toCastDevice(), at: Int(index))
-    }
-}
-
 extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session
-        currentDevice = session.device.toCastDevice()
     }
 
     // swiftlint:disable:next missing_docs
@@ -232,13 +183,6 @@ extension Cast: GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         currentSession = sessionManager.currentCastSession
-        if let targetDevice {
-            sessionManager.startSession(with: targetDevice.rawDevice)
-            self.targetDevice = nil
-        }
-        else {
-            currentDevice = nil
-        }
     }
 
     // swiftlint:disable:next missing_docs
@@ -248,33 +192,5 @@ extension Cast: GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-        currentDevice = nil
-    }
-}
-
-private extension Cast {
-    static func devices(from discoveryManager: GCKDiscoveryManager) -> [CastDevice] {
-        var devices: [CastDevice] = []
-        for index in 0..<discoveryManager.deviceCount {
-            devices.append(discoveryManager.device(at: index).toCastDevice())
-        }
-        return devices
-    }
-
-    private func moveSession(from previousDevice: CastDevice?, to currentDevice: CastDevice) {
-        guard previousDevice != currentDevice else { return }
-        if previousDevice != nil {
-            targetDevice = currentDevice
-            endSession()
-        }
-        else {
-            context.sessionManager.startSession(with: currentDevice.rawDevice)
-        }
-    }
-}
-
-extension Cast: ChangeDelegate {
-    func didChange() {
-        objectWillChange.send()
     }
 }

@@ -23,14 +23,6 @@ Additionally, scrolling for an extended period during metadata fetching may caus
 
 No workaround is available yet.
 
-## Removing the current item multiple times may stop the cast session ([412384508](https://issuetracker.google.com/issues/412384508))
-
-Each time the current item is removed, the receiver advances to the next item in the queue. Removing the current item several times consecutively can therefore cause the player to switch items repeatedly, potentially resulting in the cast session being stopped.
-
-### Workaround
-
-No workaround is available yet.
-
 ## Metadata fetch limited to 20 visible items ([412384508](https://issuetracker.google.com/issues/412384508))
 
 The Google Cast SDK limits metadata requests to a maximum of 20 visible `CastPlayerItem`s at a time. In scenarios such as displaying a list with more than 20 visible items, some entries may be unable to fetch their associated metadata.
