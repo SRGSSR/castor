@@ -76,16 +76,14 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
             isRequesting = false
             return
         }
-
-        if let pendingValue {
-            if let recipe, requestUpdate(to: pendingValue, with: recipe) {
-                self.value = pendingValue
-            }
-            self.pendingValue = nil
-        }
-        else {
+        guard let pendingValue else {
             isRequesting = false
+            return
         }
+        if let recipe, requestUpdate(to: pendingValue, with: recipe) {
+            self.value = pendingValue
+        }
+        self.pendingValue = nil
     }
 
     static subscript(
