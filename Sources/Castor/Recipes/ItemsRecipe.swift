@@ -15,7 +15,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     private let update: ([CastPlayerItem]) -> Void
     private var completion: ((Bool) -> Void)?
 
-    private var items: [CastPlayerItem] = [] {
+    private var items: [CastPlayerItem] {
         didSet {
             update(items)
         }
@@ -31,6 +31,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]) -> Void) {
         self.service = service
         self.update = update
+        self.items = Self.status(from: service)
         super.init()
         service.mediaQueue.add(self)        // The delegate is retained.
     }
