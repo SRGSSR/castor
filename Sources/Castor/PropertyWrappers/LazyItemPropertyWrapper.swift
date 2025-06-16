@@ -31,8 +31,8 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
         self.id = id
         self.queue = queue
+        self.value = queue.item(withID: id, fetchIfNeeded: false)
         super.init()
-        value = queue.item(at: id, fetchIfNeeded: false)
         queue.add(self)        // The delegate is retained.
     }
 
