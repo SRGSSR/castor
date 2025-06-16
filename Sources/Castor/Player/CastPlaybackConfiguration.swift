@@ -7,7 +7,7 @@
 import AVFoundation
 
 /// A playback configuration.
-public struct CastPlaybackConfiguration {
+public struct CastPlaybackConfiguration: Sendable {
     /// The default configuration.
     public static let `default` = Self()
 

@@ -7,6 +7,7 @@
 import GoogleCast
 
 /// A cast player item.
+@MainActor
 public final class CastPlayerItem: ObservableObject {
     /// The id.
     public let id: GCKMediaQueueItemID

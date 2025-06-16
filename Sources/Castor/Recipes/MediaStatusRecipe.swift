@@ -4,9 +4,9 @@
 //  License information is available from the LICENSE file.
 //
 
-import GoogleCast
+@preconcurrency import GoogleCast
 
-final class MediaStatusRecipe: NSObject, ReceiverStateRecipe {
+final class MediaStatusRecipe: NSObject, @MainActor ReceiverStateRecipe {
     static let defaultValue: GCKMediaStatus? = nil
 
     private let update: (GCKMediaStatus?) -> Void

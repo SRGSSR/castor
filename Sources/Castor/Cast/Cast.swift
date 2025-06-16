@@ -10,6 +10,7 @@ import GoogleCast
 import SwiftUI
 
 /// This object that handles everything related to Google Cast.
+@MainActor
 public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version

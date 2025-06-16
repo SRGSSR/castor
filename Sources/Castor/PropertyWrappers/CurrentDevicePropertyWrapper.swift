@@ -7,7 +7,7 @@
 import Combine
 import GoogleCast
 
-@propertyWrapper
+@MainActor @propertyWrapper
 final class CurrentDevicePropertyWrapper<Instance>: NSObject, GCKSessionManagerListener
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let service: GCKSessionManager

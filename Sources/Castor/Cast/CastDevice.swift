@@ -7,6 +7,7 @@
 import GoogleCast
 
 /// An object representing a receiver device.
+@MainActor
 public struct CastDevice: Hashable {
     let rawDevice: GCKDevice
 
@@ -37,6 +38,7 @@ public struct CastDevice: Hashable {
 }
 
 extension GCKDevice {
+    @MainActor
     func toCastDevice() -> CastDevice {
         .init(from: self)
     }
