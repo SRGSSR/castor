@@ -73,6 +73,7 @@ struct DemoApp: App {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
             }
+            // TODO: Starting with iOS 17 this can be moved on the `WindowGroup` without the need for a local `@State`.
             .environmentObject(Cast(configuration: .standard))
         }
     }
