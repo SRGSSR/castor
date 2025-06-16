@@ -14,6 +14,7 @@ final class MediaStatusRecipe: NSObject, ReceiverStateRecipe {
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
         self.update = update
         super.init()
+        update(service.mediaStatus)
         service.add(self)
     }
 
