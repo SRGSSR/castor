@@ -19,7 +19,7 @@ extension CastPlayer {
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest3(
             $_targetSeekTime,
-            objectWillChange,
+            objectWillChange.prepend(()),
             pulsePublisher(interval: interval)
         )
         .weakCapture(self)
