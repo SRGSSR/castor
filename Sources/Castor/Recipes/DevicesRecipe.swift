@@ -11,7 +11,7 @@ final class DevicesRecipe: NSObject, ReceiverStateRecipe {
 
     private let update: ([CastDevice]) -> Void
 
-    private var devices: [CastDevice] = [] {
+    private var devices: [CastDevice] {
         didSet {
             update(devices)
         }
@@ -19,6 +19,7 @@ final class DevicesRecipe: NSObject, ReceiverStateRecipe {
 
     init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]) -> Void) {
         self.update = update
+        self.devices = Self.status(from: service)
         super.init()
         service.add(self)
         service.startDiscovery()
