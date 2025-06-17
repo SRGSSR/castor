@@ -112,7 +112,7 @@ public final class Cast: NSObject, ObservableObject {
     /// Default initializer.
     ///
     /// - Parameter configuration: The configuration to apply to the cast.
-    public init(configuration: CastConfiguration = .default) {
+    public init(configuration: CastConfiguration = .init()) {
         self.configuration = configuration
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState

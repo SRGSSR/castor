@@ -9,10 +9,7 @@ import AVFoundation
 /// A cast configuration.
 ///
 /// The configuration controls behaviors set at cast object creation time and that cannot be changed afterwards.
-public struct CastConfiguration: Sendable {
-    /// The default configuration.
-    public static let `default` = Self()
-
+public struct CastConfiguration {
     /// The forward skip interval in seconds.
     public let forwardSkipInterval: TimeInterval
 

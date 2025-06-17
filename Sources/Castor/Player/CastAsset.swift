@@ -39,7 +39,7 @@ public struct CastAsset {
     ///   - metadata: The metadata associated with the asset.
     ///   - configuration: The playback configuration.
     /// - Returns: The asset.
-    public static func simple(url: URL, metadata: CastMetadata, configuration: CastPlaybackConfiguration = .default) -> Self {
+    public static func simple(url: URL, metadata: CastMetadata, configuration: CastPlaybackConfiguration = .init()) -> Self {
         .init(kind: .simple(url), metadata: metadata, configuration: configuration)
     }
 
@@ -50,7 +50,7 @@ public struct CastAsset {
     ///   - metadata: The metadata associated with the asset.
     ///   - configuration: The playback configuration.
     /// - Returns: The asset.
-    public static func custom(identifier: String, metadata: CastMetadata, configuration: CastPlaybackConfiguration = .default) -> Self {
+    public static func custom(identifier: String, metadata: CastMetadata, configuration: CastPlaybackConfiguration = .init()) -> Self {
         .init(kind: .custom(identifier), metadata: metadata, configuration: configuration)
     }
 

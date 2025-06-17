@@ -7,10 +7,7 @@
 import AVFoundation
 
 /// A playback configuration.
-public struct CastPlaybackConfiguration: Sendable {
-    /// The default configuration.
-    public static let `default` = Self()
-
+public struct CastPlaybackConfiguration {
     /// The time to start playback at.
     ///
     /// When the time is `.invalid`, playback starts at the default position:
