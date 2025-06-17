@@ -156,7 +156,7 @@ public final class Cast: NSObject, ObservableObject {
     }
 }
 
-extension Cast: GCKSessionManagerListener {
+extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session

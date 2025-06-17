@@ -38,7 +38,7 @@ final class PlaybackSpeedRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension PlaybackSpeedRecipe: GCKRemoteMediaClientListener {
+extension PlaybackSpeedRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         // Trigger an update to an appropriate speed if required. This most notably avoids speeds > 1 being applied
         // to livestreams during playlist item transitions.
@@ -51,7 +51,7 @@ extension PlaybackSpeedRecipe: GCKRemoteMediaClientListener {
     }
 }
 
-extension PlaybackSpeedRecipe: GCKRequestDelegate {
+extension PlaybackSpeedRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

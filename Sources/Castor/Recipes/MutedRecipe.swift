@@ -34,7 +34,7 @@ final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension MutedRecipe: GCKSessionManagerListener {
+extension MutedRecipe: @preconcurrency GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -49,7 +49,7 @@ extension MutedRecipe: GCKSessionManagerListener {
     }
 }
 
-extension MutedRecipe: GCKRequestDelegate {
+extension MutedRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

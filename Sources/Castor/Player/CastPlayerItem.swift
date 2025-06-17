@@ -38,7 +38,7 @@ public final class CastPlayerItem: ObservableObject {
     }
 }
 
-extension CastPlayerItem: Hashable {
+extension CastPlayerItem: @MainActor Hashable {
     // swiftlint:disable:next missing_docs
     public static func == (lhs: CastPlayerItem, rhs: CastPlayerItem) -> Bool {
         lhs.id == rhs.id

@@ -8,7 +8,7 @@ import GoogleCast
 
 /// An object representing a receiver device.
 @MainActor
-public struct CastDevice: Hashable {
+public struct CastDevice: @MainActor Hashable {
     let rawDevice: GCKDevice
 
     /// The device's friendly name.

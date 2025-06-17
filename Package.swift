@@ -26,10 +26,6 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
-            swiftSettings: [
-                .enableUpcomingFeature("InferIsolatedConformances"),
-                .enableUpcomingFeature("NonisolatedNonsendingByDefault")
-            ],
             plugins: [
                 .plugin(name: "CastorPackageInfoPlugin")
             ]

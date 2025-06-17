@@ -62,7 +62,7 @@ final class ItemsRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
     }
 }
 
-extension ItemsRecipe: GCKMediaQueueDelegate {
+extension ItemsRecipe: @preconcurrency GCKMediaQueueDelegate {
     func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         items = items(items, merging: queue)
     }
@@ -83,7 +83,7 @@ extension ItemsRecipe: GCKMediaQueueDelegate {
     }
 }
 
-extension ItemsRecipe: GCKRequestDelegate {
+extension ItemsRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         if requests == 1 {
             completion?(true)

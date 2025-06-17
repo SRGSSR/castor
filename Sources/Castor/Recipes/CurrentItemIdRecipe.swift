@@ -39,13 +39,13 @@ final class CurrentItemIdRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension CurrentItemIdRecipe: GCKRemoteMediaClientListener {
+extension CurrentItemIdRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         update(mediaStatus)
     }
 }
 
-extension CurrentItemIdRecipe: GCKRequestDelegate {
+extension CurrentItemIdRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }
