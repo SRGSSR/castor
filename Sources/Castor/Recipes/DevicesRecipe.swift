@@ -6,8 +6,8 @@
 
 import GoogleCast
 
-final class DevicesRecipe: NSObject, @MainActor ReceiverStateRecipe {
-    @MainActor static let defaultValue: [CastDevice] = []
+final class DevicesRecipe: NSObject, ReceiverStateRecipe {
+    static let defaultValue: [CastDevice] = []
 
     private let update: ([CastDevice]) -> Void
 
@@ -34,7 +34,7 @@ final class DevicesRecipe: NSObject, @MainActor ReceiverStateRecipe {
     }
 }
 
-extension DevicesRecipe: GCKDiscoveryManagerListener {
+extension DevicesRecipe: @preconcurrency GCKDiscoveryManagerListener {
     // swiftlint:disable:next missing_docs
     public func didInsert(_ device: GCKDevice, at index: UInt) {
         devices.insert(device.toCastDevice(), at: Int(index))

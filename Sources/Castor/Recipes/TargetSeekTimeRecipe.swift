@@ -7,7 +7,7 @@
 import CoreMedia
 import GoogleCast
 
-final class TargetSeekTimeRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
+final class TargetSeekTimeRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: CMTime? = nil
 
     private let service: GCKRemoteMediaClient
@@ -44,13 +44,13 @@ final class TargetSeekTimeRecipe: NSObject, @MainActor MutableReceiverStateRecip
     }
 }
 
-extension TargetSeekTimeRecipe: GCKRemoteMediaClientListener {
+extension TargetSeekTimeRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
        update(mediaStatus)
     }
 }
 
-extension TargetSeekTimeRecipe: GCKRequestDelegate {
+extension TargetSeekTimeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

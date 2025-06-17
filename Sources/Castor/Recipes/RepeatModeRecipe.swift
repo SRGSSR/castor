@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class RepeatModeRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
+final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: CastRepeatMode = .off
 
     private let service: GCKRemoteMediaClient
@@ -39,13 +39,13 @@ final class RepeatModeRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
     }
 }
 
-extension RepeatModeRecipe: GCKRemoteMediaClientListener {
+extension RepeatModeRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         update(mediaStatus)
     }
 }
 
-extension RepeatModeRecipe: GCKRequestDelegate {
+extension RepeatModeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

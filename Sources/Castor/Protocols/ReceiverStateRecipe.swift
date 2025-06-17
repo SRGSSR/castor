@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+@MainActor
 protocol ReceiverStateRecipe: AnyObject {
     associatedtype Service
 

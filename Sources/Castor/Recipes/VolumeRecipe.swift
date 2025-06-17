@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class VolumeRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
+final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: Float = 0
 
     private let service: GCKSessionManager
@@ -34,7 +34,7 @@ final class VolumeRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
     }
 }
 
-extension VolumeRecipe: GCKSessionManagerListener {
+extension VolumeRecipe: @preconcurrency GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -49,7 +49,7 @@ extension VolumeRecipe: GCKSessionManagerListener {
     }
 }
 
-extension VolumeRecipe: GCKRequestDelegate {
+extension VolumeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

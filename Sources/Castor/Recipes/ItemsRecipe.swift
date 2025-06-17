@@ -6,8 +6,8 @@
 
 import GoogleCast
 
-final class ItemsRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
-    @MainActor static let defaultValue: [CastPlayerItem] = []
+final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
+    static let defaultValue: [CastPlayerItem] = []
 
     // FIXME: Remove "unowned" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
     private unowned let service: GCKRemoteMediaClient       // Avoid cyclic reference due to the media queue delegate being retained.
@@ -62,7 +62,7 @@ final class ItemsRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
     }
 }
 
-extension ItemsRecipe: GCKMediaQueueDelegate {
+extension ItemsRecipe: @preconcurrency GCKMediaQueueDelegate {
     func mediaQueueDidReloadItems(_ queue: GCKMediaQueue) {
         items = items(items, merging: queue)
     }
@@ -83,7 +83,7 @@ extension ItemsRecipe: GCKMediaQueueDelegate {
     }
 }
 
-extension ItemsRecipe: GCKRequestDelegate {
+extension ItemsRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         if requests == 1 {
             completion?(true)

@@ -6,8 +6,8 @@
 
 import GoogleCast
 
-final class MediaStatusRecipe: NSObject, @MainActor ReceiverStateRecipe {
-    @MainActor static let defaultValue: GCKMediaStatus? = nil
+final class MediaStatusRecipe: NSObject, ReceiverStateRecipe {
+    static let defaultValue: GCKMediaStatus? = nil
 
     private let update: (GCKMediaStatus?) -> Void
 
@@ -23,7 +23,7 @@ final class MediaStatusRecipe: NSObject, @MainActor ReceiverStateRecipe {
     }
 }
 
-extension MediaStatusRecipe: GCKRemoteMediaClientListener {
+extension MediaStatusRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
        update(mediaStatus)
     }
