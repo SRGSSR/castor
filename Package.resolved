@@ -1,4 +1,5 @@
 {
+  "originHash" : "77ad6638919ba9d38dc3c74f0014987fb1d08ef4314097cc8653b794e662bbc8",
   "pins" : [
     {
       "identity" : "google-cast-sdk",
@@ -8,16 +9,7 @@
         "revision" : "3aeee2495b3bb03737d5105dbf21afdd6b267658",
         "version" : "4.8.3"
       }
-    },
-    {
-      "identity" : "showtime",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/KaneCheshire/ShowTime.git",
-      "state" : {
-        "revision" : "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
-        "version" : "2.5.3"
-      }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
