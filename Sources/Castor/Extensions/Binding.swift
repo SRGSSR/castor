@@ -6,6 +6,7 @@
 
 import SwiftUI
 
+@MainActor
 extension Binding {
     /// Creates a binding to an object key path.
     /// 
