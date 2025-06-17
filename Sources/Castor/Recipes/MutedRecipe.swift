@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
+final class MutedRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
     static let defaultValue = false
 
     private let service: GCKSessionManager
@@ -34,7 +34,7 @@ final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension MutedRecipe: @preconcurrency GCKSessionManagerListener {
+extension MutedRecipe: GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -49,7 +49,7 @@ extension MutedRecipe: @preconcurrency GCKSessionManagerListener {
     }
 }
 
-extension MutedRecipe: @preconcurrency GCKRequestDelegate {
+extension MutedRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-final class PlaybackSpeedRecipe: NSObject, MutableReceiverStateRecipe {
+final class PlaybackSpeedRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
     static let defaultValue: Float = 1
 
     private let service: GCKRemoteMediaClient
@@ -38,7 +38,7 @@ final class PlaybackSpeedRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension PlaybackSpeedRecipe: @preconcurrency GCKRemoteMediaClientListener {
+extension PlaybackSpeedRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         // Trigger an update to an appropriate speed if required. This most notably avoids speeds > 1 being applied
         // to livestreams during playlist item transitions.
@@ -51,7 +51,7 @@ extension PlaybackSpeedRecipe: @preconcurrency GCKRemoteMediaClientListener {
     }
 }
 
-extension PlaybackSpeedRecipe: @preconcurrency GCKRequestDelegate {
+extension PlaybackSpeedRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

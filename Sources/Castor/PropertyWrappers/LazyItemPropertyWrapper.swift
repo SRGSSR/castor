@@ -7,8 +7,8 @@
 import Combine
 import GoogleCast
 
-@MainActor @propertyWrapper
-final class LazyItemPropertyWrapper<Instance>: NSObject, @preconcurrency GCKMediaQueueDelegate
+@propertyWrapper
+final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let id: GCKMediaQueueItemID
 

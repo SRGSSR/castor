@@ -7,7 +7,6 @@
 import GoogleCast
 
 /// A cast player item.
-@MainActor
 public final class CastPlayerItem: ObservableObject {
     /// The id.
     public let id: GCKMediaQueueItemID
@@ -38,7 +37,7 @@ public final class CastPlayerItem: ObservableObject {
     }
 }
 
-extension CastPlayerItem: @MainActor Hashable {
+extension CastPlayerItem: Hashable {
     // swiftlint:disable:next missing_docs
     public static func == (lhs: CastPlayerItem, rhs: CastPlayerItem) -> Bool {
         lhs.id == rhs.id

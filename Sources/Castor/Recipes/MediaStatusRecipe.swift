@@ -4,10 +4,10 @@
 //  License information is available from the LICENSE file.
 //
 
-@preconcurrency import GoogleCast
+import GoogleCast
 
 final class MediaStatusRecipe: NSObject, @MainActor ReceiverStateRecipe {
-    static let defaultValue: GCKMediaStatus? = nil
+    @MainActor static let defaultValue: GCKMediaStatus? = nil
 
     private let update: (GCKMediaStatus?) -> Void
 
@@ -23,7 +23,7 @@ final class MediaStatusRecipe: NSObject, @MainActor ReceiverStateRecipe {
     }
 }
 
-extension MediaStatusRecipe: @preconcurrency GCKRemoteMediaClientListener {
+extension MediaStatusRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
        update(mediaStatus)
     }

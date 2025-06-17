@@ -6,8 +6,8 @@
 
 import GoogleCast
 
-final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
-    static let defaultValue: [CastMediaTrack] = []
+final class ActiveTracksRecipe: NSObject, @MainActor MutableReceiverStateRecipe {
+    @MainActor static let defaultValue: [CastMediaTrack] = []
 
     private let service: GCKRemoteMediaClient
 
@@ -47,13 +47,13 @@ final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension ActiveTracksRecipe: @preconcurrency GCKRemoteMediaClientListener {
+extension ActiveTracksRecipe: GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         update(mediaStatus)
     }
 }
 
-extension ActiveTracksRecipe: @preconcurrency GCKRequestDelegate {
+extension ActiveTracksRecipe: GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

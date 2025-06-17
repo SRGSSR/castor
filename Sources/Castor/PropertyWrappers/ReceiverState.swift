@@ -7,7 +7,7 @@
 import Combine
 import Foundation
 
-@MainActor @propertyWrapper
+@propertyWrapper
 final class ReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
 where Recipe: ReceiverStateRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private(set) var recipe: Recipe?
