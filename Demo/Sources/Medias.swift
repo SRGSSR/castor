@@ -28,14 +28,32 @@ let kHlsUrlMedias: [Media] = [
         type: .url("https://cdn.prod.swi-services.ch/video-projects/94f5f5d1-5d53-4336-afda-9198462c45d9/localised-videos/ENG/renditions/ENG.mp4")
     ),
     .init(
+        title: "Tagesschau",
+        imageUrl: "https://images.tagesschau.de/image/89045d82-5cd5-46ad-8f91-73911add30ee/AAABh3YLLz0/AAABibBx2rU/20x9-1280/tagesschau-logo-100.jpg",
+        type: .url("https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8")
+    )
+]
+
+let kMP3UrlMedias: [Media] = [
+    .init(
         title: "Couleur 3",
         imageUrl: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640",
         type: .url("http://stream.srg-ssr.ch/m/couleur3/mp3_128")
     ),
     .init(
-        title: "Tagesschau",
-        imageUrl: "https://images.tagesschau.de/image/89045d82-5cd5-46ad-8f91-73911add30ee/AAABh3YLLz0/AAABibBx2rU/20x9-1280/tagesschau-logo-100.jpg",
-        type: .url("https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8")
+        title: "Radio Chablais",
+        imageUrl: "https://alpsoft.ch/wp-content/uploads/2021/10/feat-radio-chablais-1080x675.jpg",
+        type: .url("https://radiochablais.ice.infomaniak.ch/radiochablais-high.mp3")
+    ),
+    .init(
+        title: "Skyrock",
+        imageUrl: "https://www.radio.net/300/skyrock.png",
+        type: .url("http://icecast.skyrock.net/s/natio_mp3_128k")
+    ),
+    .init(
+        title: "Country Radio Gilsdorf",
+        imageUrl: "https://static.wixstatic.com/media/7b176c_f543664008a447f3b2adbb1d231b21e1~mv2.jpg",
+        type: .url("http://streaming.aoip.international:8000/cr-gilsdorf")
     )
 ]
 
