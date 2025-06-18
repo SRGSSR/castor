@@ -219,18 +219,3 @@ private extension CastPlayer {
         }
     }
 }
-
-extension CastPlayer {
-    static func index(after item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
-        guard let itemIndex = items.firstIndex(of: item) else { return nil }
-        let nextIndex = items.index(after: itemIndex)
-        return (nextIndex < items.endIndex) ? nextIndex : nil
-    }
-
-    static func index(before item: CastPlayerItem, in items: [CastPlayerItem]) -> Int? {
-        guard let itemIndex = items.firstIndex(of: item), itemIndex > items.startIndex else {
-            return nil
-        }
-        return items.index(before: itemIndex)
-    }
-}
