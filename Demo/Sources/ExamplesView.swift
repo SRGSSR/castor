@@ -16,6 +16,7 @@ struct ExamplesView: View {
         VStack(spacing: 0) {
             List {
                 section("HLS streams", medias: kHlsUrlMedias)
+                section("MP3 streams ", medias: kMP3UrlMedias)
                 if cast.player != nil {
                     section("DASH streams", medias: kDashUrlMedias)
                     if UserDefaults.standard.receiver.isSupportingUrns {

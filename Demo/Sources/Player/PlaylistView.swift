@@ -78,10 +78,10 @@ struct PlaylistView: View {
 
 private extension PlaylistView {
     func previousButton() -> some View {
-        Button(action: player.returnToPreviousItem) {
+        Button(action: player.returnToPrevious) {
             Image(systemName: "arrow.left")
         }
-        .disabled(!player.canReturnToPreviousItem())
+        .disabled(!player.canReturnToPrevious())
     }
 
     func managementButtons() -> some View {
@@ -95,10 +95,10 @@ private extension PlaylistView {
     }
 
     func nextButton() -> some View {
-        Button(action: player.advanceToNextItem) {
+        Button(action: player.advanceToNext) {
             Image(systemName: "arrow.right")
         }
-        .disabled(!player.canAdvanceToNextItem())
+        .disabled(!player.canAdvanceToNext())
     }
 }
 

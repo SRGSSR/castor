@@ -10,6 +10,9 @@ import AVFoundation
 ///
 /// The configuration controls behaviors set at cast object creation time and that cannot be changed afterwards.
 public struct CastConfiguration {
+    /// The navigation mode.
+    public let navigationMode: CastNavigationMode
+
     /// The forward skip interval in seconds.
     public let forwardSkipInterval: TimeInterval
 
@@ -18,11 +21,13 @@ public struct CastConfiguration {
 
     /// Creates a player configuration.
     public init(
+        navigationMode: CastNavigationMode = .smart(interval: 3),
         backwardSkipInterval: TimeInterval = 10,
         forwardSkipInterval: TimeInterval = 10
     ) {
         assert(backwardSkipInterval > 0)
         assert(forwardSkipInterval > 0)
+        self.navigationMode = navigationMode
         self.backwardSkipInterval = backwardSkipInterval
         self.forwardSkipInterval = forwardSkipInterval
     }

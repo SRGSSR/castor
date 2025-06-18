@@ -53,6 +53,7 @@ struct PlaylistSelectionView: View {
     private func list() -> some View {
         List(selection: $selectedMedias) {
             section("HLS streams", medias: kHlsUrlMedias)
+            section("MP3 streams ", medias: kMP3UrlMedias)
             section("DASH streams", medias: kDashUrlMedias)
             if UserDefaults.standard.receiver.isSupportingUrns {
                 section("URN-based streams", medias: kUrnMedias)
