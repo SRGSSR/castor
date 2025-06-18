@@ -14,7 +14,7 @@ public extension CastPlayer {
     ///
     /// > Important: Ignores the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
     func canReturnToPreviousItem() -> Bool {
-        index(before: currentItem, in: items) != nil
+        canReturnToItem(before: currentItem, in: items)
     }
 
     /// Returns to the previous item in the queue.
@@ -37,7 +37,7 @@ public extension CastPlayer {
     ///
     /// > Important: Ignores the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
     func canAdvanceToNextItem() -> Bool {
-        index(after: currentItem, in: items) != nil
+        canAdvanceToItem(after: currentItem, in: items)
     }
 
     /// Moves to the next item in the queue.
@@ -65,6 +65,16 @@ extension CastPlayer {
         guard let item, let index = items.firstIndex(of: item) else { return nil }
         let nextIndex = items.index(after: index)
         return nextIndex < items.endIndex ? nextIndex : afterIndex()
+    }
+}
+
+extension CastPlayer {
+    func canReturnToItem(before item: CastPlayerItem?, in items: [CastPlayerItem]) -> Bool {
+        index(before: item, in: items) != nil
+    }
+
+    func canAdvanceToItem(after item: CastPlayerItem?, in items: [CastPlayerItem]) -> Bool {
+        index(after: item, in: items) != nil
     }
 }
 

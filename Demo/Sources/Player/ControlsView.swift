@@ -101,7 +101,7 @@ struct ControlsView: View {
                         label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
                     }
                 )
-                if player.mediaInformation?.streamType == .live {
+                if player.streamType == .live {
                     skipToDefaultButton()
                 }
             }

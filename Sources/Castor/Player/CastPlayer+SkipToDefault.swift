@@ -14,8 +14,7 @@ public extension CastPlayer {
     /// For a livestream supporting DVR this method can be used to check whether the stream is played at the live
     /// edge or not.
     func canSkipToDefault() -> Bool {
-        guard let mediaInformation else { return false }
-        switch mediaInformation.streamType {
+        switch streamType {
         case .live where seekableTimeRange().isValidAndNotEmpty:
             return time() < seekableTimeRange().end - forwardSkipTime
         case .live:
@@ -31,8 +30,7 @@ public extension CastPlayer {
     ///
     /// For a livestream supporting DVR the default position corresponds to the live edge.
     func skipToDefault() {
-        guard let mediaInformation else { return }
-        switch mediaInformation.streamType {
+        switch streamType {
         case .live:
             seek(to: seekableTimeRange().end)
         case .buffered:

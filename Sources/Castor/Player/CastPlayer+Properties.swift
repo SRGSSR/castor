@@ -29,4 +29,9 @@ public extension CastPlayer {
     var isActive: Bool {
         remoteMediaClient.canMakeRequest()
     }
+
+    /// The type of stream currently being played.
+    var streamType: GCKMediaStreamType {
+        mediaInformation?.streamType ?? .none
+    }
 }
