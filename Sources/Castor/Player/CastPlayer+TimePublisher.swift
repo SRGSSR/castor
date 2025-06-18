@@ -19,13 +19,14 @@ extension CastPlayer {
     private func smoothTimePublisher(interval: CMTime) -> AnyPublisher<CMTime, Never> {
         Publishers.CombineLatest3(
             $_targetSeekTime,
-            objectWillChange.prepend(()),
+            $_mediaStatus,
             pulsePublisher(interval: interval)
         )
         .weakCapture(self)
-        .map { ($0.0, $1) }
-        .map { targetSeekTime, player in
-            targetSeekTime ?? player.time()
+        .map { ($0.0, $0.1, $1) }
+        .map { targetSeekTime, mediaStatus, player in
+            guard let mediaInformation = mediaStatus?.mediaInformation, mediaInformation.streamType != .none else { return .invalid }
+            return targetSeekTime ?? player.time()
         }
         .eraseToAnyPublisher()
     }
