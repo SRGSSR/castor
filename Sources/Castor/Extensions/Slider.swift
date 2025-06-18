@@ -8,6 +8,7 @@ import SwiftUI
 
 @available(iOS 16, *)
 @available(tvOS, unavailable)
+@MainActor
 public extension Slider {
     /// Creates a slider bound to a progress tracker.
     ///
@@ -39,6 +40,7 @@ public extension Slider {
 
 @available(iOS 16, *)
 @available(tvOS, unavailable)
+@MainActor
 public extension Slider where ValueLabel == EmptyView {
     /// Creates a slider bound to a progress tracker.
     ///
@@ -64,6 +66,7 @@ public extension Slider where ValueLabel == EmptyView {
 
 @available(iOS 16, *)
 @available(tvOS, unavailable)
+@MainActor
 public extension Slider where Label == EmptyView, ValueLabel == EmptyView {
     /// Creates a slider bound to a progress tracker.
     /// 

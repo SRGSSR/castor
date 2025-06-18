@@ -8,7 +8,7 @@ import AVFAudio
 import Castor
 import Combine
 import GoogleCast
-import ShowTime
+@preconcurrency import ShowTime
 import SwiftUI
 
 private final class AppDelegate: NSObject, UIApplicationDelegate {

@@ -7,6 +7,7 @@
 import Combine
 import Foundation
 
+@MainActor
 @propertyWrapper
 final class MutableReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
 where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {

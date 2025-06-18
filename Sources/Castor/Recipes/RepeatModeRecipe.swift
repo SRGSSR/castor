@@ -39,13 +39,13 @@ final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension RepeatModeRecipe: GCKRemoteMediaClientListener {
+extension RepeatModeRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         update(mediaStatus)
     }
 }
 
-extension RepeatModeRecipe: GCKRequestDelegate {
+extension RepeatModeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

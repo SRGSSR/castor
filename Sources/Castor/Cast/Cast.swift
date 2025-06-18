@@ -10,6 +10,7 @@ import GoogleCast
 import SwiftUI
 
 /// This object that handles everything related to Google Cast.
+@MainActor
 public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version
@@ -111,7 +112,7 @@ public final class Cast: NSObject, ObservableObject {
     /// Default initializer.
     ///
     /// - Parameter configuration: The configuration to apply to the cast.
-    public init(configuration: CastConfiguration = .default) {
+    public init(configuration: CastConfiguration = .init()) {
         self.configuration = configuration
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
@@ -155,7 +156,7 @@ public final class Cast: NSObject, ObservableObject {
     }
 }
 
-extension Cast: GCKSessionManagerListener {
+extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         currentSession = session

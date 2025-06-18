@@ -9,6 +9,7 @@ import Combine
 import GoogleCast
 
 /// A cast player.
+@MainActor
 public final class CastPlayer: NSObject, ObservableObject {
     let remoteMediaClient: GCKRemoteMediaClient
 

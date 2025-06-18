@@ -8,7 +8,7 @@ import Foundation
 
 extension URL: @retroactive ExpressibleByStringLiteral {
     // swiftlint:disable:next missing_docs
-    public init(stringLiteral value: StringLiteralType) {
+    nonisolated public init(stringLiteral value: StringLiteralType) {
         self.init(string: value)!
     }
 }

@@ -9,6 +9,7 @@ import CoreMedia
 import GoogleCast
 
 /// An observable object tracking playback progress.
+@MainActor
 public final class CastProgressTracker: ObservableObject {
     @Published private var _progress: Float?
 

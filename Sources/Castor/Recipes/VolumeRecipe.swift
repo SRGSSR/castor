@@ -34,7 +34,7 @@ final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension VolumeRecipe: GCKSessionManagerListener {
+extension VolumeRecipe: @preconcurrency GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -49,7 +49,7 @@ extension VolumeRecipe: GCKSessionManagerListener {
     }
 }
 
-extension VolumeRecipe: GCKRequestDelegate {
+extension VolumeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

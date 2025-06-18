@@ -34,7 +34,7 @@ final class DevicesRecipe: NSObject, ReceiverStateRecipe {
     }
 }
 
-extension DevicesRecipe: GCKDiscoveryManagerListener {
+extension DevicesRecipe: @preconcurrency GCKDiscoveryManagerListener {
     // swiftlint:disable:next missing_docs
     public func didInsert(_ device: GCKDevice, at index: UInt) {
         devices.insert(device.toCastDevice(), at: Int(index))

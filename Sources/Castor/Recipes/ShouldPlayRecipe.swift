@@ -42,13 +42,13 @@ final class ShouldPlayRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
-extension ShouldPlayRecipe: GCKRemoteMediaClientListener {
+extension ShouldPlayRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         update(mediaStatus)
     }
 }
 
-extension ShouldPlayRecipe: GCKRequestDelegate {
+extension ShouldPlayRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

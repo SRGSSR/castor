@@ -10,9 +10,6 @@ import AVFoundation
 ///
 /// The configuration controls behaviors set at cast object creation time and that cannot be changed afterwards.
 public struct CastConfiguration {
-    /// The default configuration.
-    public static let `default` = Self()
-
     /// The forward skip interval in seconds.
     public let forwardSkipInterval: TimeInterval
 
