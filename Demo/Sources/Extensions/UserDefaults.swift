@@ -10,6 +10,7 @@ extension UserDefaults {
     enum DemoSettingKey {
         static let receiver = "receiver"
         static let presenterModeEnabled = "presenterModeEnabled"
+        static let smartNavigationEnabled = "smartNavigationEnabled"
         static let backwardSkipInterval = "backwardSkipInterval"
         static let forwardSkipInterval = "forwardSkipInterval"
     }
@@ -20,6 +21,10 @@ extension UserDefaults {
 
     @objc dynamic var receiver: Receiver {
         .init(rawValue: integer(forKey: DemoSettingKey.receiver)) ?? .standard
+    }
+
+    @objc dynamic var smartNavigationEnabled: Bool {
+        bool(forKey: DemoSettingKey.smartNavigationEnabled)
     }
 
     @objc dynamic var backwardSkipInterval: TimeInterval {
@@ -34,6 +39,7 @@ extension UserDefaults {
 extension UserDefaults {
     static func registerDefaults() {
         UserDefaults.standard.register(defaults: [
+            DemoSettingKey.smartNavigationEnabled: true,
             DemoSettingKey.presenterModeEnabled: false,
             DemoSettingKey.backwardSkipInterval: 10,
             DemoSettingKey.forwardSkipInterval: 10

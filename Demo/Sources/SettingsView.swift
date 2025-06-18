@@ -17,6 +17,9 @@ struct SettingsView: View {
     @AppStorage(UserDefaults.DemoSettingKey.receiver)
     private var receiver: Receiver = .standard
 
+    @AppStorage(UserDefaults.DemoSettingKey.smartNavigationEnabled)
+    private var isSmartNavigationEnabled = true
+
     @AppStorage(UserDefaults.DemoSettingKey.backwardSkipInterval)
     private var backwardSkipInterval: TimeInterval = 10
 
@@ -41,6 +44,7 @@ struct SettingsView: View {
     var body: some View {
         Form {
             applicationSection()
+            playerSection()
             skipsSection()
             receiverSection()
             versionSection()
@@ -60,6 +64,17 @@ struct SettingsView: View {
             }
         } header: {
             Text("Application")
+        }
+    }
+
+    private func playerSection() -> some View {
+        Section {
+            Toggle(isOn: $isSmartNavigationEnabled) {
+                Text("Smart navigation")
+                Text("Improves playlist navigation so that it feels more natural.").font(.footnote)
+            }
+        } header: {
+             Text("Player")
         }
     }
 
