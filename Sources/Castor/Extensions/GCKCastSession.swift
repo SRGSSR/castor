@@ -7,11 +7,11 @@
 import GoogleCast
 
 extension GCKCastSession {
-    func supportsMuting() -> Bool {
+    var supportsMuting: Bool {
         traits?.supportsMuting == true
     }
 
-    func isFixedVolume() -> Bool {
+    var isFixedVolume: Bool {
         traits?.isFixedVolume() == true
     }
 }
