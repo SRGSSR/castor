@@ -15,7 +15,7 @@ public struct CastImageHints {
     /// - Parameters:
     ///   - type: The type of the image.
     ///   - size: The size of the image.
-    public init(type: GCKMediaMetadataImageType, size: CGSize) {
+    public init(type: GCKMediaMetadataImageType, size: CGSize = .zero) {
         rawImageHints = .init(imageType: type, imageSize: size)
     }
 }

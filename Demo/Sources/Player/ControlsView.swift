@@ -43,15 +43,6 @@ struct ControlsView: View {
         player.shouldPlay ? "pause.fill" : "play.fill"
     }
 
-    private var title: String? {
-        player.mediaInformation?.metadata?.string(forKey: kGCKMetadataKeyTitle)
-    }
-
-    private var imageUrl: URL? {
-        guard let image = player.mediaInformation?.metadata?.images().first as? GCKImage else { return nil }
-        return image.url
-    }
-
     private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
         guard time.isValid, duration.isValid else { return nil }
         if duration.seconds < 60 * 60 {
@@ -63,7 +54,7 @@ struct ControlsView: View {
     }
 
     private func artworkImage() -> some View {
-        AsyncImage(url: imageUrl) { image in
+        AsyncImage(url: player.metadata?.imageUrl()) { image in
             image
                 .resizable()
         } placeholder: {
@@ -121,7 +112,7 @@ struct ControlsView: View {
 
     private func informationView() -> some View {
         VStack {
-            if let title {
+            if let title = player.metadata?.title {
                 Text(title)
             }
             if let device {
