@@ -12,9 +12,9 @@ public extension CastPlayer {
         _mediaStatus?.playerState ?? .unknown
     }
 
-    /// Media information.
-    var mediaInformation: GCKMediaInformation? {
-        _mediaStatus?.mediaInformation
+    /// Metadata associated with current item.
+    var metadata: CastMetadata? {
+        .init(rawMetadata: mediaInformation?.metadata)
     }
 
     /// Returns if the player is busy.
@@ -33,5 +33,11 @@ public extension CastPlayer {
     /// The type of stream currently being played.
     var streamType: GCKMediaStreamType {
         mediaInformation?.streamType ?? .none
+    }
+}
+
+extension CastPlayer {
+    var mediaInformation: GCKMediaInformation? {
+        _mediaStatus?.mediaInformation
     }
 }

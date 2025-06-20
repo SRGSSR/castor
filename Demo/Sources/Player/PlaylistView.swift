@@ -25,7 +25,7 @@ private struct ItemCell: View {
     }
 
     private func image() -> some View {
-        AsyncImage(url: item.metadata?.imageUrl) { image in
+        AsyncImage(url: item.metadata?.imageUrl()) { image in
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)
