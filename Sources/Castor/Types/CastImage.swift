@@ -9,7 +9,7 @@ import GoogleCast
 /// An image associated with an item.
 public struct CastImage {
     let rawImage: GCKImage?
-    
+
     /// Creates an image
     ///
     /// - Parameters:
