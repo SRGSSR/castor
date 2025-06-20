@@ -28,14 +28,24 @@ public struct CastMetadata {
     /// 
     /// - Parameters:
     ///   - title: The content title.
-    ///   - imageUrl: The image URL.
-    public init(title: String?, imageUrl: URL?) {
+    ///   - images: The associated images.
+    public init(title: String?, images: [CastImage] = []) {
         rawMetadata = GCKMediaMetadata()
         if let title {
             rawMetadata?.setString(title, forKey: kGCKMetadataKeyTitle)
         }
-        if let imageUrl {
-            rawMetadata?.addImage(.init(url: imageUrl, width: 0, height: 0))
+        images.forEach { image in
+            guard let rawImage = image.rawImage else { return }
+            rawMetadata?.addImage(rawImage)
         }
+    }
+
+    /// Creates metadata.
+    ///
+    /// - Parameters:
+    ///   - title: The content title.
+    ///   - image: The associated image.
+    public init(title: String?, image: CastImage) {
+        self.init(title: title, images: [image])
     }
 }
