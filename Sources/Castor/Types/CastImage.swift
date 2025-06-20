@@ -13,7 +13,7 @@ public struct CastImage {
     /// Creates an image
     ///
     /// - Parameters:
-    ///   - url: The URL at which the image can be downloaded.
+    ///   - url: The image URL.
     ///   - size: The image size (if known).
     public init(url: URL, size: CGSize = .zero) {
         rawImage = .init(url: url, width: Int(size.width), height: Int(size.height))

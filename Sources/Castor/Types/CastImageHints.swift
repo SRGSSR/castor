@@ -10,7 +10,7 @@ import GoogleCast
 public struct CastImageHints {
     let rawImageHints: GCKUIImageHints
 
-    /// Creates hints.
+    /// Creates image selection hints.
     ///
     /// - Parameters:
     ///   - type: The type of the image.

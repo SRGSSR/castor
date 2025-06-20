@@ -12,7 +12,7 @@ public extension CastPlayer {
         _mediaStatus?.playerState ?? .unknown
     }
 
-    /// Media information.
+    /// Metadata associated with current item.
     var metadata: CastMetadata? {
         .init(rawMetadata: mediaInformation?.metadata)
     }
