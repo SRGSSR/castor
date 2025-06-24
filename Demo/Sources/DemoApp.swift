@@ -5,6 +5,7 @@
 //
 
 import AVFAudio
+import AVFoundation
 import Castor
 import Combine
 import GoogleCast
@@ -18,6 +19,8 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         try? AVAudioSession.sharedInstance().setCategory(.playback)
         configureShowTime()
+        configureGoogleCast()
+        UserDefaults.registerDefaults()
         return true
     }
 
@@ -28,12 +31,20 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
             }
             .store(in: &cancellables)
     }
+
+    private func configureGoogleCast() {
+        let criteria = GCKDiscoveryCriteria(applicationID: UserDefaults.standard.receiver.identifier)
+        let options = GCKCastOptions(discoveryCriteria: criteria)
+        options.physicalVolumeButtonsWillControlDeviceVolume = true
+        options.launchOptions?.androidReceiverCompatible = true
+        GCKCastContext.setSharedInstanceWith(options)
+        GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
+    }
 }
 
 @main
 struct DemoApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    @State private var model = DemoAppViewModel()
 
     var body: some Scene {
         WindowGroup {
@@ -64,7 +75,7 @@ struct DemoApp: App {
                 }
             }
             // TODO: Starting with iOS 17 this can be moved on the `WindowGroup` without the need for a local `@State`.
-            .environmentObject(model.cast)
+            .environmentObject(Cast(configuration: .standard))
         }
     }
 }

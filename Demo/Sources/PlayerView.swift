@@ -5,23 +5,30 @@
 //
 
 import AVKit
+import Castor
 import SwiftUI
 
 struct PlayerView: View {
-    @State private var player = AVPlayer()
+    @State private var model = PlayerViewModel()
+    @EnvironmentObject private var cast: Cast
+    @Environment(\.dismiss) private var dismiss
     let media: Media
 
     var body: some View {
-        switch media.type {
-        case let .url(url):
-            VideoPlayer(player: player)
+        NavigationStack {
+            VideoPlayer(player: model.player)
                 .ignoresSafeArea()
                 .onAppear {
-                    player.replaceCurrentItem(with: .init(url: url))
-                    player.play()
+                    model.media = media
+                    model.cast = cast
+                    model.dismiss = dismiss
+                    model.play()
                 }
-        case .urn:
-            MessageView(message: "Not playable locally", icon: .system("play.slash.fill"))
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        CastButton()
+                    }
+                }
         }
     }
 }
