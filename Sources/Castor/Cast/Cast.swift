@@ -9,11 +9,29 @@ import Foundation
 import GoogleCast
 import SwiftUI
 
+/// Methods for managing cast session.
+public protocol CastDelegate: AnyObject {
+    /// Called when the cast session is established.
+    /// - Parameters:
+    ///   - cast: The cast object.
+    ///   - player: The cast player.
+    func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer)
+
+    /// Called when the cast session is being stopped.
+    /// - Parameters:
+    ///   - cast: The cast object.
+    ///   - player: the cast player.
+    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer)
+}
+
 /// This object that handles everything related to Google Cast.
 @MainActor
 public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version
+
+    /// The delegate.
+    public weak var delegate: CastDelegate?
 
     private let context = GCKCastContext.sharedInstance()
 
@@ -165,6 +183,9 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
+        if let player {
+            delegate?.cast(self, didStartSessionWithPlayer: player)
+        }
     }
 
     // swiftlint:disable:next missing_docs
@@ -179,6 +200,13 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         with reason: GCKConnectionSuspendReason
     ) {
         currentSession = nil
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
+        if let player {
+            delegate?.cast(self, willStopSessionWithPlayer: player)
+        }
     }
 
     // swiftlint:disable:next missing_docs
