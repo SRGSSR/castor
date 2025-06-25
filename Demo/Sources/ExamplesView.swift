@@ -11,6 +11,7 @@ import SwiftUI
 struct ExamplesView: View {
     @State private var selectedMedia: Media?
     @EnvironmentObject private var cast: Cast
+    @EnvironmentObject private var router: Router
 
     var body: some View {
         VStack(spacing: 0) {
@@ -36,8 +37,8 @@ struct ExamplesView: View {
                 CastButton()
             }
         }
-        .sheet(item: $selectedMedia) { media in
-            PlayerView(media: media)
+        .sheet(item: $router.destination) { destination in
+            destination.view()
         }
         .navigationTitle("Examples")
     }
@@ -49,6 +50,7 @@ struct ExamplesView: View {
             }
             else {
                 selectedMedia = media
+                router.destination = .player(media)
             }
         } label: {
             Text(media.title)
