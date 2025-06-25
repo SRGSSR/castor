@@ -11,7 +11,6 @@ import SwiftUI
 
 class Router: ObservableObject {
     @Published var destination: Destination?
-    private var previousDestination: Destination?
 }
 
 extension Router {
@@ -40,7 +39,6 @@ extension Router: CastDelegate {
         if let url = (cast.dataSource?.player.currentItem?.asset as? AVURLAsset)?.url {
             player.loadItem(from: .simple(url: url, metadata: .init(title: "Item from native player")))
         }
-        previousDestination = destination
         destination = nil
     }
 
@@ -48,5 +46,9 @@ extension Router: CastDelegate {
         print("--> from cast player to player - \(cast.dataSource)")
 //        destination = previousDestination
 //        previousDestination = nil
+        if let metadata = player.metadata, let title = metadata.title, let imageUrl = metadata.imageUrl(), let url = player.currentItem?.contentUrl {
+            cast.endSession()
+            destination = .player(Media(title: title, imageUrl: imageUrl, type: .url(url)))
+        }
     }
 }
