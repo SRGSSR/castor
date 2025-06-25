@@ -8,7 +8,7 @@ import AVFoundation
 import Castor
 import SwiftUI
 
-class PlayerViewModel {
+class PlayerViewModel: CastDataSource {
     let player = AVPlayer()
 
     var media: Media? {

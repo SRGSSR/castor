@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import Combine
 import Foundation
 import GoogleCast
@@ -22,6 +23,12 @@ public protocol CastDelegate: AnyObject {
     ///   - cast: The cast object.
     ///   - player: the cast player.
     func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer)
+}
+
+/// The property that an object adopts to provide a native player.
+public protocol CastDataSource: AnyObject {
+    /// The native player needed by the cast to commutate between the local and the remote player.
+    var player: AVPlayer { get }
 }
 
 /// This object that handles everything related to Google Cast.

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct PlayerView: View {
     @State private var model = PlayerViewModel()
+    @EnvironmentObject private var router: Router
     let media: Media
 
     var body: some View {
@@ -17,6 +18,8 @@ struct PlayerView: View {
             VideoPlayer(player: model.player)
                 .ignoresSafeArea()
                 .onAppear {
+                    router.dataSource = model
+                    model.media = media
                     model.play()
                 }
                 .toolbar {
