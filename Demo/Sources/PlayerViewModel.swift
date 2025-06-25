@@ -11,6 +11,11 @@ import SwiftUI
 class PlayerViewModel: CastDataSource {
     let player = AVPlayer()
 
+    var metadata: CastMetadata? {
+        guard let media else { return nil }
+        return .init(title: media.title, image: .init(url: media.imageUrl))
+    }
+
     var media: Media? {
         didSet {
             guard media != oldValue else { return }

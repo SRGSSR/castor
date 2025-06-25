@@ -35,20 +35,30 @@ extension Router {
 
 extension Router: CastDelegate {
     func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer) {
-        print("--> from player to cast player - \(cast.dataSource)")
-        if let url = (cast.dataSource?.player.currentItem?.asset as? AVURLAsset)?.url {
-            player.loadItem(from: .simple(url: url, metadata: .init(title: "Item from native player")))
+        print("--> 🟢 StartSession (items: \(player.items.count))")
+        if let dataSource = cast.dataSource, let url = dataSource.player.url, let metadata = dataSource.metadata {
+            player.loadItem(from: .simple(url: url, metadata: metadata))
+            destination = nil
         }
-        destination = nil
+    }
+
+    func cast(_ cast: Cast, didUpdate items: [CastPlayerItem], in player: CastPlayer) {
+        print("--> 🔵 didUpdate (items: \(items.count))")
+        player.items.forEach { $0.fetch() } // If we don't fetch the metadata, we won't be able to start a new local player instance because we won't have the content URL.
     }
 
     func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer) {
-        print("--> from cast player to player - \(cast.dataSource)")
-//        destination = previousDestination
-//        previousDestination = nil
-        if let metadata = player.metadata, let title = metadata.title, let imageUrl = metadata.imageUrl(), let url = player.currentItem?.contentUrl {
+        print("--> 🔴 StopSession (items: \(player.items.count))")
+        if let media = Media.media(from: player.currentItem) {
+            destination = .player(media)
             cast.endSession()
-            destination = .player(Media(title: title, imageUrl: imageUrl, type: .url(url)))
         }
+    }
+}
+
+// TODO: Will be removed
+private extension AVPlayer {
+    var url: URL? {
+        (currentItem?.asset as? AVURLAsset)?.url
     }
 }

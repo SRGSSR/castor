@@ -18,6 +18,13 @@ public protocol CastDelegate: AnyObject {
     ///   - player: The cast player.
     func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer)
 
+    /// Called when the player items are updated.
+    /// - Parameters:
+    ///   - cast: The cast object.
+    ///   - didUpdateItems: The player items, `fetch()` method can be called on each items to retrieve metadata.
+    ///   - player: The cast player.
+    func cast(_ cast: Cast, didUpdate items: [CastPlayerItem], in player: CastPlayer)
+
     /// Called when the cast session is being stopped.
     /// - Parameters:
     ///   - cast: The cast object.
@@ -29,6 +36,7 @@ public protocol CastDelegate: AnyObject {
 public protocol CastDataSource: AnyObject {
     /// The native player needed by the cast to commutate between the local and the remote player.
     var player: AVPlayer { get }
+    var metadata: CastMetadata? { get }
 }
 
 /// This object that handles everything related to Google Cast.
@@ -59,6 +67,7 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            currentSession?.remoteMediaClient?.mediaQueue.add(self) // FIXME: Looks weird... should we transmit the delegate to the player?
         }
     }
 
@@ -231,5 +240,14 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
+    }
+}
+
+extension Cast: @preconcurrency GCKMediaQueueDelegate {
+    // swiftlint:disable:next missing_docs
+    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
+        if let player {
+            delegate?.cast(self, didUpdate: player.items, in: player)
+        }
     }
 }

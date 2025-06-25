@@ -27,4 +27,14 @@ struct Media: Hashable, Identifiable {
             return .custom(identifier: identifier, metadata: .init(title: title, image: image))
         }
     }
+
+    static func media(from item: CastPlayerItem?) -> Self? {
+        guard let item, let title = item.metadata?.title, let imageUrl = item.metadata?.imageUrl() else { return nil }
+        if let url = item.contentUrl {
+            return .init(title: title, imageUrl: imageUrl, type: .url(url))
+        }
+        else {
+            return nil // TODO: We should manage URNs.
+        }
+    }
 }

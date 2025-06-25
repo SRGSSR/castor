@@ -18,7 +18,7 @@ struct PlayerView: View {
         NavigationStack {
             VideoPlayer(player: model.player)
                 .ignoresSafeArea()
-                .enable(cast, using: model, and: router)
+                .enableCastPlaybackSwitching(cast, using: router, and: model)
                 .onAppear(perform: play)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {

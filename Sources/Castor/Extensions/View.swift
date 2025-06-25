@@ -23,10 +23,11 @@ public extension View {
 }
 
 public extension View {
-    func enable(_ cast: Cast, using dataSource: CastDataSource?, and delegate: CastDelegate?) -> some View {
+    func enableCastPlaybackSwitching(_ cast: Cast, using delegate: CastDelegate?, and dataSource: CastDataSource? = nil) -> some View {
         onAppear {
-            cast.dataSource = dataSource
             cast.delegate = delegate
+            // FIXME: The data source seems to be useless in some cases: When we start a cast session without local player. Should we split this method?
+            cast.dataSource = dataSource
         }
     }
 }
