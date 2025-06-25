@@ -17,7 +17,7 @@ class Router: ObservableObject {
         }
     }
 
-    weak var dataSource: CastDataSource? {
+    var dataSource: CastDataSource? {
         didSet {
             print("--> dataSource \(dataSource)")
         }
