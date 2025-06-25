@@ -10,8 +10,6 @@ import SwiftUI
 
 struct PlayerView: View {
     @State private var model = PlayerViewModel()
-    @EnvironmentObject private var cast: Cast
-    @Environment(\.dismiss) private var dismiss
     let media: Media
 
     var body: some View {
@@ -19,9 +17,6 @@ struct PlayerView: View {
             VideoPlayer(player: model.player)
                 .ignoresSafeArea()
                 .onAppear {
-                    model.media = media
-                    model.cast = cast
-                    model.dismiss = dismiss
                     model.play()
                 }
                 .toolbar {
