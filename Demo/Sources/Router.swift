@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import Castor
 import Foundation
 import SwiftUI
@@ -53,6 +54,9 @@ extension Router {
 extension Router: CastDelegate {
     func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer) {
         print("--> from player to cast player - \(dataSource)")
+        if let url = (dataSource?.player.currentItem?.asset as? AVURLAsset)?.url {
+            player.loadItem(from: .simple(url: url, metadata: .init(title: "Item from native player")))
+        }
         previousDestination = destination
         destination = nil
     }
