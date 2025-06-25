@@ -37,6 +37,9 @@ public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version
 
+    /// The data source.
+    public weak var dataSource: CastDataSource?
+
     /// The delegate.
     public weak var delegate: CastDelegate?
 

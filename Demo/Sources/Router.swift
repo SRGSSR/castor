@@ -10,21 +10,8 @@ import Foundation
 import SwiftUI
 
 class Router: ObservableObject {
-    let cast: Cast
-
     @Published var destination: Destination?
     private var previousDestination: Destination?
-
-    var dataSource: CastDataSource? {
-        didSet {
-            print("--> dataSource \(dataSource)")
-        }
-    }
-
-    init(cast: Cast) {
-        self.cast = cast
-        cast.delegate = self
-    }
 }
 
 extension Router {
@@ -49,8 +36,8 @@ extension Router {
 
 extension Router: CastDelegate {
     func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer) {
-        print("--> from player to cast player - \(dataSource)")
-        if let url = (dataSource?.player.currentItem?.asset as? AVURLAsset)?.url {
+        print("--> from player to cast player - \(cast.dataSource)")
+        if let url = (cast.dataSource?.player.currentItem?.asset as? AVURLAsset)?.url {
             player.loadItem(from: .simple(url: url, metadata: .init(title: "Item from native player")))
         }
         previousDestination = destination
@@ -58,8 +45,8 @@ extension Router: CastDelegate {
     }
 
     func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer) {
-        print("--> from cast player to player - \(dataSource)")
-        destination = previousDestination
-        previousDestination = nil
+        print("--> from cast player to player - \(cast.dataSource)")
+//        destination = previousDestination
+//        previousDestination = nil
     }
 }

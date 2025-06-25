@@ -44,9 +44,7 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct DemoApp: App {
-    static let cast = Cast(configuration: .standard)
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    @StateObject private var router = Router(cast: cast)
 
     var body: some Scene {
         WindowGroup {
@@ -77,8 +75,8 @@ struct DemoApp: App {
                 }
             }
             // TODO: Starting with iOS 17 this can be moved on the `WindowGroup` without the need for a local `@State`.
-            .environmentObject(Self.cast)
-            .environmentObject(router)
+            .environmentObject(Cast(configuration: .standard))
+            .environmentObject(Router())
         }
     }
 }

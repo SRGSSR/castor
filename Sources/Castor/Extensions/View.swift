@@ -21,3 +21,12 @@ public extension View {
         }
     }
 }
+
+public extension View {
+    func enable(_ cast: Cast, using dataSource: CastDataSource?, and delegate: CastDelegate?) -> some View {
+        onAppear {
+            cast.dataSource = dataSource
+            cast.delegate = delegate
+        }
+    }
+}

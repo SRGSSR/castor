@@ -11,22 +11,25 @@ import SwiftUI
 struct PlayerView: View {
     @State private var model = PlayerViewModel()
     @EnvironmentObject private var router: Router
+    @EnvironmentObject private var cast: Cast
     let media: Media
 
     var body: some View {
         NavigationStack {
             VideoPlayer(player: model.player)
                 .ignoresSafeArea()
-                .onAppear {
-                    router.dataSource = model
-                    model.media = media
-                    model.play()
-                }
+                .enable(cast, using: model, and: router)
+                .onAppear(perform: play)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         CastButton()
                     }
                 }
         }
+    }
+
+    private func play() {
+        model.media = media
+        model.play()
     }
 }
