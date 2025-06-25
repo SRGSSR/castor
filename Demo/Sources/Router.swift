@@ -17,6 +17,8 @@ class Router: ObservableObject {
         }
     }
 
+    private var previousDestination: Destination?
+
     var dataSource: CastDataSource? {
         didSet {
             print("--> dataSource \(dataSource)")
@@ -51,9 +53,13 @@ extension Router {
 extension Router: CastDelegate {
     func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer) {
         print("--> from player to cast player - \(dataSource)")
+        previousDestination = destination
+        destination = nil
     }
 
     func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer) {
         print("--> from cast player to player - \(dataSource)")
+        destination = previousDestination
+        previousDestination = nil
     }
 }
