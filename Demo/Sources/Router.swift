@@ -12,12 +12,7 @@ import SwiftUI
 class Router: ObservableObject {
     let cast: Cast
 
-    @Published var destination: Destination? {
-        didSet {
-            cast.delegate = self
-        }
-    }
-
+    @Published var destination: Destination?
     private var previousDestination: Destination?
 
     var dataSource: CastDataSource? {
@@ -28,6 +23,7 @@ class Router: ObservableObject {
 
     init(cast: Cast) {
         self.cast = cast
+        cast.delegate = self
     }
 }
 
