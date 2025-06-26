@@ -35,11 +35,7 @@ extension Router {
 
 extension Router: CastDelegate {
     func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer) {
-        print("--> 🟢 StartSession (items: \(player.items.count))")
-        if let dataSource = cast.dataSource, let url = dataSource.player.url, let metadata = dataSource.metadata {
-            player.loadItem(from: .simple(url: url, metadata: metadata))
-            destination = nil
-        }
+        destination = nil
     }
 
     func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentAsset: CastAsset?, assets: [CastAsset]) {
@@ -48,12 +44,5 @@ extension Router: CastDelegate {
             destination = .player(media)
             cast.endSession()
         }
-    }
-}
-
-// TODO: Will be removed
-private extension AVPlayer {
-    var url: URL? {
-        (currentItem?.asset as? AVURLAsset)?.url
     }
 }

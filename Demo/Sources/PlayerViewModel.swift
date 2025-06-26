@@ -6,14 +6,22 @@
 
 import AVFoundation
 import Castor
+import PillarboxPlayer
+import PillarboxCoreBusiness
 import SwiftUI
 
 class PlayerViewModel: CastDataSource {
-    let player = AVPlayer()
+    let player = Player()
 
-    var metadata: CastMetadata? {
+    var asset: CastAsset? {
         guard let media else { return nil }
-        return .init(title: media.title, image: .init(url: media.imageUrl))
+        let metadata = CastMetadata(title: media.title, image: .init(url: media.imageUrl))
+        switch media.type {
+        case let .url(url):
+            return .simple(url: url, metadata: metadata)
+        case let .urn(urn):
+            return .custom(identifier: urn, metadata: metadata)
+        }
     }
 
     var media: Media? {
@@ -21,9 +29,11 @@ class PlayerViewModel: CastDataSource {
             guard media != oldValue else { return }
             switch media?.type {
             case let .url(url):
-                player.replaceCurrentItem(with: .init(url: url))
+                player.items = [.simple(url: url)]
+            case let .urn(urn):
+                player.items = [.urn(urn)]
             default:
-                player.replaceCurrentItem(with: nil)
+                player.items = []
             }
         }
     }

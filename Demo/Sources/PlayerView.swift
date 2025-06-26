@@ -6,6 +6,7 @@
 
 import AVKit
 import Castor
+import PillarboxPlayer
 import SwiftUI
 
 struct PlayerView: View {
@@ -16,7 +17,7 @@ struct PlayerView: View {
 
     var body: some View {
         NavigationStack {
-            VideoPlayer(player: model.player)
+            SystemVideoView(player: model.player)
                 .ignoresSafeArea()
                 .enableCastPlaybackSwitching(cast, using: router, and: model)
                 .onAppear(perform: play)

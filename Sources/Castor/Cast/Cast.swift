@@ -22,19 +22,12 @@ public protocol CastDelegate: AnyObject {
     /// - Parameters:
     ///   - cast: The cast object.
     ///   - player: the cast player.
-    func cast(
-        _ cast: Cast,
-        willStopSessionWithPlayer player: CastPlayer,
-        currentAsset: CastAsset?,
-        assets: [CastAsset]
-    )
+    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentAsset: CastAsset?, assets: [CastAsset])
 }
 
 /// The property that an object adopts to provide a native player.
 public protocol CastDataSource: AnyObject {
-    /// The native player needed by the cast to commutate between the local and the remote player.
-    var player: AVPlayer { get }
-    var metadata: CastMetadata? { get }
+    var asset: CastAsset? { get }
 }
 
 /// This object that handles everything related to Google Cast.
@@ -200,6 +193,9 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
         if let player {
+            if let asset = dataSource?.asset {
+                player.loadItem(from: asset)
+            }
             delegate?.cast(self, didStartSessionWithPlayer: player)
         }
     }
