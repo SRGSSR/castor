@@ -39,8 +39,15 @@ extension Router: CastDelegate {
     }
 
     func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentIndex: Int, assets: [CastAsset]) {
-        print("--> 🔴 StopSessionWithPlayer (assets: \(assets.count))")
-        let medias = assets.suffix(from: currentIndex).compactMap { Media.media(from: $0) }
+        print("--> 🔴 StopSessionWithPlayer (time: \(player.time().seconds))")
+        let medias = assets.suffix(from: currentIndex).enumerated().compactMap { index, asset in
+            if index == 0 {
+                return Media.media(from: asset, startTime: player.time())
+            }
+            else {
+                return Media.media(from: asset)
+            }
+        }
         destination = .player(medias)
         cast.endSession()
     }

@@ -19,9 +19,9 @@ class PlayerViewModel: CastDataSource {
             player.items = medias.map { media in
                 switch media.type {
                 case let .url(url):
-                    return .simple(url: url)
+                    return .simple(url: url, configuration: .init(position: at(media.startTime ?? .zero)))
                 case let .urn(urn):
-                    return .urn(urn)
+                    return .urn(urn, configuration: .init(position: at(media.startTime ?? .zero)))
                 }
             }
         }
