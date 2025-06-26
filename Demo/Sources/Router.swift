@@ -42,14 +42,9 @@ extension Router: CastDelegate {
         }
     }
 
-    func cast(_ cast: Cast, didUpdate items: [CastPlayerItem], in player: CastPlayer) {
-        print("--> 🔵 didUpdate (items: \(items.count))")
-        player.items.forEach { $0.fetch() } // If we don't fetch the metadata, we won't be able to start a new local player instance because we won't have the content URL.
-    }
-
-    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer) {
-        print("--> 🔴 StopSession (items: \(player.items.count))")
-        if let media = Media.media(from: player.currentItem) {
+    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentAsset: CastAsset?, assets: [CastAsset]) {
+        print("--> 🔴 StopSessionWithPlayer (assets: \(assets.count))")
+        if let media = Media.media(from: currentAsset) {
             destination = .player(media)
             cast.endSession()
         }

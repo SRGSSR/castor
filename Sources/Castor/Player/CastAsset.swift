@@ -8,7 +8,7 @@ import GoogleCast
 
 /// A cast asset representing content to be played.
 public struct CastAsset {
-    private enum Kind {
+    public enum Kind {
         case simple(URL)
         case custom(String)
 
@@ -28,8 +28,8 @@ public struct CastAsset {
         }
     }
 
-    private let kind: Kind
-    private let metadata: CastMetadata
+    public let kind: Kind
+    public let metadata: CastMetadata
     private let configuration: CastPlaybackConfiguration
 
     /// A simple asset which can be played directly.

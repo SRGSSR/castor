@@ -28,13 +28,13 @@ struct Media: Hashable, Identifiable {
         }
     }
 
-    static func media(from item: CastPlayerItem?) -> Self? {
-        guard let item, let title = item.metadata?.title, let imageUrl = item.metadata?.imageUrl() else { return nil }
-        if let url = item.contentUrl {
+    static func media(from asset: CastAsset?) -> Self? {
+        guard let asset, let title = asset.metadata.title, let imageUrl = asset.metadata.imageUrl() else { return nil }
+        switch asset.kind {
+        case let .simple(url):
             return .init(title: title, imageUrl: imageUrl, type: .url(url))
-        }
-        else {
-            return nil // TODO: We should manage URNs.
+        case let .custom(urn):
+            return .init(title: title, imageUrl: imageUrl, type: .urn(urn))
         }
     }
 }

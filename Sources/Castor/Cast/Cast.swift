@@ -18,18 +18,16 @@ public protocol CastDelegate: AnyObject {
     ///   - player: The cast player.
     func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer)
 
-    /// Called when the player items are updated.
-    /// - Parameters:
-    ///   - cast: The cast object.
-    ///   - didUpdateItems: The player items, `fetch()` method can be called on each items to retrieve metadata.
-    ///   - player: The cast player.
-    func cast(_ cast: Cast, didUpdate items: [CastPlayerItem], in player: CastPlayer)
-
     /// Called when the cast session is being stopped.
     /// - Parameters:
     ///   - cast: The cast object.
     ///   - player: the cast player.
-    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer)
+    func cast(
+        _ cast: Cast,
+        willStopSessionWithPlayer player: CastPlayer,
+        currentAsset: CastAsset?,
+        assets: [CastAsset]
+    )
 }
 
 /// The property that an object adopts to provide a native player.
@@ -67,7 +65,6 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            currentSession?.remoteMediaClient?.mediaQueue.add(self) // FIXME: Looks weird... should we transmit the delegate to the player?
         }
     }
 
@@ -223,8 +220,12 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        if let player {
-            delegate?.cast(self, willStopSessionWithPlayer: player)
+        if let player, let mediaStatus = session.remoteMediaClient?.mediaStatus {
+            let assets = mediaStatus.items().compactMap { rawItem in
+                Self.asset(from: rawItem.mediaInformation)
+            }
+            let currentAsset = Self.asset(from: mediaStatus.mediaInformation)
+            delegate?.cast(self, willStopSessionWithPlayer: player, currentAsset: currentAsset, assets: assets)
         }
     }
 
@@ -243,11 +244,17 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     }
 }
 
-extension Cast: @preconcurrency GCKMediaQueueDelegate {
-    // swiftlint:disable:next missing_docs
-    public func mediaQueueDidChange(_ queue: GCKMediaQueue) {
-        if let player {
-            delegate?.cast(self, didUpdate: player.items, in: player)
+extension Cast {
+    static func asset(from mediaInformation: GCKMediaInformation?) -> CastAsset? {
+        guard let mediaInformation else { return nil }
+        if let identifier = mediaInformation.contentID, identifier.hasPrefix("urn:") {
+            return .custom(identifier: identifier, metadata: .init(rawMetadata: mediaInformation.metadata))
+        }
+        else if let url = mediaInformation.contentURL {
+            return .simple(url: url, metadata: .init(rawMetadata: mediaInformation.metadata))
+        }
+        else {
+            return nil
         }
     }
 }

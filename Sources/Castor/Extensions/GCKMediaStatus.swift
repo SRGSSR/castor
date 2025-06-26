@@ -10,4 +10,8 @@ extension GCKMediaStatus {
     var isConnected: Bool {
         queueItemCount != 0
     }
+
+    func items() -> [GCKMediaQueueItem] {
+        (0..<queueItemCount).compactMap { queueItem(at: $0) }
+    }
 }
