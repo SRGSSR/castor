@@ -13,7 +13,7 @@ struct PlayerView: View {
     @State private var model = PlayerViewModel()
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var cast: Cast
-    let media: Media
+    let medias: [Media]
 
     var body: some View {
         NavigationStack {
@@ -30,7 +30,7 @@ struct PlayerView: View {
     }
 
     private func play() {
-        model.media = media
+        model.medias = medias
         model.play()
     }
 }

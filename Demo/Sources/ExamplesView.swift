@@ -50,7 +50,7 @@ struct ExamplesView: View {
             }
             else {
                 selectedMedia = media
-                router.destination = .player(media)
+                router.destination = .player([media])
             }
         } label: {
             Text(media.title)
