@@ -13,14 +13,14 @@ import SwiftUI
 class PlayerViewModel: CastDataSource {
     let player = Player()
 
-    var asset: CastAsset? {
-        guard let media else { return nil }
+    var assets: [CastAsset] {
+        guard let media else { return [] }
         let metadata = CastMetadata(title: media.title, image: .init(url: media.imageUrl))
         switch media.type {
         case let .url(url):
-            return .simple(url: url, metadata: metadata)
+            return [.simple(url: url, metadata: metadata)]
         case let .urn(urn):
-            return .custom(identifier: urn, metadata: metadata)
+            return [.custom(identifier: urn, metadata: metadata)]
         }
     }
 

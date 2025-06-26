@@ -27,7 +27,7 @@ public protocol CastDelegate: AnyObject {
 
 /// The property that an object adopts to provide a native player.
 public protocol CastDataSource: AnyObject {
-    var asset: CastAsset? { get }
+    var assets: [CastAsset] { get }
 }
 
 /// This object that handles everything related to Google Cast.
@@ -193,8 +193,8 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
         if let player {
-            if let asset = dataSource?.asset {
-                player.loadItem(from: asset)
+            if let assets = dataSource?.assets {
+                player.loadItems(from: assets)
             }
             delegate?.cast(self, didStartSessionWithPlayer: player)
         }
