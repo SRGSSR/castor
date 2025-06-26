@@ -10,6 +10,7 @@ import Foundation
 import GoogleCast
 import SwiftUI
 
+// FIXME: Update doc & remove player parameter.
 /// Methods for managing cast session.
 public protocol CastDelegate: AnyObject {
     /// Called when the cast session is established.
