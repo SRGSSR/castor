@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E410A2A2E0D70270003E917 /* PillarboxCoreBusiness in Frameworks */ = {isa = PBXBuildFile; productRef = 0E410A292E0D70270003E917 /* PillarboxCoreBusiness */; };
+		0E410A2C2E0D70270003E917 /* PillarboxPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 0E410A2B2E0D70270003E917 /* PillarboxPlayer */; };
 		0EFEFEF72D4916A1003034F7 /* Castor in Frameworks */ = {isa = PBXBuildFile; productRef = 0EFEFEF62D4916A1003034F7 /* Castor */; };
 		6F93E3812D9C0CEA00B412AA /* ShowTime in Frameworks */ = {isa = PBXBuildFile; productRef = 6F93E3802D9C0CEA00B412AA /* ShowTime */; };
 /* End PBXBuildFile section */
@@ -68,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E410A2A2E0D70270003E917 /* PillarboxCoreBusiness in Frameworks */,
+				0E410A2C2E0D70270003E917 /* PillarboxPlayer in Frameworks */,
 				6F93E3812D9C0CEA00B412AA /* ShowTime in Frameworks */,
 				0EFEFEF72D4916A1003034F7 /* Castor in Frameworks */,
 			);
@@ -127,6 +131,8 @@
 			packageProductDependencies = (
 				0EFEFEF62D4916A1003034F7 /* Castor */,
 				6F93E3802D9C0CEA00B412AA /* ShowTime */,
+				0E410A292E0D70270003E917 /* PillarboxCoreBusiness */,
+				0E410A2B2E0D70270003E917 /* PillarboxPlayer */,
 			);
 			productName = "Castor-demo";
 			productReference = 0ECF4A4D2D48E1F400238371 /* Castor-demo.app */;
@@ -158,6 +164,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6F93E37F2D9C0CEA00B412AA /* XCRemoteSwiftPackageReference "ShowTime" */,
+				0E410A282E0D70270003E917 /* XCRemoteSwiftPackageReference "pillarbox-apple" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0ECF4A4E2D48E1F400238371 /* Products */;
@@ -515,6 +522,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0E410A282E0D70270003E917 /* XCRemoteSwiftPackageReference "pillarbox-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SRGSSR/pillarbox-apple";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
 		6F93E37F2D9C0CEA00B412AA /* XCRemoteSwiftPackageReference "ShowTime" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/KaneCheshire/ShowTime.git";
@@ -526,6 +541,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0E410A292E0D70270003E917 /* PillarboxCoreBusiness */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0E410A282E0D70270003E917 /* XCRemoteSwiftPackageReference "pillarbox-apple" */;
+			productName = PillarboxCoreBusiness;
+		};
+		0E410A2B2E0D70270003E917 /* PillarboxPlayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0E410A282E0D70270003E917 /* XCRemoteSwiftPackageReference "pillarbox-apple" */;
+			productName = PillarboxPlayer;
+		};
 		0EFEFEF62D4916A1003034F7 /* Castor */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Castor;
