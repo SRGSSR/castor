@@ -22,7 +22,7 @@ public protocol CastDelegate: AnyObject {
     /// - Parameters:
     ///   - cast: The cast object.
     ///   - player: the cast player.
-    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentAsset: CastAsset?, assets: [CastAsset])
+    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentIndex: Int, assets: [CastAsset])
 }
 
 /// The property that an object adopts to provide a native player.
@@ -216,12 +216,14 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        if let player, let mediaStatus = session.remoteMediaClient?.mediaStatus {
-            let assets = mediaStatus.items().compactMap { rawItem in
-                Self.asset(from: rawItem.mediaInformation)
-            }
-            let currentAsset = Self.asset(from: mediaStatus.mediaInformation)
-            delegate?.cast(self, willStopSessionWithPlayer: player, currentAsset: currentAsset, assets: assets)
+        guard let player, let mediaStatus = session.remoteMediaClient?.mediaStatus, let delegate else { return }
+        let items = mediaStatus.items()
+        guard !items.isEmpty else { return }
+        let assets = items.compactMap { rawItem in
+            Self.asset(from: rawItem.mediaInformation)
+        }
+        if let index = items.firstIndex(where: { $0.itemID == mediaStatus.currentItemID }) {
+            delegate.cast(self, willStopSessionWithPlayer: player, currentIndex: index, assets: assets)
         }
     }
 
