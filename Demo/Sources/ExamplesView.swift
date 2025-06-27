@@ -9,7 +9,6 @@ import Castor
 import SwiftUI
 
 struct ExamplesView: View {
-    @State private var selectedMedia: Media?
     @EnvironmentObject private var cast: Cast
     @EnvironmentObject private var router: Router
 
@@ -49,7 +48,6 @@ struct ExamplesView: View {
                 player.loadItem(from: media.asset())
             }
             else {
-                selectedMedia = media
                 router.destination = .player([media])
             }
         } label: {
