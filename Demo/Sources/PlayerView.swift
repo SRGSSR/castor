@@ -18,13 +18,13 @@ struct PlayerView: View {
         NavigationStack {
             SystemVideoView(player: model.player)
                 .ignoresSafeArea()
-                .castAssets(from: model, for: cast)
                 .onAppear(perform: play)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         CastButton()
                     }
                 }
+                .makeCastable(model, with: cast)
         }
     }
 

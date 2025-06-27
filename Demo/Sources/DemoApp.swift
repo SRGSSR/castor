@@ -79,7 +79,7 @@ struct DemoApp: App {
             // TODO: Starting with iOS 17 this can be moved on the `WindowGroup` without the need for a local `@State`.
             .environmentObject(cast)
             .environmentObject(router)
-            .castLifecycle(using: router, for: cast)
+            .supportsCast(cast, with: router)
         }
     }
 }

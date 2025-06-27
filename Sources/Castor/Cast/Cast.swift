@@ -16,11 +16,8 @@ public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version
 
-    /// The data source.
-    public weak var dataSource: CastDataSource?
-
-    /// The delegate.
-    public weak var delegate: CastDelegate?
+    weak var castable: Castable?
+    weak var delegate: CastDelegate?
 
     private let context = GCKCastContext.sharedInstance()
 
@@ -175,7 +172,7 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         if
             let player,
             let delegate,
-            let assets = dataSource?.assets() {
+            let assets = castable?.assets() {
             player.loadItems(from: assets)
             if let currentIndex = session.remoteMediaClient?.mediaStatus?.currentIndex() { // FIXME: As we load items the index should always be 0.
                 delegate.cast(self, startSessionWithState: .init(assets: assets, index: currentIndex, time: player.time()))

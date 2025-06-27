@@ -10,7 +10,7 @@ import PillarboxCoreBusiness
 import PillarboxPlayer
 import SwiftUI
 
-class PlayerViewModel: CastDataSource {
+class PlayerViewModel: Castable {
     let player = Player()
 
     var medias: [Media] = [] {

@@ -23,12 +23,12 @@ public extension View {
 }
 
 public extension View {
-    /// Assigns an object which listens to the cast session lifecycle.
+    /// Supports casting with the provided delegate.
     ///
     /// - Parameters:
     ///   - cast: The cast object.
-    ///   - delegate: The object which handle cast session lifecycle.
-    func castLifecycle(using delegate: CastDelegate, for cast: Cast) -> some View {
+    ///   - delegate: The delegate.
+    func supportsCast(_ cast: Cast, with delegate: CastDelegate) -> some View {
         onAppear {
             cast.delegate = delegate
         }
@@ -37,11 +37,11 @@ public extension View {
     /// Assigns an object which provides assets.
     ///
     /// - Parameters:
+    ///   - castable: The object that can be cast.
     ///   - cast: The cast object.
-    ///   - dataSource: The object providing assets.
-    func castAssets(from dataSource: CastDataSource, for cast: Cast) -> some View {
+    func makeCastable(_ castable: Castable, with cast: Cast) -> some View {
         onAppear {
-            cast.dataSource = dataSource
+            cast.castable = castable
         }
     }
 }
