@@ -15,7 +15,7 @@ class Router: ObservableObject {
 
 extension Router {
     enum Destination: Identifiable, Hashable {
-        case player([Media])
+        case player(medias: [Media], startIndex: Int, startTime: CMTime)
 
         var id: String {
             switch self {
@@ -26,8 +26,8 @@ extension Router {
 
         func view() -> some View {
             switch self {
-            case let .player(medias):
-                PlayerView(medias: medias)
+            case let .player(medias, startIndex, startTime):
+                PlayerView(medias: medias, startIndex: startIndex, startTime: startTime)
             }
         }
     }
@@ -39,15 +39,8 @@ extension Router: CastDelegate {
     }
 
     func castEndSession(with state: CastResumeState) {
-        let medias = state.assets.suffix(from: state.index).enumerated().compactMap { index, asset in
-            if index == 0 {
-                return Media.media(from: asset, startTime: state.time)
-            }
-            else {
-                return Media.media(from: asset)
-            }
-        }
-        destination = .player(medias)
+        let medias = state.assets.compactMap(Media.media(from:))
+        destination = .player(medias: medias, startIndex: state.index, startTime: state.time)
     }
 
     func castAsset(from information: CastMediaInformation) -> CastAsset? {

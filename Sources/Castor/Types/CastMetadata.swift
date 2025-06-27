@@ -40,8 +40,13 @@ public struct CastMetadata {
     /// - Parameters:
     ///   - title: The content title.
     ///   - image: The associated image.
-    public init(title: String?, image: CastImage) {
-        self.init(title: title, images: [image])
+    public init(title: String?, image: CastImage?) {
+        if let image {
+            self.init(title: title, images: [image])
+        }
+        else {
+            self.init(title: title)
+        }
     }
 
     /// The image URL matching a set of hints.

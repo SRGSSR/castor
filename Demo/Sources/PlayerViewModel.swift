@@ -12,23 +12,25 @@ import SwiftUI
 
 class PlayerViewModel {
     let player = Player()
-
-    var medias: [Media] = [] {
-        didSet {
-            guard medias != oldValue else { return }
-            player.items = medias.map { media in
-                switch media.type {
-                case let .url(url):
-                    return .simple(url: url, configuration: .init(position: at(media.startTime ?? .zero)))
-                case let .urn(urn):
-                    return .urn(urn, configuration: .init(position: at(media.startTime ?? .zero)))
-                }
-            }
-        }
-    }
+    private var medias: [Media] = []
 
     func play() {
         player.play()
+    }
+
+    func setMedias(_ medias: [Media], startIndex: Int, startTime: CMTime) {
+        guard medias != self.medias else { return }
+        self.medias = medias
+        player.items = medias.enumerated().map { index, media in
+            let configuration = index == startIndex ? PlaybackConfiguration(position: at(startTime)) : PlaybackConfiguration()
+            switch media.type {
+            case let .url(url):
+                return .simple(url: url, configuration: configuration)
+            case let .urn(urn):
+                return .urn(urn, configuration: configuration)
+            }
+        }
+        player.currentItem = player.items[safeIndex: startIndex]
     }
 }
 
@@ -39,12 +41,11 @@ extension PlayerViewModel: Castable {
 
     private func castAssets() -> [CastAsset] {
         medias.map { media in
-            let metadata = CastMetadata(title: media.title, image: .init(url: media.imageUrl))
             switch media.type {
             case let .url(url):
-                return .simple(url: url, metadata: metadata)
+                return .simple(url: url, metadata: media.castMetadata())
             case let .urn(urn):
-                return .custom(identifier: urn, metadata: metadata)
+                return .custom(identifier: urn, metadata: media.castMetadata())
             }
         }
     }
