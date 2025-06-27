@@ -10,7 +10,7 @@ import GoogleCast
 public struct CastImage {
     let rawImage: GCKImage?
 
-    /// Creates an image
+    /// Creates an image.
     ///
     /// - Parameters:
     ///   - url: The image URL.
