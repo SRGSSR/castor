@@ -16,12 +16,12 @@ public struct CastMediaInformation {
     }
 
     /// The URL of the content.
-    public var contentUrl: URL? {
+    public var url: URL? {
         rawMediaInformation.contentURL
     }
 
     /// The content identifier.
-    public var contentIdentifier: String? {
+    public var identifier: String? {
         rawMediaInformation.contentID
     }
 
