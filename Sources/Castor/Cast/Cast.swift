@@ -10,27 +10,6 @@ import Foundation
 import GoogleCast
 import SwiftUI
 
-// FIXME: Update doc & remove player parameter.
-/// Methods for managing cast session.
-public protocol CastDelegate: AnyObject {
-    /// Called when the cast session is established.
-    /// - Parameters:
-    ///   - cast: The cast object.
-    ///   - player: The cast player.
-    func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer)
-
-    /// Called when the cast session is being stopped.
-    /// - Parameters:
-    ///   - cast: The cast object.
-    ///   - player: the cast player.
-    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentIndex: Int, assets: [CastAsset])
-}
-
-/// The property that an object adopts to provide a native player.
-public protocol CastDataSource: AnyObject {
-    func assets() -> [CastAsset]
-}
-
 /// This object that handles everything related to Google Cast.
 @MainActor
 public final class Cast: NSObject, ObservableObject {
@@ -193,12 +172,10 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
-        if let player {
-            if let assets = dataSource?.assets() {
-                player.loadItems(from: assets)
-            }
-            delegate?.cast(self, didStartSessionWithPlayer: player)
+        if let assets = dataSource?.assets() {
+            player?.loadItems(from: assets)
         }
+        delegate?.castDidStartSession(self)
     }
 
     // swiftlint:disable:next missing_docs
@@ -246,6 +223,8 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 extension Cast {
     static func asset(from mediaInformation: GCKMediaInformation?) -> CastAsset? {
         guard let mediaInformation else { return nil }
+        // FIXME: This code seems too business specific could we extract this "recipe" outside?
+        // We can imagine some scenarios with identifiers that don't contain "urn:".
         if let identifier = mediaInformation.contentID, identifier.hasPrefix("urn:") {
             return .custom(identifier: identifier, metadata: .init(rawMetadata: mediaInformation.metadata))
         }

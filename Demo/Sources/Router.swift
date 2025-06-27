@@ -34,12 +34,11 @@ extension Router {
 }
 
 extension Router: CastDelegate {
-    func cast(_ cast: Cast, didStartSessionWithPlayer player: CastPlayer) {
+    func castDidStartSession(_ cast: Cast) {
         destination = nil
     }
 
     func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentIndex: Int, assets: [CastAsset]) {
-        print("--> 🔴 StopSessionWithPlayer (time: \(player.time().seconds))")
         let medias = assets.suffix(from: currentIndex).enumerated().compactMap { index, asset in
             if index == 0 {
                 return Media.media(from: asset, startTime: player.time())
