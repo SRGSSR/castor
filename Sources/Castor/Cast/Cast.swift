@@ -207,7 +207,7 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         else { return }
         let items = mediaStatus.items()
         if !items.isEmpty {
-            let assets = items.compactMap { Self.asset(from: $0.mediaInformation) }
+            let assets = items.compactMap { delegate.cast(self, assetFrom: .init(rawMediaInformation: $0.mediaInformation)) }
             delegate.cast(self, endSessionWithState: .init(assets: assets, index: currentIndex, time: player.time()))
         }
     }
@@ -224,22 +224,5 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
-    }
-}
-
-extension Cast {
-    static func asset(from mediaInformation: GCKMediaInformation?) -> CastAsset? {
-        guard let mediaInformation else { return nil }
-        // FIXME: This code seems too business specific could we extract this "recipe" outside?
-        // We can imagine some scenarios with identifiers that don't contain "urn:".
-        if let identifier = mediaInformation.contentID, identifier.hasPrefix("urn:") {
-            return .custom(identifier: identifier, metadata: .init(rawMetadata: mediaInformation.metadata))
-        }
-        else if let url = mediaInformation.contentURL {
-            return .simple(url: url, metadata: .init(rawMetadata: mediaInformation.metadata))
-        }
-        else {
-            return nil
-        }
     }
 }

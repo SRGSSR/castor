@@ -19,4 +19,12 @@ public protocol CastDelegate: AnyObject {
     ///   - currentIndex: The index of the current item.
     ///   - assets: The list of the asset from the current asset to the end of the queue.
     func cast(_ cast: Cast, endSessionWithState state: CastResumeState?)
+
+    /// Provide an asset based on the information.
+    /// - Parameters:
+    ///   - cast: The cast object.
+    ///   - information: The media information useful to create an asset.
+    ///
+    /// - Returns: The asset.
+    func cast(_ cast: Cast, assetFrom information: CastMediaInformation) -> CastAsset?
 }

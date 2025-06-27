@@ -50,4 +50,16 @@ extension Router: CastDelegate {
         }
         destination = .player(medias)
     }
+
+    func cast(_ cast: Cast, assetFrom information: CastMediaInformation) -> CastAsset? {
+        if let identifier = information.contentIdentifier, identifier.hasPrefix("urn:") {
+            return .custom(identifier: identifier, metadata: information.metadata)
+        }
+        else if let url = information.contentUrl {
+            return .simple(url: url, metadata: information.metadata)
+        }
+        else {
+            return nil
+        }
+    }
 }
