@@ -14,4 +14,10 @@ extension GCKMediaStatus {
     func items() -> [GCKMediaQueueItem] {
         (0..<queueItemCount).compactMap { queueItem(at: $0) }
     }
+
+    func currentIndex() -> Int? {
+        let items = items()
+        guard !items.isEmpty else { return nil }
+        return items.firstIndex { $0.itemID == currentItemID }
+    }
 }
