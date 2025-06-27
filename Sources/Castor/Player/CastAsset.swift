@@ -42,7 +42,6 @@ public struct CastAsset {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = mediaInformation()
         builder.autoplay = configuration.autoplay
-        builder.startTime = configuration.startTime.seconds
         return builder.build()
     }
 

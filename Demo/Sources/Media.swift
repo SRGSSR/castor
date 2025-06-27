@@ -27,17 +27,6 @@ struct Media: Hashable, Identifiable {
         self.startTime = startTime
     }
 
-    func asset() -> CastAsset {
-        let image = CastImage(url: imageUrl)
-        let configuration = CastPlaybackConfiguration(startTime: startTime ?? .invalid)
-        switch type {
-        case let .url(url):
-            return .simple(url: url, metadata: .init(title: title, image: image), configuration: configuration)
-        case let .urn(identifier):
-            return .custom(identifier: identifier, metadata: .init(title: title, image: image), configuration: configuration)
-        }
-    }
-
     static func media(from asset: CastAsset?, startTime: CMTime? = nil) -> Self? {
         guard let asset, let title = asset.metadata.title, let imageUrl = asset.metadata.imageUrl() else { return nil }
         switch asset.kind {
@@ -45,6 +34,16 @@ struct Media: Hashable, Identifiable {
             return .init(title: title, imageUrl: imageUrl, type: .url(url), startTime: startTime)
         case let .custom(urn):
             return .init(title: title, imageUrl: imageUrl, type: .urn(urn), startTime: startTime)
+        }
+    }
+
+    func asset() -> CastAsset {
+        let image = CastImage(url: imageUrl)
+        switch type {
+        case let .url(url):
+            return .simple(url: url, metadata: .init(title: title, image: image))
+        case let .urn(identifier):
+            return .custom(identifier: identifier, metadata: .init(title: title, image: image))
         }
     }
 }
