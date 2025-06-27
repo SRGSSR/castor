@@ -11,7 +11,9 @@ public struct CastMediaInformation {
     let rawMediaInformation: GCKMediaInformation
 
     /// The metadata.
-    public let metadata: CastMetadata
+    public var metadata: CastMetadata {
+        .init(rawMetadata: rawMediaInformation.metadata)
+    }
 
     /// The URL of the content.
     public var contentUrl: URL? {
@@ -25,6 +27,5 @@ public struct CastMediaInformation {
 
     init(rawMediaInformation: GCKMediaInformation) {
         self.rawMediaInformation = rawMediaInformation
-        self.metadata = .init(rawMetadata: rawMediaInformation.metadata)
     }
 }
