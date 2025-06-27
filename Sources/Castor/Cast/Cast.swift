@@ -169,14 +169,9 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
-        if
-            let player,
-            let delegate,
-            let assets = castable?.assets() {
-            player.loadItems(from: assets)
-            if let currentIndex = session.remoteMediaClient?.mediaStatus?.currentIndex() { // FIXME: As we load items the index should always be 0.
-                delegate.cast(self, startSessionWithState: .init(assets: assets, index: currentIndex, time: player.time()))
-            }
+        if let player, let delegate, let resumeState = castable?.castResumeState() {
+            player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+            delegate.cast(self, startSessionWithState: resumeState)
         }
     }
 

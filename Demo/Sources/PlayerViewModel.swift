@@ -10,7 +10,7 @@ import PillarboxCoreBusiness
 import PillarboxPlayer
 import SwiftUI
 
-class PlayerViewModel: Castable {
+class PlayerViewModel {
     let player = Player()
 
     var medias: [Media] = [] {
@@ -30,8 +30,14 @@ class PlayerViewModel: Castable {
     func play() {
         player.play()
     }
+}
 
-    func assets() -> [CastAsset] {
+extension PlayerViewModel: Castable {
+    func castResumeState() -> CastResumeState? {
+        .init(assets: castAssets(), index: currentIndex() ?? 0, time: player.time())
+    }
+
+    private func castAssets() -> [CastAsset] {
         medias.map { media in
             let metadata = CastMetadata(title: media.title, image: .init(url: media.imageUrl))
             switch media.type {
@@ -41,5 +47,10 @@ class PlayerViewModel: Castable {
                 return .custom(identifier: urn, metadata: metadata)
             }
         }
+    }
+
+    private func currentIndex() -> Int? {
+        guard let currentItem = player.currentItem else { return nil }
+        return player.items.firstIndex(of: currentItem)
     }
 }
