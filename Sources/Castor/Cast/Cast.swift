@@ -205,9 +205,8 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
             let mediaStatus = session.remoteMediaClient?.mediaStatus,
             let currentIndex = mediaStatus.currentIndex()
         else { return }
-        let items = mediaStatus.items()
-        if !items.isEmpty {
-            let assets = items.compactMap { delegate.cast(self, assetFrom: .init(rawMediaInformation: $0.mediaInformation)) }
+        let assets = mediaStatus.items().compactMap { delegate.cast(self, assetFrom: .init(rawMediaInformation: $0.mediaInformation)) }
+        if !assets.isEmpty {
             delegate.cast(self, endSessionWithState: .init(assets: assets, index: currentIndex, time: player.time()))
         }
     }
