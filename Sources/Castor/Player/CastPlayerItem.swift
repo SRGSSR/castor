@@ -26,12 +26,6 @@ public final class CastPlayerItem: ObservableObject {
         return .init(rawMetadata: rawItem.mediaInformation.metadata)
     }
 
-    /// The URL of the content.
-    public var contentUrl: URL? {
-        guard let rawItem else { return nil }
-        return rawItem.mediaInformation.contentURL
-    }
-
     init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
         self.id = id
         _rawItem = .init(id: id, queue: queue)
