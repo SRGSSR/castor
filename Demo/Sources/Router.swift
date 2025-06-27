@@ -34,20 +34,20 @@ extension Router {
 }
 
 extension Router: CastDelegate {
-    func castDidStartSession(_ cast: Cast) {
+    func cast(_ cast: Cast, startSessionWithState state: CastResumeState?) {
         destination = nil
     }
 
-    func cast(_ cast: Cast, willStopSessionWithPlayer player: CastPlayer, currentIndex: Int, assets: [CastAsset]) {
-        let medias = assets.suffix(from: currentIndex).enumerated().compactMap { index, asset in
+    func cast(_ cast: Cast, endSessionWithState state: CastResumeState?) {
+        guard let state else { return }
+        let medias = state.assets.suffix(from: state.index).enumerated().compactMap { index, asset in
             if index == 0 {
-                return Media.media(from: asset, startTime: player.time())
+                return Media.media(from: asset, startTime: state.time)
             }
             else {
                 return Media.media(from: asset)
             }
         }
         destination = .player(medias)
-        cast.endSession()
     }
 }

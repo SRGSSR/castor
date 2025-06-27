@@ -16,8 +16,6 @@ extension GCKMediaStatus {
     }
 
     func currentIndex() -> Int? {
-        let items = items()
-        guard !items.isEmpty else { return nil }
-        return items.firstIndex { $0.itemID == currentItemID }
+        items().firstIndex { $0.itemID == currentItemID }
     }
 }

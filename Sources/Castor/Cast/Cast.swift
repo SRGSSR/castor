@@ -172,10 +172,15 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
-        if let assets = dataSource?.assets() {
-            player?.loadItems(from: assets)
+        if
+            let player,
+            let delegate,
+            let assets = dataSource?.assets() {
+            player.loadItems(from: assets)
+            if let currentIndex = session.remoteMediaClient?.mediaStatus?.currentIndex() { // FIXME: As we load items the index should always be 0.
+                delegate.cast(self, startSessionWithState: .init(assets: assets, index: currentIndex, time: player.time()))
+            }
         }
-        delegate?.castDidStartSession(self)
     }
 
     // swiftlint:disable:next missing_docs
@@ -194,14 +199,16 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        guard let player, let mediaStatus = session.remoteMediaClient?.mediaStatus, let delegate else { return }
+        guard
+            let player,
+            let delegate,
+            let mediaStatus = session.remoteMediaClient?.mediaStatus,
+            let currentIndex = mediaStatus.currentIndex()
+        else { return }
         let items = mediaStatus.items()
-        guard !items.isEmpty else { return }
-        let assets = items.compactMap { rawItem in
-            Self.asset(from: rawItem.mediaInformation)
-        }
-        if let index = items.firstIndex(where: { $0.itemID == mediaStatus.currentItemID }) {
-            delegate.cast(self, willStopSessionWithPlayer: player, currentIndex: index, assets: assets)
+        if !items.isEmpty {
+            let assets = items.compactMap { Self.asset(from: $0.mediaInformation) }
+            delegate.cast(self, endSessionWithState: .init(assets: assets, index: currentIndex, time: player.time()))
         }
     }
 
