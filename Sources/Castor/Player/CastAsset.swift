@@ -8,28 +8,12 @@ import GoogleCast
 
 /// A cast asset representing content to be played.
 public struct CastAsset {
-    public enum Kind {
-        case simple(URL)
-        case custom(String)
-
-        func mediaInformationBuilder() -> GCKMediaInformationBuilder {
-            switch self {
-            case let .simple(url):
-                let builder = GCKMediaInformationBuilder(contentURL: url)
-                // TODO: This workaround should be removed.
-                // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
-                builder.contentID = UUID().uuidString
-                return builder
-            case let .custom(id):
-                let builder = GCKMediaInformationBuilder()
-                builder.contentID = id
-                return builder
-            }
-        }
-    }
-
+    /// The type of asset.
     public let kind: Kind
+
+    /// The asset metadata.
     public let metadata: CastMetadata
+
     private let configuration: CastPlaybackConfiguration
 
     /// A simple asset which can be played directly.
@@ -67,5 +51,31 @@ public struct CastAsset {
         builder.metadata = metadata.rawMetadata
         builder.streamType = .unknown
         return builder.build()
+    }
+}
+
+public extension CastAsset {
+    /// Represents the type of the asset.
+    enum Kind {
+        /// An type of asset identified by an URL.
+        case simple(URL)
+
+        /// An type of asset identified by an identifier.
+        case custom(String)
+
+        func mediaInformationBuilder() -> GCKMediaInformationBuilder {
+            switch self {
+            case let .simple(url):
+                let builder = GCKMediaInformationBuilder(contentURL: url)
+                // TODO: This workaround should be removed.
+                // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
+                builder.contentID = UUID().uuidString
+                return builder
+            case let .custom(id):
+                let builder = GCKMediaInformationBuilder()
+                builder.contentID = id
+                return builder
+            }
+        }
     }
 }
