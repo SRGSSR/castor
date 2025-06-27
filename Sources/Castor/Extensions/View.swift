@@ -23,10 +23,24 @@ public extension View {
 }
 
 public extension View {
-    func enableCastPlaybackSwitching(_ cast: Cast, using delegate: CastDelegate?, and dataSource: CastDataSource? = nil) -> some View {
+    /// Assigns an object which listens to the cast session lifecycle.
+    ///
+    /// - Parameters:
+    ///   - cast: The cast object.
+    ///   - delegate: The object which handle cast session lifecycle.
+    func castLifecycle(using delegate: CastDelegate, for cast: Cast) -> some View {
         onAppear {
             cast.delegate = delegate
-            // FIXME: The data source seems to be useless in some cases: When we start a cast session without local player. Should we split this method?
+        }
+    }
+
+    /// Assigns an object which provides assets.
+    ///
+    /// - Parameters:
+    ///   - cast: The cast object.
+    ///   - dataSource: The object providing assets.
+    func castAssets(from dataSource: CastDataSource, for cast: Cast) -> some View {
+        onAppear {
             cast.dataSource = dataSource
         }
     }

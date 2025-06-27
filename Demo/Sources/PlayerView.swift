@@ -11,7 +11,6 @@ import SwiftUI
 
 struct PlayerView: View {
     @State private var model = PlayerViewModel()
-    @EnvironmentObject private var router: Router
     @EnvironmentObject private var cast: Cast
     let medias: [Media]
 
@@ -19,7 +18,7 @@ struct PlayerView: View {
         NavigationStack {
             SystemVideoView(player: model.player)
                 .ignoresSafeArea()
-                .enableCastPlaybackSwitching(cast, using: router, and: model)
+                .castAssets(from: model, for: cast)
                 .onAppear(perform: play)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
