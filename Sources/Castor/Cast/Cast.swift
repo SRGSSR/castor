@@ -169,9 +169,14 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
-        if let player, let delegate, let resumeState = castable?.castResumeState() {
-            player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
-            delegate.cast(self, startSessionWithState: resumeState)
+        if let player, let delegate {
+            if let resumeState = castable?.castResumeState() {
+                player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+            }
+            else {
+                player.removeAllItems()
+            }
+            delegate.castStartSession()
         }
     }
 
@@ -191,15 +196,8 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        guard
-            let player,
-            let delegate,
-            let mediaStatus = session.remoteMediaClient?.mediaStatus,
-            let currentIndex = mediaStatus.currentIndex()
-        else { return }
-        let assets = mediaStatus.items().compactMap { delegate.cast(self, assetFrom: .init(rawMediaInformation: $0.mediaInformation)) }
-        if !assets.isEmpty {
-            delegate.cast(self, endSessionWithState: .init(assets: assets, index: currentIndex, time: player.time()))
+        if let delegate, let resumeState = player?.resumeState(with: delegate) {
+            delegate.castEndSession(with: resumeState)
         }
     }
 

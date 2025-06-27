@@ -23,7 +23,7 @@ public struct CastResumeState {
     ///   - index: The current index.
     ///   - time: The current time.
     public init?(assets: [CastAsset], index: Int, time: CMTime) {
-        guard index < assets.endIndex else { return nil }
+        guard assets.indices.contains(index) else { return nil }
         self.assets = assets
         self.index = index
         self.time = time
