@@ -24,6 +24,7 @@ extension Router {
             }
         }
 
+        @MainActor
         func view() -> some View {
             switch self {
             case let .player(medias: medias, startIndex: startIndex, startTime: startTime):
