@@ -10,27 +10,31 @@ import PillarboxCoreBusiness
 import PillarboxPlayer
 import SwiftUI
 
-class PlayerViewModel {
+final class PlayerViewModel {
     let player = Player()
-    private var medias: [Media] = []
+
+    var content: PlayerContent? {
+        didSet {
+            if let content {
+                player.items = content.medias.enumerated().map { index, media in
+                    let configuration = (index == content.startIndex) ? PlaybackConfiguration(position: at(content.startTime)) : PlaybackConfiguration()
+                    switch media.type {
+                    case let .url(url):
+                        return .simple(url: url, configuration: configuration)
+                    case let .urn(urn):
+                        return .urn(urn, configuration: configuration)
+                    }
+                }
+                player.currentItem = player.items[safeIndex: content.startIndex]
+            }
+            else {
+                player.removeAllItems()
+            }
+        }
+    }
 
     func play() {
         player.play()
-    }
-
-    func setMedias(_ medias: [Media], startIndex: Int, startTime: CMTime) {
-        guard medias != self.medias else { return }
-        self.medias = medias
-        player.items = medias.enumerated().map { index, media in
-            let configuration = index == startIndex ? PlaybackConfiguration(position: at(startTime)) : PlaybackConfiguration()
-            switch media.type {
-            case let .url(url):
-                return .simple(url: url, configuration: configuration)
-            case let .urn(urn):
-                return .urn(urn, configuration: configuration)
-            }
-        }
-        player.currentItem = player.items[safeIndex: startIndex]
     }
 }
 
@@ -40,7 +44,8 @@ extension PlayerViewModel: Castable {
     }
 
     private func castAssets() -> [CastAsset] {
-        medias.map { media in
+        guard let content else { return [] }
+        return content.medias.map { media in
             switch media.type {
             case let .url(url):
                 return .simple(url: url, metadata: media.castMetadata())

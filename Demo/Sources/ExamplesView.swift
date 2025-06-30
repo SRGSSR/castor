@@ -48,7 +48,7 @@ struct ExamplesView: View {
                 player.loadItem(from: media.asset())
             }
             else {
-                router.destination = .player(medias: [media], startIndex: 0, startTime: .zero)
+                router.destination = .player(content: .init(medias: [media]))
             }
         } label: {
             Text(media.title)
