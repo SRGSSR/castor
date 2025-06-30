@@ -4,7 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-/// Methods that an object adopts to provide cast related information.
+/// A protocol describing a castable context.
 public protocol Castable: AnyObject {
     /// The resume state to send to the receiver.
     func castResumeState() -> CastResumeState?

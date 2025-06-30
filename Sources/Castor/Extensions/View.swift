@@ -34,7 +34,7 @@ public extension View {
         }
     }
 
-    /// Assigns an object which provides assets.
+    /// Makes a view context castable.
     ///
     /// - Parameters:
     ///   - castable: The object that can be cast.

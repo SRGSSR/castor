@@ -56,10 +56,10 @@ public struct CastAsset {
 public extension CastAsset {
     /// Represents the type of the asset.
     enum Kind {
-        /// An type of asset identified by an URL.
+        /// A type of asset identified by an URL.
         case simple(URL)
 
-        /// An type of asset identified by an identifier.
+        /// A type of asset identified by an identifier.
         case custom(String)
 
         func mediaInformationBuilder() -> GCKMediaInformationBuilder {

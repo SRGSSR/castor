@@ -11,13 +11,10 @@ public protocol CastDelegate: AnyObject {
 
     /// Called when the cast session is being stopped.
     /// 
-    /// - Parameters:
-    ///   - player: The cast player.
-    ///   - currentIndex: The index of the current item.
-    ///   - assets: The list of the asset from the current asset to the end of the queue.
+    /// - Parameter state: The state right before the cast session ends.
     func castEndSession(with state: CastResumeState)
 
-    /// Provide an asset based on the information.
+    /// Provides an asset based on media information.
     ///
     /// - Parameter information: The media information useful to create an asset.
     func castAsset(from information: CastMediaInformation) -> CastAsset?

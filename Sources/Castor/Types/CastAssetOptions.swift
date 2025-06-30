@@ -12,6 +12,7 @@ public struct CastLoadOptions {
     let rawOptions = GCKMediaQueueLoadOptions()
 
     /// Creates options.
+    /// 
     /// - Parameters:
     ///   - startTime: The start time.
     ///   - startIndex: The start index.

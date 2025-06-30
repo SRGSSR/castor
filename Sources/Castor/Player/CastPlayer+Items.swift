@@ -25,7 +25,7 @@ public extension CastPlayer {
     /// Loads player items from assets and starts playback.
     ///
     /// - Parameters:
-    ///   - asset: The assets for the item to load.
+    ///   - assets: The assets for the item to load.
     ///   - options: The loading options.
     func loadItems(from assets: [CastAsset], with options: CastLoadOptions = .init()) {
         remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: options.rawOptions)

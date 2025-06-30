@@ -18,6 +18,7 @@ public struct CastResumeState {
     public let time: CMTime
 
     /// Creates a state.
+    /// 
     /// - Parameters:
     ///   - assets: The assets.
     ///   - index: The current index.
