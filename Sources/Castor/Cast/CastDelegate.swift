@@ -4,7 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-/// Methods for managing cast session.
+/// Methods for managing a cast session.
 public protocol CastDelegate: AnyObject {
     /// Called when the cast session is established.
     func castStartSession()

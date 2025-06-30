@@ -17,12 +17,11 @@ final class PlayerViewModel {
         didSet {
             if let content {
                 player.items = content.medias.enumerated().map { index, media in
-                    let configuration = (index == content.startIndex) ? PlaybackConfiguration(position: at(content.startTime)) : PlaybackConfiguration()
                     switch media.type {
                     case let .url(url):
-                        return .simple(url: url, configuration: configuration)
+                        return .simple(url: url, configuration: content.itemConfiguration(at: index))
                     case let .urn(urn):
-                        return .urn(urn, configuration: configuration)
+                        return .urn(urn, configuration: content.itemConfiguration(at: index))
                     }
                 }
                 player.currentItem = player.items[safeIndex: content.startIndex]
