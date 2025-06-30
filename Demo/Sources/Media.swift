@@ -5,7 +5,6 @@
 //
 
 import Castor
-import CoreMedia
 import Foundation
 
 struct Media: Hashable, Identifiable {
