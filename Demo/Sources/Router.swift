@@ -26,7 +26,7 @@ extension Router {
 
         func view() -> some View {
             switch self {
-            case let .player(medias, startIndex, startTime):
+            case let .player(medias: medias, startIndex: startIndex, startTime: startTime):
                 PlayerView(medias: medias, startIndex: startIndex, startTime: startTime)
             }
         }
@@ -39,7 +39,7 @@ extension Router: CastDelegate {
     }
 
     func castEndSession(with state: CastResumeState) {
-        let medias = state.assets.compactMap(Media.media(from:))
+        let medias = state.assets.compactMap(Media.init(from:))
         destination = .player(medias: medias, startIndex: state.index, startTime: state.time)
     }
 
