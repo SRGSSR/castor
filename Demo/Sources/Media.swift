@@ -49,11 +49,7 @@ struct Media: Hashable, Identifiable {
     }
 
     private func castImage() -> CastImage? {
-        if let imageUrl {
-            return .init(url: imageUrl)
-        }
-        else {
-            return nil
-        }
+        guard let imageUrl else { return nil }
+        return .init(url: imageUrl)
     }
 }
