@@ -19,9 +19,9 @@ struct ExamplesView: View {
                 section("MP3 streams ", medias: kMP3UrlMedias)
                 if cast.player != nil {
                     section("DASH streams", medias: kDashUrlMedias)
-                    if UserDefaults.standard.receiver.isSupportingUrns {
-                        section("URN-based streams", medias: kUrnMedias)
-                    }
+                }
+                if UserDefaults.standard.receiver.isSupportingUrns {
+                    section("URN-based streams", medias: kUrnMedias)
                 }
             }
             if cast.player != nil {
