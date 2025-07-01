@@ -83,6 +83,6 @@ public final class CastPlayer: NSObject, ObservableObject {
     func resumeState(with delegate: CastDelegate) -> CastResumeState? {
         guard let mediaStatus = _mediaStatus, let currentIndex = mediaStatus.currentIndex() else { return nil }
         let assets = mediaStatus.items().compactMap { delegate.castAsset(from: .init(rawMediaInformation: $0.mediaInformation)) }
-        return CastResumeState(assets: assets, index: currentIndex, time: time())
+        return CastResumeState(assets: assets, index: currentIndex, time: time() - seekableTimeRange().start)
     }
 }

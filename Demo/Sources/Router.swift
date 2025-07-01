@@ -41,7 +41,8 @@ extension Router: CastDelegate {
 
     func castEndSession(with state: CastResumeState) {
         let medias = state.assets.compactMap(Media.init(from:))
-        destination = .player(content: .init(medias: medias, startIndex: state.index, startTime: state.time))
+        let time = state.time.isValid ? state.time : .zero
+        destination = .player(content: .init(medias: medias, startIndex: state.index, startTime: time))
     }
 
     func castAsset(from information: CastMediaInformation) -> CastAsset? {
