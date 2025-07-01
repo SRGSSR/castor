@@ -6,12 +6,23 @@
 
 import AVFoundation
 import Castor
+import Combine
 import PillarboxCoreBusiness
 import PillarboxPlayer
 import SwiftUI
 
 final class PlayerViewModel {
     let player = Player()
+
+    private var timeRange: CMTimeRange = .invalid
+    private var cancellables = Set<AnyCancellable>()
+
+    init() {
+        player.propertiesPublisher
+            .slice(at: \.seekableTimeRange)
+            .weakAssign(to: \.timeRange, on: self)
+            .store(in: &cancellables)
+    }
 
     var content: PlayerContent? {
         didSet {
@@ -39,7 +50,7 @@ final class PlayerViewModel {
 
 extension PlayerViewModel: Castable {
     func castResumeState() -> CastResumeState? {
-        .init(assets: castAssets(), index: currentIndex() ?? 0, time: player.time())
+        .init(assets: castAssets(), index: currentIndex() ?? 0, time: time())
     }
 
     private func castAssets() -> [CastAsset] {
@@ -57,5 +68,10 @@ extension PlayerViewModel: Castable {
     private func currentIndex() -> Int? {
         guard let currentItem = player.currentItem else { return nil }
         return player.items.firstIndex(of: currentItem)
+    }
+
+    private func time() -> CMTime {
+        guard timeRange.isValid && !timeRange.isEmpty else { return .invalid }
+        return player.time() - timeRange.start
     }
 }
