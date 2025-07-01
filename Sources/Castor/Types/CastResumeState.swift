@@ -15,6 +15,8 @@ public struct CastResumeState {
     public let index: Int
 
     /// The current time.
+    ///
+    /// An `.invalid` time corresponds to the default playback position.
     public let time: CMTime
 
     /// Creates a state.
@@ -22,7 +24,7 @@ public struct CastResumeState {
     /// - Parameters:
     ///   - assets: The assets.
     ///   - index: The current index.
-    ///   - time: The current time.
+    ///   - time: The current time. Use `.invalid` for the default playback position.
     public init?(assets: [CastAsset], index: Int, time: CMTime) {
         guard assets.indices.contains(index) else { return nil }
         self.assets = assets
