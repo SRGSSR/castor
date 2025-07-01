@@ -17,13 +17,6 @@ final class PlayerViewModel {
     private var timeRange: CMTimeRange = .invalid
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
-        player.propertiesPublisher
-            .slice(at: \.seekableTimeRange)
-            .weakAssign(to: \.timeRange, on: self)
-            .store(in: &cancellables)
-    }
-
     var content: PlayerContent? {
         didSet {
             if let content {
@@ -41,6 +34,13 @@ final class PlayerViewModel {
                 player.removeAllItems()
             }
         }
+    }
+
+    init() {
+        player.propertiesPublisher
+            .slice(at: \.seekableTimeRange)
+            .weakAssign(to: \.timeRange, on: self)
+            .store(in: &cancellables)
     }
 
     func play() {
