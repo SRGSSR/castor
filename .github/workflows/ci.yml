@@ -42,5 +42,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Skip plugin validation
+        run: |
+          defaults write com.apple.dt.Xcode \
+          IDESkipPackagePluginFingerprintValidatation -bool YES
+
       - name: Build the demo
         run: make build
