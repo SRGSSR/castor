@@ -19,12 +19,18 @@ struct PlayerContent: Hashable {
         self.startTime = startTime
     }
 
-    func itemConfiguration(at index: Int) -> PlaybackConfiguration {
-        if index == startIndex {
-            return .init(position: at(startTime))
+    func items() -> [PlayerItem] {
+        medias.enumerated().map { index, media in
+            switch media.type {
+            case let .url(url):
+                return .simple(url: url, configuration: itemConfiguration(at: index))
+            case let .urn(urn):
+                return .urn(urn, configuration: itemConfiguration(at: index))
+            }
         }
-        else {
-            return .init()
-        }
+    }
+
+    private func itemConfiguration(at index: Int) -> PlaybackConfiguration {
+        index == startIndex ? .init(position: at(startTime)) : .init()
     }
 }
