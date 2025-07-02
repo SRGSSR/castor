@@ -8,28 +8,12 @@ import GoogleCast
 
 /// A cast asset representing content to be played.
 public struct CastAsset {
-    private enum Kind {
-        case simple(URL)
-        case custom(String)
+    /// The type of asset.
+    public let kind: Kind
 
-        func mediaInformationBuilder() -> GCKMediaInformationBuilder {
-            switch self {
-            case let .simple(url):
-                let builder = GCKMediaInformationBuilder(contentURL: url)
-                // TODO: This workaround should be removed.
-                // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
-                builder.contentID = UUID().uuidString
-                return builder
-            case let .custom(id):
-                let builder = GCKMediaInformationBuilder()
-                builder.contentID = id
-                return builder
-            }
-        }
-    }
+    /// The asset metadata.
+    public let metadata: CastMetadata
 
-    private let kind: Kind
-    private let metadata: CastMetadata
     private let configuration: CastPlaybackConfiguration
 
     /// A simple asset which can be played directly.
@@ -58,7 +42,6 @@ public struct CastAsset {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = mediaInformation()
         builder.autoplay = configuration.autoplay
-        builder.startTime = configuration.startTime.seconds
         return builder.build()
     }
 
@@ -67,5 +50,31 @@ public struct CastAsset {
         builder.metadata = metadata.rawMetadata
         builder.streamType = .unknown
         return builder.build()
+    }
+}
+
+public extension CastAsset {
+    /// Represents the type of the asset.
+    enum Kind {
+        /// A type of asset identified by an URL.
+        case simple(URL)
+
+        /// A type of asset identified by an identifier.
+        case custom(String)
+
+        func mediaInformationBuilder() -> GCKMediaInformationBuilder {
+            switch self {
+            case let .simple(url):
+                let builder = GCKMediaInformationBuilder(contentURL: url)
+                // TODO: This workaround should be removed.
+                // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
+                builder.contentID = UUID().uuidString
+                return builder
+            case let .custom(id):
+                let builder = GCKMediaInformationBuilder()
+                builder.contentID = id
+                return builder
+            }
+        }
     }
 }

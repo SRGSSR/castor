@@ -25,6 +25,6 @@ final class MediaStatusRecipe: NSObject, ReceiverStateRecipe {
 
 extension MediaStatusRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-       update(mediaStatus)
+        update(mediaStatus)
     }
 }

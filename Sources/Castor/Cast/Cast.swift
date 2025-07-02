@@ -15,6 +15,9 @@ public final class Cast: NSObject, ObservableObject {
     /// The package version.
     public static let version = PackageInfo.version
 
+    weak var castable: Castable?
+    weak var delegate: CastDelegate?
+
     private let context = GCKCastContext.sharedInstance()
 
     @ReceiverState(DevicesRecipe.self)
@@ -165,6 +168,15 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
+        if let player, let delegate {
+            if let resumeState = castable?.castResumeState() {
+                player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+            }
+            else {
+                player.removeAllItems()
+            }
+            delegate.castStartSession()
+        }
     }
 
     // swiftlint:disable:next missing_docs
@@ -179,6 +191,13 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         with reason: GCKConnectionSuspendReason
     ) {
         currentSession = nil
+    }
+
+    // swiftlint:disable:next missing_docs
+    public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
+        if let delegate, let resumeState = player?.resumeState(with: delegate) {
+            delegate.castEndSession(with: resumeState)
+        }
     }
 
     // swiftlint:disable:next missing_docs

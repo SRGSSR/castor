@@ -24,16 +24,20 @@ public extension CastPlayer {
 
     /// Loads player items from assets and starts playback.
     ///
-    /// - Parameter assets: The assets for the items to load.
-    func loadItems(from assets: [CastAsset]) {
-        remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: .init())
+    /// - Parameters:
+    ///   - assets: The assets for the item to load.
+    ///   - options: The loading options.
+    func loadItems(from assets: [CastAsset], with options: CastLoadOptions = .init()) {
+        remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: options.rawOptions)
     }
 
     /// Loads the player item from an asset and starts playback.
     ///
-    /// - Parameter asset: The assets for the item to load.
-    func loadItem(from asset: CastAsset) {
-        loadItems(from: [asset])
+    /// - Parameters:
+    ///   - asset: The asset for the item to load.
+    ///   - options: The loading options.
+    func loadItem(from asset: CastAsset, with options: CastLoadOptions = .init()) {
+        loadItems(from: [asset], with: options)
     }
 
     /// Inserts items before another one.

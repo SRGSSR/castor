@@ -104,10 +104,13 @@ struct SettingsView: View {
                         .tag(receiver)
                 }
             } label: {
-                Text("Receiver")
+                Text("Name")
                 Text("Updating this setting will exit the application.")
                     .font(.footnote)
             }
+            LabeledContent("Identifier", value: receiver.identifier)
+        } header: {
+            Text("Receiver")
         }
     }
 

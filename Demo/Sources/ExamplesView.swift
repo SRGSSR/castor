@@ -9,8 +9,8 @@ import Castor
 import SwiftUI
 
 struct ExamplesView: View {
-    @State private var selectedMedia: Media?
     @EnvironmentObject private var cast: Cast
+    @EnvironmentObject private var router: Router
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,9 +19,9 @@ struct ExamplesView: View {
                 section("MP3 streams ", medias: kMP3UrlMedias)
                 if cast.player != nil {
                     section("DASH streams", medias: kDashUrlMedias)
-                    if UserDefaults.standard.receiver.isSupportingUrns {
-                        section("URN-based streams", medias: kUrnMedias)
-                    }
+                }
+                if UserDefaults.standard.receiver.isSupportingUrns {
+                    section("URN-based streams", medias: kUrnMedias)
                 }
             }
             if cast.player != nil {
@@ -36,8 +36,8 @@ struct ExamplesView: View {
                 CastButton()
             }
         }
-        .sheet(item: $selectedMedia) { media in
-            PlayerView(media: media)
+        .sheet(item: $router.destination) { destination in
+            destination.view()
         }
         .navigationTitle("Examples")
     }
@@ -48,7 +48,7 @@ struct ExamplesView: View {
                 player.loadItem(from: media.asset())
             }
             else {
-                selectedMedia = media
+                router.destination = .player(content: .init(medias: [media]))
             }
         } label: {
             Text(media.title)

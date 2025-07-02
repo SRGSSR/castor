@@ -29,9 +29,13 @@ jobs:
           Scripts/private/configure-environment.sh \
           ${{ secrets.APP_STORE_CONNECT_API_KEY }}
 
-      - name: Deliver the demo
+      - name: Skip plugin validation
         run: |
-          Scripts/private/deliver-demo.sh -c nightly
+          defaults write com.apple.dt.Xcode \
+          IDESkipPackagePluginFingerprintValidatation -bool YES
+
+      - name: Deliver the demo
+        run: Scripts/private/deliver-demo.sh -c nightly
         env:
           TEAM_ID: ${{ secrets.TEAM_ID }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
