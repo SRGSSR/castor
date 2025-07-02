@@ -33,7 +33,7 @@ struct ExamplesView: View {
         .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                CastButton()
+                CastButton(cast: cast)
             }
         }
         .sheet(item: $router.destination) { destination in

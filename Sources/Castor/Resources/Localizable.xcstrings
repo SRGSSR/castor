@@ -7,6 +7,18 @@
     "Audio" : {
       "comment" : "Playback setting menu title"
     },
+    "Check your Wi-Fi network and make sure Local Network Access is on." : {
+
+    },
+    "description" : {
+
+    },
+    "Devices" : {
+
+    },
+    "Disconnect" : {
+
+    },
     "Off" : {
       "comment" : "Media selection option"
     },
@@ -16,8 +28,14 @@
     "Subtitles" : {
       "comment" : "Playback setting menu title"
     },
+    "title" : {
+
+    },
     "Undefined" : {
       "comment" : "Undefined language"
+    },
+    "Volume" : {
+
     }
   },
   "version" : "1.0"

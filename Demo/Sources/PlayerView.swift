@@ -22,7 +22,7 @@ struct PlayerView: View {
                 .onAppear(perform: play)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        CastButton()
+                        CastButton(cast: cast)
                     }
                 }
                 .makeCastable(model, with: cast)
@@ -33,4 +33,9 @@ struct PlayerView: View {
         model.content = content
         model.play()
     }
+}
+
+// TODO: Remove this preview!
+#Preview {
+    CastButton(cast: .init())
 }
