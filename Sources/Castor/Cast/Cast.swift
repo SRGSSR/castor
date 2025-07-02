@@ -20,6 +20,8 @@ public final class Cast: NSObject, ObservableObject {
 
     private let context = GCKCastContext.sharedInstance()
 
+    private var targetResumeState: CastResumeState?
+
     @ReceiverState(DevicesRecipe.self)
     private var _devices
 
@@ -169,7 +171,11 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
         if let player, let delegate {
-            if let resumeState = castable?.castResumeState() {
+            if let resumeState = targetResumeState {
+                player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+                targetResumeState = nil
+            }
+            else if let resumeState = castable?.castResumeState() {
                 player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
             }
             else {
@@ -196,7 +202,12 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
         if let delegate, let resumeState = player?.resumeState(with: delegate) {
-            delegate.castEndSession(with: resumeState)
+            if _currentDevice == nil {
+                delegate.castEndSession(with: resumeState)
+            }
+            else {
+                targetResumeState = resumeState
+            }
         }
     }
 
