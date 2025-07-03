@@ -97,9 +97,7 @@ struct DevicesView: View {
     @ViewBuilder
     private func disconnectButton() -> some View {
         if cast.connectionState != .disconnected {
-            Button {
-                cast.endSession()
-            } label: {
+            Button(action: cast.endSession) {
                 Text("Disconnect")
             }
         }
