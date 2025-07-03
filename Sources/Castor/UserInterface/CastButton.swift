@@ -43,7 +43,7 @@ public struct CastButton: View {
         case .connecting:
             if #available(iOS 17, *) {
                 castImage(name: "google.cast")
-                    .symbolEffect(.variableColor.reversing)
+                    .symbolEffect(.variableColor.iterative.reversing)
             }
             else {
                 castImage(name: "google.cast.fill")
