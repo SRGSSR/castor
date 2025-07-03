@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CastDevicesView: View {
     @ObservedObject var cast: Cast
+    @Environment(\.dismiss) private var dismiss
 
     private var minimumValueImageName: String {
         cast.volume == 0 ? "speaker.slash.fill" : "speaker.wave.1.fill"
@@ -27,6 +28,9 @@ struct CastDevicesView: View {
         .navigationTitle("Devices")
         .toolbar {
             ToolbarItem(content: disconnectButton)
+        }
+        .onChange(of: cast.currentDevice) { _ in
+            dismiss()
         }
     }
 
