@@ -42,24 +42,18 @@ public struct CastButton: View {
     private func castImage() -> some View {
         switch cast.connectionState {
         case .connecting:
-            castImage(name: "google.cast")
-                .symbolEffect()
+            if #available(iOS 17, *) {
+                castImage(name: "google.cast")
+                    .symbolEffect(.variableColor.reversing)
+            }
+            else {
+                castImage(name: "google.cast.fill")
+                    .symbolRenderingMode(.multicolor)
+            }
         case .connected:
             castImage(name: "google.cast.fill")
         default:
             castImage(name: "google.cast")
-        }
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func symbolEffect() -> some View {
-        if #available(iOS 17, *) {
-            symbolEffect(.variableColor.reversing)
-        }
-        else {
-            self
         }
     }
 }
