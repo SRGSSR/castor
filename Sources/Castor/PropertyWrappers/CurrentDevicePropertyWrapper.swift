@@ -39,13 +39,8 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     }
 
     private func requestUpdate(to value: CastDevice?) {
-        guard self.value != value else { return }
-        if let value {
-            moveSession(from: self.value, to: value)
-        }
-        else {
-            service.endSession()
-        }
+        guard let value, self.value != value else { return }
+        moveSession(from: self.value, to: value)
         self.value = value
     }
 

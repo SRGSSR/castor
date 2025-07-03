@@ -90,15 +90,13 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The current device.
     ///
-    /// Ends the session if set to `nil`. Does nothing if the device does not belong to the device list.
+    /// Does nothing if set to `nil` or to an item that does not belong to the list.
     public var currentDevice: CastDevice? {
         get {
             _currentDevice
         }
         set {
-            if let newValue, !devices.contains(newValue) {
-                return
-            }
+            guard let newValue, devices.contains(newValue) else { return }
             _currentDevice = newValue
         }
     }
@@ -150,7 +148,7 @@ public final class Cast: NSObject, ObservableObject {
 
     /// Ends the current session and stops casting if one sender device is connected.
     public func endSession() {
-        currentDevice = nil
+        context.sessionManager.endSession()
     }
 
     /// Check if the given device if currently casting.
