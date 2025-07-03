@@ -34,7 +34,6 @@ public struct CastButton: View {
     private func castImage(name: String) -> some View {
         Image(name, bundle: .module)
             .resizable()
-            .fontWeight(.bold)
             .aspectRatio(contentMode: .fit)
     }
 
