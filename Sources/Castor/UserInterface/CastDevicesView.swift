@@ -50,10 +50,10 @@ struct CastDevicesView: View {
     }
 
     private func devicesView() -> some View {
-        VStack {
-            devicesList()
-            volumeSlider()
-        }
+        devicesList()
+            .toolbar {
+                ToolbarItemGroup(placement: .bottomBar, content: volumeSlider)
+            }
     }
 
     private func devicesList() -> some View {
@@ -74,9 +74,7 @@ struct CastDevicesView: View {
         } maximumValueLabel: {
             Image(systemName: "speaker.wave.3.fill")
         }
-        .padding()
         .disabled(!cast.canAdjustVolume)
-        .animation(.default, value: cast.volume)
     }
 
     private func label(for device: CastDevice) -> some View {
