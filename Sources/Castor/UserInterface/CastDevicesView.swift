@@ -59,7 +59,7 @@ struct CastDevicesView: View {
     private func devicesList() -> some View {
         List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
             Label {
-                label(for: device)
+                descriptionView(for: device)
             } icon: {
                 Image(systemName: Self.imageName(for: device))
             }
@@ -75,16 +75,6 @@ struct CastDevicesView: View {
             Image(systemName: "speaker.wave.3.fill")
         }
         .disabled(!cast.canAdjustVolume)
-    }
-
-    private func label(for device: CastDevice) -> some View {
-        HStack {
-            descriptionView(for: device)
-            if cast.isCasting(on: device) {
-                Spacer()
-                statusView()
-            }
-        }
     }
 
     private func closeButton() -> some View {
