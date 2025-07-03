@@ -10,19 +10,21 @@ import SwiftUI
 /// A cast button.
 public struct CastButton: View {
     @ObservedObject var cast: Cast
-    @State private var isDeviceViewPresented = false
+    @State private var isPresented = false
 
     // swiftlint:disable:next missing_docs
     public var body: some View {
         Button {
-            isDeviceViewPresented = true
+            isPresented = true
         } label: {
             Image("google.cast", bundle: .module)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
         }
-        .popover(isPresented: $isDeviceViewPresented) {
-            CastDevicesView(cast: cast)
+        .popover(isPresented: $isPresented) {
+            NavigationStack {
+                CastDevicesView(cast: cast)
+            }
         }
     }
 
