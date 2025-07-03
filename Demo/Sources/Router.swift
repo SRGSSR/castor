@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 class Router: ObservableObject {
-    @Published var destination: Destination?
+    @Published var presented: Destination?
 }
 
 extension Router {
@@ -36,13 +36,13 @@ extension Router {
 
 extension Router: CastDelegate {
     func castStartSession() {
-        destination = nil
+        presented = nil
     }
 
     func castEndSession(with state: CastResumeState) {
         let medias = state.assets.compactMap(Media.init(from:))
         let time = state.time.isValid ? state.time : .zero
-        destination = .player(content: .init(medias: medias, startIndex: state.index, startTime: time))
+        presented = .player(content: .init(medias: medias, startIndex: state.index, startTime: time))
     }
 
     func castAsset(from information: CastMediaInformation) -> CastAsset? {
