@@ -47,6 +47,12 @@ extension VolumeRecipe: @preconcurrency GCKSessionManagerListener {
     func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
         update(Self.defaultValue)
     }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
+        if error != nil {
+            update(Self.defaultValue)
+        }
+    }
 }
 
 extension VolumeRecipe: @preconcurrency GCKRequestDelegate {
