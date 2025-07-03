@@ -26,7 +26,9 @@ struct CastDevicesView: View {
         }
         .animation(.default, value: cast.devices)
         .navigationTitle("Devices")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading, content: closeButton)
             ToolbarItem(content: disconnectButton)
         }
         .onChange(of: cast.currentDevice) { _ in
@@ -84,6 +86,14 @@ struct CastDevicesView: View {
                 Spacer()
                 statusView()
             }
+        }
+    }
+
+    private func closeButton() -> some View {
+        Button {
+            dismiss()
+        } label: {
+            Text("Close")
         }
     }
 

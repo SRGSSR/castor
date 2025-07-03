@@ -21,7 +21,7 @@ public struct CastButton: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
         }
-        .popover(isPresented: $isPresented) {
+        .sheet(isPresented: $isPresented) {
             NavigationStack {
                 CastDevicesView(cast: cast)
             }
