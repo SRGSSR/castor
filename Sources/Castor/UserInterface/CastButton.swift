@@ -17,9 +17,7 @@ public struct CastButton: View {
         Button {
             isPresented = true
         } label: {
-            Image("google.cast", bundle: .module)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
+            castImage()
         }
         .sheet(isPresented: $isPresented) {
             NavigationStack {
@@ -31,5 +29,37 @@ public struct CastButton: View {
     /// Default initializer.
     public init(cast: Cast) {
         self.cast = cast
+    }
+
+    private func castImage(name: String) -> some View {
+        Image(name, bundle: .module)
+            .resizable()
+            .fontWeight(.bold)
+            .aspectRatio(contentMode: .fit)
+    }
+
+    @ViewBuilder
+    private func castImage() -> some View {
+        switch cast.connectionState {
+        case .connecting:
+            castImage(name: "google.cast")
+                .symbolEffect()
+        case .connected:
+            castImage(name: "google.cast.fill")
+        default:
+            castImage(name: "google.cast")
+        }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func symbolEffect() -> some View {
+        if #available(iOS 17, *) {
+            symbolEffect(.variableColor.reversing)
+        }
+        else {
+            self
+        }
     }
 }
