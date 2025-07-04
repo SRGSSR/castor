@@ -21,15 +21,14 @@ struct CastDevicesView: View {
                 EmptyDevicesView()
             }
             else {
-                devicesView()
+                devicesList()
             }
         }
         .animation(.default, value: cast.devices)
-        .navigationTitle("Devices")
+        .navigationTitle("Cast to")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading, content: closeButton)
-            ToolbarItem(content: disconnectButton)
         }
         .onChange(of: cast.currentDevice) { _ in
             dismiss()
@@ -49,21 +48,57 @@ struct CastDevicesView: View {
         }
     }
 
-    private func devicesView() -> some View {
-        devicesList()
-            .toolbar {
-                ToolbarItemGroup(placement: .bottomBar, content: volumeSlider)
+    private func devicesList() -> some View {
+        List {
+            if let currentDevice = cast.currentDevice {
+                Section {
+                    currentDeviceCell(with: currentDevice)
+                } header: {
+                    Text("Current device")
+                }
             }
+            Section {
+                ForEach(availableDevices(), id: \.self) { device in
+                    cell(for: device)
+                }
+            } header: {
+                Text("Available devices")
+            }
+        }
     }
 
-    private func devicesList() -> some View {
-        List(cast.devices, id: \.self, selection: $cast.currentDevice) { device in
+    private func currentDeviceCell(with device: CastDevice) -> some View {
+        VStack {
+            HStack {
+                Label {
+                    descriptionView(for: device)
+                } icon: {
+                    Image(systemName: Self.imageName(for: device))
+                }
+                Button(action: cast.endSession) {
+                    Text("Disconnect")
+                }
+            }
+            volumeSlider()
+        }
+    }
+
+    private func cell(for device: CastDevice) -> some View {
+        Button {
+            cast.currentDevice = device
+        } label: {
             Label {
                 descriptionView(for: device)
             } icon: {
                 Image(systemName: Self.imageName(for: device))
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+    }
+
+    private func availableDevices() -> [CastDevice] {
+        cast.devices.filter { $0 != cast.currentDevice }
     }
 
     private func volumeSlider() -> some View {
@@ -85,17 +120,6 @@ struct CastDevicesView: View {
         }
     }
 
-    @ViewBuilder
-    private func disconnectButton() -> some View {
-        if cast.connectionState != .disconnected {
-            Button {
-                cast.endSession()
-            } label: {
-                Text("Disconnect")
-            }
-        }
-    }
-
     private func descriptionView(for device: CastDevice) -> some View {
         VStack(alignment: .leading) {
             Text(device.name ?? "Unknown")
@@ -105,6 +129,7 @@ struct CastDevicesView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 
     @ViewBuilder

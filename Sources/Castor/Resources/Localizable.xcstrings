@@ -7,16 +7,22 @@
     "Audio" : {
       "comment" : "Playback setting menu title"
     },
+    "Available devices" : {
+
+    },
+    "Cast to" : {
+
+    },
     "Check your Wi-Fi network and make sure Local Network Access is on." : {
 
     },
     "Close" : {
 
     },
-    "description" : {
+    "Current device" : {
 
     },
-    "Devices" : {
+    "description" : {
 
     },
     "Disconnect" : {
