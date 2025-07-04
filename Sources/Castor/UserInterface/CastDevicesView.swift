@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CastDevicesView: View {
     @ObservedObject var cast: Cast
-    let showCloseButton: Bool
+    let showsCloseButton: Bool
     @Environment(\.dismiss) private var dismiss
 
     private var minimumValueImageName: String {
@@ -29,7 +29,7 @@ struct CastDevicesView: View {
         .navigationTitle("Cast to")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if showCloseButton {
+            if showsCloseButton {
                 ToolbarItem(placement: .topBarLeading, content: closeButton)
             }
         }
@@ -69,7 +69,7 @@ struct CastDevicesView: View {
 
     @ViewBuilder
     private func availableDevicesSection() -> some View {
-        let devices = availableDevices()
+        let devices = cast.devices.filter { $0 != cast.currentDevice }
         if !devices.isEmpty {
             Section {
                 ForEach(devices, id: \.self) { device in
@@ -107,13 +107,9 @@ struct CastDevicesView: View {
             } icon: {
                 Image(systemName: Self.imageName(for: device))
             }
-            .contentShape(Rectangle())
+            .contentShape(.rect)
         }
         .buttonStyle(.plain)
-    }
-
-    private func availableDevices() -> [CastDevice] {
-        cast.devices.filter { $0 != cast.currentDevice }
     }
 
     private func volumeSlider() -> some View {

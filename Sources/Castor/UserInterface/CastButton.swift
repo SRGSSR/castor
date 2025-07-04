@@ -22,7 +22,7 @@ public struct CastButton: View {
         }
         .popover(isPresented: $isPresented) {
             NavigationStack {
-                CastDevicesView(cast: cast, showCloseButton: horizontalSizeClass == .compact)
+                CastDevicesView(cast: cast, showsCloseButton: horizontalSizeClass == .compact)
             }
             .frame(minWidth: 375, minHeight: 500)
         }
