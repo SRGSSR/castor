@@ -17,7 +17,7 @@ public struct CastButton: View {
         Button {
             isPresented = true
         } label: {
-            castImage()
+            CastIcon(cast: cast)
         }
         .popover(isPresented: $isPresented) {
             NavigationStack {
@@ -30,30 +30,5 @@ public struct CastButton: View {
     /// Default initializer.
     public init(cast: Cast) {
         self.cast = cast
-    }
-
-    private func castImage(name: String) -> some View {
-        Image(name, bundle: .module)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-    }
-
-    @ViewBuilder
-    private func castImage() -> some View {
-        switch cast.connectionState {
-        case .connecting:
-            if #available(iOS 17, *) {
-                castImage(name: "google.cast")
-                    .symbolEffect(.variableColor.iterative.reversing)
-            }
-            else {
-                castImage(name: "google.cast.fill")
-                    .symbolRenderingMode(.multicolor)
-            }
-        case .connected:
-            castImage(name: "google.cast.fill")
-        default:
-            castImage(name: "google.cast")
-        }
     }
 }

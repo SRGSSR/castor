@@ -72,11 +72,12 @@ struct CastDevicesView: View {
                 Label {
                     descriptionView(for: device)
                 } icon: {
-                    Image(systemName: Self.imageName(for: device))
+                    CastIcon(cast: cast)
                 }
-                Button(action: cast.endSession) {
-                    Text("Disconnect")
-                }
+                Text("Disconnect")
+                    .foregroundStyle(Color.accentColor)
+                    .onTapGesture(perform: cast.endSession)
+                    .accessibilityAddTraits(.isButton)
             }
             volumeSlider()
         }
