@@ -24,7 +24,7 @@ public struct CastButton: View {
             NavigationStack {
                 CastDevicesView(cast: cast, showCloseButton: horizontalSizeClass == .compact)
             }
-            .frame(minWidth: 350, minHeight: 600)
+            .frame(minWidth: 375, minHeight: 500)
         }
     }
 
