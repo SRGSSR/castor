@@ -13,7 +13,7 @@ struct CastDevicesView: View {
     @Environment(\.dismiss) private var dismiss
 
     private var minimumValueImageName: String {
-        cast.volume == 0 ? "speaker.slash.fill" : "speaker.wave.1.fill"
+        (cast.volume == 0 || cast.isMuted) ? "speaker.slash.fill" : "speaker.wave.1.fill"
     }
 
     var body: some View {
@@ -121,8 +121,12 @@ struct CastDevicesView: View {
             Text("Volume")
         } minimumValueLabel: {
             Image(systemName: minimumValueImageName)
+                .onTapGesture { cast.isMuted.toggle() }
+                .accessibilityAddTraits(.isButton)
+                .toAnyView()
         } maximumValueLabel: {
             Image(systemName: "speaker.wave.3.fill")
+                .toAnyView()
         }
         .disabled(!cast.canAdjustVolume)
     }

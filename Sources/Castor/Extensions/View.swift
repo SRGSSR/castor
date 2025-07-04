@@ -45,3 +45,9 @@ public extension View {
         }
     }
 }
+
+extension View {
+    func toAnyView() -> AnyView {
+        AnyView(self)
+    }
+}
