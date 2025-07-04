@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CastDevicesView: View {
     @ObservedObject var cast: Cast
+    let showCloseButton: Bool
     @Environment(\.dismiss) private var dismiss
 
     private var minimumValueImageName: String {
@@ -28,7 +29,9 @@ struct CastDevicesView: View {
         .navigationTitle("Cast to")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading, content: closeButton)
+            if showCloseButton {
+                ToolbarItem(placement: .topBarLeading, content: closeButton)
+            }
         }
     }
 

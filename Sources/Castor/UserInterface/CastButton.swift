@@ -11,6 +11,7 @@ import SwiftUI
 public struct CastButton: View {
     @ObservedObject var cast: Cast
     @State private var isPresented = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     // swiftlint:disable:next missing_docs
     public var body: some View {
@@ -21,7 +22,7 @@ public struct CastButton: View {
         }
         .popover(isPresented: $isPresented) {
             NavigationStack {
-                CastDevicesView(cast: cast)
+                CastDevicesView(cast: cast, showCloseButton: horizontalSizeClass == .compact)
             }
             .frame(minWidth: 350, minHeight: 600)
         }
