@@ -30,9 +30,6 @@ struct CastDevicesView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading, content: closeButton)
         }
-        .onChange(of: cast.currentDevice) { _ in
-            dismiss()
-        }
     }
 
     private static func imageName(for device: CastDevice) -> String {
@@ -65,6 +62,7 @@ struct CastDevicesView: View {
                 Text("Available devices")
             }
         }
+        .animation(.default, value: cast.currentDevice)
     }
 
     private func currentDeviceCell(with device: CastDevice) -> some View {
