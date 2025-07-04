@@ -54,13 +54,15 @@ struct CastDevicesView: View {
                     Text("Current device")
                 }
             }
-            // TODO: Do not show section if no devices
-            Section {
-                ForEach(availableDevices(), id: \.self) { device in
-                    cell(for: device)
+            let devices = availableDevices()
+            if !devices.isEmpty {
+                Section {
+                    ForEach(devices, id: \.self) { device in
+                        cell(for: device)
+                    }
+                } header: {
+                    Text("Available devices")
                 }
-            } header: {
-                Text("Available devices")
             }
         }
         .animation(.default, value: cast.currentDevice)
@@ -98,7 +100,7 @@ struct CastDevicesView: View {
     }
 
     private func availableDevices() -> [CastDevice] {
-        cast.devices.filter { $0 != cast.currentDevice }
+        [cast.devices.first!].filter { $0 != cast.currentDevice }
     }
 
     private func volumeSlider() -> some View {
