@@ -19,10 +19,11 @@ public struct CastButton: View {
         } label: {
             castImage()
         }
-        .sheet(isPresented: $isPresented) {
+        .popover(isPresented: $isPresented) {
             NavigationStack {
                 CastDevicesView(cast: cast)
             }
+            .frame(minWidth: 350, minHeight: 600)
         }
     }
 

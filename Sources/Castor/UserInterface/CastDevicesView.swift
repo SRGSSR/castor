@@ -54,6 +54,7 @@ struct CastDevicesView: View {
                     Text("Current device")
                 }
             }
+            // TODO: Do not show section if no devices
             Section {
                 ForEach(availableDevices(), id: \.self) { device in
                     cell(for: device)
