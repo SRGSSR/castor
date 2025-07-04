@@ -83,18 +83,13 @@ struct CastDevicesView: View {
 
     private func currentDeviceCell(with device: CastDevice) -> some View {
         VStack {
-            HStack {
-                Label {
-                    descriptionView(for: device)
-                } icon: {
-                    CastIcon(cast: cast)
-                }
-                Text("Disconnect")
-                    .foregroundStyle(Color.accentColor)
-                    .onTapGesture(perform: cast.endSession)
-                    .accessibilityAddTraits(.isButton)
+            Label {
+                descriptionView(for: device)
+            } icon: {
+                CastIcon(cast: cast)
             }
             volumeSlider()
+            disconnectButton()
         }
     }
 
@@ -135,9 +130,20 @@ struct CastDevicesView: View {
         }
     }
 
+    private func disconnectButton() -> some View {
+        Text("Disconnect")
+            .foregroundStyle(Color.accentColor)
+            .onTapGesture(perform: cast.endSession)
+            .accessibilityAddTraits(.isButton)
+            .padding(.bottom)
+    }
+
     private func descriptionView(for device: CastDevice) -> some View {
         VStack(alignment: .leading) {
-            Text(device.name ?? "Unknown")
+            HStack {
+                Text(device.name ?? "Unknown")
+                    .lineLimit(1)
+            }
             if let status = device.status {
                 Text(status)
                     .font(.footnote)
