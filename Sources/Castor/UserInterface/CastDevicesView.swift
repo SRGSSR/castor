@@ -47,25 +47,35 @@ struct CastDevicesView: View {
 
     private func devicesList() -> some View {
         List {
-            if let currentDevice = cast.currentDevice {
-                Section {
-                    currentDeviceCell(with: currentDevice)
-                } header: {
-                    Text("Current device")
-                }
-            }
-            let devices = availableDevices()
-            if !devices.isEmpty {
-                Section {
-                    ForEach(devices, id: \.self) { device in
-                        cell(for: device)
-                    }
-                } header: {
-                    Text("Available devices")
-                }
-            }
+            currentDeviceSection()
+            availableDevicesSection()
         }
         .animation(.default, value: cast.currentDevice)
+    }
+
+    @ViewBuilder
+    private func currentDeviceSection() -> some View {
+        if let currentDevice = cast.currentDevice {
+            Section {
+                currentDeviceCell(with: currentDevice)
+            } header: {
+                Text("Current device")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func availableDevicesSection() -> some View {
+        let devices = availableDevices()
+        if !devices.isEmpty {
+            Section {
+                ForEach(devices, id: \.self) { device in
+                    cell(for: device)
+                }
+            } header: {
+                Text("Available devices")
+            }
+        }
     }
 
     private func currentDeviceCell(with device: CastDevice) -> some View {
