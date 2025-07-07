@@ -12,7 +12,7 @@ final class CurrentDevicePropertyWrapper<Instance>: NSObject, GCKSessionManagerL
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let service: GCKSessionManager
     private weak var enclosingInstance: Instance?
-    private(set) var targetValue: CastDevice?
+    private var targetValue: CastDevice?
 
     @available(*, unavailable, message: "This property wrapper can only be applied to classes")
     var wrappedValue: CastDevice? {
