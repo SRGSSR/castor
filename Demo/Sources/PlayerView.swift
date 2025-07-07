@@ -34,8 +34,3 @@ struct PlayerView: View {
         model.play()
     }
 }
-
-// TODO: Remove this preview!
-#Preview {
-    CastButton(cast: .init())
-}
