@@ -57,12 +57,6 @@ struct DemoApp: App {
                     Label("Examples", systemImage: "film.fill")
                 }
                 NavigationStack {
-                    DevicesView()
-                }
-                .tabItem {
-                    Label("Devices", systemImage: "tv.fill")
-                }
-                NavigationStack {
                     CastPlayerView()
                 }
                 .tabItem {

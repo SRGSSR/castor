@@ -5,8 +5,7 @@ let package = Package(
     name: "Castor",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v16),
-        .tvOS(.v16)
+        .iOS(.v16)
     ],
     products: [
         .library(

@@ -33,10 +33,10 @@ struct ExamplesView: View {
         .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                CastButton()
+                CastButton(cast: cast)
             }
         }
-        .sheet(item: $router.destination) { destination in
+        .sheet(item: $router.presented) { destination in
             destination.view()
         }
         .navigationTitle("Examples")
@@ -48,7 +48,7 @@ struct ExamplesView: View {
                 player.loadItem(from: media.asset())
             }
             else {
-                router.destination = .player(content: .init(medias: [media]))
+                router.presented = .player(content: .init(medias: [media]))
             }
         } label: {
             Text(media.title)

@@ -22,7 +22,7 @@ struct PlayerView: View {
                 .onAppear(perform: play)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        CastButton()
+                        CastButton(cast: cast)
                     }
                 }
                 .makeCastable(model, with: cast)

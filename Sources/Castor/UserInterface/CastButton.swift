@@ -8,15 +8,28 @@ import GoogleCast
 import SwiftUI
 
 /// A cast button.
-public struct CastButton: UIViewRepresentable {
-    // swiftlint:disable:next missing_docs
-    public init() {}
+public struct CastButton: View {
+    @ObservedObject var cast: Cast
+    @State private var isPresented = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     // swiftlint:disable:next missing_docs
-    public func makeUIView(context: Context) -> UIView {
-        GCKUICastButton()
+    public var body: some View {
+        Button {
+            isPresented = true
+        } label: {
+            CastIcon(cast: cast)
+        }
+        .popover(isPresented: $isPresented) {
+            NavigationStack {
+                CastDevicesView(cast: cast, showsCloseButton: horizontalSizeClass == .compact)
+            }
+            .frame(minWidth: 375, minHeight: 500)
+        }
     }
 
-    // swiftlint:disable:next missing_docs
-    public func updateUIView(_ uiView: UIView, context: Context) {}
+    /// Default initializer.
+    public init(cast: Cast) {
+        self.cast = cast
+    }
 }
