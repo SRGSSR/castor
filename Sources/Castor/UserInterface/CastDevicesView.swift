@@ -125,10 +125,18 @@ struct CastDevicesView: View {
         Slider(value: volume, in: cast.volumeRange) {
             Text("Volume")
         } minimumValueLabel: {
-            Image(systemName: minimumValueImageName)
-                .onTapGesture { cast.isMuted.toggle() }
-                .accessibilityAddTraits(.isButton)
-                .toAnyView()
+            ZStack {
+                // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
+                ZStack {
+                    Image(systemName: "speaker.slash.fill")
+                    Image(systemName: "speaker.wave.3.fill")
+                }
+                .hidden()
+                Image(systemName: minimumValueImageName)
+                    .onTapGesture { cast.isMuted.toggle() }
+                    .accessibilityAddTraits(.isButton)
+            }
+            .toAnyView()
         } maximumValueLabel: {
             EmptyView()
                 .toAnyView()
