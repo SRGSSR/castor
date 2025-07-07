@@ -6,10 +6,12 @@
 
 import SwiftUI
 
-struct CastIcon: View {
+/// A view that displays a Cast icon reflecting the current connection state.
+public struct CastIcon: View {
     @ObservedObject var cast: Cast
 
-    var body: some View {
+    // swiftlint:disable:next missing_docs
+    public var body: some View {
         switch cast.connectionState {
         case .connecting:
             if #available(iOS 17, *) {
@@ -25,6 +27,11 @@ struct CastIcon: View {
         default:
             castImage(name: "google.cast")
         }
+    }
+
+    /// Creates a Cast icon.
+    public init(cast: Cast) {
+        self.cast = cast
     }
 
     private func castImage(name: String) -> some View {
