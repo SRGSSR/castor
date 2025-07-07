@@ -13,7 +13,21 @@ struct CastDevicesView: View {
     @Environment(\.dismiss) private var dismiss
 
     private var minimumValueImageName: String {
-        (cast.volume == 0 || cast.isMuted) ? "speaker.slash.fill" : "speaker.wave.1.fill"
+        let volume = volume.wrappedValue
+        if volume == 0 {
+            return "speaker.slash.fill"
+        }
+        else {
+            return "speaker.wave.\(Int(ceilf(volume * 3))).fill"
+        }
+    }
+
+    private var volume: Binding<Float> {
+        .init {
+            cast.isMuted ? 0 : cast.volume
+        } set: { newValue in
+            cast.volume = newValue
+        }
     }
 
     var body: some View {
@@ -108,7 +122,7 @@ struct CastDevicesView: View {
     }
 
     private func volumeSlider() -> some View {
-        Slider(value: $cast.volume, in: cast.volumeRange) {
+        Slider(value: volume, in: cast.volumeRange) {
             Text("Volume")
         } minimumValueLabel: {
             Image(systemName: minimumValueImageName)
@@ -116,7 +130,7 @@ struct CastDevicesView: View {
                 .accessibilityAddTraits(.isButton)
                 .toAnyView()
         } maximumValueLabel: {
-            Image(systemName: "speaker.wave.3.fill")
+            EmptyView()
                 .toAnyView()
         }
         .disabled(!cast.canAdjustVolume)
