@@ -200,7 +200,7 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
         if let delegate, let resumeState = player?.resumeState(with: delegate) {
-            if _currentDevice == nil {
+            if __currentDevice.targetValue == nil {
                 delegate.castEndSession(with: resumeState)
             }
             else {
