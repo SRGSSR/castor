@@ -8,12 +8,22 @@ import CoreMedia
 import GoogleCast
 
 extension GCKRemoteMediaClient {
-    private static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
-        GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
-    }
-
     func canMakeRequest() -> Bool {
         mediaStatus?.isConnected == true
+    }
+
+    func resumeState(with delegate: CastDelegate) -> CastResumeState? {
+        guard let mediaStatus, let currentIndex = mediaStatus.currentIndex() else {
+            return nil
+        }
+        let assets = mediaStatus.items().compactMap { delegate.castAsset(from: .init(rawMediaInformation: $0.mediaInformation)) }
+        return CastResumeState(assets: assets, index: currentIndex, time: time() - seekableTimeRange().start)
+    }
+}
+
+extension GCKRemoteMediaClient {
+    private static func isValidTimeInterval(_ timeInterval: TimeInterval) -> Bool {
+        GCKIsValidTimeInterval(timeInterval) && timeInterval != .infinity
     }
 
     func time() -> CMTime {
@@ -35,13 +45,5 @@ extension GCKRemoteMediaClient {
         else {
             return .invalid
         }
-    }
-
-    func resumeState(with delegate: CastDelegate) -> CastResumeState? {
-        guard let mediaStatus, let currentIndex = mediaStatus.currentIndex() else {
-            return nil
-        }
-        let assets = mediaStatus.items().compactMap { delegate.castAsset(from: .init(rawMediaInformation: $0.mediaInformation)) }
-        return CastResumeState(assets: assets, index: currentIndex, time: time() - seekableTimeRange().start)
     }
 }
