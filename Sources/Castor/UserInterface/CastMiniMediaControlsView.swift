@@ -59,7 +59,7 @@ private struct _CastMiniPlayerView: View {
 
     private func infoView(with metadata: CastMetadata) -> some View {
         VStack(alignment: .leading) {
-            Text(metadata.title ?? "Untitled")
+            Text(metadata.title ?? "Not playing")
                 .fontWeight(.bold)
             if let deviceName = cast.currentDevice?.name {
                 Text("Casting on \(deviceName)")
