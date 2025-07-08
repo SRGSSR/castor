@@ -25,8 +25,8 @@ struct ExamplesView: View {
                 }
             }
             if cast.player != nil {
-                CastMiniMediaControlsView()
-                    .frame(height: 64)
+                CastMiniPlayerView(cast: cast)
+                    .frame(height: 80)
                     .transition(.move(edge: .bottom))
             }
         }
