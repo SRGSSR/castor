@@ -13,27 +13,26 @@ struct ExamplesView: View {
     @EnvironmentObject private var router: Router
 
     var body: some View {
-        VStack(spacing: 0) {
-            List {
-                section("HLS streams", medias: kHlsUrlMedias)
-                section("MP3 streams ", medias: kMP3UrlMedias)
-                if cast.player != nil {
-                    section("DASH streams", medias: kDashUrlMedias)
-                }
-                if UserDefaults.standard.receiver.isSupportingUrns {
-                    section("URN-based streams", medias: kUrnMedias)
-                }
-            }
+        List {
+            section("HLS streams", medias: kHlsUrlMedias)
+            section("MP3 streams ", medias: kMP3UrlMedias)
             if cast.player != nil {
-                CastMiniPlayerView(cast: cast)
-                    .frame(height: 80)
-                    .transition(.move(edge: .bottom))
+                section("DASH streams", medias: kDashUrlMedias)
+            }
+            if UserDefaults.standard.receiver.isSupportingUrns {
+                section("URN-based streams", medias: kUrnMedias)
             }
         }
         .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton(cast: cast)
+            }
+            ToolbarItem(placement: .bottomBar) {
+                if cast.player != nil {
+                    CastMiniPlayerView(cast: cast)
+                        .frame(height: 64)
+                }
             }
         }
         .sheet(item: $router.presented) { destination in
