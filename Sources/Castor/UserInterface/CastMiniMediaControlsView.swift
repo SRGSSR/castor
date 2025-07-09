@@ -76,9 +76,7 @@ private struct _CastMiniPlayerView: View {
                 .resizable()
                 .transaction { $0.animation = nil }
                 .aspectRatio(contentMode: .fit)
-                .frame(height: 30)
         }
-        .frame(width: 30)
     }
 }
 
