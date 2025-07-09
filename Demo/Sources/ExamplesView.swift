@@ -23,16 +23,19 @@ struct ExamplesView: View {
                 section("URN-based streams", medias: kUrnMedias)
             }
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if cast.player != nil {
+                CastMiniPlayerView(cast: cast)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(.thickMaterial)
+                    .frame(height: 64)
+            }
+        }
         .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton(cast: cast)
-            }
-            ToolbarItem(placement: .bottomBar) {
-                if cast.player != nil {
-                    CastMiniPlayerView(cast: cast)
-                        .frame(height: 64)
-                }
             }
         }
         .sheet(item: $router.presented) { destination in
