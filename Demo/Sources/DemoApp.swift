@@ -69,10 +69,32 @@ struct DemoApp: App {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
             }
+            .tabViewBottomAccessoryMiniPlayer(for: cast)
             // TODO: Starting with iOS 17 this can be moved on the `WindowGroup` without the need for a local `@State`.
             .environmentObject(cast)
             .environmentObject(router)
             .supportsCast(cast, with: router)
         }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func tabViewBottomAccessoryMiniPlayer(for cast: Cast) -> some View {
+#if swift(>=6.2)
+        if #available(iOS 26, *) {
+            tabViewBottomAccessory {
+                CastMiniPlayerView(cast: cast)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+            }
+            .tabBarMinimizeBehavior(.onScrollDown)
+        }
+        else {
+            self
+        }
+#else
+        self
+#endif
     }
 }

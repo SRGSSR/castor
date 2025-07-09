@@ -23,15 +23,7 @@ struct ExamplesView: View {
                 section("URN-based streams", medias: kUrnMedias)
             }
         }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            if cast.player != nil {
-                CastMiniPlayerView(cast: cast)
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                    .background(.thickMaterial)
-                    .frame(height: 64)
-            }
-        }
+        .safeAreaInsetMiniPlayer(for: cast)
         .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -63,6 +55,26 @@ struct ExamplesView: View {
             ForEach(medias) { media in
                 button(for: media)
             }
+        }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func safeAreaInsetMiniPlayer(for cast: Cast) -> some View {
+        if #unavailable(iOS 26) {
+            safeAreaInset(edge: .bottom, spacing: 0) {
+                if cast.player != nil {
+                    CastMiniPlayerView(cast: cast)
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                        .background(.thickMaterial)
+                        .frame(height: 64)
+                }
+            }
+        }
+        else {
+            self
         }
     }
 }
