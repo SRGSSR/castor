@@ -42,8 +42,10 @@ private struct _CastMiniPlayerView: View {
         }
     }
 
+    @ViewBuilder
     private func artwork(with metadata: CastMetadata) -> some View {
         Rectangle()
+            .fill(.primary.opacity(0.2))
             .aspectRatio(contentMode: .fit)
             .overlay {
                 AsyncImage(url: metadata.imageUrl()) { image in
@@ -54,7 +56,7 @@ private struct _CastMiniPlayerView: View {
                     EmptyView()
                 }
             }
-            .roundedBorder(cornerRadius: 5, lineWidth: 1, color: .primary.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 5))
     }
 
     private func infoView(with metadata: CastMetadata) -> some View {
@@ -103,17 +105,5 @@ private extension _CastMiniPlayerView {
                 .font(.subheadline)
                 .lineLimit(1)
         }
-    }
-}
-
-private extension View {
-    func roundedBorder(cornerRadius: CGFloat, lineWidth: CGFloat, color: Color) -> some View {
-        let shape = RoundedRectangle(cornerRadius: cornerRadius)
-        return clipShape(shape)
-            .overlay {
-                shape
-                    .stroke(lineWidth: lineWidth)
-                    .foregroundStyle(color)
-            }
     }
 }
