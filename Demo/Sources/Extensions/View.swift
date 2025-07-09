@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import Castor
 import SwiftUI
 
 private struct PulseSymbolEffect17: ViewModifier {
@@ -35,5 +36,40 @@ extension View {
 
     func redacted(_ condition: Bool) -> some View {
         redacted(reason: condition ? .placeholder : .init())
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func tabViewBottomAccessoryMiniPlayer(for cast: Cast) -> some View {
+#if swift(>=6.2)
+        if #available(iOS 26, *) {
+            tabViewBottomAccessory {
+                MiniPlayerView(cast: cast)
+            }
+            .tabBarMinimizeBehavior(.onScrollDown)
+        }
+        else {
+            self
+        }
+#else
+        self
+#endif
+    }
+
+    @ViewBuilder
+    func safeAreaInsetMiniPlayer(for cast: Cast) -> some View {
+        if #unavailable(iOS 26) {
+            safeAreaInset(edge: .bottom, spacing: 0) {
+                if cast.player != nil {
+                    MiniPlayerView(cast: cast)
+                        .background(.thickMaterial)
+                        .frame(height: 64)
+                }
+            }
+        }
+        else {
+            self
+        }
     }
 }

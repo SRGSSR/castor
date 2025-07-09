@@ -59,26 +59,6 @@ struct ExamplesView: View {
     }
 }
 
-private extension View {
-    @ViewBuilder
-    func safeAreaInsetMiniPlayer(for cast: Cast) -> some View {
-        if #unavailable(iOS 26) {
-            safeAreaInset(edge: .bottom, spacing: 0) {
-                if cast.player != nil {
-                    CastMiniPlayerView(cast: cast)
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                        .background(.thickMaterial)
-                        .frame(height: 64)
-                }
-            }
-        }
-        else {
-            self
-        }
-    }
-}
-
 #Preview {
     NavigationStack {
         ExamplesView()

@@ -77,24 +77,3 @@ struct DemoApp: App {
         }
     }
 }
-
-private extension View {
-    @ViewBuilder
-    func tabViewBottomAccessoryMiniPlayer(for cast: Cast) -> some View {
-#if swift(>=6.2)
-        if #available(iOS 26, *) {
-            tabViewBottomAccessory {
-                CastMiniPlayerView(cast: cast)
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-            }
-            .tabBarMinimizeBehavior(.onScrollDown)
-        }
-        else {
-            self
-        }
-#else
-        self
-#endif
-    }
-}

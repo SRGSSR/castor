@@ -39,6 +39,7 @@ private struct _CastMiniPlayerView: View {
                 Spacer()
                 playbackButton()
             }
+            .contentShape(.rect)
         }
     }
 
