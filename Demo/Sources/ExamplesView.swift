@@ -38,6 +38,7 @@ struct ExamplesView: View {
                 CastButton(cast: cast)
             }
         }
+        .toolbarBackgroundVisibilityForTabBar18(cast.player == nil ? .automatic : .hidden)
         .sheet(item: $router.presented) { destination in
             destination.view()
         }

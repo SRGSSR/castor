@@ -23,6 +23,16 @@ extension View {
         modifier(PulseSymbolEffect17())
     }
 
+    @ViewBuilder
+    func toolbarBackgroundVisibilityForTabBar18(_ visibility: Visibility) -> some View {
+        if #available(iOS 18.0, *) {
+            toolbarBackgroundVisibility(visibility, for: .tabBar)
+        }
+        else {
+            self
+        }
+    }
+
     func redactedIfNil(_ object: Any?) -> some View {
         redacted(reason: object == nil ? .placeholder : .init())
     }
