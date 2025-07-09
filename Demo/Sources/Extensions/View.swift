@@ -33,7 +33,7 @@ extension View {
         }
     }
 
-    func redactedIfNil(_ object: Any?) -> some View {
-        redacted(reason: object == nil ? .placeholder : .init())
+    func redacted(_ condition: Bool) -> some View {
+        redacted(reason: condition ? .placeholder : .init())
     }
 }

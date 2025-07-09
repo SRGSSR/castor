@@ -16,6 +16,7 @@ extension GCKRemoteMediaClient {
         guard let mediaStatus, let currentIndex = mediaStatus.currentIndex() else {
             return nil
         }
+        // FIXME: Index is wrong if an items is compacted
         let assets = mediaStatus.items().compactMap { delegate.castAsset(from: .init(rawMediaInformation: $0.mediaInformation)) }
         return CastResumeState(assets: assets, index: currentIndex, time: time() - seekableTimeRange().start)
     }

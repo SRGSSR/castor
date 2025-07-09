@@ -32,10 +32,10 @@ private struct _CastMiniPlayerView: View {
     }
 
     var body: some View {
-        if let metadata = player.metadata {
+        if ![.idle, .unknown].contains(player.state) {
             HStack(spacing: 20) {
-                artwork(with: metadata)
-                infoView(with: metadata)
+                artwork(with: player.metadata)
+                infoView(with: player.metadata)
                 Spacer()
                 playbackButton()
             }
@@ -43,12 +43,12 @@ private struct _CastMiniPlayerView: View {
     }
 
     @ViewBuilder
-    private func artwork(with metadata: CastMetadata) -> some View {
+    private func artwork(with metadata: CastMetadata?) -> some View {
         Rectangle()
             .fill(.primary.opacity(0.2))
             .aspectRatio(contentMode: .fit)
             .overlay {
-                AsyncImage(url: metadata.imageUrl()) { image in
+                AsyncImage(url: metadata?.imageUrl()) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -59,7 +59,7 @@ private struct _CastMiniPlayerView: View {
             .clipShape(RoundedRectangle(cornerRadius: 5))
     }
 
-    private func infoView(with metadata: CastMetadata) -> some View {
+    private func infoView(with metadata: CastMetadata?) -> some View {
         ViewThatFits(in: .vertical) {
             regularInfoView(with: metadata)
             compactInfoView(with: metadata)
@@ -78,27 +78,27 @@ private struct _CastMiniPlayerView: View {
 }
 
 private extension _CastMiniPlayerView {
-    func regularInfoView(with metadata: CastMetadata) -> some View {
+    func regularInfoView(with metadata: CastMetadata?) -> some View {
         VStack(alignment: .leading) {
             title(with: metadata)
-            subtitle(with: metadata)
+            subtitle()
         }
     }
 
-    func compactInfoView(with metadata: CastMetadata) -> some View {
+    func compactInfoView(with metadata: CastMetadata?) -> some View {
         title(with: metadata)
             .minimumScaleFactor(0.7)
     }
 
-    private func title(with metadata: CastMetadata) -> some View {
-        Text(metadata.title ?? "Not playing")
+    private func title(with metadata: CastMetadata?) -> some View {
+        Text(metadata?.title ?? "Untitled")
             .fontWeight(.bold)
             .font(.subheadline)
             .lineLimit(1)
     }
 
     @ViewBuilder
-    private func subtitle(with metadata: CastMetadata) -> some View {
+    private func subtitle() -> some View {
         if let deviceName = cast.currentDevice?.name {
             Text("Casting on \(deviceName)")
                 .foregroundStyle(.secondary)

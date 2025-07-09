@@ -16,12 +16,12 @@ private struct ItemCell: View {
             Text(title)
         }
         .onAppear(perform: item.fetch)
-        .redactedIfNil(item.metadata)
+        .redacted(!item.isLoaded)
     }
 
     private var title: String {
-        guard let metadata = item.metadata else { return .placeholder(length: .random(in: 20...30)) }
-        return metadata.title ?? "-"
+        guard item.isLoaded else { return .placeholder(length: .random(in: 20...30)) }
+        return item.metadata?.title ?? "Untitled"
     }
 
     private func image() -> some View {

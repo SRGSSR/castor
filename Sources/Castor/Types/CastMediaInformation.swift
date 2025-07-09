@@ -11,7 +11,7 @@ public struct CastMediaInformation {
     let rawMediaInformation: GCKMediaInformation
 
     /// The metadata.
-    public var metadata: CastMetadata {
+    public var metadata: CastMetadata? {
         .init(rawMetadata: rawMediaInformation.metadata)
     }
 

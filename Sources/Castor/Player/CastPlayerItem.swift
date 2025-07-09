@@ -18,6 +18,11 @@ public final class CastPlayerItem: ObservableObject {
         .init(value: id)
     }
 
+    /// A Boolean indicating whether the item has been fetched.
+    public var isLoaded: Bool {
+        rawItem != nil
+    }
+
     /// The metadata associated with the item.
     ///
     /// Metadata must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.
