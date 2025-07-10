@@ -6,23 +6,6 @@
 
 import SwiftUI
 
-/// A mini cast player view.
-public struct CastMiniPlayerView: View {
-    @ObservedObject private var cast: Cast
-
-    // swiftlint:disable:next missing_docs
-    public var body: some View {
-        if let player = cast.player {
-            _CastMiniPlayerView(player: player, cast: cast)
-        }
-    }
-
-    // swiftlint:disable:next missing_docs
-    public init(cast: Cast) {
-        self.cast = cast
-    }
-}
-
 private struct _CastMiniPlayerView: View {
     @ObservedObject var player: CastPlayer
     let cast: Cast
@@ -75,6 +58,23 @@ private struct _CastMiniPlayerView: View {
                 .aspectRatio(contentMode: .fit)
         }
         .frame(maxHeight: 30)
+    }
+}
+
+/// A mini cast player view.
+public struct CastMiniPlayerView: View {
+    @ObservedObject private var cast: Cast
+
+    // swiftlint:disable:next missing_docs
+    public var body: some View {
+        if let player = cast.player {
+            _CastMiniPlayerView(player: player, cast: cast)
+        }
+    }
+
+    // swiftlint:disable:next missing_docs
+    public init(cast: Cast) {
+        self.cast = cast
     }
 }
 
