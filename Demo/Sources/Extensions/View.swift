@@ -41,11 +41,12 @@ extension View {
 
 extension View {
     @ViewBuilder
-    func tabViewBottomAccessoryMiniPlayer(for cast: Cast) -> some View {
+    func tabViewBottomAccessoryMiniPlayer26(for cast: Cast, in namespace: Namespace.ID) -> some View {
 #if swift(>=6.2)
         if #available(iOS 26, *) {
             tabViewBottomAccessory {
                 MiniPlayerView(cast: cast)
+                    .matchedTransitionSource(id: TransitionId.zoom, in: namespace)
             }
             .tabBarMinimizeBehavior(.onScrollDown)
         }
@@ -58,15 +59,39 @@ extension View {
     }
 
     @ViewBuilder
-    func safeAreaInsetMiniPlayer(for cast: Cast) -> some View {
+    func safeAreaInsetMiniPlayer(for cast: Cast, in namespace: Namespace.ID) -> some View {
         if #unavailable(iOS 26) {
             safeAreaInset(edge: .bottom, spacing: 0) {
                 if cast.player != nil {
                     MiniPlayerView(cast: cast)
+                        .matchedTransitionSource18(id: TransitionId.zoom, in: namespace)
                         .background(.thickMaterial)
                         .frame(height: 64)
                 }
             }
+            .toolbarBackgroundVisibilityForTabBar18(cast.player == nil ? .automatic : .hidden)
+        }
+        else {
+            self
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func matchedTransitionSource18(id: some Hashable, in namespace: Namespace.ID) -> some View {
+        if #available(iOS 18, *) {
+            matchedTransitionSource(id: id, in: namespace)
+        }
+        else {
+            self
+        }
+    }
+
+    @ViewBuilder
+    func zoomNavigationTransition18(sourceID: some Hashable, in namespace: Namespace.ID) -> some View {
+        if #available(iOS 18, *) {
+            navigationTransition(.zoom(sourceID: sourceID, in: namespace))
         }
         else {
             self

@@ -9,7 +9,7 @@ import Castor
 import Foundation
 import SwiftUI
 
-class Router: ObservableObject {
+final class Router: ObservableObject {
     @Published var presented: Destination?
 }
 

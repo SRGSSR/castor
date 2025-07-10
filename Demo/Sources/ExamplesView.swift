@@ -23,16 +23,11 @@ struct ExamplesView: View {
                 section("URN-based streams", medias: kUrnMedias)
             }
         }
-        .safeAreaInsetMiniPlayer(for: cast)
         .animation(.linear(duration: 0.2), value: cast.player)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton(cast: cast)
             }
-        }
-        .toolbarBackgroundVisibilityForTabBar18(cast.player == nil ? .automatic : .hidden)
-        .sheet(item: $router.presented) { destination in
-            destination.view()
         }
         .navigationTitle("Examples")
     }
