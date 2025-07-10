@@ -19,7 +19,7 @@ extension GCKRemoteMediaClient {
     func resumeState(with delegate: CastDelegate) -> CastResumeState? {
         guard let mediaStatus else { return nil }
         let resumeItems = Self.resumeItems(from: mediaStatus, with: delegate)
-        let index = resumeItems.firstIndex(where: { $0.item.itemID == mediaStatus.currentItemID })
+        let index = resumeItems.firstIndex { $0.item.itemID == mediaStatus.currentItemID }
         return CastResumeState(assets: resumeItems.map(\.asset), index: index, time: time() - seekableTimeRange().start)
     }
 }

@@ -34,7 +34,7 @@ extension Router {
             case let .player(content: content):
                 PlayerView(content: content)
             case .expandedPlayer:
-                CastExpandedMediaControlsView()
+                CastPlayerView()
             }
         }
     }
