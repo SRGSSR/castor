@@ -19,7 +19,7 @@ public final class CastPlayerItem: ObservableObject {
     }
 
     /// A Boolean indicating whether the item has been fetched.
-    public var isLoaded: Bool {
+    public var isFetched: Bool {
         rawItem != nil
     }
 

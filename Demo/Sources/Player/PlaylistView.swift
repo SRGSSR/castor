@@ -16,11 +16,11 @@ private struct ItemCell: View {
             Text(title)
         }
         .onAppear(perform: item.fetch)
-        .redacted(!item.isLoaded)
+        .redacted(!item.isFetched)
     }
 
     private var title: String {
-        guard item.isLoaded else { return .placeholder(length: .random(in: 20...30)) }
+        guard item.isFetched else { return .placeholder(length: .random(in: 20...30)) }
         return item.metadata?.title ?? "Untitled"
     }
 
