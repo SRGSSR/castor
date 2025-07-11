@@ -39,7 +39,7 @@ struct RootView: View {
                 .zoomNavigationTransition18(sourceID: TransitionId.zoom, in: namespace)
         }
         .tabViewBottomAccessoryMiniPlayer26(for: cast, in: namespace)
-        // TODO: Starting with iOS 17 this can be moved on the `WindowGroup` without the need for a local `@State`.
+        // TODO: Starting with iOS 17 this can be moved on the `DemoApp` window group.
         .environmentObject(cast)
         .environmentObject(router)
         .supportsCast(cast, with: router)
