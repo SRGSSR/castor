@@ -13,27 +13,9 @@ struct RootView: View {
 
     var body: some View {
         TabView {
-            NavigationStack {
-                ExamplesView()
-                    .safeAreaInset(edge: .bottom, spacing: 0) {
-                        miniPlayer()
-                    }
-            }
-            .tabItem {
-                Label("Examples", systemImage: "film.fill")
-            }
-            NavigationStack {
-                CastPlayerView()
-            }
-            .tabItem {
-                Label("Player", systemImage: "play.rectangle.fill")
-            }
-            NavigationStack {
-                SettingsView()
-            }
-            .tabItem {
-                Label("Settings", systemImage: "gearshape.fill")
-            }
+            examplesTab()
+            playerTab()
+            settingsTab()
         }
         .sheet(item: $router.presented) { destination in
             destination.view()
@@ -42,6 +24,36 @@ struct RootView: View {
         .environmentObject(cast)
         .environmentObject(router)
         .supportsCast(cast, with: router)
+    }
+
+    private func examplesTab() -> some View {
+        NavigationStack {
+            ExamplesView()
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    miniPlayer()
+                }
+        }
+        .tabItem {
+            Label("Examples", systemImage: "film.fill")
+        }
+    }
+
+    private func playerTab() -> some View {
+        NavigationStack {
+            CastPlayerView()
+        }
+        .tabItem {
+            Label("Player", systemImage: "play.rectangle.fill")
+        }
+    }
+
+    private func settingsTab() -> some View {
+        NavigationStack {
+            SettingsView()
+        }
+        .tabItem {
+            Label("Settings", systemImage: "gearshape.fill")
+        }
     }
 
     @ViewBuilder
