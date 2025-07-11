@@ -28,19 +28,7 @@ private struct _CastMiniPlayerView: View {
 
     @ViewBuilder
     private func artwork(with metadata: CastMetadata?) -> some View {
-        Rectangle()
-            .fill(.primary.opacity(0.2))
-            .aspectRatio(contentMode: .fit)
-            .overlay {
-                AsyncImage(url: metadata?.imageUrl()) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } placeholder: {
-                    EmptyView()
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 5))
+        ArtworkImage(url: metadata?.imageUrl())
     }
 
     private func infoView(with metadata: CastMetadata?) -> some View {

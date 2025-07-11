@@ -24,16 +24,8 @@ private struct ItemCell: View {
     }
 
     private func image() -> some View {
-        AsyncImage(url: item.metadata?.imageUrl()) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        } placeholder: {
-            Image(systemName: "photo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        }
-        .frame(width: 80, height: 45)
+        ArtworkImage(url: item.metadata?.imageUrl())
+            .frame(height: 45)
     }
 }
 

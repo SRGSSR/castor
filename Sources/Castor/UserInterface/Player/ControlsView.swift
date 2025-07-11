@@ -53,15 +53,7 @@ struct ControlsView: View {
     }
 
     private func artworkImage() -> some View {
-        AsyncImage(url: player.metadata?.imageUrl()) { image in
-            image
-                .resizable()
-        } placeholder: {
-            Image(systemName: "photo")
-                .resizable()
-        }
-        .aspectRatio(contentMode: .fit)
-        .frame(height: 100)
+        ArtworkImage(url: player.metadata?.imageUrl())
     }
 
     private func loadingIndicator() -> some View {
