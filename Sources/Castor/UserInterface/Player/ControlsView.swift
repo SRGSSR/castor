@@ -26,6 +26,7 @@ struct ControlsView: View {
     @EnvironmentObject private var cast: Cast
     @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
     @ObservedObject var player: CastPlayer
+    @State private var isPlaylistPresented = false
     let device: CastDevice?
 
     var body: some View {
@@ -36,6 +37,9 @@ struct ControlsView: View {
         }
         .disabled(!player.isActive)
         .bind(progressTracker, to: player)
+        .sheet(isPresented: $isPlaylistPresented) {
+            PlaylistView(player: player)
+        }
     }
 
     private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
@@ -129,6 +133,15 @@ struct ControlsView: View {
 }
 
 private extension ControlsView {
+    private func playlistButton() -> some View {
+        Button {
+            isPlaylistPresented.toggle()
+        } label: {
+            Image(systemName: "square.filled.on.square")
+        }
+        .disabled(player.items.count < 2)
+    }
+
     private func skipBackwardButton() -> some View {
         Button(action: player.skipBackward) {
             Image.goBackward(withInterval: cast.configuration.backwardSkipInterval)
@@ -160,6 +173,7 @@ private extension ControlsView {
 
     func settingsButtons() -> some View {
         HStack(spacing: 50) {
+            playlistButton()
             SettingsMenu(player: player)
             MuteButton(cast: cast)
         }
