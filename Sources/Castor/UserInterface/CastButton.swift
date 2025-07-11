@@ -23,12 +23,13 @@ public struct CastButton: View {
         .popover(isPresented: $isPresented) {
             NavigationStack {
                 CastDevicesView(cast: cast, showsCloseButton: horizontalSizeClass == .compact)
+                    .font(nil)
             }
             .frame(minWidth: 375, minHeight: 500)
         }
     }
 
-    /// Default initializer.
+    /// Creates a Cast button.
     public init(cast: Cast) {
         self.cast = cast
     }
