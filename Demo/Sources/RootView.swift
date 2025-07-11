@@ -59,7 +59,13 @@ struct RootView: View {
     @ViewBuilder
     private func miniPlayer() -> some View {
         if cast.player != nil {
-            MiniPlayerView(cast: cast)
+            CastMiniPlayerView(cast: cast)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .accessibilityAddTraits(.isButton)
+                .onTapGesture {
+                    router.presented = .expandedPlayer
+                }
                 .background(.thickMaterial)
                 .frame(height: 64)
         }

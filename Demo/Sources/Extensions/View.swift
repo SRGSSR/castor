@@ -4,7 +4,6 @@
 //  License information is available from the LICENSE file.
 //
 
-import Castor
 import SwiftUI
 
 private struct PulseSymbolEffect17: ViewModifier {
