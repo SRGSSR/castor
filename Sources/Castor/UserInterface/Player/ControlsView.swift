@@ -173,11 +173,12 @@ private extension ControlsView {
 
     func settingsButtons() -> some View {
         HStack(spacing: 50) {
+            CastButton(cast: cast)
             playlistButton()
             SettingsMenu(player: player)
             MuteButton(cast: cast)
         }
-        .font(.system(size: 30))
+        .font(.system(size: 22))
     }
 
     func playbackButtons() -> some View {
@@ -187,6 +188,6 @@ private extension ControlsView {
             skipForwardButton()
             stopButton()
         }
-        .font(.system(size: 40))
+        .font(.system(size: 44))
     }
 }
