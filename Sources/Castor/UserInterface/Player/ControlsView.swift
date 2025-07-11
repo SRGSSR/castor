@@ -131,7 +131,6 @@ struct ControlsView: View {
             slider()
             playbackButtons()
         }
-        .padding()
     }
 }
 
@@ -188,8 +187,8 @@ private extension ControlsView {
         HStack(spacing: 50) {
             skipBackwardButton()
             PlaybackButton(player: player)
-            skipForwardButton()
             stopButton()
+            skipForwardButton()
         }
         .font(.system(size: 44))
     }
