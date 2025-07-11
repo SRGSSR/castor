@@ -124,61 +124,65 @@ struct ControlsView: View {
 
     private func controls() -> some View {
         VStack {
+            settingsButtons()
             slider()
-            buttons()
+            playbackButtons()
         }
         .padding()
     }
 }
 
 private extension ControlsView {
-    private static let side: CGFloat = 40
-
     private func skipBackwardButton() -> some View {
         Button(action: player.skipBackward) {
             Image.goBackward(withInterval: cast.configuration.backwardSkipInterval)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Self.side)
         }
-        .frame(width: Self.side)
         .disabled(!player.canSkipBackward())
     }
 
     private func playbackButton() -> some View {
         Button(action: player.togglePlayPause) {
             Image(systemName: imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Self.side)
         }
-        .frame(width: Self.side)
     }
 
     private func skipForwardButton() -> some View {
         Button(action: player.skipForward) {
             Image.goForward(withInterval: cast.configuration.forwardSkipInterval)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Self.side)
         }
-        .frame(width: Self.side)
         .disabled(!player.canSkipForward())
     }
 
     private func skipToDefaultButton() -> some View {
         Button(action: player.skipToDefault) {
             Image(systemName: "forward.end.fill")
-                .font(.system(size: 20))
         }
         .disabled(!player.canSkipToDefault())
     }
 
-    func buttons() -> some View {
+    private func stopButton() -> some View {
+        Button {
+            player.stop()
+        } label: {
+            Image(systemName: "stop.fill")
+        }
+    }
+
+    func settingsButtons() -> some View {
+        HStack(spacing: 50) {
+            SettingsMenu(player: player)
+            MuteButton(cast: cast)
+        }
+        .font(.system(size: 30))
+    }
+
+    func playbackButtons() -> some View {
         HStack(spacing: 50) {
             skipBackwardButton()
             playbackButton()
             skipForwardButton()
+            stopButton()
         }
+        .font(.system(size: 40))
     }
 }

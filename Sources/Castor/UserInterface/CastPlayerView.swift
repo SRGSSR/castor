@@ -49,37 +49,6 @@ private struct _CastPlayerView: View {
     }
 }
 
-private struct MainView: View {
-    @ObservedObject var player: CastPlayer
-    let device: CastDevice?
-
-    var body: some View {
-        VStack {
-            ControlsView(player: player, device: device)
-            PlaylistView(player: player)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                stopButton()
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                MuteButton()
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                SettingsMenu(player: player)
-            }
-        }
-    }
-
-    private func stopButton() -> some View {
-        Button {
-            player.stop()
-        } label: {
-            Text("Stop")
-        }
-    }
-}
-
 /// A cast player view.
 public struct CastPlayerView: View {
     @ObservedObject private var cast: Cast
@@ -87,7 +56,7 @@ public struct CastPlayerView: View {
     // swiftlint:disable:next missing_docs
     public var body: some View {
         if let player = cast.player {
-            MainView(player: player, device: cast.currentDevice)
+            ControlsView(player: player, device: cast.currentDevice)
         }
     }
 

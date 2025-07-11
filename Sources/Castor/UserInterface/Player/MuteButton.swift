@@ -7,18 +7,14 @@
 import SwiftUI
 
 struct MuteButton: View {
-    @EnvironmentObject var cast: Cast
+    @ObservedObject var cast: Cast
 
     var body: some View {
         Button {
             cast.isMuted.toggle()
         } label: {
-            Image(systemName: imageName)
+            MuteIcon(cast: cast)
         }
         .disabled(!cast.canMute)
-    }
-
-    private var imageName: String {
-        cast.isMuted ? "speaker.slash.fill" : "speaker.wave.3.fill"
     }
 }
