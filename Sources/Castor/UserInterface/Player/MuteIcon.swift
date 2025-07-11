@@ -6,7 +6,10 @@
 
 import SwiftUI
 
-struct MuteIcon: View {
+/// A view that displays a mute icon reflecting the current volume state.
+///
+/// > Warning: Resize using ``font(_:)``
+public struct MuteIcon: View {
     @ObservedObject var cast: Cast
 
     private var minimumValueImageName: String {
@@ -19,11 +22,17 @@ struct MuteIcon: View {
         }
     }
 
-    var body: some View {
+    // swiftlint:disable:next missing_docs
+    public var body: some View {
         ZStack {
             largestShape()
             Image(systemName: minimumValueImageName)
         }
+    }
+
+    /// Creates a mute icon.
+    public init(cast: Cast) {
+        self.cast = cast
     }
 
     private func largestShape() -> some View {
