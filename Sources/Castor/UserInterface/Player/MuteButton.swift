@@ -6,15 +6,22 @@
 
 import SwiftUI
 
-struct MuteButton: View {
+/// A mute button.
+public struct MuteButton: View {
     @ObservedObject var cast: Cast
 
-    var body: some View {
+    // swiftlint:disable:next missing_docs
+    public var body: some View {
         Button {
             cast.isMuted.toggle()
         } label: {
             MuteIcon(cast: cast)
         }
         .disabled(!cast.canMute)
+    }
+
+    /// Creates a mute button.
+    public init(cast: Cast) {
+        self.cast = cast
     }
 }
