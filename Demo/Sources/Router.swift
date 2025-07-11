@@ -16,7 +16,7 @@ final class Router: ObservableObject {
 extension Router {
     enum Destination: Identifiable, Hashable {
         case player(content: PlayerContent?)
-        case expandedPlayer
+        case expandedPlayer(cast: Cast)
 
         var id: String {
             switch self {
@@ -33,8 +33,8 @@ extension Router {
             switch self {
             case let .player(content: content):
                 PlayerView(content: content)
-            case .expandedPlayer:
-                CastPlayerView()
+            case let .expandedPlayer(cast: cast):
+                CastPlayerView(cast: cast)
             }
         }
     }

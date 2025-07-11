@@ -14,7 +14,6 @@ struct RootView: View {
     var body: some View {
         TabView {
             examplesTab()
-            playerTab()
             settingsTab()
         }
         .sheet(item: $router.presented) { destination in
@@ -38,15 +37,6 @@ struct RootView: View {
         }
     }
 
-    private func playerTab() -> some View {
-        NavigationStack {
-            CastPlayerView()
-        }
-        .tabItem {
-            Label("Player", systemImage: "play.rectangle.fill")
-        }
-    }
-
     private func settingsTab() -> some View {
         NavigationStack {
             SettingsView()
@@ -64,7 +54,7 @@ struct RootView: View {
                 .padding(.vertical, 8)
                 .accessibilityAddTraits(.isButton)
                 .onTapGesture {
-                    router.presented = .expandedPlayer
+                    router.presented = .expandedPlayer(cast: cast)
                 }
                 .background(.thickMaterial)
                 .frame(height: 64)

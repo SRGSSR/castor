@@ -22,8 +22,4 @@ extension View {
     func pulseSymbolEffect17() -> some View {
         modifier(PulseSymbolEffect17())
     }
-
-    func redacted(_ condition: Bool) -> some View {
-        redacted(reason: condition ? .placeholder : .init())
-    }
 }

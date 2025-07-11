@@ -22,7 +22,13 @@
     "Close" : {
 
     },
+    "Connected to %@" : {
+
+    },
     "Current device" : {
+
+    },
+    "Current position" : {
 
     },
     "description" : {
@@ -36,6 +42,9 @@
     },
     "Playback Speed" : {
       "comment" : "Playback setting menu title"
+    },
+    "Stop" : {
+
     },
     "Subtitles" : {
       "comment" : "Playback setting menu title"

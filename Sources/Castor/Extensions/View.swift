@@ -50,4 +50,8 @@ extension View {
     func toAnyView() -> AnyView {
         AnyView(self)
     }
+
+    func redacted(_ condition: Bool) -> some View {
+        redacted(reason: condition ? .placeholder : .init())
+    }
 }

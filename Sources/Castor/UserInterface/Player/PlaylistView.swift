@@ -4,7 +4,6 @@
 //  License information is available from the LICENSE file.
 //
 
-import Castor
 import SwiftUI
 
 private struct ItemCell: View {
@@ -68,9 +67,6 @@ struct PlaylistView: View {
                     ItemCell(item: item)
                 }
             }
-            else {
-                MessageView(message: "No items", icon: .none)
-            }
         }
         .animation(.linear, value: player.items)
     }
@@ -88,8 +84,6 @@ private extension PlaylistView {
         HStack(spacing: 30) {
             repeatModeButton()
             shuffleButton()
-            addButton()
-            trashButton()
         }
         .padding()
     }
@@ -139,26 +133,6 @@ private extension PlaylistView {
             player.items.shuffle()
         } label: {
             Image(systemName: "shuffle")
-        }
-        .disabled(player.items.isEmpty)
-    }
-
-    func addButton() -> some View {
-        Button {
-            isSelectionPresented.toggle()
-        } label: {
-            Image(systemName: "plus")
-        }
-        .sheet(isPresented: $isSelectionPresented) {
-            NavigationStack {
-                PlaylistSelectionView(player: player)
-            }
-        }
-    }
-
-    func trashButton() -> some View {
-        Button(action: player.removeAllItems) {
-            Image(systemName: "trash")
         }
         .disabled(player.items.isEmpty)
     }
