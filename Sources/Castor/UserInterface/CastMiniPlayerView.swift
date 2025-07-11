@@ -10,10 +10,6 @@ private struct _CastMiniPlayerView: View {
     @ObservedObject var player: CastPlayer
     let cast: Cast
 
-    private var imageName: String {
-        player.shouldPlay ? "pause.fill" : "play.fill"
-    }
-
     var body: some View {
         if ![.idle, .unknown].contains(player.state) {
             HStack(spacing: 20) {
@@ -39,13 +35,8 @@ private struct _CastMiniPlayerView: View {
     }
 
     private func playbackButton() -> some View {
-        Button(action: player.togglePlayPause) {
-            Image(systemName: imageName)
-                .resizable()
-                .transaction { $0.animation = nil }
-                .aspectRatio(contentMode: .fit)
-        }
-        .frame(maxHeight: 30)
+        PlaybackButton(player: player)
+            .font(.system(size: 40))
     }
 }
 

@@ -21,13 +21,17 @@ struct MuteIcon: View {
 
     var body: some View {
         ZStack {
-            // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
-            ZStack {
-                Image(systemName: "speaker.slash.fill")
-                Image(systemName: "speaker.wave.3.fill")
-            }
-            .hidden()
+            largestShape()
             Image(systemName: minimumValueImageName)
         }
+    }
+
+    private func largestShape() -> some View {
+        // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
+        ZStack {
+            Image(systemName: "speaker.slash.fill")
+            Image(systemName: "speaker.wave.3.fill")
+        }
+        .hidden()
     }
 }

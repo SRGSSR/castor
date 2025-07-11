@@ -38,10 +38,6 @@ struct ControlsView: View {
         .bind(progressTracker, to: player)
     }
 
-    private var imageName: String {
-        player.shouldPlay ? "pause.fill" : "play.fill"
-    }
-
     private static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
         guard time.isValid, duration.isValid else { return nil }
         if duration.seconds < 60 * 60 {
@@ -140,12 +136,6 @@ private extension ControlsView {
         .disabled(!player.canSkipBackward())
     }
 
-    private func playbackButton() -> some View {
-        Button(action: player.togglePlayPause) {
-            Image(systemName: imageName)
-        }
-    }
-
     private func skipForwardButton() -> some View {
         Button(action: player.skipForward) {
             Image.goForward(withInterval: cast.configuration.forwardSkipInterval)
@@ -179,7 +169,7 @@ private extension ControlsView {
     func playbackButtons() -> some View {
         HStack(spacing: 50) {
             skipBackwardButton()
-            playbackButton()
+            PlaybackButton(player: player)
             skipForwardButton()
             stopButton()
         }
