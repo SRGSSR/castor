@@ -34,8 +34,7 @@ extension Router {
             case let .player(content: content):
                 PlayerView(content: content)
             case let .expandedPlayer(cast: cast):
-                CastPlayerView(cast: cast)
-                    .padding()
+                ExpandedCastPlayerView(cast: cast)
             }
         }
     }
