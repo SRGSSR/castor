@@ -115,9 +115,8 @@ struct CastDevicesView: View {
         Slider(value: volume, in: cast.volumeRange) {
             Text("Volume")
         } minimumValueLabel: {
-            MuteIcon(cast: cast)
-                .onTapGesture { cast.isMuted.toggle() }
-                .accessibilityAddTraits(.isButton)
+            MuteButton(cast: cast)
+                .buttonStyle(.borderless)
                 .toAnyView()
         } maximumValueLabel: {
             EmptyView()
@@ -135,11 +134,13 @@ struct CastDevicesView: View {
     }
 
     private func disconnectButton() -> some View {
-        Text("Disconnect")
-            .foregroundStyle(Color.accentColor)
-            .onTapGesture(perform: cast.endSession)
-            .accessibilityAddTraits(.isButton)
-            .padding(.bottom)
+        Button {
+            cast.endSession()
+        } label: {
+            Text("Disconnect")
+        }
+        .buttonStyle(.borderless)
+        .padding(.bottom)
     }
 
     private func descriptionView(for device: CastDevice) -> some View {
