@@ -32,7 +32,9 @@ struct ControlsView: View {
     var body: some View {
         VStack {
             informationView()
+            Spacer()
             visualView()
+            Spacer()
             controls()
         }
         .disabled(!player.isActive)
@@ -89,6 +91,7 @@ struct ControlsView: View {
             }
         }
         .frame(height: 30)
+        .padding(.vertical)
     }
 
     @ViewBuilder
