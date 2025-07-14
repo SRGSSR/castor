@@ -16,6 +16,7 @@ struct PlaybackButtons: View {
             buttons()
         }
         .font(.system(size: 44))
+        .disabled(!player.isActive)
     }
 
     private func buttons() -> some View {

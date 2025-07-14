@@ -30,7 +30,6 @@ struct PlayerMainView: View {
             ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
         }
         .animation(.default, value: isPlaylistPresented)
-        .disabled(!player.isActive)
     }
 
     private func playlistLayout() -> some View {
