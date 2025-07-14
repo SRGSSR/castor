@@ -22,35 +22,23 @@ struct PlayerMainView: View {
     var body: some View {
         VStack {
             if isPlaylistPresented {
-                playlistLayout()
+                HStack {
+                    visualView()
+                    informationView()
+                }
+                .frame(height: 100)
+                PlaylistView(player: player)
+                        .transition(.move(edge: .bottom))
             }
             else {
-                currentItemLayout()
+                Spacer()
+                visualView()
+                informationView()
+                Spacer()
             }
             ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
         }
         .animation(.default, value: isPlaylistPresented)
-    }
-
-    private func playlistLayout() -> some View {
-        VStack {
-            HStack {
-                visualView()
-                informationView()
-            }
-            .frame(height: 100)
-            PlaylistView(player: player)
-                .transition(.move(edge: .bottom))
-        }
-    }
-
-    private func currentItemLayout() -> some View {
-        VStack {
-            Spacer()
-            visualView()
-            informationView()
-            Spacer()
-        }
     }
 
     private func artworkImage() -> some View {
