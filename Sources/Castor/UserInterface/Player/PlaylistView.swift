@@ -40,7 +40,7 @@ struct PlaylistView: View {
                     ItemCell(item: item)
                 }
                 .listStyle(.plain)
-                .safeAreaInset(edge: .top) {
+                .safeAreaInset(edge: .top, spacing: 0) {
                     Color(.systemBackground)
                         .frame(height: 40)
                         .overlay {
