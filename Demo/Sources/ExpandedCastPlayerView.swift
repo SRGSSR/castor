@@ -20,7 +20,6 @@ struct ExpandedCastPlayerView: View {
                             addButton()
                         }
                     }
-                    .padding()
             }
             .sheet(isPresented: $isSelectionPresented) {
                 NavigationStack {

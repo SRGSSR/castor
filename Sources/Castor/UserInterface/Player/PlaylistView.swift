@@ -34,44 +34,34 @@ struct PlaylistView: View {
     @State private var isSelectionPresented = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            toolbar()
-            list()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private func toolbar() -> some View {
-        HStack {
-            previousButton()
-            Spacer()
-            managementButtons()
-            Spacer()
-            nextButton()
-        }
-        .padding()
-    }
-
-    private func list() -> some View {
         ZStack {
             if !player.items.isEmpty {
                 List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
                     ItemCell(item: item)
                 }
+                .listStyle(.plain)
+                .safeAreaInset(edge: .top) {
+                    Color(.systemBackground)
+                        .frame(height: 40)
+                        .overlay {
+                            toolbar()
+                        }
+                }
+            }
+            else {
+                UnavailableView("No items", systemImage: "list.bullet")
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.linear, value: player.items)
+    }
+
+    private func toolbar() -> some View {
+        managementButtons()
     }
 }
 
 private extension PlaylistView {
-    func previousButton() -> some View {
-        Button(action: player.returnToPrevious) {
-            Image(systemName: "arrow.left")
-        }
-        .disabled(!player.canReturnToPrevious())
-    }
-
     func managementButtons() -> some View {
         HStack(spacing: 30) {
             repeatModeButton()
@@ -79,17 +69,10 @@ private extension PlaylistView {
         }
         .padding()
     }
-
-    func nextButton() -> some View {
-        Button(action: player.advanceToNext) {
-            Image(systemName: "arrow.right")
-        }
-        .disabled(!player.canAdvanceToNext())
-    }
 }
 
 private extension PlaylistView {
-    private var repeatModeImageName: String {
+    var repeatModeImageName: String {
         switch player.repeatMode {
         case .off:
             "repeat.circle"
@@ -100,7 +83,7 @@ private extension PlaylistView {
         }
     }
 
-    private func toggleRepeatMode() {
+    func toggleRepeatMode() {
         switch player.repeatMode {
         case .off:
             player.repeatMode = .all

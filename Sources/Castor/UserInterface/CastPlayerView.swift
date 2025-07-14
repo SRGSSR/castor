@@ -13,7 +13,7 @@ public struct CastPlayerView: View {
     // swiftlint:disable:next missing_docs
     public var body: some View {
         if let player = cast.player {
-            ControlsView(player: player, device: cast.currentDevice)
+            PlayerMainView(player: player, device: cast.currentDevice)
         }
     }
 
