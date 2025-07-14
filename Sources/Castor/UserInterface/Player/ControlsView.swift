@@ -41,6 +41,7 @@ struct ControlsView: View {
         .bind(progressTracker, to: player)
         .sheet(isPresented: $isPlaylistPresented) {
             PlaylistView(player: player)
+                .presentationDetents([.medium, .large])
         }
     }
 
