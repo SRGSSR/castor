@@ -72,8 +72,8 @@ private extension _CastMiniPlayerView {
 
     private func title(with metadata: CastMetadata?) -> some View {
         Text(metadata?.title ?? "Untitled")
-            .fontWeight(.bold)
             .font(.subheadline)
+            .bold()
             .lineLimit(1)
     }
 

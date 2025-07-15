@@ -81,6 +81,7 @@ private struct _CastPlayerView: View {
             LiveLabel(player: player)
             if let title = player.metadata?.title {
                 Text(title)
+                    .bold()
             }
             if let device {
                 Text("Connected to \(device.name ?? "receiver")")
