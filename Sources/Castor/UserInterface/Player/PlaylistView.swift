@@ -67,6 +67,7 @@ private extension PlaylistView {
         HStack(spacing: 30) {
             repeatModeButton()
             shuffleButton()
+            trashButton()
         }
         .padding()
     }
@@ -109,6 +110,15 @@ private extension PlaylistView {
             player.items.shuffle()
         } label: {
             Image(systemName: "shuffle")
+        }
+        .disabled(player.items.isEmpty)
+    }
+
+    func trashButton() -> some View {
+        Button {
+            player.removeAllItems()
+        } label: {
+            Image(systemName: "trash")
         }
         .disabled(player.items.isEmpty)
     }

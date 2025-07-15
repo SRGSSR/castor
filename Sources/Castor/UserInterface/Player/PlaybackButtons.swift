@@ -23,16 +23,7 @@ struct PlaybackButtons: View {
         HStack(spacing: 40) {
             backwardButton()
             PlaybackButton(player: player)
-            stopButton()
             forwardButton()
-        }
-    }
-
-    private func stopButton() -> some View {
-        Button {
-            player.stop()
-        } label: {
-            Image(systemName: "stop.fill")
         }
     }
 
