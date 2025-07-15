@@ -8,7 +8,7 @@ import SwiftUI
 
 /// A view that displays a Cast icon reflecting the current connection state.
 ///
-/// > Warning: Resize using ``font(_:)``. Avoid using system font with a size equal to 20.
+/// > Warning: Resize using ``font(_:)``.
 public struct CastIcon: View {
     @ObservedObject var cast: Cast
 
