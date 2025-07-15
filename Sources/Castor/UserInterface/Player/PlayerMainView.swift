@@ -29,6 +29,7 @@ struct PlayerMainView: View {
                         informationView()
                     }
                     .frame(height: 100)
+                    Spacer()
                     ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
                 }
                 PlaylistView(player: player)
