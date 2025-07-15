@@ -14,7 +14,7 @@ struct ControlsView: View {
         VStack {
             SliderView(player: player)
             VStack(spacing: 50) {
-                PlaybackButtons(player: player)
+                PlaybackButtons(player: player, layout: isPlaylistPresented ? .navigation : .skip)
                 SettingsButtons(player: player, isPlaylistPresented: $isPlaylistPresented)
             }
         }

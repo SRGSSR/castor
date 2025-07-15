@@ -6,9 +6,15 @@
 
 import SwiftUI
 
+enum PlaybackButtonsLayout {
+    case navigation
+    case skip
+}
+
 struct PlaybackButtons: View {
     @EnvironmentObject private var cast: Cast
     @ObservedObject var player: CastPlayer
+    let layout: PlaybackButtonsLayout
 
     var body: some View {
         ZStack {
@@ -30,11 +36,11 @@ struct PlaybackButtons: View {
     @ViewBuilder
     private func backwardButton() -> some View {
         Group {
-            if player.items.count <= 1 {
-                skipBackwardButton()
-            }
-            else {
+            switch layout {
+            case .navigation:
                 previousButton()
+            case .skip:
+                skipBackwardButton()
             }
         }
         .font(.system(size: 30))
@@ -43,11 +49,11 @@ struct PlaybackButtons: View {
     @ViewBuilder
     private func forwardButton() -> some View {
         Group {
-            if player.items.count <= 1 {
-                skipForwardButton()
-            }
-            else {
+            switch layout {
+            case .navigation:
                 nextButton()
+            case .skip:
+                skipForwardButton()
             }
         }
         .font(.system(size: 30))
