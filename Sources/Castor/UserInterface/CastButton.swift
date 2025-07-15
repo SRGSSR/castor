@@ -13,6 +13,14 @@ public struct CastButton: View {
     @State private var isPresented = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    private var showsPopover: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
+    }
+
+    private var minSize: CGSize {
+        showsPopover ? .init(width: 375, height: 500) : .zero
+    }
+
     // swiftlint:disable:next missing_docs
     public var body: some View {
         Button {
@@ -22,10 +30,10 @@ public struct CastButton: View {
         }
         .popover(isPresented: $isPresented) {
             NavigationStack {
-                CastDevicesView(cast: cast, showsCloseButton: horizontalSizeClass == .compact)
+                CastDevicesView(cast: cast, showsCloseButton: !showsPopover)
                     .font(nil)
             }
-            .frame(minWidth: 375, minHeight: 500)
+            .frame(minWidth: minSize.width, minHeight: minSize.height)
         }
     }
 
