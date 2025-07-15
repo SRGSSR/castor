@@ -22,19 +22,22 @@ struct PlayerMainView: View {
     var body: some View {
         VStack {
             if isPlaylistPresented {
-                HStack {
+                HStack(spacing: 20) {
                     visualView()
                     informationView()
                 }
                 .frame(height: 100)
+                .padding(.horizontal)
                 PlaylistView(player: player)
                         .transition(.move(edge: .bottom))
             }
             else {
                 Spacer()
                 visualView()
+                    .padding()
                 Spacer()
                 informationView()
+                    .padding(.horizontal)
             }
             ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
         }
@@ -70,7 +73,6 @@ struct PlayerMainView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal)
         .matchedGeometryEffect(id: GeometryEffectIdentifier.info, in: namespace)
     }
 
@@ -79,7 +81,6 @@ struct PlayerMainView: View {
             artworkImage()
             loadingIndicator()
         }
-        .padding()
         .matchedGeometryEffect(id: GeometryEffectIdentifier.artwork, in: namespace)
     }
 }

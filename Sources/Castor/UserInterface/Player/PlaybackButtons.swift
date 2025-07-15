@@ -20,7 +20,7 @@ struct PlaybackButtons: View {
     }
 
     private func buttons() -> some View {
-        HStack(spacing: 50) {
+        HStack(spacing: 40) {
             backwardButton()
             PlaybackButton(player: player)
             stopButton()
@@ -38,22 +38,28 @@ struct PlaybackButtons: View {
 
     @ViewBuilder
     private func backwardButton() -> some View {
-        if player.items.count <= 1 {
-            skipBackwardButton()
+        Group {
+            if player.items.count <= 1 {
+                skipBackwardButton()
+            }
+            else {
+                previousButton()
+            }
         }
-        else {
-            previousButton()
-        }
+        .font(.system(size: 30))
     }
 
     @ViewBuilder
     private func forwardButton() -> some View {
-        if player.items.count <= 1 {
-            skipForwardButton()
+        Group {
+            if player.items.count <= 1 {
+                skipForwardButton()
+            }
+            else {
+                nextButton()
+            }
         }
-        else {
-            nextButton()
-        }
+        .font(.system(size: 30))
     }
 
     private func skipBackwardButton() -> some View {

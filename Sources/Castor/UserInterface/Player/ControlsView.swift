@@ -13,11 +13,12 @@ struct ControlsView: View {
     var body: some View {
         VStack {
             SliderView(player: player)
-            PlaybackButtons(player: player)
-            SettingsButtons(player: player, isPlaylistPresented: $isPlaylistPresented)
+            VStack(spacing: 50) {
+                PlaybackButtons(player: player)
+                SettingsButtons(player: player, isPlaylistPresented: $isPlaylistPresented)
+            }
         }
-        .padding(.horizontal)
-        .padding(.bottom)
+        .padding()
         .frame(maxWidth: .infinity)
         .background(.background)
     }
