@@ -12,20 +12,18 @@ struct ExpandedCastPlayerView: View {
     @State private var isSelectionPresented = false
 
     var body: some View {
-        if let player = cast.player {
-            NavigationStack {
-                CastPlayerView(cast: cast)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            addButton()
-                        }
+        NavigationStack {
+            CastPlayerView(cast: cast)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        addButton()
                     }
-                    .toolbarBackground(.background, for: .navigationBar)
-            }
-            .sheet(isPresented: $isSelectionPresented) {
-                NavigationStack {
-                    PlaylistSelectionView(player: player)
                 }
+                .toolbarBackground(.background, for: .navigationBar)
+        }
+        .sheet(isPresented: $isSelectionPresented) {
+            NavigationStack {
+                PlaylistSelectionView(player: cast.player)
             }
         }
     }
