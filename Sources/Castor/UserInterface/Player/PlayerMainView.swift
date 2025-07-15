@@ -20,7 +20,7 @@ struct PlayerMainView: View {
     @Namespace var namespace
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             if isPlaylistPresented {
                 HStack(spacing: 20) {
                     visualView()
