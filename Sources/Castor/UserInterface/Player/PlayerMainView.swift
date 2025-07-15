@@ -18,30 +18,46 @@ struct PlayerMainView: View {
 
     @State private var isPlaylistPresented = false
     @Namespace var namespace
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
-        VStack(spacing: 0) {
-            if isPlaylistPresented {
-                HStack(spacing: 20) {
-                    visualView()
-                    informationView()
+        if verticalSizeClass == .compact {
+            HStack(spacing: 0) {
+                VStack {
+                    HStack(spacing: 20) {
+                        visualView()
+                        informationView()
+                    }
+                    .frame(height: 100)
+                    ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
                 }
-                .frame(height: 100)
-                .padding(.horizontal)
                 PlaylistView(player: player)
-                        .transition(.move(edge: .bottom))
             }
-            else {
-                Spacer()
-                visualView()
-                    .padding()
-                Spacer()
-                informationView()
-                    .padding(.horizontal)
-            }
-            ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
         }
-        .animation(.default, value: isPlaylistPresented)
+        else {
+            VStack(spacing: 0) {
+                if isPlaylistPresented {
+                    HStack(spacing: 20) {
+                        visualView()
+                        informationView()
+                    }
+                    .frame(height: 100)
+                    .padding([.horizontal, .top])
+                    PlaylistView(player: player)
+                        .transition(.move(edge: .bottom))
+                }
+                else {
+                    Spacer()
+                    visualView()
+                        .padding()
+                    Spacer()
+                    informationView()
+                        .padding(.horizontal)
+                }
+                ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
+            }
+            .animation(.default, value: isPlaylistPresented)
+        }
     }
 
     private func artworkImage() -> some View {

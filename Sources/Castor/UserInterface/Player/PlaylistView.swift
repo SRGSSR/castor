@@ -42,6 +42,7 @@ struct PlaylistView: View {
                 .listStyle(.plain)
                 .safeAreaInset(edge: .top, spacing: 0) {
                     Color(.systemBackground)
+                        .ignoresSafeArea(edges: .horizontal)
                         .frame(height: 40)
                         .overlay {
                             toolbar()

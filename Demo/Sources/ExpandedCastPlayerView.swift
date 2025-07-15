@@ -20,6 +20,7 @@ struct ExpandedCastPlayerView: View {
                             addButton()
                         }
                     }
+                    .toolbarBackground(.background, for: .navigationBar)
             }
             .sheet(isPresented: $isSelectionPresented) {
                 NavigationStack {
