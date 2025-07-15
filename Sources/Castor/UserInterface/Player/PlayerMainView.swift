@@ -33,8 +33,8 @@ struct PlayerMainView: View {
             else {
                 Spacer()
                 visualView()
-                informationView()
                 Spacer()
+                informationView()
             }
             ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
         }
