@@ -59,6 +59,7 @@ struct PlayerMainView: View {
 
     private func informationView() -> some View {
         VStack(alignment: .leading) {
+            LiveLabel(player: player)
             if let title = player.metadata?.title {
                 Text(title)
             }
