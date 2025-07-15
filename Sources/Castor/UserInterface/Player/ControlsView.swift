@@ -16,6 +16,8 @@ struct ControlsView: View {
             PlaybackButtons(player: player)
             SettingsButtons(player: player, isPlaylistPresented: $isPlaylistPresented)
         }
+        .padding(.horizontal)
+        .padding(.bottom)
         .frame(maxWidth: .infinity)
         .background(.background)
     }

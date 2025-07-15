@@ -70,6 +70,7 @@ struct PlayerMainView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal)
         .matchedGeometryEffect(id: GeometryEffectIdentifier.info, in: namespace)
     }
 
