@@ -48,16 +48,11 @@ struct PlaylistView: View {
 
     var body: some View {
         VStack {
-            if !player.items.isEmpty {
-                toolbar()
-                List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
-                    ItemCell(item: item)
-                }
-                .listStyle(.plain)
+            toolbar()
+            List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
+                ItemCell(item: item)
             }
-            else {
-                UnavailableView("No items", systemImage: "list.bullet")
-            }
+            .listStyle(.plain)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.linear, value: player.items)

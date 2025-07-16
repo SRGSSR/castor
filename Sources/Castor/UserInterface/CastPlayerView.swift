@@ -57,6 +57,11 @@ private struct _CastPlayerView: View {
                 ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
             }
             .animation(.default, value: isPlaylistPresented)
+            .onChange(of: player.items) { items in
+                if items.isEmpty {
+                    isPlaylistPresented = false
+                }
+            }
         }
     }
 

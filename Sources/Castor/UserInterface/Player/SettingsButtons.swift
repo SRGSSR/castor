@@ -8,7 +8,7 @@ import SwiftUI
 
 struct SettingsButtons: View {
     @EnvironmentObject private var cast: Cast
-    let player: CastPlayer
+    @ObservedObject var player: CastPlayer
     @Binding var isPlaylistPresented: Bool
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -32,6 +32,7 @@ struct SettingsButtons: View {
             } label: {
                 Image(systemName: isPlaylistPresented ? "list.bullet.circle.fill" : "list.bullet.circle")
             }
+            .disabled(player.items.isEmpty)
         }
     }
 }
