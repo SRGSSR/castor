@@ -49,6 +49,9 @@
     "LIVE" : {
 
     },
+    "Not Playing" : {
+
+    },
     "Off" : {
       "comment" : "Media selection option"
     },

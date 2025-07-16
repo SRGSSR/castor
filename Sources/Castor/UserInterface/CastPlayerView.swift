@@ -84,10 +84,7 @@ private struct _CastPlayerView: View {
     private func informationView() -> some View {
         VStack(alignment: .leading) {
             LiveLabel(player: player)
-            if let title = player.metadata?.title {
-                Text(title)
-                    .bold()
-            }
+            informationTitle()
             if let device {
                 Text("Connected to \(device.name ?? "receiver")")
                     .font(.subheadline)
@@ -104,6 +101,19 @@ private struct _CastPlayerView: View {
             loadingIndicator()
         }
         .matchedGeometryEffect(id: GeometryEffectIdentifier.artwork, in: namespace)
+    }
+
+    private func informationTitle() -> some View {
+        Group {
+            if player.items.isEmpty {
+                Text("Not Playing")
+                    .foregroundStyle(.secondary)
+            }
+            else {
+                Text(player.metadata?.title ?? "Untitled")
+            }
+        }
+        .bold()
     }
 }
 
