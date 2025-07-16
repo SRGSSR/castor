@@ -4,7 +4,7 @@
     "%g×" : {
       "comment" : "Speed multiplier"
     },
-    "All items in the playlist will be removed." : {
+    "All items in the playlist will be deleted." : {
 
     },
     "Audio" : {
@@ -37,6 +37,9 @@
     "Delete all" : {
 
     },
+    "Delete all Items" : {
+
+    },
     "description" : {
 
     },
@@ -51,6 +54,12 @@
     },
     "Playback Speed" : {
       "comment" : "Playback setting menu title"
+    },
+    "Repeat" : {
+
+    },
+    "Shuffle" : {
+
     },
     "Subtitles" : {
       "comment" : "Playback setting menu title"

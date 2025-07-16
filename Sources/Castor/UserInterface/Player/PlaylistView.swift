@@ -6,6 +6,11 @@
 
 import SwiftUI
 
+private enum ButtonStyle {
+    case large
+    case small
+}
+
 private struct ItemCell: View {
     @ObservedObject var item: CastPlayerItem
 
@@ -60,16 +65,23 @@ struct PlaylistView: View {
 
     private func toolbar() -> some View {
         managementButtons()
-            .frame(maxWidth: .infinity)
+            .buttonStyle(.bordered)
     }
 }
 
 private extension PlaylistView {
     func managementButtons() -> some View {
-        HStack(spacing: 30) {
-            repeatModeButton()
-            shuffleButton()
-            trashButton()
+        ViewThatFits {
+            HStack {
+                repeatModeButton(style: .large)
+                shuffleButton(style: .large)
+                trashButton(style: .large)
+            }
+            HStack {
+                repeatModeButton(style: .small)
+                shuffleButton(style: .small)
+                trashButton(style: .small)
+            }
         }
         .padding()
     }
@@ -97,30 +109,57 @@ private extension PlaylistView {
             player.repeatMode = .one
         }
     }
-
-    func repeatModeButton() -> some View {
-        Button(action: toggleRepeatMode) {
-            Image(systemName: repeatModeImageName)
-        }
-        .disabled(!player.isActive)
-    }
 }
 
 private extension PlaylistView {
-    func shuffleButton() -> some View {
+    func repeatModeButton(style: ButtonStyle) -> some View {
+        Button(action: toggleRepeatMode) {
+            Group {
+                switch style {
+                case .large:
+                    Label("Repeat", systemImage: repeatModeImageName)
+                        .fixedSize()
+                case .small:
+                    Image(systemName: repeatModeImageName)
+                }
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .disabled(!player.isActive)
+    }
+
+    func shuffleButton(style: ButtonStyle) -> some View {
         Button {
             player.items.shuffle()
         } label: {
-            Image(systemName: "shuffle")
+            Group {
+                switch style {
+                case .large:
+                    Label("Shuffle", systemImage: "shuffle")
+                        .fixedSize()
+                case .small:
+                    Image(systemName: "shuffle")
+                }
+            }
+            .frame(maxWidth: .infinity)
         }
         .disabled(player.items.isEmpty)
     }
 
-    func trashButton() -> some View {
+    func trashButton(style: ButtonStyle) -> some View {
         Button {
             isDeleteAllPresented.toggle()
         } label: {
-            Image(systemName: "trash")
+            Group {
+                switch style {
+                case .large:
+                    Label("Delete all", systemImage: "trash")
+                        .fixedSize()
+                case .small:
+                    Image(systemName: "trash")
+                }
+            }
+            .frame(maxWidth: .infinity)
         }
         .disabled(player.items.isEmpty)
         .confirmationDialog("All items in the playlist will be deleted.", isPresented: $isDeleteAllPresented, titleVisibility: .visible) {
