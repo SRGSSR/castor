@@ -10,11 +10,15 @@ import SwiftUI
 struct ExpandedCastPlayerView: View {
     @ObservedObject var cast: Cast
     @State private var isSelectionPresented = false
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             CastPlayerView(cast: cast)
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        closeButton()
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         addButton()
                     }
@@ -33,6 +37,14 @@ struct ExpandedCastPlayerView: View {
             isSelectionPresented.toggle()
         } label: {
             Image(systemName: "plus")
+        }
+    }
+
+    private func closeButton() -> some View {
+        Button {
+            dismiss()
+        } label: {
+            Text("Close")
         }
     }
 }
