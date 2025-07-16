@@ -14,8 +14,10 @@ struct SettingsButtons: View {
 
     var body: some View {
         HStack(spacing: 30) {
-            playlistButton()
-            Spacer()
+            if verticalSizeClass == .regular {
+                playlistButton()
+                Spacer()
+            }
             SettingsMenu(player: player)
             MuteButton(cast: cast)
             CastButton(cast: cast)
@@ -26,13 +28,11 @@ struct SettingsButtons: View {
 
     @ViewBuilder
     private func playlistButton() -> some View {
-        if verticalSizeClass == .regular {
-            Button {
-                isPlaylistPresented.toggle()
-            } label: {
-                Image(systemName: isPlaylistPresented ? "list.bullet.circle.fill" : "list.bullet.circle")
-            }
-            .disabled(player.items.isEmpty)
+        Button {
+            isPlaylistPresented.toggle()
+        } label: {
+            Image(systemName: isPlaylistPresented ? "list.bullet.circle.fill" : "list.bullet.circle")
         }
+        .disabled(player.items.isEmpty)
     }
 }
