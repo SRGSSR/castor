@@ -18,11 +18,11 @@ private struct ItemCell: View {
         HStack(spacing: 30) {
             artworkImage()
             Text(title)
+                .redacted(!item.isFetched)
             Spacer()
             disclosureImage()
         }
         .onAppear(perform: item.fetch)
-        .redacted(!item.isFetched)
     }
 
     private var title: String {
