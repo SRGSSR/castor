@@ -67,6 +67,9 @@ private struct _CastPlayerView: View {
 
     private func artworkImage() -> some View {
         ArtworkImage(url: player.metadata?.imageUrl())
+            .scaleEffect(player.shouldPlay ? 1 : 0.95)
+            .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
+            .animation(.default, value: player.shouldPlay)
     }
 
     private func loadingIndicator() -> some View {
