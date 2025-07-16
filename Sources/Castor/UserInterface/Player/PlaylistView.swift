@@ -39,6 +39,7 @@ private struct ItemCell: View {
 struct PlaylistView: View {
     @ObservedObject var player: CastPlayer
     @State private var isSelectionPresented = false
+    @State private var isDeleteAllPresented = false
 
     var body: some View {
         VStack {
@@ -117,10 +118,17 @@ private extension PlaylistView {
 
     func trashButton() -> some View {
         Button {
-            player.removeAllItems()
+            isDeleteAllPresented.toggle()
         } label: {
             Image(systemName: "trash")
         }
         .disabled(player.items.isEmpty)
+        .confirmationDialog("All items in the playlist will be deleted.", isPresented: $isDeleteAllPresented, titleVisibility: .visible) {
+            Button(role: .destructive) {
+                player.removeAllItems()
+            } label: {
+                Text("Delete all Items")
+            }
+        }
     }
 }

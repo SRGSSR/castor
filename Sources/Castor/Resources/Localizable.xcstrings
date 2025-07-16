@@ -4,6 +4,9 @@
     "%g×" : {
       "comment" : "Speed multiplier"
     },
+    "All items in the playlist will be removed." : {
+
+    },
     "Audio" : {
       "comment" : "Playback setting menu title"
     },
@@ -29,6 +32,9 @@
 
     },
     "Current position" : {
+
+    },
+    "Delete all" : {
 
     },
     "description" : {
