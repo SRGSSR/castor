@@ -127,8 +127,17 @@ public struct CastPlayerView: View {
             _CastPlayerView(player: player, device: cast.currentDevice)
         }
         else {
-            ProgressView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            VStack(spacing: 20) {
+                ProgressView()
+                if let deviceName = cast.currentDevice?.name {
+                    Text("Connecting to \(deviceName)")
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
