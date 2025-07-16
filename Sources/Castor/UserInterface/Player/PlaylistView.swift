@@ -11,8 +11,10 @@ private struct ItemCell: View {
 
     var body: some View {
         HStack(spacing: 30) {
-            image()
+            artworkImage()
             Text(title)
+            Spacer()
+            disclosureImage()
         }
         .onAppear(perform: item.fetch)
         .redacted(!item.isFetched)
@@ -23,9 +25,14 @@ private struct ItemCell: View {
         return item.metadata?.title ?? "Untitled"
     }
 
-    private func image() -> some View {
+    private func artworkImage() -> some View {
         ArtworkImage(url: item.metadata?.imageUrl())
             .frame(height: 45)
+    }
+
+    private func disclosureImage() -> some View {
+        Image(systemName: "line.3.horizontal")
+            .foregroundStyle(.secondary)
     }
 }
 
