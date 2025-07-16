@@ -13,13 +13,15 @@ struct SettingsButtons: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
-        HStack(spacing: 50) {
-            CastButton(cast: cast)
+        HStack(spacing: 30) {
             playlistButton()
+            Spacer()
             SettingsMenu(player: player)
             MuteButton(cast: cast)
+            CastButton(cast: cast)
         }
         .font(.system(size: 22))
+        .padding(.horizontal, 30)
     }
 
     @ViewBuilder
