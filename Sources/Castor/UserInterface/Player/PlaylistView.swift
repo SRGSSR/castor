@@ -34,20 +34,13 @@ struct PlaylistView: View {
     @State private var isSelectionPresented = false
 
     var body: some View {
-        ZStack {
+        VStack {
             if !player.items.isEmpty {
+                toolbar()
                 List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
                     ItemCell(item: item)
                 }
                 .listStyle(.plain)
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    Color(.systemBackground)
-                        .ignoresSafeArea(edges: .horizontal)
-                        .frame(height: 40)
-                        .overlay {
-                            toolbar()
-                        }
-                }
             }
             else {
                 UnavailableView("No items", systemImage: "list.bullet")
@@ -59,6 +52,7 @@ struct PlaylistView: View {
 
     private func toolbar() -> some View {
         managementButtons()
+            .frame(maxWidth: .infinity)
     }
 }
 
