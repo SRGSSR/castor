@@ -31,8 +31,12 @@ private struct _CastPlayerView: View {
                     Spacer()
                     ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
                 }
-                PlaylistView(player: player)
+                if !player.items.isEmpty {
+                    PlaylistView(player: player)
+                        .transition(.move(edge: .trailing))
+                }
             }
+            .animation(.default, value: player.items.isEmpty)
         }
         else {
             VStack(spacing: 0) {
