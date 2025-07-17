@@ -8,7 +8,7 @@ import SwiftUI
 
 private enum ButtonStyle {
     case large
-    case small
+    case compact
 }
 
 struct PlaylistView: View {
@@ -33,9 +33,9 @@ struct PlaylistView: View {
                 trashButton(style: .large)
             }
             HStack {
-                repeatModeButton(style: .small)
-                shuffleButton(style: .small)
-                trashButton(style: .small)
+                repeatModeButton(style: .compact)
+                shuffleButton(style: .compact)
+                trashButton(style: .compact)
             }
         }
         .buttonStyle(.bordered)
@@ -83,7 +83,7 @@ private extension PlaylistView {
                 case .large:
                     Label("Repeat", systemImage: repeatModeImageName)
                         .fixedSize()
-                case .small:
+                case .compact:
                     Image(systemName: repeatModeImageName)
                 }
             }
@@ -101,7 +101,7 @@ private extension PlaylistView {
                 case .large:
                     Label("Shuffle", systemImage: "shuffle")
                         .fixedSize()
-                case .small:
+                case .compact:
                     Image(systemName: "shuffle")
                 }
             }
@@ -119,7 +119,7 @@ private extension PlaylistView {
                 case .large:
                     Label("Delete all", systemImage: "trash")
                         .fixedSize()
-                case .small:
+                case .compact:
                     Image(systemName: "trash")
                 }
             }
