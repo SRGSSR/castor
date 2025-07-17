@@ -175,11 +175,8 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
             }
             else if let resumeState = castable?.castResumeState() {
                 player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+                delegate.castStartSession()
             }
-            else {
-                player.removeAllItems()
-            }
-            delegate.castStartSession()
         }
     }
 
@@ -199,16 +196,15 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        if let delegate, let resumeState = session.remoteMediaClient?.resumeState(with: delegate) {
+        if let delegate {
+            let resumeState = session.remoteMediaClient?.resumeState(with: delegate)
+
             if currentDevice == nil {
                 delegate.castEndSession(with: resumeState)
             }
             else {
                 targetResumeState = resumeState
             }
-        }
-        else {
-            delegate?.castEndSession(with: nil)
         }
     }
 
