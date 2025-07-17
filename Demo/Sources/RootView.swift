@@ -52,10 +52,10 @@ struct RootView: View {
             CastMiniPlayerView(cast: cast)
                 .padding(.horizontal)
                 .padding(.vertical, 8)
-                .accessibilityAddTraits(.isButton)
                 .onTapGesture {
-                    router.presented = .expandedPlayer(cast: cast)
+                    router.presented = .expandedCastPlayer(cast: cast)
                 }
+                .accessibilityAddTraits(.isButton)
                 .background(.thickMaterial)
                 .frame(height: 64)
         }

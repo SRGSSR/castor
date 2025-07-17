@@ -32,7 +32,7 @@ struct ExpandedCastPlayerView: View {
         }
     }
 
-    func addButton() -> some View {
+    private func addButton() -> some View {
         Button {
             isSelectionPresented.toggle()
         } label: {
