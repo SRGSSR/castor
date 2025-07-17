@@ -47,25 +47,15 @@ struct PlaylistView: View {
     @State private var isDeleteAllPresented = false
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             toolbar()
-            List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
-                ItemCell(item: item)
-            }
-            .listStyle(.plain)
+            list()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.linear, value: player.items)
     }
 
     private func toolbar() -> some View {
-        managementButtons()
-            .buttonStyle(.bordered)
-    }
-}
-
-private extension PlaylistView {
-    func managementButtons() -> some View {
         ViewThatFits {
             HStack {
                 repeatModeButton(style: .large)
@@ -78,7 +68,16 @@ private extension PlaylistView {
                 trashButton(style: .small)
             }
         }
+        .buttonStyle(.bordered)
         .padding()
+    }
+
+    private func list() -> some View {
+        List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
+            ItemCell(item: item)
+        }
+        .listStyle(.plain)
+        .applyInnerMask(height: 5)
     }
 }
 
@@ -163,6 +162,29 @@ private extension PlaylistView {
             } label: {
                 Text("Delete all Items")
             }
+        }
+    }
+}
+
+private extension View {
+    func applyInnerMask(height: CGFloat) -> some View {
+        safeAreaInset(edge: .top) {
+            Color.clear
+                .frame(height: height)
+        }
+        .safeAreaInset(edge: .bottom) {
+            Color.clear
+                .frame(height: height)
+        }
+        .overlay {
+            VStack {
+                LinearGradient(colors: [Color(.systemBackground), .clear], startPoint: .top, endPoint: .bottom)
+                    .frame(height: height)
+                Spacer()
+                LinearGradient(colors: [.clear, Color(.systemBackground)], startPoint: .top, endPoint: .bottom)
+                    .frame(height: height)
+            }
+            .ignoresSafeArea()
         }
     }
 }
