@@ -9,7 +9,7 @@ import SwiftUI
 /// A view that displays a mute icon reflecting the current volume state.
 ///
 /// > Warning: Resize using ``font(_:)``
-public struct MuteIcon: View {
+public struct VolumeIcon: View {
     @ObservedObject var cast: Cast
 
     private var minimumValueImageName: String {

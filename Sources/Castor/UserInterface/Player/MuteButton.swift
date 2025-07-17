@@ -15,7 +15,7 @@ public struct MuteButton: View {
         Button {
             cast.isMuted.toggle()
         } label: {
-            MuteIcon(cast: cast)
+            VolumeIcon(cast: cast)
         }
         .disabled(!cast.canMute)
     }
