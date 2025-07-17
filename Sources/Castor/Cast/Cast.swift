@@ -136,6 +136,7 @@ public final class Cast: NSObject, ObservableObject {
             "Initialize the Cast context by following instructions at https://developers.google.com/cast/docs/ios_sender/integrate"
         )
         context.sessionManager.publisher(for: \.connectionState)
+            .removeDuplicates()
             .assign(to: &$connectionState)
     }
 
