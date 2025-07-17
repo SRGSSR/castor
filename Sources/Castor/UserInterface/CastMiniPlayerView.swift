@@ -24,7 +24,7 @@ private struct _CastMiniPlayerView: View {
 
     @ViewBuilder
     private func artwork(with metadata: CastMetadata?) -> some View {
-        ArtworkImage(url: metadata?.imageUrl())
+        ArtworkImage(url: metadata?.imageUrl(matching: .init(type: .miniController)))
     }
 
     private func infoView(with metadata: CastMetadata?) -> some View {

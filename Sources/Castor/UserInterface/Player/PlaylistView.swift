@@ -31,7 +31,7 @@ private struct ItemCell: View {
     }
 
     private func artworkImage() -> some View {
-        ArtworkImage(url: item.metadata?.imageUrl())
+        ArtworkImage(url: item.metadata?.imageUrl(matching: .init(type: .custom, size: .init(width: 45, height: 45))))
             .shadow(color: .primary.opacity(0.15), radius: 6, y: 3)
             .frame(height: 45)
     }
