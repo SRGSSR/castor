@@ -4,7 +4,6 @@
 //  License information is available from the LICENSE file.
 //
 
-import Castor
 import SwiftUI
 
 struct SettingsMenu: View {
@@ -15,7 +14,6 @@ struct SettingsMenu: View {
             player.standardSettingsMenu()
         } label: {
             Image(systemName: "gearshape.fill")
-                .font(.system(size: 20))
         }
         .menuOrder(.fixed)
         .disabled(!player.isActive)

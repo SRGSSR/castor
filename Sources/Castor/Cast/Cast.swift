@@ -136,6 +136,7 @@ public final class Cast: NSObject, ObservableObject {
             "Initialize the Cast context by following instructions at https://developers.google.com/cast/docs/ios_sender/integrate"
         )
         context.sessionManager.publisher(for: \.connectionState)
+            .removeDuplicates()
             .assign(to: &$connectionState)
     }
 
@@ -174,11 +175,8 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
             }
             else if let resumeState = castable?.castResumeState() {
                 player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+                delegate.castStartSession()
             }
-            else {
-                player.removeAllItems()
-            }
-            delegate.castStartSession()
         }
     }
 
@@ -198,7 +196,9 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        if let delegate, let resumeState = session.remoteMediaClient?.resumeState(with: delegate) {
+        if let delegate {
+            let resumeState = session.remoteMediaClient?.resumeState(with: delegate)
+
             if currentDevice == nil {
                 delegate.castEndSession(with: resumeState)
             }

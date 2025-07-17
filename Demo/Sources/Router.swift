@@ -9,26 +9,32 @@ import Castor
 import Foundation
 import SwiftUI
 
-class Router: ObservableObject {
+final class Router: ObservableObject {
     @Published var presented: Destination?
 }
 
 extension Router {
     enum Destination: Identifiable, Hashable {
         case player(content: PlayerContent?)
+        case expandedCastPlayer(cast: Cast)
 
         var id: String {
             switch self {
             case .player:
                 "player"
+            case .expandedCastPlayer:
+                "expandedCastPlayer"
             }
         }
 
         @MainActor
+        @ViewBuilder
         func view() -> some View {
             switch self {
             case let .player(content: content):
                 PlayerView(content: content)
+            case let .expandedCastPlayer(cast: cast):
+                ExpandedCastPlayerView(cast: cast)
             }
         }
     }
@@ -36,13 +42,15 @@ extension Router {
 
 extension Router: CastDelegate {
     func castStartSession() {
-        presented = nil
+        if case .player = presented {
+            presented = nil
+        }
     }
 
-    func castEndSession(with state: CastResumeState) {
-        let medias = state.assets.compactMap(Media.init(from:))
-        let time = state.time.isValid ? state.time : .zero
-        presented = .player(content: .init(medias: medias, startIndex: state.index, startTime: time))
+    func castEndSession(with state: CastResumeState?) {
+        if case .expandedCastPlayer = presented {
+            presented = nil
+        }
     }
 
     func castAsset(from information: CastMediaInformation) -> CastAsset? {

@@ -43,7 +43,7 @@ final class PlayerViewModel {
 
 extension PlayerViewModel: Castable {
     func castResumeState() -> CastResumeState? {
-        .init(assets: castAssets(), index: currentIndex() ?? 0, time: time())
+        .init(assets: castAssets(), index: currentIndex(), time: time())
     }
 
     private func castAssets() -> [CastAsset] {

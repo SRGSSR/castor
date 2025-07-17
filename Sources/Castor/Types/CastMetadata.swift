@@ -8,14 +8,15 @@ import GoogleCast
 
 /// Metadata associated to an item.
 public struct CastMetadata {
-    let rawMetadata: GCKMediaMetadata?
+    let rawMetadata: GCKMediaMetadata
 
     /// The content title.
     public var title: String? {
-        rawMetadata?.string(forKey: kGCKMetadataKeyTitle)
+        rawMetadata.string(forKey: kGCKMetadataKeyTitle)
     }
 
-    init(rawMetadata: GCKMediaMetadata?) {
+    init?(rawMetadata: GCKMediaMetadata?) {
+        guard let rawMetadata else { return nil }
         self.rawMetadata = rawMetadata
     }
 
@@ -27,11 +28,11 @@ public struct CastMetadata {
     public init(title: String?, images: [CastImage] = []) {
         rawMetadata = GCKMediaMetadata()
         if let title {
-            rawMetadata?.setString(title, forKey: kGCKMetadataKeyTitle)
+            rawMetadata.setString(title, forKey: kGCKMetadataKeyTitle)
         }
         images.forEach { image in
             guard let rawImage = image.rawImage else { return }
-            rawMetadata?.addImage(rawImage)
+            rawMetadata.addImage(rawImage)
         }
     }
 
@@ -56,7 +57,6 @@ public struct CastMetadata {
     /// documentation](https://developers.google.com/cast/docs/ios_sender/advanced#override_image_selection_and_caching)
     /// for more information.
     public func imageUrl(matching hints: CastImageHints? = nil) -> URL? {
-        guard let rawMetadata else { return nil }
         if let hints {
             return GCKCastContext.sharedInstance().imagePicker?.getImageWith(hints.rawImageHints, from: rawMetadata)?.url
         }

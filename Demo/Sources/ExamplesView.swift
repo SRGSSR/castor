@@ -13,21 +13,14 @@ struct ExamplesView: View {
     @EnvironmentObject private var router: Router
 
     var body: some View {
-        VStack(spacing: 0) {
-            List {
-                section("HLS streams", medias: kHlsUrlMedias)
-                section("MP3 streams ", medias: kMP3UrlMedias)
-                if cast.player != nil {
-                    section("DASH streams", medias: kDashUrlMedias)
-                }
-                if UserDefaults.standard.receiver.isSupportingUrns {
-                    section("URN-based streams", medias: kUrnMedias)
-                }
-            }
+        List {
+            section("HLS streams", medias: kHlsUrlMedias)
+            section("MP3 streams ", medias: kMP3UrlMedias)
             if cast.player != nil {
-                CastMiniMediaControlsView()
-                    .frame(height: 64)
-                    .transition(.move(edge: .bottom))
+                section("DASH streams", medias: kDashUrlMedias)
+            }
+            if UserDefaults.standard.receiver.isSupportingUrns {
+                section("URN-based streams", medias: kUrnMedias)
             }
         }
         .animation(.linear(duration: 0.2), value: cast.player)
@@ -35,9 +28,6 @@ struct ExamplesView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 CastButton(cast: cast)
             }
-        }
-        .sheet(item: $router.presented) { destination in
-            destination.view()
         }
         .navigationTitle("Examples")
     }
@@ -47,7 +37,7 @@ struct ExamplesView: View {
             if let player = cast.player {
                 player.loadItem(from: media.asset())
             }
-            else {
+            else if cast.connectionState == .disconnected {
                 router.presented = .player(content: .init(medias: [media]))
             }
         } label: {

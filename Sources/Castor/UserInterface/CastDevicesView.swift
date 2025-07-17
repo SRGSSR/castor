@@ -12,16 +12,6 @@ struct CastDevicesView: View {
     let showsCloseButton: Bool
     @Environment(\.dismiss) private var dismiss
 
-    private var minimumValueImageName: String {
-        let volume = volume.wrappedValue
-        if volume == 0 {
-            return "speaker.slash.fill"
-        }
-        else {
-            return "speaker.wave.\(Int(ceilf(volume * 3))).fill"
-        }
-    }
-
     private var volume: Binding<Float> {
         .init {
             cast.isMuted ? 0 : cast.volume
@@ -125,18 +115,9 @@ struct CastDevicesView: View {
         Slider(value: volume, in: cast.volumeRange) {
             Text("Volume")
         } minimumValueLabel: {
-            ZStack {
-                // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
-                ZStack {
-                    Image(systemName: "speaker.slash.fill")
-                    Image(systemName: "speaker.wave.3.fill")
-                }
-                .hidden()
-                Image(systemName: minimumValueImageName)
-                    .onTapGesture { cast.isMuted.toggle() }
-                    .accessibilityAddTraits(.isButton)
-            }
-            .toAnyView()
+            MuteButton(cast: cast)
+                .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
+                .toAnyView()
         } maximumValueLabel: {
             EmptyView()
                 .toAnyView()
@@ -153,11 +134,11 @@ struct CastDevicesView: View {
     }
 
     private func disconnectButton() -> some View {
-        Text("Disconnect")
-            .foregroundStyle(Color.accentColor)
-            .onTapGesture(perform: cast.endSession)
-            .accessibilityAddTraits(.isButton)
-            .padding(.bottom)
+        Button(action: cast.endSession) {
+            Text("Disconnect")
+        }
+        .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
+        .padding(.bottom)
     }
 
     private func descriptionView(for device: CastDevice) -> some View {

@@ -12,7 +12,7 @@ public struct CastAsset {
     public let kind: Kind
 
     /// The asset metadata.
-    public let metadata: CastMetadata
+    public let metadata: CastMetadata?
 
     private let configuration: CastPlaybackConfiguration
 
@@ -23,7 +23,7 @@ public struct CastAsset {
     ///   - metadata: The metadata associated with the asset.
     ///   - configuration: The playback configuration.
     /// - Returns: The asset.
-    public static func simple(url: URL, metadata: CastMetadata, configuration: CastPlaybackConfiguration = .init()) -> Self {
+    public static func simple(url: URL, metadata: CastMetadata?, configuration: CastPlaybackConfiguration = .init()) -> Self {
         .init(kind: .simple(url), metadata: metadata, configuration: configuration)
     }
 
@@ -34,7 +34,7 @@ public struct CastAsset {
     ///   - metadata: The metadata associated with the asset.
     ///   - configuration: The playback configuration.
     /// - Returns: The asset.
-    public static func custom(identifier: String, metadata: CastMetadata, configuration: CastPlaybackConfiguration = .init()) -> Self {
+    public static func custom(identifier: String, metadata: CastMetadata?, configuration: CastPlaybackConfiguration = .init()) -> Self {
         .init(kind: .custom(identifier), metadata: metadata, configuration: configuration)
     }
 
@@ -47,7 +47,7 @@ public struct CastAsset {
 
     private func mediaInformation() -> GCKMediaInformation {
         let builder = kind.mediaInformationBuilder()
-        builder.metadata = metadata.rawMetadata
+        builder.metadata = metadata?.rawMetadata
         builder.streamType = .unknown
         return builder.build()
     }

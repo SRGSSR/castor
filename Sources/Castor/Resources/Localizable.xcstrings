@@ -4,6 +4,9 @@
     "%g×" : {
       "comment" : "Speed multiplier"
     },
+    "All items in the playlist will be deleted." : {
+
+    },
     "Audio" : {
       "comment" : "Playback setting menu title"
     },
@@ -13,13 +16,31 @@
     "Cast to" : {
 
     },
+    "Casting on %@" : {
+
+    },
     "Check your Wi-Fi network and make sure Local Network Access is on." : {
 
     },
     "Close" : {
 
     },
+    "Connected to %@" : {
+
+    },
+    "Connecting to %@" : {
+
+    },
     "Current device" : {
+
+    },
+    "Current position" : {
+
+    },
+    "Delete all" : {
+
+    },
+    "Delete all Items" : {
 
     },
     "description" : {
@@ -28,11 +49,23 @@
     "Disconnect" : {
 
     },
+    "LIVE" : {
+
+    },
+    "Not Playing" : {
+
+    },
     "Off" : {
       "comment" : "Media selection option"
     },
     "Playback Speed" : {
       "comment" : "Playback setting menu title"
+    },
+    "Repeat" : {
+
+    },
+    "Shuffle" : {
+
     },
     "Subtitles" : {
       "comment" : "Playback setting menu title"

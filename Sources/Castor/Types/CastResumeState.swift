@@ -25,8 +25,10 @@ public struct CastResumeState {
     ///   - assets: The assets.
     ///   - index: The current index.
     ///   - time: The current time. Use `.invalid` for the default playback position.
-    public init?(assets: [CastAsset], index: Int, time: CMTime) {
-        guard assets.indices.contains(index) else { return nil }
+    ///
+    /// Fails if no valid index into the asset list is provided.
+    public init?(assets: [CastAsset], index: Int?, time: CMTime) {
+        guard let index, assets.indices.contains(index) else { return nil }
         self.assets = assets
         self.index = index
         self.time = time

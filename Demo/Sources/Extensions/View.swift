@@ -22,8 +22,4 @@ extension View {
     func pulseSymbolEffect17() -> some View {
         modifier(PulseSymbolEffect17())
     }
-
-    func redactedIfNil(_ object: Any?) -> some View {
-        redacted(reason: object == nil ? .placeholder : .init())
-    }
 }

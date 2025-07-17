@@ -25,8 +25,8 @@ struct Media: Hashable, Identifiable {
     }
 
     init(from asset: CastAsset) {
-        let title = asset.metadata.title ?? "Untitled"
-        let imageUrl = asset.metadata.imageUrl()
+        let title = asset.metadata?.title ?? "Untitled"
+        let imageUrl = asset.metadata?.imageUrl()
         switch asset.kind {
         case let .simple(url):
             self.init(title: title, imageUrl: imageUrl, type: .url(url))

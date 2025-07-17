@@ -5,7 +5,6 @@
 //
 
 import AVFAudio
-import Castor
 import Combine
 import GoogleCast
 @preconcurrency import ShowTime
@@ -44,35 +43,10 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct DemoApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    @StateObject private var cast = Cast(configuration: .standard)
-    @StateObject private var router = Router()
 
     var body: some Scene {
         WindowGroup {
-            TabView {
-                NavigationStack {
-                    ExamplesView()
-                }
-                .tabItem {
-                    Label("Examples", systemImage: "film.fill")
-                }
-                NavigationStack {
-                    CastPlayerView()
-                }
-                .tabItem {
-                    Label("Player", systemImage: "play.rectangle.fill")
-                }
-                NavigationStack {
-                    SettingsView()
-                }
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape.fill")
-                }
-            }
-            // TODO: Starting with iOS 17 this can be moved on the `WindowGroup` without the need for a local `@State`.
-            .environmentObject(cast)
-            .environmentObject(router)
-            .supportsCast(cast, with: router)
+            RootView()
         }
     }
 }

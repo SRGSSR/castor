@@ -12,7 +12,7 @@ public protocol CastDelegate: AnyObject {
     /// Called when the cast session is being stopped.
     /// 
     /// - Parameter state: The state right before the cast session ends.
-    func castEndSession(with state: CastResumeState)
+    func castEndSession(with state: CastResumeState?)
 
     /// Provides an asset based on media information.
     ///

@@ -8,16 +8,19 @@ import CoreMedia
 import GoogleCast
 
 extension GCKRemoteMediaClient {
+    private static func resumeItems(from mediaStatus: GCKMediaStatus, with delegate: CastDelegate) -> [CastResumeItem] {
+        mediaStatus.items().compactMap { CastResumeItem(from: $0, with: delegate) }
+    }
+
     func canMakeRequest() -> Bool {
         mediaStatus?.isConnected == true
     }
 
     func resumeState(with delegate: CastDelegate) -> CastResumeState? {
-        guard let mediaStatus, let currentIndex = mediaStatus.currentIndex() else {
-            return nil
-        }
-        let assets = mediaStatus.items().compactMap { delegate.castAsset(from: .init(rawMediaInformation: $0.mediaInformation)) }
-        return CastResumeState(assets: assets, index: currentIndex, time: time() - seekableTimeRange().start)
+        guard let mediaStatus else { return nil }
+        let resumeItems = Self.resumeItems(from: mediaStatus, with: delegate)
+        let index = resumeItems.firstIndex { $0.item.itemID == mediaStatus.currentItemID }
+        return CastResumeState(assets: resumeItems.map(\.asset), index: index, time: time() - seekableTimeRange().start)
     }
 }
 
