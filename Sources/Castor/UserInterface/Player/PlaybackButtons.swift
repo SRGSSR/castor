@@ -28,7 +28,6 @@ struct PlaybackButtons: View {
         }
     }
 
-    @ViewBuilder
     private func backwardButton() -> some View {
         Group {
             switch layout {
@@ -41,7 +40,6 @@ struct PlaybackButtons: View {
         .font(.system(size: 30))
     }
 
-    @ViewBuilder
     private func forwardButton() -> some View {
         Group {
             switch layout {
