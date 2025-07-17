@@ -20,51 +20,53 @@ private struct _CastPlayerView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
-        if verticalSizeClass == .compact {
-            HStack(spacing: 0) {
-                VStack {
-                    HStack(spacing: 20) {
-                        visualView()
-                        informationView()
+        Group {
+            if verticalSizeClass == .compact {
+                HStack(spacing: 0) {
+                    VStack {
+                        HStack(spacing: 20) {
+                            visualView()
+                            informationView()
+                        }
+                        .frame(height: 100)
+                        Spacer()
+                        ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
                     }
-                    .frame(height: 100)
-                    Spacer()
+                    if !player.items.isEmpty {
+                        PlaylistView(player: player)
+                            .transition(.move(edge: .trailing))
+                    }
+                }
+                .animation(.default, value: player.items.isEmpty)
+            }
+            else {
+                VStack(spacing: 0) {
+                    if isPlaylistPresented {
+                        HStack(spacing: 20) {
+                            visualView()
+                            informationView()
+                        }
+                        .frame(height: 100)
+                        .padding([.horizontal, .top])
+                        PlaylistView(player: player)
+                            .transition(.move(edge: .bottom))
+                    }
+                    else {
+                        Spacer()
+                        visualView()
+                            .padding()
+                        Spacer()
+                        informationView()
+                            .padding(.horizontal)
+                    }
                     ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
                 }
-                if !player.items.isEmpty {
-                    PlaylistView(player: player)
-                        .transition(.move(edge: .trailing))
-                }
+                .animation(.default, value: isPlaylistPresented)
             }
-            .animation(.default, value: player.items.isEmpty)
         }
-        else {
-            VStack(spacing: 0) {
-                if isPlaylistPresented {
-                    HStack(spacing: 20) {
-                        visualView()
-                        informationView()
-                    }
-                    .frame(height: 100)
-                    .padding([.horizontal, .top])
-                    PlaylistView(player: player)
-                        .transition(.move(edge: .bottom))
-                }
-                else {
-                    Spacer()
-                    visualView()
-                        .padding()
-                    Spacer()
-                    informationView()
-                        .padding(.horizontal)
-                }
-                ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
-            }
-            .animation(.default, value: isPlaylistPresented)
-            .onChange(of: player.items) { items in
-                if items.isEmpty {
-                    isPlaylistPresented = false
-                }
+        .onChange(of: player.items) { items in
+            if items.isEmpty {
+                isPlaylistPresented = false
             }
         }
     }
