@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-struct ResumeItem {
+struct CastResumeItem {
     let item: GCKMediaQueueItem
     let asset: CastAsset
 
