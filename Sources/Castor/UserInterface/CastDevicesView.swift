@@ -116,7 +116,7 @@ struct CastDevicesView: View {
             Text("Volume")
         } minimumValueLabel: {
             MuteButton(cast: cast)
-                .buttonStyle(.borderless)
+                .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
                 .toAnyView()
         } maximumValueLabel: {
             EmptyView()
@@ -134,12 +134,10 @@ struct CastDevicesView: View {
     }
 
     private func disconnectButton() -> some View {
-        Button {
-            cast.endSession()
-        } label: {
+        Button(action: cast.endSession) {
             Text("Disconnect")
         }
-        .buttonStyle(.borderless)
+        .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
         .padding(.bottom)
     }
 
