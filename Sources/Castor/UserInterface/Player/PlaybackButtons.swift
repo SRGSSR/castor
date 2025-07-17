@@ -6,11 +6,6 @@
 
 import SwiftUI
 
-enum PlaybackButtonsLayout {
-    case navigation
-    case skip
-}
-
 struct PlaybackButtons: View {
     @EnvironmentObject private var cast: Cast
     @ObservedObject var player: CastPlayer
