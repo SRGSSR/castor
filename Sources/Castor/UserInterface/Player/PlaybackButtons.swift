@@ -75,14 +75,14 @@ struct PlaybackButtons: View {
 
     private func previousButton() -> some View {
         Button(action: player.returnToPrevious) {
-            Image(systemName: "backward.fill")
+            Image(systemName: "backward.end.fill")
         }
         .disabled(!player.canReturnToPrevious())
     }
 
     private func nextButton() -> some View {
         Button(action: player.advanceToNext) {
-            Image(systemName: "forward.fill")
+            Image(systemName: "forward.end.fill")
         }
         .disabled(!player.canAdvanceToNext())
     }
@@ -90,8 +90,8 @@ struct PlaybackButtons: View {
     private func largestShape() -> some View {
         // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
         ZStack {
-            Image(systemName: "backward.fill")
-            Image(systemName: "forward.fill")
+            Image(systemName: "backward.end.fill")
+            Image(systemName: "forward.end.fill")
             Image(systemName: "gobackward.minus")
             Image(systemName: "gobackward.plus")
         }
