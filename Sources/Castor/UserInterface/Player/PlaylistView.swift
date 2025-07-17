@@ -22,7 +22,7 @@ struct PlaylistView: View {
             list()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .animation(.linear, value: player.items)
+        .animation(.default, value: player.items)
     }
 
     private func toolbar() -> some View {
