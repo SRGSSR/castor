@@ -45,10 +45,15 @@ extension Router: CastDelegate {
         presented = nil
     }
 
-    func castEndSession(with state: CastResumeState) {
-        let medias = state.assets.map(Media.init)
-        let time = state.time.isValid ? state.time : .zero
-        presented = .player(content: .init(medias: medias, startIndex: state.index, startTime: time))
+    func castEndSession(with state: CastResumeState?) {
+        if let state {
+            let medias = state.assets.map(Media.init)
+            let time = state.time.isValid ? state.time : .zero
+            presented = .player(content: .init(medias: medias, startIndex: state.index, startTime: time))
+        }
+        else {
+            presented = nil
+        }
     }
 
     func castAsset(from information: CastMediaInformation) -> CastAsset? {

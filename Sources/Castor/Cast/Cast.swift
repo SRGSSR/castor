@@ -207,6 +207,9 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
                 targetResumeState = resumeState
             }
         }
+        else {
+            delegate?.castEndSession(with: nil)
+        }
     }
 
     // swiftlint:disable:next missing_docs
