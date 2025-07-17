@@ -20,6 +20,7 @@ private struct _CastPlayerView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
+        // swiftlint:disable:next closure_body_length
         Group {
             if verticalSizeClass == .compact {
                 HStack(spacing: 0) {
