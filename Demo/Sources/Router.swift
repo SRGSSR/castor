@@ -42,16 +42,13 @@ extension Router {
 
 extension Router: CastDelegate {
     func castStartSession() {
-        presented = nil
+        if case .player = presented {
+            presented = nil
+        }
     }
 
     func castEndSession(with state: CastResumeState?) {
-        if let state {
-            let medias = state.assets.map(Media.init)
-            let time = state.time.isValid ? state.time : .zero
-            presented = .player(content: .init(medias: medias, startIndex: state.index, startTime: time))
-        }
-        else {
+        if case .expandedPlayer = presented {
             presented = nil
         }
     }
