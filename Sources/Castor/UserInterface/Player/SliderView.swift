@@ -42,7 +42,7 @@ private extension SliderView {
 
     func skipToDefaultButton() -> some View {
         Button(action: player.skipToDefault) {
-            Image(systemName: "forward.end.fill")
+            LiveLabel(player: player)
         }
         .disabled(!player.canSkipToDefault())
     }

@@ -86,7 +86,6 @@ private struct _CastPlayerView: View {
 
     private func informationView() -> some View {
         VStack(alignment: .leading) {
-            LiveLabel(player: player)
             informationTitle()
             if let device {
                 Text("Connected to \(device.name ?? "receiver")")
