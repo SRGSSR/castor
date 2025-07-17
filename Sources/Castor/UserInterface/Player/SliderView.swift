@@ -15,9 +15,9 @@ struct SliderView: View {
         HStack {
             if progressTracker.isProgressAvailable {
                 slider()
-                if player.streamType == .live {
-                    skipToDefaultButton()
-                }
+            }
+            if player.streamType == .live {
+                skipToDefaultButton()
             }
         }
         .bind(progressTracker, to: player)
