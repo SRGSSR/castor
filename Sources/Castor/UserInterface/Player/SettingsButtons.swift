@@ -26,7 +26,6 @@ struct SettingsButtons: View {
         .padding(.horizontal, 30)
     }
 
-    @ViewBuilder
     private func playlistButton() -> some View {
         Button {
             isPlaylistPresented.toggle()
