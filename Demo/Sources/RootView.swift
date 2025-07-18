@@ -14,6 +14,7 @@ struct RootView: View {
     var body: some View {
         TabView {
             examplesTab()
+            unifiedPlayerTab()
             settingsTab()
         }
         .sheet(item: $router.presented) { destination in
@@ -34,6 +35,15 @@ struct RootView: View {
         }
         .tabItem {
             Label("Examples", systemImage: "film.fill")
+        }
+    }
+
+    private func unifiedPlayerTab() -> some View {
+        NavigationStack {
+            EmptyView()
+        }
+        .tabItem {
+            Label("Player", systemImage: "play.rectangle")
         }
     }
 
