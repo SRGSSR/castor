@@ -4,10 +4,14 @@
 //  License information is available from the LICENSE file.
 //
 
+import PillarboxPlayer
 import SwiftUI
 
-struct UnifiedPlayerView: View {
+struct LocalPlayer: View {
+    let player: Player
+
     var body: some View {
-        EmptyView()
+        VideoView(player: player)
+            .onAppear(perform: player.play)
     }
 }
