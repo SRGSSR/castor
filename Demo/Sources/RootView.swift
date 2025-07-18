@@ -40,7 +40,7 @@ struct RootView: View {
 
     private func unifiedPlayerTab() -> some View {
         NavigationStack {
-            EmptyView()
+            UnifiedPlayerView()
         }
         .tabItem {
             Label("Player", systemImage: "play.rectangle")
