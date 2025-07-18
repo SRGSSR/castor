@@ -10,7 +10,13 @@ import SwiftUI
 
 struct UnifiedPlayerView: View {
     @EnvironmentObject private var cast: Cast
-    @StateObject private var player = Player()
+    @StateObject private var localPlayer = Player()
+    private var remotePlayer: CastPlayer? {
+        guard [.connected, .connecting].contains(cast.connectionState) else { return nil }
+        return cast.player
+    }
+
+    @StateObject private var viewModel = UnifiedPlayerViewModel()
 
     var body: some View {
         ZStack {
@@ -22,25 +28,26 @@ struct UnifiedPlayerView: View {
                 CastButton(cast: cast)
             }
         }
+        .supportsCast(cast, with: viewModel)
     }
 
     @ViewBuilder
     private func backgroundLayer() -> some View {
-        if let player = cast.player, [.connected, .connecting].contains(cast.connectionState) {
-            RemotePlayer(player: player)
+        if let remotePlayer {
+            RemotePlayer(player: remotePlayer)
         }
         else {
-            LocalPlayer(player: player)
+            LocalPlayer(player: localPlayer)
         }
     }
 
     @ViewBuilder
     private func foregroundLayer() -> some View {
-        if let castPlayer = cast.player {
-            ControlsView(unifiedPlayer: castPlayer)
+        if let remotePlayer {
+            ControlsView(unifiedPlayer: remotePlayer)
         }
         else {
-            ControlsView(unifiedPlayer: player)
+            ControlsView(unifiedPlayer: localPlayer)
         }
     }
 }
