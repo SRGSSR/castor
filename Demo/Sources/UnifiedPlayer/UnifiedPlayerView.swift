@@ -10,18 +10,16 @@ import SwiftUI
 
 struct UnifiedPlayerView: View {
     @EnvironmentObject private var cast: Cast
-    @StateObject private var localPlayer = Player()
-    private var remotePlayer: CastPlayer? {
-        guard [.connected, .connecting].contains(cast.connectionState) else { return nil }
-        return cast.player
-    }
-
-    @StateObject private var viewModel = UnifiedPlayerViewModel()
+    @StateObject private var viewModel = UnifiedPlayerViewModel(medias: kUrnMedias.map { .init(media: $0) })
 
     var body: some View {
-        ZStack {
-            backgroundLayer()
-            foregroundLayer()
+        Group {
+            if let remotePlayer = cast.player {
+                UnifiedPlayerRemoteView(player: remotePlayer)
+            }
+            else {
+                UnifiedPlayerLocalView(player: viewModel.localPlayer, viewModel: viewModel)
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -29,25 +27,27 @@ struct UnifiedPlayerView: View {
             }
         }
         .supportsCast(cast, with: viewModel)
-    }
-
-    @ViewBuilder
-    private func backgroundLayer() -> some View {
-        if let remotePlayer {
-            RemotePlayer(player: remotePlayer)
+        .makeCastable(viewModel, with: cast)
+        .onChange(of: cast.player) { remotePlayer in
+            viewModel.bind(remotePlayer: remotePlayer)
         }
-        else {
-            LocalPlayer(player: localPlayer)
+        .onAppear {
+            viewModel.bind(remotePlayer: cast.player)
+            initialPlayersLoading()
         }
     }
 
-    @ViewBuilder
-    private func foregroundLayer() -> some View {
-        if let remotePlayer {
-            ControlsView(unifiedPlayer: remotePlayer)
+    func initialPlayersLoading() {
+        if let remotePlayer = cast.player {
+            if remotePlayer.items.isEmpty {
+                remotePlayer.loadItems(from: viewModel.localMedias.map { $0.media.asset() })
+                remotePlayer.play()
+            }
         }
-        else {
-            ControlsView(unifiedPlayer: localPlayer)
+        else if viewModel.localPlayer.items.isEmpty {
+            let content = PlayerContent(medias: viewModel.localMedias.map(\.media))
+            viewModel.localPlayer.items = content?.items() ?? []
+            viewModel.localPlayer.play()
         }
     }
 }

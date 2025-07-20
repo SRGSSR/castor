@@ -6,6 +6,7 @@
 
 import Castor
 import Foundation
+import PillarboxPlayer
 
 struct Media: Hashable, Identifiable {
     enum `Type`: Hashable {

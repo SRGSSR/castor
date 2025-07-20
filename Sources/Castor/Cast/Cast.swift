@@ -177,6 +177,9 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
                 player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
                 delegate.castStartSession()
             }
+            else {
+                delegate.castStartSession()
+            }
         }
     }
 
