@@ -10,30 +10,34 @@ import Foundation
 import PillarboxPlayer
 
 class UnifiedPlayerViewModel: ObservableObject {
-    @Published var localMedias: [LocalMedia] = [] {
+    @Published var medias: [Media] {
         didSet {
-            localPlayer.items = localMedias.map(\.item)
+            localPlayer.items = playerContent.items()
         }
     }
 
-    @Published var currentLocalMedia: LocalMedia? {
+    @Published var currentMedia: Media? {
         didSet {
-            localPlayer.currentItem = currentLocalMedia?.item
+            if let index = medias.firstIndex(where: { $0 == currentMedia }) {
+                localPlayer.currentItem = localPlayer.items[safeIndex: index]
+            }
         }
     }
 
     let localPlayer = Player()
     private(set) var remotePlayer: CastPlayer?
 
-    init(medias: [LocalMedia]) {
-        self.localMedias = medias
-        currentLocalMedia = medias.first { $0.item == localPlayer.currentItem }
-        Publishers.CombineLatest(localPlayer.$currentItem, $localMedias)
-            .filter { $0.0 != nil }
-            .map { item, medias in
-                medias.first { $0.item == item }
-            }
-            .assign(to: &$currentLocalMedia)
+    private(set) var playerContent: PlayerContent {
+        didSet {
+            medias = playerContent.medias
+            currentMedia = playerContent.medias[playerContent.startIndex]
+        }
+    }
+
+    init(playerContent: PlayerContent) {
+        self.playerContent = playerContent
+        medias = playerContent.medias
+        currentMedia = playerContent.medias[playerContent.startIndex]
     }
 
     func bind(remotePlayer: CastPlayer?) {
@@ -49,10 +53,7 @@ extension UnifiedPlayerViewModel: CastDelegate {
             let medias = state.assets.compactMap(Media.init)
             let time = state.time.isValid ? state.time : .zero
             if let content = PlayerContent(medias: medias, startIndex: state.index, startTime: time) {
-                localMedias = content.medias.map(LocalMedia.init)
-                currentLocalMedia = localMedias.first { localMedia in
-                    localMedia.media == content.medias[state.index]
-                }
+                playerContent = content
             }
         }
     }
@@ -73,8 +74,8 @@ extension UnifiedPlayerViewModel: CastDelegate {
 extension UnifiedPlayerViewModel: Castable {
     func castResumeState() -> CastResumeState? {
         .init(
-            assets: localMedias.map { $0.media.asset() },
-            index: currentLocalMedia.flatMap { localMedias.firstIndex(of: $0) } ?? 0,
+            assets: medias.map { $0.asset() },
+            index: currentMedia.flatMap { medias.firstIndex(of: $0) } ?? 0,
             time: localPlayer.time()
         )
     }

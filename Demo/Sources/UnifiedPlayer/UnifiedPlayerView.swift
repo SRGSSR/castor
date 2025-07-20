@@ -10,7 +10,7 @@ import SwiftUI
 
 struct UnifiedPlayerView: View {
     @EnvironmentObject private var cast: Cast
-    @StateObject private var viewModel = UnifiedPlayerViewModel(medias: kUrnMedias.map { .init(media: $0) })
+    @StateObject private var viewModel = UnifiedPlayerViewModel(playerContent: .init(medias: kUrnMedias)!)
 
     var body: some View {
         Group {
@@ -40,12 +40,12 @@ struct UnifiedPlayerView: View {
     func initialPlayersLoading() {
         if let remotePlayer = cast.player {
             if remotePlayer.items.isEmpty {
-                remotePlayer.loadItems(from: viewModel.localMedias.map { $0.media.asset() })
+                remotePlayer.loadItems(from: viewModel.medias.map { $0.asset() })
                 remotePlayer.play()
             }
         }
         else if viewModel.localPlayer.items.isEmpty {
-            let content = PlayerContent(medias: viewModel.localMedias.map(\.media))
+            let content = PlayerContent(medias: viewModel.medias)
             viewModel.localPlayer.items = content?.items() ?? []
             viewModel.localPlayer.play()
         }

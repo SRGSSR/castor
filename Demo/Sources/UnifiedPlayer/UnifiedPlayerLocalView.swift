@@ -27,8 +27,8 @@ struct UnifiedPlayerLocalView: View {
     }
 
     private func playlist() -> some View {
-        List($viewModel.localMedias, id: \.self, editActions: .all, selection: $viewModel.currentLocalMedia) { $localMedia in
-            Text(localMedia.media.title)
+        List($viewModel.medias, id: \.self, editActions: .all, selection: $viewModel.currentMedia) { $localMedia in
+            Text(localMedia.title)
         }
     }
 }

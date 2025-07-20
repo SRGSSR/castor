@@ -54,3 +54,25 @@ struct Media: Hashable, Identifiable {
         return .init(url: imageUrl)
     }
 }
+
+extension Media {
+    func item() -> PlayerItem {
+        switch type {
+        case let .url(url):
+            return .simple(url: url, metadata: self)
+        case let .urn(identifier):
+            return .urn(identifier)
+        }
+    }
+}
+
+extension Media: AssetMetadata {
+    var playerMetadata: PlayerMetadata {
+        if let imageUrl {
+            .init(title: title, imageSource: .url(standardResolution: imageUrl))
+        }
+        else {
+            .init(title: title)
+        }
+    }
+}
