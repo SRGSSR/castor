@@ -16,6 +16,7 @@ struct UnifiedPlayerLocalView: View {
             playback()
             playlist()
         }
+        .onDisappear(perform: player.pause)
     }
 
     private func playback() -> some View {

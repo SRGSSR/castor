@@ -42,9 +42,7 @@ class UnifiedPlayerViewModel: ObservableObject {
 }
 
 extension UnifiedPlayerViewModel: CastDelegate {
-    func castStartSession() {
-        localPlayer.pause()
-    }
+    func castStartSession() {}
 
     func castEndSession(with state: CastResumeState?) {
         if let state {
