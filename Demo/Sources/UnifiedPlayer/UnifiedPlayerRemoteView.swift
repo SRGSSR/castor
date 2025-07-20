@@ -7,6 +7,16 @@
 import Castor
 import SwiftUI
 
+private struct _Slider: View {
+    @ObservedObject var player: CastPlayer
+    @State private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
+
+    var body: some View {
+        Slider(progressTracker: progressTracker)
+            .bind(progressTracker, to: player)
+    }
+}
+
 struct UnifiedPlayerRemoteView: View {
     @ObservedObject var player: CastPlayer
 
@@ -20,7 +30,7 @@ struct UnifiedPlayerRemoteView: View {
     private func playback() -> some View {
         ZStack {
             RemotePlayer(player: player)
-            ControlsView(unifiedPlayer: player)
+            ControlsView(unifiedPlayer: player, slider: AnyView(_Slider(player: player)))
         }
     }
 

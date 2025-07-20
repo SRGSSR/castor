@@ -7,6 +7,16 @@
 import PillarboxPlayer
 import SwiftUI
 
+private struct _Slider: View {
+    @ObservedObject var player: Player
+    @State private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 1))
+
+    var body: some View {
+        Slider(progressTracker: progressTracker)
+            .bind(progressTracker, to: player)
+    }
+}
+
 struct UnifiedPlayerLocalView: View {
     @ObservedObject var player: Player
     @ObservedObject var viewModel: UnifiedPlayerViewModel
@@ -22,7 +32,7 @@ struct UnifiedPlayerLocalView: View {
     private func playback() -> some View {
         ZStack {
             LocalPlayer(player: player)
-            ControlsView(unifiedPlayer: player)
+            ControlsView(unifiedPlayer: player, slider: AnyView(_Slider(player: player)))
         }
     }
 

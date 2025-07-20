@@ -8,9 +8,16 @@ import SwiftUI
 
 struct ControlsView<AnyPlayer>: View where AnyPlayer: UnifiedPlayer {
     @ObservedObject var unifiedPlayer: AnyPlayer
+    let slider: AnyView
 
     var body: some View {
-        playbackButton()
+        ZStack {
+            playbackButton()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .bottom) {
+            slider
+        }
     }
 
     private func playbackButton() -> some View {
