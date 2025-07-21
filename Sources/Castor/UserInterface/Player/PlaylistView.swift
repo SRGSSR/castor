@@ -49,6 +49,16 @@ struct PlaylistView: View {
         .listStyle(.plain)
         .applyInnerMask(height: 5)
     }
+
+    private func largestShape() -> some View {
+        // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
+        ZStack {
+            Image(systemName: "repeat.circle")
+            Image(systemName: "shuffle")
+            Image(systemName: "trash")
+        }
+        .hidden()
+    }
 }
 
 private extension PlaylistView {
@@ -78,7 +88,7 @@ private extension PlaylistView {
 private extension PlaylistView {
     func repeatModeButton(style: ButtonStyle) -> some View {
         Button(action: toggleRepeatMode) {
-            Group {
+            ZStack {
                 switch style {
                 case .large:
                     Label("Repeat", systemImage: repeatModeImageName)
@@ -86,6 +96,7 @@ private extension PlaylistView {
                 case .compact:
                     Image(systemName: repeatModeImageName)
                 }
+                largestShape()
             }
             .frame(maxWidth: .infinity)
         }
@@ -96,7 +107,7 @@ private extension PlaylistView {
         Button {
             player.items.shuffle()
         } label: {
-            Group {
+            ZStack {
                 switch style {
                 case .large:
                     Label("Shuffle", systemImage: "shuffle")
@@ -104,6 +115,7 @@ private extension PlaylistView {
                 case .compact:
                     Image(systemName: "shuffle")
                 }
+                largestShape()
             }
             .frame(maxWidth: .infinity)
         }
@@ -114,7 +126,7 @@ private extension PlaylistView {
         Button {
             isDeleteAllPresented.toggle()
         } label: {
-            Group {
+            ZStack {
                 switch style {
                 case .large:
                     Label("Delete all", systemImage: "trash")
@@ -122,6 +134,7 @@ private extension PlaylistView {
                 case .compact:
                     Image(systemName: "trash")
                 }
+                largestShape()
             }
             .frame(maxWidth: .infinity)
         }
