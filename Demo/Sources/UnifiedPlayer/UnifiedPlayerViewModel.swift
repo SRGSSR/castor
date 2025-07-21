@@ -12,7 +12,14 @@ import PillarboxPlayer
 class UnifiedPlayerViewModel: ObservableObject {
     @Published var medias: [Media] {
         didSet {
-            localPlayer.items = playerContent.items()
+            guard oldValue != medias else { return }
+            if let playerContent = PlayerContent(medias: medias) {
+                localPlayer.items = playerContent.items()
+                self.playerContent = playerContent
+            }
+            else {
+                localPlayer.items = []
+            }
         }
     }
 
@@ -29,7 +36,10 @@ class UnifiedPlayerViewModel: ObservableObject {
 
     private(set) var playerContent: PlayerContent {
         didSet {
-            medias = playerContent.medias
+            guard oldValue != playerContent else { return }
+            if medias != playerContent.medias {
+                medias = playerContent.medias
+            }
             currentMedia = playerContent.medias[playerContent.startIndex]
         }
     }
