@@ -57,11 +57,19 @@ struct ExpandedCastPlayerView: View {
 struct TestView: View {
     @ObservedObject var player: CastPlayer
 
-    private var myMetadata: MyMetadata? {
-        player.data(ofType: MyMetadata.self)
+    private var title: String? {
+        if let myMetadata = player.data(ofType: MyMetadata.self) {
+            return myMetadata.title
+        }
+        else if let myOtherMetadata = player.data(ofType: MyOtherMetadata.self) {
+            return myOtherMetadata.show
+        }
+        else {
+            return nil
+        }
     }
 
     var body: some View {
-        Text(myMetadata?.title ?? "")
+        Text(title ?? "-")
     }
 }
