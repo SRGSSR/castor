@@ -38,9 +38,9 @@ struct Media: Hashable, Identifiable {
     func asset() -> CastAsset {
         switch type {
         case let .url(url):
-            return .init(resource: .simple(url: url, metadata: castMetadata()))
-        case let .urn(identifier):
-            return .init(resource: .custom(identifier: identifier, metadata: castMetadata()))
+            return .simple(url: url, metadata: castMetadata())
+        case let .urn(urn):
+            return .custom(identifier: urn, metadata: castMetadata())
         }
     }
 
