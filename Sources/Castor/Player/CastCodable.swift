@@ -28,7 +28,7 @@ extension CastCodable {
     }
 
     static func decode(fromJSONObject JSONObject: Any?) -> Self? {
-        guard let JSONObject, let data = try? JSONSerialization.data(withJSONObject: JSONObject) else { return nil }
-        return try? Self.decoder.decode(Self.self, from: data)
+        guard let JSONObject, JSONSerialization.isValidJSONObject(JSONObject), let data = try? JSONSerialization.data(withJSONObject: JSONObject) else { return nil }
+        return try? decoder.decode(Self.self, from: data)
     }
 }
