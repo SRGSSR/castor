@@ -7,6 +7,11 @@
 import Castor
 import Foundation
 
+struct MyMetadata: CastCodable {
+    let title: String
+    let episode: Int
+}
+
 struct Media: Hashable, Identifiable {
     enum `Type`: Hashable {
         case url(URL)
@@ -38,7 +43,7 @@ struct Media: Hashable, Identifiable {
     func asset() -> CastAsset {
         switch type {
         case let .url(url):
-            return .simple(url: url, metadata: castMetadata())
+            return .simple(url: url, metadata: castMetadata(), customData: MyMetadata(title: title, episode: 6969))
         case let .urn(urn):
             return .custom(identifier: urn, metadata: castMetadata())
         }

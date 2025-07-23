@@ -17,6 +17,10 @@ public extension CastPlayer {
         .init(rawMetadata: mediaInformation?.metadata)
     }
 
+    func data<T>(ofType type: T.Type) -> T? where T: CastCodable {
+        T.decode(fromJSONObject: _mediaStatus?.currentQueueItem?.customData)
+    }
+
     /// Returns if the player is busy.
     var isBusy: Bool {
         state == .buffering || state == .loading
