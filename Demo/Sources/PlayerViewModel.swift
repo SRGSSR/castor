@@ -51,9 +51,9 @@ extension PlayerViewModel: Castable {
         return content.medias.map { media in
             switch media.type {
             case let .url(url):
-                return .simple(url: url, metadata: media.castMetadata())
+                return CastAsset(resource: .simple(url: url, metadata: media.castMetadata()))
             case let .urn(urn):
-                return .custom(identifier: urn, metadata: media.castMetadata())
+                return CastAsset(resource: .custom(identifier: urn, metadata: media.castMetadata()))
             }
         }
     }

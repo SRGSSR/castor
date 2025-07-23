@@ -54,13 +54,12 @@ extension Router: CastDelegate {
     }
 
     func castAsset(from information: CastMediaInformation) -> CastAsset? {
-        if let identifier = information.identifier, identifier.hasPrefix("urn:") {
-            return .custom(identifier: identifier, metadata: information.metadata)
-        }
-        else if let url = information.url {
-            return .simple(url: url, metadata: information.metadata)
-        }
-        else {
+        switch information.kind {
+        case let .simple(url):
+            return .init(resource: .simple(url: url, metadata: information.metadata))
+        case let .custom(identifier) where identifier.hasPrefix("urn:"):
+            return .init(resource: .custom(identifier: identifier, metadata: information.metadata))
+        default:
             return nil
         }
     }

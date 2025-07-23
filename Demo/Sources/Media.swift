@@ -24,10 +24,10 @@ struct Media: Hashable, Identifiable {
         self.type = type
     }
 
-    init(from asset: CastAsset) {
-        let title = asset.metadata?.title ?? "Untitled"
-        let imageUrl = asset.metadata?.imageUrl()
-        switch asset.kind {
+    init(from resource: CastMediaInformation) {
+        let title = resource.metadata?.title ?? "Untitled"
+        let imageUrl = resource.metadata?.imageUrl()
+        switch resource.kind {
         case let .simple(url):
             self.init(title: title, imageUrl: imageUrl, type: .url(url))
         case let .custom(urn):
@@ -38,9 +38,9 @@ struct Media: Hashable, Identifiable {
     func asset() -> CastAsset {
         switch type {
         case let .url(url):
-            return .simple(url: url, metadata: castMetadata())
+            return .init(resource: .simple(url: url, metadata: castMetadata()))
         case let .urn(identifier):
-            return .custom(identifier: identifier, metadata: castMetadata())
+            return .init(resource: .custom(identifier: identifier, metadata: castMetadata()))
         }
     }
 
