@@ -14,16 +14,21 @@ struct ExpandedCastPlayerView: View {
 
     var body: some View {
         NavigationStack {
-            CastPlayerView(cast: cast)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        closeButton()
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        addButton()
-                    }
+            VStack {
+                CastPlayerView(cast: cast)
+                if let player = cast.player {
+                    DRMView(player: player)
                 }
-                .toolbarBackground(.background, for: .navigationBar)
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    closeButton()
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    addButton()
+                }
+            }
+            .toolbarBackground(.background, for: .navigationBar)
         }
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
@@ -45,6 +50,26 @@ struct ExpandedCastPlayerView: View {
             dismiss()
         } label: {
             Text("Close")
+        }
+    }
+}
+
+struct DRMView: View {
+    @ObservedObject var player: CastPlayer
+
+    private var drmInfo: DRMInfo? {
+        if let info = player.customData?.decode(as: DRMInfo.self) {
+            return info
+        }
+        else {
+            return nil
+        }
+    }
+
+    var body: some View {
+        VStack {
+            LabeledContent("License", value: drmInfo?.licenseUrl ?? "-")
+            LabeledContent("Certif", value: drmInfo?.certificateUrl ?? "-")
         }
     }
 }

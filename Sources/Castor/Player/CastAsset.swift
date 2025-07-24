@@ -19,20 +19,25 @@ public struct CastAsset {
     }
 
     /// Custom data associated with the asset.
-    public var customData: Any? {
-        rawMediaInformation.customData
+    public var customData: CastCustomData? {
+        if let data = rawMediaInformation.customData {
+            return .init(data: data)
+        }
+        else {
+            return nil
+        }
     }
 
-    init?(rawMediaInformation: GCKMediaInformation) {
-        guard let kind = Self.kind(from: rawMediaInformation) else { return nil }
+    init?(rawMediaInformation: GCKMediaInformation?) {
+        guard let rawMediaInformation, let kind = Self.kind(from: rawMediaInformation) else { return nil }
         self.init(rawMediaInformation: rawMediaInformation, kind: kind)
     }
 
-    private init(kind: Kind, metadata: CastMetadata?, customData: Any?) {
+    private init(kind: Kind, metadata: CastMetadata?, customData: CastCustomData?) {
         let builder = kind.mediaInformationBuilder()
         builder.metadata = metadata?.rawMetadata
         builder.streamType = .unknown
-        builder.customData = customData
+        builder.customData = customData?.data
         self.init(rawMediaInformation: builder.build(), kind: kind)
     }
 
@@ -47,7 +52,7 @@ public struct CastAsset {
     ///   - url: The URL to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Custom data associated with the asset.
-    public static func simple(url: URL, metadata: CastMetadata?, customData: Any? = nil) -> Self {
+    public static func simple(url: URL, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .simple(url), metadata: metadata, customData: customData)
     }
 
@@ -57,7 +62,7 @@ public struct CastAsset {
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Custom data associated with the asset.
-    public static func custom(identifier: String, metadata: CastMetadata?, customData: Any? = nil) -> Self {
+    public static func custom(identifier: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .custom(identifier), metadata: metadata, customData: customData)
     }
 
@@ -76,6 +81,7 @@ public struct CastAsset {
     func rawItem() -> GCKMediaQueueItem {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = rawMediaInformation
+        builder.autoplay = true
         return builder.build()
     }
 }

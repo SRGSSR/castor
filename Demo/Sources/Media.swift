@@ -7,6 +7,11 @@
 import Castor
 import Foundation
 
+struct DRMInfo: Codable {
+    let licenseUrl: String
+    let certificateUrl: String
+}
+
 struct Media: Hashable, Identifiable {
     enum `Type`: Hashable {
         case url(URL)
@@ -38,7 +43,11 @@ struct Media: Hashable, Identifiable {
     func asset() -> CastAsset {
         switch type {
         case let .url(url):
-            return .simple(url: url, metadata: castMetadata())
+            return .simple(
+                url: url,
+                metadata: castMetadata(),
+                customData: .init(from: DRMInfo(licenseUrl: "license", certificateUrl: "certif"))
+            )
         case let .urn(identifier):
             return .custom(identifier: identifier, metadata: castMetadata())
         }
