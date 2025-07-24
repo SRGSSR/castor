@@ -12,9 +12,14 @@ public extension CastPlayer {
         _mediaStatus?.playerState ?? .unknown
     }
 
-    /// Metadata associated with current item.
+    /// Metadata associated with the current item.
     var metadata: CastMetadata? {
         .init(rawMetadata: mediaInformation?.metadata)
+    }
+
+    /// Custom data associated with the current item.
+    var customData: Any? {
+        mediaInformation?.customData
     }
 
     /// Returns if the player is busy.
