@@ -56,6 +56,10 @@ public struct CastAsset {
         .init(kind: .simple(url), metadata: metadata, customData: customData)
     }
 
+    public static func simple<T>(url: URL, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
+        .init(kind: .simple(url), metadata: metadata, customData: .init(from: customData, using: .init()))
+    }
+
     /// A custom asset represented by some identifier..
     ///
     /// - Parameters:
@@ -64,6 +68,10 @@ public struct CastAsset {
     ///   - customData: Custom data associated with the asset.
     public static func custom(identifier: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .custom(identifier), metadata: metadata, customData: customData)
+    }
+
+    public static func custom<T>(identifier: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
+        .init(kind: .custom(identifier), metadata: metadata, customData: .init(from: customData, using: .init()))
     }
 
     private static func kind(from rawMediaInformation: GCKMediaInformation) -> Kind? {

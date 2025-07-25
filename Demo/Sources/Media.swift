@@ -46,7 +46,7 @@ struct Media: Hashable, Identifiable {
             return .simple(
                 url: url,
                 metadata: castMetadata(),
-                customData: .init(from: DRMInfo(licenseUrl: "license", certificateUrl: "certif"))
+                customData: DRMInfo(licenseUrl: "license", certificateUrl: "certif")
             )
         case let .urn(identifier):
             return .custom(identifier: identifier, metadata: castMetadata())

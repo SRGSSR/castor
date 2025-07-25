@@ -9,7 +9,7 @@ import Foundation
 public struct CastCustomData {
     let data: Any?      // Data?
 
-    public init<T>(from object: T, using encoder: JSONEncoder = .init()) where T: Encodable {
+    public init<T>(from object: T, using encoder: JSONEncoder) where T: Encodable {
         if let encodedData = try? encoder.encode(object) {
             self.data = try? JSONSerialization.jsonObject(with: encodedData)
         }
