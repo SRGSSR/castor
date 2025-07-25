@@ -10,15 +10,15 @@ import GoogleCast
 public struct CastAsset {
     let rawMediaInformation: GCKMediaInformation
 
-    /// The kind of content.
+    /// The kind of asset.
     public let kind: Kind
 
-    /// The metadata.
+    /// Metadata associated with the asset.
     public var metadata: CastMetadata? {
         .init(rawMetadata: rawMediaInformation.metadata)
     }
 
-    /// Custom data associated with the asset.
+    /// Custom additional data associated with the asset.
     public var customData: CastCustomData? {
         guard let jsonObject = rawMediaInformation.customData else { return nil }
         return .init(jsonObject: jsonObject)
@@ -47,7 +47,8 @@ public struct CastAsset {
     /// - Parameters:
     ///   - url: The URL to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - customData: Custom data associated with the asset.
+    ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
+    ///     to convert an `Encodable` value into a `CastCustomData`.
     public static func simple(url: URL, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .simple(url), metadata: metadata, customData: customData)
     }
@@ -57,7 +58,7 @@ public struct CastAsset {
     /// - Parameters:
     ///   - url: The URL to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - customData: Custom data associated with the asset, encoded with the default `JSONEncoder`.
+    ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
     public static func simple<T>(url: URL, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
         .init(kind: .simple(url), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }
@@ -67,7 +68,8 @@ public struct CastAsset {
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - customData: Custom data associated with the asset.
+    ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
+    ///     to convert an `Encodable` value into a `CastCustomData`.
     public static func custom(identifier: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .custom(identifier), metadata: metadata, customData: customData)
     }
@@ -77,7 +79,7 @@ public struct CastAsset {
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - customData: Custom data associated with the asset, encoded with the default `JSONEncoder`.
+    ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
     public static func custom<T>(identifier: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
         .init(kind: .custom(identifier), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }

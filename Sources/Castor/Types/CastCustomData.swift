@@ -6,7 +6,10 @@
 
 import Foundation
 
-/// Custom data.
+/// Custom data that can be transmitted between a sender and a receiver.
+///
+/// > Important: Keep the payload size small to avoid exceeding the [maximum transport message size](https://developers.google.com/cast/docs/media/messages)
+/// of 64 kB.
 public struct CastCustomData {
     let jsonObject: Any?
 
@@ -40,7 +43,7 @@ public struct CastCustomData {
 }
 
 public extension Encodable {
-    /// Produces a custom data using the provided encoder.
+    /// Produces custom data using the provided encoder.
     func encoded(using encoder: JSONEncoder) -> CastCustomData {
         .init(with: self, using: encoder)
     }
