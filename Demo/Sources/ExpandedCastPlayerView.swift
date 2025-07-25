@@ -58,7 +58,7 @@ struct DRMView: View {
     @ObservedObject var player: CastPlayer
 
     private var drmInfo: DRMInfo? {
-        if let info = player.customData?.decode(as: DRMInfo.self) {
+        if let info = player.customData?.decoded(as: DRMInfo.self) {
             return info
         }
         else {

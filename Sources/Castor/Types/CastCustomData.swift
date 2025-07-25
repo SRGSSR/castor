@@ -9,7 +9,7 @@ import Foundation
 public struct CastCustomData {
     let data: Any?      // Data?
 
-    public init<T>(from object: T, using encoder: JSONEncoder) where T: Encodable {
+    fileprivate init<T>(from object: T, using encoder: JSONEncoder) where T: Encodable {
         if let encodedData = try? encoder.encode(object) {
             self.data = try? JSONSerialization.jsonObject(with: encodedData)
         }
@@ -22,8 +22,14 @@ public struct CastCustomData {
         self.data = data
     }
 
-    public func decode<T>(as type: T.Type, using decoder: JSONDecoder = .init()) -> T? where T: Decodable {
+    public func decoded<T>(as type: T.Type, using decoder: JSONDecoder = .init()) -> T? where T: Decodable {
         guard let data, JSONSerialization.isValidJSONObject(data), let jsonData = try? JSONSerialization.data(withJSONObject: data) else { return nil }
         return try? decoder.decode(type.self, from: jsonData)
+    }
+}
+
+public extension Encodable {
+    func encoded(using encoder: JSONEncoder) -> CastCustomData {
+        .init(from: self, using: encoder)
     }
 }

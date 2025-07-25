@@ -56,11 +56,17 @@ public struct CastAsset {
         .init(kind: .simple(url), metadata: metadata, customData: customData)
     }
 
+    /// A simple asset which can be played directly.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to be played.
+    ///   - metadata: The metadata associated with the asset.
+    ///   - customData: Custom data associated with the asset, encoded with the default `JSONEncoder`.
     public static func simple<T>(url: URL, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
-        .init(kind: .simple(url), metadata: metadata, customData: .init(from: customData, using: .init()))
+        .init(kind: .simple(url), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }
 
-    /// A custom asset represented by some identifier..
+    /// A custom asset represented by some identifier.
     ///
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
@@ -70,8 +76,14 @@ public struct CastAsset {
         .init(kind: .custom(identifier), metadata: metadata, customData: customData)
     }
 
+    /// A custom asset represented by some identifier.
+    ///
+    /// - Parameters:
+    ///   - identifier: An identifier for the content to be played.
+    ///   - metadata: The metadata associated with the asset.
+    ///   - customData: Custom data associated with the asset, encoded with the default `JSONEncoder`.
     public static func custom<T>(identifier: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
-        .init(kind: .custom(identifier), metadata: metadata, customData: .init(from: customData, using: .init()))
+        .init(kind: .custom(identifier), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }
 
     private static func kind(from rawMediaInformation: GCKMediaInformation) -> Kind? {
