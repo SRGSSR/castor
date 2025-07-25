@@ -8,7 +8,7 @@ import GoogleCast
 
 /// A cast asset representing content to be played.
 public struct CastAsset {
-    let rawMediaInformation: GCKMediaInformation
+    private let rawMediaInformation: GCKMediaInformation
 
     /// The kind of asset.
     public let kind: Kind
