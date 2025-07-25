@@ -6,7 +6,7 @@
 
 import Foundation
 
-/// Custom data that can be transmitted between a sender and a receiver.
+/// Custom data transmitted between a sender and a receiver.
 ///
 /// > Important: Keep the payload size small to avoid exceeding the [maximum transport message size](https://developers.google.com/cast/docs/media/messages)
 /// of 64 kB.
@@ -14,11 +14,11 @@ public struct CastCustomData {
     let jsonObject: Any?
 
     fileprivate init<T>(with object: T, using encoder: JSONEncoder) where T: Encodable {
-        if let encodedData = try? encoder.encode(object) {
-            self.jsonObject = try? JSONSerialization.jsonObject(with: encodedData)
+        if let data = try? encoder.encode(object) {
+            jsonObject = try? JSONSerialization.jsonObject(with: data)
         }
         else {
-            self.jsonObject = nil
+            jsonObject = nil
         }
     }
 
