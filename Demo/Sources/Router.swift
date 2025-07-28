@@ -52,16 +52,4 @@ extension Router: CastDelegate {
             presented = nil
         }
     }
-
-    func castAsset(from information: CastMediaInformation) -> CastAsset? {
-        if let identifier = information.identifier, identifier.hasPrefix("urn:") {
-            return .custom(identifier: identifier, metadata: information.metadata)
-        }
-        else if let url = information.url {
-            return .simple(url: url, metadata: information.metadata)
-        }
-        else {
-            return nil
-        }
-    }
 }

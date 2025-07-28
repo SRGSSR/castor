@@ -12,9 +12,14 @@ public extension CastPlayer {
         _mediaStatus?.playerState ?? .unknown
     }
 
-    /// Metadata associated with current item.
+    /// Metadata associated with the current item.
     var metadata: CastMetadata? {
-        .init(rawMetadata: mediaInformation?.metadata)
+        .init(rawMetadata: rawMediaInformation?.metadata)
+    }
+
+    /// Custom data associated with the current item.
+    var customData: CastCustomData? {
+        asset?.customData
     }
 
     /// Returns if the player is busy.
@@ -32,12 +37,16 @@ public extension CastPlayer {
 
     /// The type of stream currently being played.
     var streamType: GCKMediaStreamType {
-        mediaInformation?.streamType ?? .none
+        rawMediaInformation?.streamType ?? .none
     }
 }
 
 extension CastPlayer {
-    var mediaInformation: GCKMediaInformation? {
+    var asset: CastAsset? {
+        .init(rawMediaInformation: rawMediaInformation)
+    }
+
+    var rawMediaInformation: GCKMediaInformation? {
         _mediaStatus?.mediaInformation
     }
 }

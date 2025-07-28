@@ -8,47 +8,98 @@ import GoogleCast
 
 /// A cast asset representing content to be played.
 public struct CastAsset {
-    /// The type of asset.
+    private let rawMediaInformation: GCKMediaInformation
+
+    /// The kind of asset.
     public let kind: Kind
 
-    /// The asset metadata.
-    public let metadata: CastMetadata?
+    /// Metadata associated with the asset.
+    public var metadata: CastMetadata? {
+        .init(rawMetadata: rawMediaInformation.metadata)
+    }
 
-    private let configuration: CastPlaybackConfiguration
+    /// Custom additional data associated with the asset.
+    public var customData: CastCustomData? {
+        guard let jsonObject = rawMediaInformation.customData else { return nil }
+        return .init(jsonObject: jsonObject)
+    }
+
+    init?(rawMediaInformation: GCKMediaInformation?) {
+        guard let rawMediaInformation, let kind = Self.kind(from: rawMediaInformation) else { return nil }
+        self.init(rawMediaInformation: rawMediaInformation, kind: kind)
+    }
+
+    private init(kind: Kind, metadata: CastMetadata?, customData: CastCustomData?) {
+        let builder = kind.mediaInformationBuilder()
+        builder.metadata = metadata?.rawMetadata
+        builder.streamType = .unknown
+        builder.customData = customData?.jsonObject
+        self.init(rawMediaInformation: builder.build(), kind: kind)
+    }
+
+    private init(rawMediaInformation: GCKMediaInformation, kind: Kind) {
+        self.rawMediaInformation = rawMediaInformation
+        self.kind = kind
+    }
 
     /// A simple asset which can be played directly.
     ///
     /// - Parameters:
     ///   - url: The URL to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - configuration: The playback configuration.
-    /// - Returns: The asset.
-    public static func simple(url: URL, metadata: CastMetadata?, configuration: CastPlaybackConfiguration = .init()) -> Self {
-        .init(kind: .simple(url), metadata: metadata, configuration: configuration)
+    ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
+    ///     to convert an `Encodable` value into a `CastCustomData`.
+    public static func simple(url: URL, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
+        .init(kind: .simple(url), metadata: metadata, customData: customData)
     }
 
-    /// A custom asset represented by some identifier..
+    /// A simple asset which can be played directly.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to be played.
+    ///   - metadata: The metadata associated with the asset.
+    ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
+    public static func simple<T>(url: URL, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
+        .init(kind: .simple(url), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
+    }
+
+    /// A custom asset represented by some identifier.
     ///
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - configuration: The playback configuration.
-    /// - Returns: The asset.
-    public static func custom(identifier: String, metadata: CastMetadata?, configuration: CastPlaybackConfiguration = .init()) -> Self {
-        .init(kind: .custom(identifier), metadata: metadata, configuration: configuration)
+    ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
+    ///     to convert an `Encodable` value into a `CastCustomData`.
+    public static func custom(identifier: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
+        .init(kind: .custom(identifier), metadata: metadata, customData: customData)
+    }
+
+    /// A custom asset represented by some identifier.
+    ///
+    /// - Parameters:
+    ///   - identifier: An identifier for the content to be played.
+    ///   - metadata: The metadata associated with the asset.
+    ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
+    public static func custom<T>(identifier: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
+        .init(kind: .custom(identifier), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
+    }
+
+    private static func kind(from rawMediaInformation: GCKMediaInformation) -> Kind? {
+        if let identifier = rawMediaInformation.contentID {
+            return .custom(identifier)
+        }
+        else if let url = rawMediaInformation.contentURL {
+            return .simple(url)
+        }
+        else {
+            return nil
+        }
     }
 
     func rawItem() -> GCKMediaQueueItem {
         let builder = GCKMediaQueueItemBuilder()
-        builder.mediaInformation = mediaInformation()
-        builder.autoplay = configuration.autoplay
-        return builder.build()
-    }
-
-    private func mediaInformation() -> GCKMediaInformation {
-        let builder = kind.mediaInformationBuilder()
-        builder.metadata = metadata?.rawMetadata
-        builder.streamType = .unknown
+        builder.mediaInformation = rawMediaInformation
+        builder.autoplay = true
         return builder.build()
     }
 }
