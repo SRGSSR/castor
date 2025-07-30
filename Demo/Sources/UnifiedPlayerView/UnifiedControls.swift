@@ -15,35 +15,39 @@ struct UnifiedControls: View {
     var body: some View {
         Group {
             if let remotePlayer = cast.player {
-                RemoteUnifiedControls(player: remotePlayer)
+                RemoteControls(player: remotePlayer)
             }
             else {
-                LocalUnifiedControls(player: player)
+                LocalControls(player: player)
             }
         }
     }
 }
 
-private struct RemoteUnifiedControls: View {
+private struct RemoteControls: View {
     @ObservedObject var player: CastPlayer
+    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
 
     var body: some View {
         ZStack {
-            RemotePlaybackButton(player: player)
-            RemotePlaybackSlider(player: player)
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            Slider(progressTracker: progressTracker)
+                .bind(progressTracker, to: player)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
     }
 }
 
-private struct LocalUnifiedControls: View {
+private struct LocalControls: View {
     @ObservedObject var player: Player
     @StateObject private var visibilityTracker = VisibilityTracker()
+    @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 1))
 
     var body: some View {
         ZStack {
-            LocalPlaybackButton(player: player)
-            LocalPlaybackSlider(player: player)
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            Slider(progressTracker: progressTracker)
+                .bind(progressTracker, to: player)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
         .bind(visibilityTracker, to: player)
