@@ -8,9 +8,7 @@ struct LocalPlaybackButton: View {
     @ObservedObject var player: Player
 
     var body: some View {
-        PlaybackButton(shouldPlay: player.shouldPlay) {
-            player.togglePlayPause()
-        }
+        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
     }
 }
 
@@ -18,9 +16,7 @@ struct RemotePlaybackButton: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
-        PlaybackButton(shouldPlay: player.shouldPlay) {
-            player.togglePlayPause()
-        }
+        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
     }
 }
 
@@ -34,5 +30,10 @@ private struct PlaybackButton: View {
         } label: {
             Image(systemName: shouldPlay ? "pause" : "play")
         }
+    }
+
+    init(shouldPlay: Bool, perform action: @escaping () -> Void) {
+        self.shouldPlay = shouldPlay
+        self.action = action
     }
 }
