@@ -10,13 +10,18 @@ import SwiftUI
 
 struct UnifiedPlayerView: View {
     @EnvironmentObject private var cast: Cast
-    @StateObject private var player = Player()
+    @StateObject private var player = Player(
+        item: .simple(
+            url: URL(
+                string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8"
+            )!
+        )
+    )
 
     var body: some View {
         ZStack {
-            UnifiedPlaybackButton(player: player)
-            UnifiedSlider(player: player)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            UnifiedVideoView(player: player)
+            UnifiedControls(player: player)
         }
     }
 }

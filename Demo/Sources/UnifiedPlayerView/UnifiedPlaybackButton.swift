@@ -32,8 +32,9 @@ private struct SkinedPlaybackButton: View {
         Button {
             action()
         } label: {
-            Image(systemName: shouldPlay ? "pause" : "play")
+            Image(systemName: shouldPlay ? "pause.fill" : "play.fill")
         }
+        .font(.system(size: 44))
     }
 
     init(shouldPlay: Bool, perform action: @escaping () -> Void) {
