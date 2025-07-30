@@ -4,6 +4,10 @@
 //  License information is available from the LICENSE file.
 //
 
+import Castor
+import PillarboxPlayer
+import SwiftUI
+
 struct LocalPlaybackButton: View {
     @ObservedObject var player: Player
 
