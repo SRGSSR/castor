@@ -10,6 +10,40 @@ import SwiftUI
 
 struct UnifiedPlayerView: View {
     @EnvironmentObject private var cast: Cast
+
+    var body: some View {
+        ZStack {
+            if let remotePlayer = cast.player {
+                RemoteControls(player: remotePlayer)
+            }
+            else {
+                LocalPlayerView()
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                CastButton(cast: cast)
+            }
+        }
+    }
+}
+
+struct RemotePlayerView: View {
+    @ObservedObject var player: CastPlayer
+
+    var body: some View {
+        ZStack {
+            Image(systemName: "star.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 200)
+            RemoteControls(player: player)
+        }
+    }
+}
+
+
+struct LocalPlayerView: View {
     @StateObject private var player = Player(
         item: .simple(
             url: URL(
@@ -20,8 +54,8 @@ struct UnifiedPlayerView: View {
 
     var body: some View {
         ZStack {
-            UnifiedVideoView(player: player)
-            UnifiedControls(player: player)
+            VideoView(player: player)
+            LocalControls(player: player)
         }
     }
 }

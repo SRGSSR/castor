@@ -8,23 +8,7 @@ import Castor
 import PillarboxPlayer
 import SwiftUI
 
-struct UnifiedControls: View {
-    @EnvironmentObject private var cast: Cast
-    @ObservedObject var player: Player
-
-    var body: some View {
-        Group {
-            if let remotePlayer = cast.player {
-                RemoteControls(player: remotePlayer)
-            }
-            else {
-                LocalControls(player: player)
-            }
-        }
-    }
-}
-
-private struct RemoteControls: View {
+struct RemoteControls: View {
     @ObservedObject var player: CastPlayer
     @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
 
@@ -38,7 +22,7 @@ private struct RemoteControls: View {
     }
 }
 
-private struct LocalControls: View {
+struct LocalControls: View {
     @ObservedObject var player: Player
     @StateObject private var visibilityTracker = VisibilityTracker()
     @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 1))
