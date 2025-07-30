@@ -8,7 +8,7 @@ import Castor
 import PillarboxPlayer
 import SwiftUI
 
-private struct LocalPlaybackSlider: View {
+struct LocalPlaybackSlider: View {
     @ObservedObject var player: Player
     @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 1))
 
@@ -18,7 +18,7 @@ private struct LocalPlaybackSlider: View {
     }
 }
 
-private struct RemotePlaybackSlider: View {
+struct RemotePlaybackSlider: View {
     @ObservedObject var player: CastPlayer
     @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
 

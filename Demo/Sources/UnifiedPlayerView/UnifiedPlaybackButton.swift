@@ -8,7 +8,7 @@ import Castor
 import PillarboxPlayer
 import SwiftUI
 
-private struct LocalPlaybackButton: View {
+struct LocalPlaybackButton: View {
     @ObservedObject var player: Player
 
     var body: some View {
@@ -16,7 +16,7 @@ private struct LocalPlaybackButton: View {
     }
 }
 
-private struct RemotePlaybackButton: View {
+struct RemotePlaybackButton: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
