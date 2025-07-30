@@ -8,23 +8,23 @@ import Castor
 import PillarboxPlayer
 import SwiftUI
 
-struct LocalPlaybackButton: View {
+private struct LocalPlaybackButton: View {
     @ObservedObject var player: Player
 
     var body: some View {
-        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        SkinedPlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
     }
 }
 
-struct RemotePlaybackButton: View {
+private struct RemotePlaybackButton: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
-        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        SkinedPlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
     }
 }
 
-private struct PlaybackButton: View {
+private struct SkinedPlaybackButton: View {
     let shouldPlay: Bool
     let action: () -> Void
 
@@ -39,5 +39,19 @@ private struct PlaybackButton: View {
     init(shouldPlay: Bool, perform action: @escaping () -> Void) {
         self.shouldPlay = shouldPlay
         self.action = action
+    }
+}
+
+struct UnifiedPlaybackButton: View {
+    @EnvironmentObject private var cast: Cast
+    @ObservedObject var player: Player
+
+    var body: some View {
+        if let remotePlayer = cast.player {
+            RemotePlaybackButton(player: remotePlayer)
+        }
+        else {
+            LocalPlaybackButton(player: player)
+        }
     }
 }

@@ -13,11 +13,10 @@ struct UnifiedPlayerView: View {
     @StateObject private var player = Player()
 
     var body: some View {
-        if let remotePlayer = cast.player {
-            RemotePlaybackButton(player: remotePlayer)
-        }
-        else {
-            LocalPlaybackButton(player: player)
+        ZStack {
+            UnifiedPlaybackButton(player: player)
+            UnifiedSlider(player: player)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
     }
 }
