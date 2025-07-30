@@ -10,6 +10,7 @@ extension UserDefaults {
     enum DemoSettingKey {
         static let receiver = "receiver"
         static let presenterModeEnabled = "presenterModeEnabled"
+        static let playerType = "playerType"
         static let smartNavigationEnabled = "smartNavigationEnabled"
         static let backwardSkipInterval = "backwardSkipInterval"
         static let forwardSkipInterval = "forwardSkipInterval"
@@ -21,6 +22,10 @@ extension UserDefaults {
 
     @objc dynamic var receiver: Receiver {
         .init(rawValue: integer(forKey: DemoSettingKey.receiver)) ?? .standard
+    }
+
+    @objc dynamic var playerType: PlayerType {
+        .init(rawValue: integer(forKey: DemoSettingKey.playerType)) ?? .standard
     }
 
     @objc dynamic var smartNavigationEnabled: Bool {
