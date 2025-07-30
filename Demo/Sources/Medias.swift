@@ -73,27 +73,22 @@ let kDashUrlMedias: [Media] = [
 let kUrnMedias: [Media] = [
     .init(
         title: "Horizontal video",
-        imageUrl: "https://www.rts.ch/2024/04/10/19/23/14827621.image/16x9",
         type: .urn("urn:rts:video:14827306")
     ),
     .init(
         title: "SRF 1",
-        imageUrl: "https://ws.srf.ch/asset/image/audio/d91bbe14-55dd-458c-bc88-963462972687/EPISODE_IMAGE",
         type: .urn("urn:srf:video:c4927fcf-e1a0-0001-7edd-1ef01d441651")
     ),
     .init(
         title: "RTS 1",
-        imageUrl: "https://www.rts.ch/2023/09/06/14/43/14253742.image/16x9",
         type: .urn("urn:rts:video:3608506")
     ),
     .init(
         title: "Puls - Gehirnerschütterung, Akutgeriatrie, Erlenpollen im Winter",
-        imageUrl: "https://ws.srf.ch/asset/image/audio/3bc7c819-9f77-4b2f-bbb1-6787df21d7bc/WEBVISUAL/1641807822.jpg",
         type: .urn("urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
     ),
     .init(
         title: "Bonjour la Suisse (5/5) - Que du bonheur?",
-        imageUrl: "https://www.rts.ch/2017/07/28/21/11/8806915.image/16x9",
         type: .urn("urn:rts:video:8806923")
     )
 ]

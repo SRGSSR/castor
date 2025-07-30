@@ -18,7 +18,7 @@ struct Media: Hashable, Identifiable {
     let imageUrl: URL?
     let type: Type
 
-    init(title: String, imageUrl: URL?, type: Type) {
+    init(title: String, imageUrl: URL? = nil, type: Type) {
         self.title = title
         self.imageUrl = imageUrl
         self.type = type
