@@ -38,7 +38,7 @@ struct ExamplesView: View {
                 player.loadItem(from: media.asset())
             }
             else if cast.connectionState == .disconnected {
-                router.presented = .player(content: .init(medias: [media]))
+                router.presented = .player
             }
         } label: {
             Text(media.title)

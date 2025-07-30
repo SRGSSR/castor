@@ -15,15 +15,12 @@ final class Router: ObservableObject {
 
 extension Router {
     enum Destination: Identifiable, Hashable {
-        case player(content: PlayerContent?)
-        case expandedCastPlayer(cast: Cast)
+        case player
 
         var id: String {
             switch self {
             case .player:
                 "player"
-            case .expandedCastPlayer:
-                "expandedCastPlayer"
             }
         }
 
@@ -31,25 +28,15 @@ extension Router {
         @ViewBuilder
         func view() -> some View {
             switch self {
-            case let .player(content: content):
-                PlayerView(content: content)
-            case let .expandedCastPlayer(cast: cast):
-                ExpandedCastPlayerView(cast: cast)
+            case let .player:
+                PlayerView()
             }
         }
     }
 }
 
 extension Router: CastDelegate {
-    func castStartSession() {
-        if case .player = presented {
-            presented = nil
-        }
-    }
+    func castStartSession() {}
 
-    func castEndSession(with state: CastResumeState?) {
-        if case .expandedCastPlayer = presented {
-            presented = nil
-        }
-    }
+    func castEndSession(with state: CastResumeState?) {}
 }
