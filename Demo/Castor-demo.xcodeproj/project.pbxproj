@@ -20,6 +20,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0E5EF40F2E39F7BB0003A53D /* Exceptions for "Sources" folder in "Castor-demo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				UnifiedPlayerView/PlaybackButton.swift,
+			);
+			target = 0ECF4A4C2D48E1F400238371 /* Castor-demo */;
+		};
 		0EBD69732D48E959006460E4 /* Exceptions for "Resources" folder in "Castor-demo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -36,6 +43,16 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		0E5EF4102E39F7BB0003A53D /* Exceptions for "Sources" folder in "Copy Bundle Resources" phase from "Castor-demo" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 0ECF4A4B2D48E1F400238371 /* Resources */;
+			membershipExceptions = (
+				UnifiedPlayerView/PlaybackButton.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0E39A20A2D49229F00C80699 /* Xcode */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -44,6 +61,10 @@
 		};
 		0ECA4CA12D48E496008A3FA6 /* Sources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0E5EF40F2E39F7BB0003A53D /* Exceptions for "Sources" folder in "Castor-demo" target */,
+				0E5EF4102E39F7BB0003A53D /* Exceptions for "Sources" folder in "Copy Bundle Resources" phase from "Castor-demo" target */,
+			);
 			path = Sources;
 			sourceTree = "<group>";
 		};
