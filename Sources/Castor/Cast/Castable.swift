@@ -6,6 +6,11 @@
 
 /// A protocol describing a castable context.
 public protocol Castable: AnyObject {
-    /// The resume state to send to the receiver.
-    func castResumeState() -> CastResumeState?
+    /// Called when the cast session is established.
+    func castStartSession() -> CastResumeState?
+
+    /// Called when the cast session is being stopped.
+    ///
+    /// - Parameter state: The state right before the cast session ends.
+    func castEndSession(with state: CastResumeState?)
 }

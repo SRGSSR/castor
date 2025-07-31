@@ -10,7 +10,7 @@ struct CastResumeItem {
     let item: GCKMediaQueueItem
     let asset: CastAsset
 
-    init?(from item: GCKMediaQueueItem, with delegate: CastDelegate) {
+    init?(from item: GCKMediaQueueItem) {
         guard let asset = CastAsset(rawMediaInformation: item.mediaInformation) else {
             return nil
         }

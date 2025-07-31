@@ -42,8 +42,19 @@ final class PlayerViewModel {
 }
 
 extension PlayerViewModel: Castable {
-    func castResumeState() -> CastResumeState? {
-        .init(assets: castAssets(), index: currentIndex(), time: time())
+    func castStartSession() -> CastResumeState? {
+        let resumeState = CastResumeState(assets: castAssets(), index: currentIndex(), time: time())
+        content = nil
+        return resumeState
+    }
+
+    func castEndSession(with state: CastResumeState?) {
+        if let state {
+            content = .init(medias: state.assets.map { Media(from: $0) }, startIndex: state.index, startTime: state.time)
+        }
+        else {
+            content = nil
+        }
     }
 
     private func castAssets() -> [CastAsset] {

@@ -37,6 +37,5 @@ extension Router {
 
 extension Router: CastDelegate {
     func castStartSession() {}
-
     func castEndSession(with state: CastResumeState?) {}
 }
