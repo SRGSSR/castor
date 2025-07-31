@@ -94,10 +94,14 @@ struct PlayerView: View {
             }
         }
         .onAppear {
-            if let media {
-                player.items = [media.playerItem()]
+            guard let media else { return }
+            if let remotePlayer = cast.player {
+                remotePlayer.loadItem(from: media.asset())
             }
-            player.play()
+            else {
+                player.items = [media.playerItem()]
+                player.play()
+            }
         }
     }
 
