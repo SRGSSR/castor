@@ -53,7 +53,7 @@ struct RootView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 8)
                 .onTapGesture {
-                    router.presented = .player
+                    router.presented = .player(media: nil)
                 }
                 .accessibilityAddTraits(.isButton)
                 .background(.thickMaterial)

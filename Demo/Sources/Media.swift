@@ -6,6 +6,7 @@
 
 import Castor
 import Foundation
+import PillarboxPlayer
 
 struct Media: Hashable, Identifiable {
     enum `Type`: Hashable {
@@ -35,6 +36,15 @@ struct Media: Hashable, Identifiable {
         }
     }
 
+    func playerItem() -> PlayerItem {
+        switch type {
+        case let .url(url):
+            return .simple(url: url, metadata: self)
+        case let .urn(identifier):
+            return .urn(identifier)
+        }
+    }
+
     func asset() -> CastAsset {
         switch type {
         case let .url(url):
@@ -51,5 +61,20 @@ struct Media: Hashable, Identifiable {
     private func castImage() -> CastImage? {
         guard let imageUrl else { return nil }
         return .init(url: imageUrl)
+    }
+}
+
+extension Media: AssetMetadata {
+    private var imageSource: ImageSource {
+        if let imageUrl {
+            return .url(standardResolution: imageUrl)
+        }
+        else {
+            return .none
+        }
+    }
+
+    var playerMetadata: PlayerMetadata {
+        .init(title: title, imageSource: imageSource)
     }
 }
