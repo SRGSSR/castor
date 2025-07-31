@@ -30,18 +30,7 @@ public struct CastAsset {
     }
 
     private init(kind: Kind, metadata: CastMetadata?, customData: CastCustomData?) {
-        let builder = GCKMediaInformationBuilder(entity: kind.entity)
-
-        // ---> TODO: Should be removed when entities will be supported by the SRGSSR receivers.
-        switch kind {
-        case let .simple(url):
-            builder.contentURL = url
-            builder.contentID = UUID().uuidString
-        case let .custom(id):
-            builder.contentID = id
-        }
-        // <--- TODO: Should be removed when entities will be supported by the SRGSSR receivers.
-
+        let builder = kind.mediaInformationBuilder()
         builder.metadata = metadata?.rawMetadata
         builder.streamType = .unknown
         builder.customData = customData?.jsonObject
@@ -107,9 +96,6 @@ public struct CastAsset {
         else if let url = rawMediaInformation.contentURL {
             return .simple(url)
         }
-        else if let id = rawMediaInformation.contentID { // ---> TODO: Should be removed when entities will be supported by the SRGSSR receivers.
-            return .custom(id)
-        } // <--- TODO: Should be removed when entities will be supported by the SRGSSR receivers.
         else {
             return nil
         }
@@ -132,12 +118,20 @@ public extension CastAsset {
         /// A type of asset identified by an identifier.
         case custom(String)
 
-        var entity: String {
+        func mediaInformationBuilder() -> GCKMediaInformationBuilder {
             switch self {
             case let .simple(url):
-                return url.absoluteString
-            case let .custom(id):
-                return id
+                let builder = GCKMediaInformationBuilder(contentURL: url)
+                // TODO: This workaround should be removed.
+                // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
+                builder.contentID = UUID().uuidString
+                return builder
+            case let .custom(identifier):
+                let builder = GCKMediaInformationBuilder(entity: identifier)
+                // TODO: This workaround should be removed.
+                // A contentID is currently set to enable playback of URN based content using the SRGSSR receiver.
+                builder.contentID = identifier
+                return builder
             }
         }
     }
