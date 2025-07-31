@@ -37,20 +37,22 @@ private struct LocalPlayerView: View {
                 Text(error.localizedDescription)
             }
             else {
-                if player.mediaType == .audio {
+                if player.mediaType == .video {
+                    VideoView(player: player)
+                        .background(.black)
+                }
+                else {
                     LazyImage(source: player.metadata.imageSource) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                     }
                 }
-                else {
-                    VideoView(player: player)
-                }
                 PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
             }
         }
-        .background(.black)
+        .animation(.default, value: player.mediaType)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
