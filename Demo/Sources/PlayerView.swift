@@ -42,17 +42,21 @@ private struct LocalPlayerView: View {
                         .background(.black)
                 }
                 else {
-                    LazyImage(source: player.metadata.imageSource) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    }
+                    artwork()
                 }
                 PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
             }
         }
         .animation(.default, value: player.mediaType)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func artwork() -> some View {
+        LazyImage(source: player.metadata.imageSource) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        }
     }
 }
 
