@@ -37,6 +37,7 @@ final class PlayerViewModel {
     }
 
     func play() {
+        player.becomeActive()
         player.play()
     }
 }
