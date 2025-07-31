@@ -97,7 +97,7 @@ public struct CastAsset {
 
     private static func kind(from rawMediaInformation: GCKMediaInformation) -> Kind? {
         if let entity = rawMediaInformation.entity {
-            if let url = URL(string: entity) {
+            if let url = URL(castableString: entity) {
                 return .simple(url)
             }
             else {
