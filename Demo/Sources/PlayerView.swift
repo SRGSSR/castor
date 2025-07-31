@@ -64,7 +64,7 @@ struct PlayerView: View {
     let media: Media?
 
     @EnvironmentObject private var cast: Cast
-    @StateObject private var player = Player()
+    @State private var model = PlayerViewModel()
 
     @State private var isSelectionPresented = false
     @Environment(\.dismiss) private var dismiss
@@ -99,10 +99,11 @@ struct PlayerView: View {
                 remotePlayer.loadItem(from: media.asset())
             }
             else {
-                player.items = [media.playerItem()]
-                player.play()
+                model.content = .init(medias: [media])
+                model.play()
             }
         }
+        .makeCastable(model, with: cast)
     }
 
     @ViewBuilder
@@ -116,7 +117,7 @@ struct PlayerView: View {
             }
         }
         else {
-            LocalPlayerView(player: player)
+            LocalPlayerView(player: model.player)
         }
     }
 
