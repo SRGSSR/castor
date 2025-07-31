@@ -34,12 +34,7 @@ struct ExamplesView: View {
 
     private func button(for media: Media) -> some View {
         Button {
-            if let player = cast.player {
-                player.loadItem(from: media.asset())
-            }
-            else if cast.connectionState == .disconnected {
-                router.presented = .player(media: media)
-            }
+            router.presented = .player(media: media)
         } label: {
             Text(media.title)
         }
