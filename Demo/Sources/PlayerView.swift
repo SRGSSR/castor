@@ -61,6 +61,8 @@ private struct RemotePlayerView: View {
 }
 
 struct PlayerView: View {
+    let media: Media?
+
     @EnvironmentObject private var cast: Cast
     @StateObject private var player = Player()
 
@@ -90,6 +92,12 @@ struct PlayerView: View {
             NavigationStack {
                 PlaylistSelectionView(player: cast.player)
             }
+        }
+        .onAppear {
+            if let media {
+                player.items = [media.playerItem()]
+            }
+            player.play()
         }
     }
 

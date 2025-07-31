@@ -15,7 +15,7 @@ final class Router: ObservableObject {
 
 extension Router {
     enum Destination: Identifiable, Hashable {
-        case player
+        case player(media: Media?)
 
         var id: String {
             switch self {
@@ -28,8 +28,8 @@ extension Router {
         @ViewBuilder
         func view() -> some View {
             switch self {
-            case .player:
-                PlayerView()
+            case let .player(media: media):
+                PlayerView(media: media)
             }
         }
     }
