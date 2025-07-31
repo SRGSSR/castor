@@ -21,12 +21,7 @@ struct PlayerContent: Hashable {
 
     func items() -> [PlayerItem] {
         medias.enumerated().map { index, media in
-            switch media.type {
-            case let .url(url):
-                return .simple(url: url, configuration: itemConfiguration(at: index))
-            case let .urn(urn):
-                return .urn(urn, configuration: itemConfiguration(at: index))
-            }
+            media.playerItem(with: itemConfiguration(at: index))
         }
     }
 
