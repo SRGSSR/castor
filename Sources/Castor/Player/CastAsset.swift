@@ -31,6 +31,17 @@ public struct CastAsset {
 
     private init(kind: Kind, metadata: CastMetadata?, customData: CastCustomData?) {
         let builder = GCKMediaInformationBuilder(entity: kind.entity)
+
+        // ---> TODO: Should be removed when entities will be supported by the SRGSSR receivers.
+        switch kind {
+        case let .simple(url):
+            builder.contentURL = url
+            builder.contentID = UUID().uuidString
+        case let .custom(id):
+            builder.contentID = id
+        }
+        // <--- TODO: Should be removed when entities will be supported by the SRGSSR receivers.
+
         builder.metadata = metadata?.rawMetadata
         builder.streamType = .unknown
         builder.customData = customData?.jsonObject
@@ -96,6 +107,9 @@ public struct CastAsset {
         else if let url = rawMediaInformation.contentURL {
             return .simple(url)
         }
+        else if let id = rawMediaInformation.contentID { // ---> TODO: Should be removed when entities will be supported by the SRGSSR receivers.
+            return .custom(id)
+        } // <--- TODO: Should be removed when entities will be supported by the SRGSSR receivers.
         else {
             return nil
         }
