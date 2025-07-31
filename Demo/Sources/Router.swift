@@ -28,7 +28,7 @@ extension Router {
         @ViewBuilder
         func view() -> some View {
             switch self {
-            case let .player:
+            case .player:
                 PlayerView()
             }
         }

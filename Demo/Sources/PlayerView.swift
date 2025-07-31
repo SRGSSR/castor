@@ -9,11 +9,33 @@ import Castor
 import PillarboxPlayer
 import SwiftUI
 
+private struct PlaybackButton: View {
+    let shouldPlay: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            action()
+        } label: {
+            Image(systemName: shouldPlay ? "pause.fill" : "play.fill")
+        }
+        .font(.system(size: 44))
+    }
+
+    init(shouldPlay: Bool, perform action: @escaping () -> Void) {
+        self.shouldPlay = shouldPlay
+        self.action = action
+    }
+}
+
 private struct LocalPlayerView: View {
     @ObservedObject var player: Player
 
     var body: some View {
-        Text("Local player")
+        ZStack {
+            VideoView(player: player)
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        }
     }
 }
 
@@ -21,7 +43,20 @@ private struct RemotePlayerView: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
-        Text("Remote player")
+        ZStack {
+            artwork()
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        }
+    }
+
+    private func artwork() -> some View {
+        AsyncImage(url: player.metadata?.imageUrl()) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        } placeholder: {
+            EmptyView()
+        }
     }
 }
 
@@ -44,6 +79,9 @@ struct PlayerView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         addButton()
+                    }
+                    ToolbarItem(placement: .topBarTrailing) { // TODO: Should be removed!
+                        CastButton(cast: cast)
                     }
                 }
                 .toolbarBackground(.background, for: .navigationBar)
