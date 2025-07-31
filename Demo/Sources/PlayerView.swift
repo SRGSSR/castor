@@ -33,8 +33,13 @@ private struct LocalPlayerView: View {
 
     var body: some View {
         ZStack {
-            VideoView(player: player)
-            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            if let error = player.error {
+                Text(error.localizedDescription)
+            }
+            else {
+                VideoView(player: player)
+                PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            }
         }
     }
 }
