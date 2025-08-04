@@ -12,13 +12,13 @@ import Testing
 @Suite
 struct URLTests {
     @Test
-    func castableUrls() {
+    func castable_urls() {
         #expect(URL(castableString: "http://www.ietf.org/rfc/rfc2396.txt") != nil)
         #expect(URL(castableString: "https://www.ietf.org/rfc/rfc2396.txt") != nil)
     }
 
     @Test
-    func uncastableUrls() {
+    func uncastable_urls() {
         #expect(URL(castableString: "ftp://ftp.is.co.za/rfc/rfc1808.txt") == nil)
         #expect(URL(castableString: "ldap://[2001:db8::7]/c=GB?objectClass?one") == nil)
         #expect(URL(castableString: "mailto:John.Doe@example.com") == nil)
