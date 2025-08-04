@@ -32,10 +32,10 @@ private extension SliderView {
                 Text("Current position")
             },
             minimumValueLabel: {
-                label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                text(progressTracker.time)
             },
             maximumValueLabel: {
-                label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                text(progressTracker.timeRange.duration)
             }
         )
     }
@@ -47,39 +47,19 @@ private extension SliderView {
         .disabled(!player.canSkipToDefault())
     }
 
-    @ViewBuilder
-    func label(withText text: String?) -> some View {
-        if let text {
-            Text(text)
-                .font(.caption)
-                .monospacedDigit()
-                .foregroundColor(.primary)
+    private func text(_ time: CMTime) -> some View {
+        Group {
+            if !progressTracker.timeRange.isEmpty {
+                if progressTracker.timeRange.duration.seconds < 60 * 60 {
+                    Text(time, format: .shortPlayerTime)
+                }
+                else {
+                    Text(time, format: .longPlayerTime)
+                }
+            }
         }
-    }
-}
-
-private extension SliderView {
-    static let shortFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute]
-        formatter.zeroFormattingBehavior = .pad
-        return formatter
-    }()
-
-    static let longFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute, .hour]
-        formatter.zeroFormattingBehavior = .pad
-        return formatter
-    }()
-
-    static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
-        guard time.isValid, duration.isValid else { return nil }
-        if duration.seconds < 60 * 60 {
-            return shortFormatter.string(from: time.seconds)!
-        }
-        else {
-            return longFormatter.string(from: time.seconds)!
-        }
+        .font(.caption)
+        .monospacedDigit()
+        .foregroundColor(.primary)
     }
 }
