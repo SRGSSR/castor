@@ -44,7 +44,7 @@ private struct LocalPlayerView: View {
                 else {
                     artwork()
                 }
-                PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+                controls()
             }
         }
         .animation(.default, value: player.mediaType)
@@ -58,6 +58,10 @@ private struct LocalPlayerView: View {
                 .aspectRatio(contentMode: .fit)
         }
     }
+
+    private func controls() -> some View {
+        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+    }
 }
 
 private struct RemotePlayerView: View {
@@ -66,7 +70,7 @@ private struct RemotePlayerView: View {
     var body: some View {
         ZStack {
             artwork()
-            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            controls()
         }
     }
 
@@ -78,6 +82,10 @@ private struct RemotePlayerView: View {
         } placeholder: {
             EmptyView()
         }
+    }
+
+    private func controls() -> some View {
+        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
     }
 }
 
