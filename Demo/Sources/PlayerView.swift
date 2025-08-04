@@ -73,6 +73,15 @@ private struct LocalSlider: View {
     @StateObject private var progressTracker: ProgressTracker = .init(interval: .init(value: 1, timescale: 10))
 
     var body: some View {
+        ZStack {
+            if progressTracker.isProgressAvailable {
+                slider()
+            }
+        }
+        .bind(progressTracker, to: player)
+    }
+
+    private func slider() -> some View {
         Slider(progressTracker: progressTracker) {
             Text("Current position")
         } minimumValueLabel: {
@@ -80,7 +89,6 @@ private struct LocalSlider: View {
         } maximumValueLabel: {
             text(progressTracker.timeRange.duration)
         }
-        .bind(progressTracker, to: player)
     }
 
     @ViewBuilder
@@ -128,6 +136,15 @@ private struct RemoteSlider: View {
     @StateObject private var progressTracker: CastProgressTracker = .init(interval: .init(value: 1, timescale: 10))
 
     var body: some View {
+        ZStack {
+            if progressTracker.isProgressAvailable {
+                slider()
+            }
+        }
+        .bind(progressTracker, to: player)
+    }
+
+    private func slider() -> some View {
         Slider(progressTracker: progressTracker) {
             Text("Current position")
         } minimumValueLabel: {
@@ -135,7 +152,6 @@ private struct RemoteSlider: View {
         } maximumValueLabel: {
             text(progressTracker.timeRange.duration)
         }
-        .bind(progressTracker, to: player)
     }
 
     @ViewBuilder
