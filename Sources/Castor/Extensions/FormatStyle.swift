@@ -11,7 +11,7 @@ public struct PlayerTimeShortFormatStyle: FormatStyle {
     // swiftlint:disable:next missing_docs
     public func format(_ time: CMTime) -> String {
         let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute]
+        formatter.allowedUnits = [.minute, .second]
         formatter.zeroFormattingBehavior = .pad
         if time.isValid, let format = formatter.string(from: time.seconds) {
             return format
@@ -27,7 +27,7 @@ public struct PlayerTimeLongFormatStyle: FormatStyle {
     // swiftlint:disable:next missing_docs
     public func format(_ time: CMTime) -> String {
         let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute, .hour]
+        formatter.allowedUnits = [.hour, .minute, .second]
         formatter.zeroFormattingBehavior = .pad
         if time.isValid, let format = formatter.string(from: time.seconds) {
             return format
