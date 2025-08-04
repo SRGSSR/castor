@@ -60,7 +60,21 @@ private struct LocalPlayerView: View {
     }
 
     private func controls() -> some View {
-        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        ZStack {
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            LocalSlider(player: player)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        }
+    }
+}
+
+private struct LocalSlider: View {
+    @ObservedObject var player: Player
+    @StateObject private var progressTracker: ProgressTracker = .init(interval: .init(value: 1, timescale: 10))
+
+    var body: some View {
+        Slider(progressTracker: progressTracker)
+            .bind(progressTracker, to: player)
     }
 }
 
@@ -85,7 +99,21 @@ private struct RemotePlayerView: View {
     }
 
     private func controls() -> some View {
-        PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        ZStack {
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            RemoteSlider(player: player)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        }
+    }
+}
+
+private struct RemoteSlider: View {
+    @ObservedObject var player: CastPlayer
+    @StateObject private var progressTracker: CastProgressTracker = .init(interval: .init(value: 1, timescale: 10))
+
+    var body: some View {
+        Slider(progressTracker: progressTracker)
+            .bind(progressTracker, to: player)
     }
 }
 
