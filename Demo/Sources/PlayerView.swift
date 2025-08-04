@@ -73,8 +73,30 @@ private struct LocalSlider: View {
     @StateObject private var progressTracker: ProgressTracker = .init(interval: .init(value: 1, timescale: 10))
 
     var body: some View {
-        Slider(progressTracker: progressTracker)
-            .bind(progressTracker, to: player)
+        Slider(progressTracker: progressTracker) {
+            Text("Current position")
+        } minimumValueLabel: {
+            text(progressTracker.time)
+        } maximumValueLabel: {
+            text(progressTracker.timeRange.duration)
+        }
+        .bind(progressTracker, to: player)
+    }
+
+    private func text(_ time: CMTime) -> some View {
+        Group {
+            if !progressTracker.timeRange.isEmpty {
+                if progressTracker.timeRange.duration.seconds < 60 * 60 {
+                    Text(time, format: .shortPlayerTime)
+                }
+                else {
+                    Text(time, format: .longPlayerTime)
+                }
+            }
+        }
+        .font(.caption)
+        .monospacedDigit()
+        .foregroundColor(player.mediaType == .video ? .white : .primary)
     }
 }
 
@@ -112,8 +134,30 @@ private struct RemoteSlider: View {
     @StateObject private var progressTracker: CastProgressTracker = .init(interval: .init(value: 1, timescale: 10))
 
     var body: some View {
-        Slider(progressTracker: progressTracker)
-            .bind(progressTracker, to: player)
+        Slider(progressTracker: progressTracker) {
+            Text("Current position")
+        } minimumValueLabel: {
+            text(progressTracker.time)
+        } maximumValueLabel: {
+            text(progressTracker.timeRange.duration)
+        }
+        .bind(progressTracker, to: player)
+    }
+
+    private func text(_ time: CMTime) -> some View {
+        Group {
+            if !progressTracker.timeRange.isEmpty {
+                if progressTracker.timeRange.duration.seconds < 60 * 60 {
+                    Text(time, format: .shortPlayerTime)
+                }
+                else {
+                    Text(time, format: .longPlayerTime)
+                }
+            }
+        }
+        .font(.caption)
+        .monospacedDigit()
+        .foregroundColor(.primary)
     }
 }
 
