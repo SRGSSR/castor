@@ -47,19 +47,13 @@ private extension SliderView {
         .disabled(!player.canSkipToDefault())
     }
 
+    @ViewBuilder
     private func text(_ time: CMTime) -> some View {
-        Group {
-            if !progressTracker.timeRange.isEmpty {
-                if progressTracker.timeRange.duration.seconds < 60 * 60 {
-                    Text(time, format: .shortPlayerTime)
-                }
-                else {
-                    Text(time, format: .longPlayerTime)
-                }
-            }
+        if !progressTracker.timeRange.isEmpty {
+            Text(time, format: .adaptivePlayerTime(duration: progressTracker.timeRange.duration.seconds))
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundColor(.primary)
         }
-        .font(.caption)
-        .monospacedDigit()
-        .foregroundColor(.primary)
     }
 }
