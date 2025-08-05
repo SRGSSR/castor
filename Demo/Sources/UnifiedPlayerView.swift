@@ -9,27 +9,6 @@ import Castor
 import PillarboxPlayer
 import SwiftUI
 
-private struct RemotePlaybackView: View {
-    @ObservedObject var player: CastPlayer
-
-    var body: some View {
-        ZStack {
-            artwork()
-            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
-        }
-    }
-
-    private func artwork() -> some View {
-        AsyncImage(url: player.metadata?.imageUrl()) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        } placeholder: {
-            EmptyView()
-        }
-    }
-}
-
 struct UnifiedPlayerView: View {
     let media: Media?
 
@@ -79,7 +58,7 @@ struct UnifiedPlayerView: View {
             RemotePlaybackView(player: remotePlayer)
         }
         else {
-            LocalPlaybackView(player: model.player)
+            LocalPlaybackView(model: model, player: model.player)
         }
     }
 

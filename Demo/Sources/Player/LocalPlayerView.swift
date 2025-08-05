@@ -18,7 +18,7 @@ struct LocalPlayerView: View {
 
     var body: some View {
         NavigationStack {
-            LocalPlaybackView(player: model.player)
+            LocalPlaybackView(model: model, player: model.player)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         closeButton()
