@@ -9,14 +9,14 @@ import SwiftUI
 @objc
 enum PlayerType: Int, CaseIterable {
     case standard
-    case custom
+    case unified
 
     var name: LocalizedStringKey {
         switch self {
         case .standard:
             "Standard"
-        case .custom:
-            "Custom"
+        case .unified:
+            "Unified"
         }
     }
 }

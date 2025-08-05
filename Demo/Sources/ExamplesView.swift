@@ -12,6 +12,9 @@ struct ExamplesView: View {
     @EnvironmentObject private var cast: Cast
     @EnvironmentObject private var router: Router
 
+    @AppStorage(UserDefaults.DemoSettingKey.playerType)
+    private var playerType: PlayerType = .standard
+
     var body: some View {
         List {
             section("HLS streams", medias: kHlsUrlMedias)
@@ -34,7 +37,17 @@ struct ExamplesView: View {
 
     private func button(for media: Media) -> some View {
         Button {
-            router.presented = .player(media: media)
+            switch playerType {
+            case .standard:
+                if let player = cast.player {
+                    player.loadItem(from: media.asset())
+                }
+                else {
+                    router.presented = .localPlayer(media: media)
+                }
+            case .unified:
+                router.presented = .unifiedPlayer(media: media)
+            }
         } label: {
             Text(media.title)
         }
