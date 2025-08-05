@@ -31,7 +31,7 @@ private struct RemotePlaybackView: View {
 }
 
 struct UnifiedPlayerView: View {
-    let media: Media
+    let media: Media?
 
     @EnvironmentObject private var cast: Cast
     @State private var model = PlayerViewModel()
@@ -61,6 +61,7 @@ struct UnifiedPlayerView: View {
             }
         }
         .onAppear {
+            guard let media else { return }
             if let remotePlayer = cast.player {
                 remotePlayer.loadItem(from: media.asset())
             }

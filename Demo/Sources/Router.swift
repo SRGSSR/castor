@@ -17,7 +17,11 @@ extension Router {
     enum Destination: Identifiable, Hashable {
         case localPlayer(media: Media)
         case remotePlayer
-        case unifiedPlayer(media: Media)
+        case unifiedPlayer(media: Media?)
+
+        static var unifiedPlayer: Self {
+            .unifiedPlayer(media: nil)
+        }
 
         var id: String {
             switch self {
