@@ -42,6 +42,17 @@ final class PlayerViewModel {
     }
 }
 
+extension PlayerViewModel {
+    func prependItems(from medias: [Media]) {
+    }
+    func insertItemsBeforeCurrent(from medias: [Media]) {
+    }
+    func insertItemsAfterCurrent(from medias: [Media]) {
+    }
+    func appendItems(from medias: [Media]) {
+    }
+}
+
 extension PlayerViewModel: Castable {
     func castStartSession() -> CastResumeState? {
         let resumeState = CastResumeState(assets: castAssets(), index: currentIndex(), time: time())
