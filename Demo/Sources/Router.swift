@@ -46,6 +46,21 @@ extension Router {
 }
 
 extension Router: CastDelegate {
-    func castStartSession() {}
-    func castEndSession(with state: CastResumeState?) {}
+    func castStartSession() {
+        switch presented {
+        case .localPlayer:
+            presented = nil
+        default:
+            break
+        }
+    }
+
+    func castEndSession(with state: CastResumeState?) {
+        switch presented {
+        case .remotePlayer:
+            presented = nil
+        default:
+            break
+        }
+    }
 }
