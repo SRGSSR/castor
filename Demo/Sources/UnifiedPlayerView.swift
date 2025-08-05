@@ -9,58 +9,7 @@ import Castor
 import PillarboxPlayer
 import SwiftUI
 
-private struct PlaybackButton: View {
-    let shouldPlay: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button {
-            action()
-        } label: {
-            Image(systemName: shouldPlay ? "pause.fill" : "play.fill")
-        }
-        .font(.system(size: 44))
-    }
-
-    init(shouldPlay: Bool, perform action: @escaping () -> Void) {
-        self.shouldPlay = shouldPlay
-        self.action = action
-    }
-}
-
-private struct LocalPlayerView: View {
-    @ObservedObject var player: Player
-
-    var body: some View {
-        ZStack {
-            if let error = player.error {
-                Text(error.localizedDescription)
-            }
-            else {
-                if player.mediaType == .video {
-                    VideoView(player: player)
-                        .background(.black)
-                }
-                else {
-                    artwork()
-                }
-                PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
-            }
-        }
-        .animation(.default, value: player.mediaType)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private func artwork() -> some View {
-        LazyImage(source: player.metadata.imageSource) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        }
-    }
-}
-
-private struct RemotePlayerView: View {
+private struct RemotePlaybackView: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
@@ -81,17 +30,14 @@ private struct RemotePlayerView: View {
     }
 }
 
-struct PlayerView: View {
-    let media: Media?
+struct UnifiedPlayerView: View {
+    let media: Media
 
     @EnvironmentObject private var cast: Cast
     @State private var model = PlayerViewModel()
 
     @State private var isSelectionPresented = false
     @Environment(\.dismiss) private var dismiss
-
-    @AppStorage(UserDefaults.DemoSettingKey.playerType)
-    private var playerType: PlayerType = .standard
 
     var body: some View {
         NavigationStack {
@@ -115,7 +61,6 @@ struct PlayerView: View {
             }
         }
         .onAppear {
-            guard let media else { return }
             if let remotePlayer = cast.player {
                 remotePlayer.loadItem(from: media.asset())
             }
@@ -130,15 +75,10 @@ struct PlayerView: View {
     @ViewBuilder
     func mainView() -> some View {
         if let remotePlayer = cast.player {
-            switch playerType {
-            case .standard:
-                CastPlayerView(cast: cast)
-            case .custom:
-                RemotePlayerView(player: remotePlayer)
-            }
+            RemotePlaybackView(player: remotePlayer)
         }
         else {
-            LocalPlayerView(player: model.player)
+            LocalPlaybackView(player: model.player)
         }
     }
 

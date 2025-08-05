@@ -15,12 +15,18 @@ final class Router: ObservableObject {
 
 extension Router {
     enum Destination: Identifiable, Hashable {
-        case player(media: Media?)
+        case localPlayer(media: Media)
+        case remotePlayer
+        case unifiedPlayer(media: Media)
 
         var id: String {
             switch self {
-            case .player:
-                "player"
+            case .localPlayer:
+                "localPlayer"
+            case .remotePlayer:
+                "remotePlayer"
+            case .unifiedPlayer:
+                "unifiedPlayer"
             }
         }
 
@@ -28,8 +34,12 @@ extension Router {
         @ViewBuilder
         func view() -> some View {
             switch self {
-            case let .player(media: media):
-                PlayerView(media: media)
+            case let .localPlayer(media: media):
+                LocalPlayerView(media: media)
+            case .remotePlayer:
+                RemotePlayerView()
+            case let .unifiedPlayer(media: media):
+                UnifiedPlayerView(media: media)
             }
         }
     }
