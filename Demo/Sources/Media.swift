@@ -36,7 +36,7 @@ struct Media: Hashable, Identifiable {
         }
     }
 
-    func playerItem(with configuration: PlaybackConfiguration) -> PlayerItem {
+    func playerItem(with configuration: PlaybackConfiguration = .default) -> PlayerItem {
         switch type {
         case let .url(url):
             return .simple(url: url, metadata: self, configuration: configuration)

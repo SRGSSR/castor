@@ -36,7 +36,33 @@ struct UnifiedPlayerView: View {
         }
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
-                PlaylistSelectionView(player: cast.player)
+                PlaylistSelectionView { option, medias in
+                    if let remotePlayer = cast.player {
+                        let assets = medias.map { $0.asset() }
+                        switch option {
+                        case .prepend:
+                            remotePlayer.prependItems(from: assets)
+                        case .insertBefore:
+                            remotePlayer.insertItems(from: assets, before: remotePlayer.currentItem)
+                        case .insertAfter:
+                            remotePlayer.insertItems(from: assets, after: remotePlayer.currentItem)
+                        case .append:
+                            remotePlayer.appendItems(from: assets)
+                        }
+                    }
+                    else {
+                        switch option {
+                        case .prepend:
+                            model.prependItems(from: medias)
+                        case .insertBefore:
+                            model.insertItemsBeforeCurrent(from: medias)
+                        case .insertAfter:
+                            model.insertItemsAfterCurrent(from: medias)
+                        case .append:
+                            model.appendItems(from: medias)
+                        }
+                    }
+                }
             }
         }
         .onAppear {
