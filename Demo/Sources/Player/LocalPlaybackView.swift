@@ -8,6 +8,7 @@ import PillarboxPlayer
 import SwiftUI
 
 struct LocalPlaybackView: View {
+    let model: PlayerViewModel
     @ObservedObject var player: Player
 
     var body: some View {
@@ -16,18 +17,36 @@ struct LocalPlaybackView: View {
                 Text(error.localizedDescription)
             }
             else {
-                if player.mediaType == .video {
-                    VideoView(player: player)
-                        .background(.black)
+                VStack(spacing: 0) {
+                    mainView()
+                    playlistView()
                 }
-                else {
-                    artwork()
-                }
-                PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
             }
         }
         .animation(.default, value: player.mediaType)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func mainView() -> some View {
+        ZStack {
+            if player.mediaType == .video {
+                VideoView(player: player)
+                    .background(.black)
+            }
+            else {
+                artwork()
+            }
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func playlistView() -> some View {
+        List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
+            if let index = player.items.firstIndex(of: item), let media = model.content?.medias[safeIndex: index] {
+                Text(media.title)
+            }
+        }
     }
 
     private func artwork() -> some View {
