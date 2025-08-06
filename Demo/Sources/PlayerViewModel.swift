@@ -56,12 +56,21 @@ final class PlayerViewModel {
 
 extension PlayerViewModel {
     func prependItems(from medias: [Media]) {
+        self.medias.insert(contentsOf: medias, at: 0)
     }
+
     func insertItemsBeforeCurrent(from medias: [Media]) {
+        guard let index = currentIndex() else { return }
+        self.medias.insert(contentsOf: medias, at: index)
     }
+
     func insertItemsAfterCurrent(from medias: [Media]) {
+        guard let index = currentIndex() else { return }
+        self.medias.insert(contentsOf: medias, at: player.items.index(after: index))
     }
+
     func appendItems(from medias: [Media]) {
+        self.medias.append(contentsOf: medias)
     }
 }
 
