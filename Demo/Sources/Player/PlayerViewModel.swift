@@ -11,12 +11,12 @@ import PillarboxCoreBusiness
 import PillarboxPlayer
 import SwiftUI
 
-struct StartInfo {
+private struct StartInfo {
     let index: Int
     let time: CMTime
 }
 
-final class PlayerViewModel {
+final class PlayerViewModel: ObservableObject {
     let player = Player()
 
     private var timeRange: CMTimeRange = .invalid
@@ -24,21 +24,16 @@ final class PlayerViewModel {
 
     private var startInfo: StartInfo?
 
-    var medias: [Media] = [] {
+    @Published var entries: [PlaylistEntry] = [] {
         didSet {
-            player.items = medias.enumerated().compactMap { index, media in
-                guard index != currentIndex() else { return player.currentItem }
-                return media.playerItem(with: .init(position: at(startInfo?.time ?? .zero)))
-            }
-
-            if let startInfo {
-                player.currentItem = player.items[safeIndex: startInfo.index]
-            }
-            else if let index = currentIndex(), let currentMedia = oldValue[safeIndex: index], let mediaIndex = medias.firstIndex(of: currentMedia) {
-                player.currentItem = player.items[safeIndex: mediaIndex]
-            }
-
+            player.items = entries.map(\.item)
             startInfo = nil
+        }
+    }
+
+    @Published var currentEntry: PlaylistEntry? {
+        didSet {
+            player.currentItem = currentEntry?.item
         }
     }
 
@@ -47,38 +42,48 @@ final class PlayerViewModel {
             .slice(at: \.seekableTimeRange)
             .weakAssign(to: \.timeRange, on: self)
             .store(in: &cancellables)
+
+        configureCurrentEntryPublisher()
     }
 
     func play() {
         player.becomeActive()
         player.play()
     }
+
+    private func configureCurrentEntryPublisher() {
+        Publishers.CombineLatest(player.$currentItem, $entries)
+            .map { item, entries in
+                entries.first { $0.item == item }
+            }
+            .assign(to: &$currentEntry)
+    }
 }
 
 extension PlayerViewModel {
-    func prependItems(from medias: [Media]) {
-        self.medias.insert(contentsOf: medias, at: 0)
+    func prependItems(from entries: [PlaylistEntry]) {
+        self.entries.insert(contentsOf: entries, at: 0)
     }
 
-    func insertItemsBeforeCurrent(from medias: [Media]) {
+    func insertItemsBeforeCurrent(from entries: [PlaylistEntry]) {
         guard let index = currentIndex() else { return }
-        self.medias.insert(contentsOf: medias, at: index)
+        self.entries.insert(contentsOf: entries, at: index)
     }
 
-    func insertItemsAfterCurrent(from medias: [Media]) {
+    func insertItemsAfterCurrent(from entries: [PlaylistEntry]) {
         guard let index = currentIndex() else { return }
-        self.medias.insert(contentsOf: medias, at: player.items.index(after: index))
+        self.entries.insert(contentsOf: entries, at: player.items.index(after: index))
     }
 
-    func appendItems(from medias: [Media]) {
-        self.medias.append(contentsOf: medias)
+    func appendItems(from entries: [PlaylistEntry]) {
+        self.entries.append(contentsOf: entries)
     }
 }
 
 extension PlayerViewModel: Castable {
     func castStartSession() -> CastResumeState? {
         let resumeState = CastResumeState(assets: castAssets(), index: currentIndex(), time: time())
-        medias = []
+        entries = []
         return resumeState
     }
 
@@ -86,16 +91,16 @@ extension PlayerViewModel: Castable {
         if let state {
             let startTime = state.time.isValid ? state.time : .zero
             startInfo = .init(index: state.index, time: startTime)
-            medias = state.assets.map { Media(from: $0) }
+            entries = state.assets.map { .init(media: Media(from: $0)) }
             play()
         }
         else {
-            medias = []
+            entries = []
         }
     }
 
     private func castAssets() -> [CastAsset] {
-        medias.map { media in
+        entries.map(\.media).map { media in
             switch media.type {
             case let .url(url):
                 return .simple(url: url, metadata: media.castMetadata())
@@ -106,8 +111,8 @@ extension PlayerViewModel: Castable {
     }
 
     private func currentIndex() -> Int? {
-        guard let currentItem = player.currentItem else { return nil }
-        return player.items.firstIndex(of: currentItem)
+        guard let currentEntry else { return nil }
+        return entries.firstIndex(of: currentEntry)
     }
 
     private func time() -> CMTime {
