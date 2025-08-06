@@ -51,15 +51,16 @@ struct UnifiedPlayerView: View {
                         }
                     }
                     else {
+                        let entries = medias.map(PlaylistEntry.init)
                         switch option {
                         case .prepend:
-                            model.prependItems(from: medias)
+                            model.prependItems(from: entries)
                         case .insertBefore:
-                            model.insertItemsBeforeCurrent(from: medias)
+                            model.insertItemsBeforeCurrent(from: entries)
                         case .insertAfter:
-                            model.insertItemsAfterCurrent(from: medias)
+                            model.insertItemsAfterCurrent(from: entries)
                         case .append:
-                            model.appendItems(from: medias)
+                            model.appendItems(from: entries)
                         }
                     }
                 }
@@ -71,7 +72,7 @@ struct UnifiedPlayerView: View {
                 remotePlayer.loadItem(from: media.asset())
             }
             else {
-                model.medias = [media]
+                model.entries = [.init(media: media)]
                 model.play()
             }
         }

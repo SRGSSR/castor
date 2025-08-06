@@ -8,7 +8,7 @@ import PillarboxPlayer
 import SwiftUI
 
 struct LocalPlaybackView: View {
-    let model: PlayerViewModel
+    @ObservedObject var model: PlayerViewModel
     @ObservedObject var player: Player
 
     var body: some View {
@@ -42,10 +42,8 @@ struct LocalPlaybackView: View {
     }
 
     private func playlistView() -> some View {
-        List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
-            if let index = player.items.firstIndex(of: item), let media = model.medias[safeIndex: index] {
-                Text(media.title)
-            }
+        List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
+            Text(entry.media.title)
         }
     }
 

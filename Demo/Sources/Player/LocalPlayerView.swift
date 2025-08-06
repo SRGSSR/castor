@@ -11,7 +11,7 @@ struct LocalPlayerView: View {
     let media: Media
 
     @EnvironmentObject private var cast: Cast
-    @State private var model = PlayerViewModel()
+    @StateObject private var model = PlayerViewModel()
 
     @State private var isSelectionPresented = false
     @Environment(\.dismiss) private var dismiss
@@ -35,15 +35,16 @@ struct LocalPlayerView: View {
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
+                    let entries = medias.map(PlaylistEntry.init)
                     switch option {
                     case .prepend:
-                        model.prependItems(from: medias)
+                        model.prependItems(from: entries)
                     case .insertBefore:
-                        model.insertItemsBeforeCurrent(from: medias)
+                        model.insertItemsBeforeCurrent(from: entries)
                     case .insertAfter:
-                        model.insertItemsAfterCurrent(from: medias)
+                        model.insertItemsAfterCurrent(from: entries)
                     case .append:
-                        model.appendItems(from: medias)
+                        model.appendItems(from: entries)
                     }
                 }
             }
@@ -53,7 +54,7 @@ struct LocalPlayerView: View {
                 remotePlayer.loadItem(from: media.asset())
             }
             else {
-                model.medias = [media]
+                model.entries = [.init(media: media)]
                 model.play()
             }
         }
