@@ -43,7 +43,7 @@ struct LocalPlaybackView: View {
 
     private func playlistView() -> some View {
         List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
-            if let index = player.items.firstIndex(of: item), let media = model.content?.medias[safeIndex: index] {
+            if let index = player.items.firstIndex(of: item), let media = model.medias[safeIndex: index] {
                 Text(media.title)
             }
         }

@@ -71,7 +71,7 @@ struct UnifiedPlayerView: View {
                 remotePlayer.loadItem(from: media.asset())
             }
             else {
-                model.content = .init(medias: [media])
+                model.medias = [media]
                 model.play()
             }
         }

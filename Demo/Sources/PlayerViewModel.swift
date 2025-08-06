@@ -11,21 +11,33 @@ import PillarboxCoreBusiness
 import PillarboxPlayer
 import SwiftUI
 
+struct StartInfo {
+    let index: Int
+    let time: CMTime
+}
+
 final class PlayerViewModel {
     let player = Player()
 
     private var timeRange: CMTimeRange = .invalid
     private var cancellables = Set<AnyCancellable>()
 
-    var content: PlayerContent? {
+    private var startInfo: StartInfo?
+
+    var medias: [Media] = [] {
         didSet {
-            if let content {
-                player.items = content.items()
-                player.currentItem = player.items[safeIndex: content.startIndex]
+            player.items = medias.map { media in
+                if let time = startInfo?.time {
+                    media.playerItem(with: .init(position: at(time)))
+                }
+                else {
+                    media.playerItem()
+                }
             }
-            else {
-                player.removeAllItems()
+            if let startInfo {
+                player.currentItem = player.items[safeIndex: startInfo.index]
             }
+            startInfo = nil
         }
     }
 
@@ -56,24 +68,24 @@ extension PlayerViewModel {
 extension PlayerViewModel: Castable {
     func castStartSession() -> CastResumeState? {
         let resumeState = CastResumeState(assets: castAssets(), index: currentIndex(), time: time())
-        content = nil
+        medias = []
         return resumeState
     }
 
     func castEndSession(with state: CastResumeState?) {
         if let state {
             let startTime = state.time.isValid ? state.time : .zero
-            content = .init(medias: state.assets.map { Media(from: $0) }, startIndex: state.index, startTime: startTime)
+            startInfo = .init(index: state.index, time: startTime)
+            medias = state.assets.map { Media(from: $0) }
             play()
         }
         else {
-            content = nil
+            medias = []
         }
     }
 
     private func castAssets() -> [CastAsset] {
-        guard let content else { return [] }
-        return content.medias.map { media in
+        medias.map { media in
             switch media.type {
             case let .url(url):
                 return .simple(url: url, metadata: media.castMetadata())
