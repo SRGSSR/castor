@@ -26,17 +26,18 @@ final class PlayerViewModel {
 
     var medias: [Media] = [] {
         didSet {
-            player.items = medias.map { media in
-                if let time = startInfo?.time {
-                    media.playerItem(with: .init(position: at(time)))
-                }
-                else {
-                    media.playerItem()
-                }
+            player.items = medias.enumerated().compactMap { index, media in
+                guard index != currentIndex() else { return player.currentItem }
+                return media.playerItem(with: .init(position: at(startInfo?.time ?? .zero)))
             }
+
             if let startInfo {
                 player.currentItem = player.items[safeIndex: startInfo.index]
             }
+            else if let index = currentIndex(), let currentMedia = oldValue[safeIndex: index], let mediaIndex = medias.firstIndex(of: currentMedia) {
+                player.currentItem = player.items[safeIndex: mediaIndex]
+            }
+
             startInfo = nil
         }
     }
