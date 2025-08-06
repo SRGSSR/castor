@@ -91,7 +91,7 @@ extension PlayerViewModel: Castable {
         if let state {
             let startTime = state.time.isValid ? state.time : .zero
             startInfo = .init(index: state.index, time: startTime)
-            entries = state.assets.map { .init(media: Media(from: $0)) }
+            entries = state.assets.map { .init(media: Media(from: $0), startTime: startTime) }
             play()
         }
         else {

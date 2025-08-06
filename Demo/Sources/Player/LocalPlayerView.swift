@@ -35,7 +35,7 @@ struct LocalPlayerView: View {
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
-                    let entries = medias.map(PlaylistEntry.init)
+                    let entries = medias.map { PlaylistEntry(media: $0) }
                     switch option {
                     case .prepend:
                         model.prependItems(from: entries)

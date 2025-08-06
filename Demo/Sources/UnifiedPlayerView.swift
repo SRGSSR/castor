@@ -51,7 +51,7 @@ struct UnifiedPlayerView: View {
                         }
                     }
                     else {
-                        let entries = medias.map(PlaylistEntry.init)
+                        let entries = medias.map { PlaylistEntry(media: $0) }
                         switch option {
                         case .prepend:
                             model.prependItems(from: entries)
