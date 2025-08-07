@@ -11,23 +11,15 @@ import PillarboxCoreBusiness
 import PillarboxPlayer
 import SwiftUI
 
-private struct StartInfo {
-    let index: Int
-    let time: CMTime
-}
-
 final class PlayerViewModel: ObservableObject {
     let player = Player()
 
     private var timeRange: CMTimeRange = .invalid
     private var cancellables = Set<AnyCancellable>()
 
-    private var startInfo: StartInfo?
-
     @Published var entries: [PlaylistEntry] = [] {
         didSet {
             player.items = entries.map(\.item)
-            startInfo = nil
         }
     }
 
@@ -90,7 +82,6 @@ extension PlayerViewModel: Castable {
     func castEndSession(with state: CastResumeState?) {
         if let state {
             let startTime = state.time.isValid ? state.time : .zero
-            startInfo = .init(index: state.index, time: startTime)
             entries = state.assets.map { .init(media: Media(from: $0), startTime: startTime) }
             play()
         }
