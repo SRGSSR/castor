@@ -36,9 +36,19 @@ struct LocalPlaybackView: View {
             else {
                 artwork()
             }
-            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            controls()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func controls() -> some View {
+        ZStack {
+            Color(white: 0, opacity: 0.2)
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            TimeBar(player: player)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                .padding()
+        }
     }
 
     private func playlistView() -> some View {
@@ -53,5 +63,16 @@ struct LocalPlaybackView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
         }
+    }
+}
+
+private struct TimeBar: View {
+    let player: Player
+
+    @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 10))
+
+    var body: some View {
+        Slider(progressTracker: progressTracker)
+            .bind(progressTracker, to: player)
     }
 }
