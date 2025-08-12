@@ -107,7 +107,7 @@ let kMP3UrlMedias: [Media] = [
     .init(
         title: "Couleur 3",
         imageUrl: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640",
-        type: .url("http://stream.srg-ssr.ch/m/couleur3/mp3_128")
+        type: .url("https://stream.srg-ssr.ch/m/couleur3/mp3_128")
     ),
     .init(
         title: "Radio Chablais",
@@ -117,7 +117,7 @@ let kMP3UrlMedias: [Media] = [
     .init(
         title: "Skyrock",
         imageUrl: "https://www.radio.net/300/skyrock.png",
-        type: .url("http://icecast.skyrock.net/s/natio_mp3_128k")
+        type: .url("https://icecast.skyrock.net/s/natio_mp3_128k")
     ),
     .init(
         title: "Country Radio Gilsdorf",
