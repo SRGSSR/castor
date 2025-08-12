@@ -21,7 +21,7 @@ private struct ItemCell: View {
     }
 
     private var title: String {
-        guard item.isFetched else { return "" }
+        guard item.isFetched else { return "..." }
         return item.metadata?.title ?? "Untitled"
     }
 
