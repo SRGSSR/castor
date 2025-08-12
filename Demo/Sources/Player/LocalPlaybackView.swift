@@ -75,11 +75,14 @@ struct LocalPlaybackView: View {
             if let error = player.error {
                 Text(error.localizedDescription)
             }
-            else {
+            else if !player.items.isEmpty {
                 VStack(spacing: 0) {
                     mainView()
                     playlistView()
                 }
+            }
+            else {
+                Text("No content")
             }
         }
         .animation(.default, value: player.mediaType)
