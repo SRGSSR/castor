@@ -113,6 +113,7 @@ struct RemotePlaybackView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 .padding()
         }
+        .disabled(!player.isActive)
     }
 
     private func playlistView() -> some View {
