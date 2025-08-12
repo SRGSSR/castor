@@ -72,7 +72,7 @@ struct RemotePlaybackView: View {
 
     var body: some View {
         ZStack {
-            if !player.items.isEmpty {
+            if !player.isEmpty {
                 VStack(spacing: 0) {
                     mainView()
                     playlistView()

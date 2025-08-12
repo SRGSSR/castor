@@ -30,6 +30,14 @@ public extension CastPlayer {
         remoteMediaClient.canMakeRequest()
     }
 
+    /// A Boolean value indicating whether the player is empty or not.
+    ///
+    /// > Note: While a playlist is being retrieved, ``CastPlayer/items`` may still be empty even if the player is
+    ///   already considered non-empty.
+    var isEmpty: Bool {
+        currentAsset == nil
+    }
+
     /// The type of stream currently being played.
     var streamType: GCKMediaStreamType {
         rawMediaInformation?.streamType ?? .none
