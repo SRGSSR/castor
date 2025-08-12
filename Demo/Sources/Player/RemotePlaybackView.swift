@@ -22,7 +22,7 @@ private struct ItemCell: View {
 
     private var title: String {
         guard item.isFetched else { return "..." }
-        return item.metadata?.title ?? "Untitled"
+        return item.asset?.metadata?.title ?? "Untitled"
     }
 
     private func disclosureImage() -> some View {
@@ -113,7 +113,7 @@ struct RemotePlaybackView: View {
     }
 
     private func artwork() -> some View {
-        AsyncImage(url: player.metadata?.imageUrl()) { image in
+        AsyncImage(url: player.currentAsset?.metadata?.imageUrl()) { image in
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)

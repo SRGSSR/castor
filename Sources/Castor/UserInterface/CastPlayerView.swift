@@ -73,7 +73,7 @@ private struct _CastPlayerView: View {
     }
 
     private func artworkImage() -> some View {
-        ArtworkImage(url: player.metadata?.imageUrl(matching: .init(type: .background)))
+        ArtworkImage(url: player.currentAsset?.metadata?.imageUrl(matching: .init(type: .background)))
             .scaleEffect(player.shouldPlay ? 1 : 0.95)
             .shadow(color: .primary.opacity(0.15), radius: 6, y: 3)
             .animation(.default, value: player.shouldPlay)
@@ -119,7 +119,7 @@ private struct _CastPlayerView: View {
                     .foregroundStyle(.secondary)
             }
             else {
-                Text(player.metadata?.title ?? "Untitled")
+                Text(player.currentAsset?.metadata?.title ?? "Untitled")
             }
         }
         .bold()
