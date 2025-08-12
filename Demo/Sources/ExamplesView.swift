@@ -37,19 +37,23 @@ struct ExamplesView: View {
 
     private func button(for media: Media) -> some View {
         Button {
-            if let player = cast.player {
-                player.loadItem(from: media.asset())
-            }
-            else {
-                switch playerType {
-                case .standard:
-                    router.presented = .localPlayer(media: media)
-                case .unified:
-                    router.presented = .unifiedPlayer(media: media)
-                }
-            }
+            showPlayer(for: media)
         } label: {
             Text(media.title)
+        }
+    }
+
+    private func showPlayer(for media: Media) {
+        if let player = cast.player {
+            player.loadItem(from: media.asset())
+        }
+        else {
+            switch playerType {
+            case .standard:
+                router.presented = .localPlayer(media: media)
+            case .unified:
+                router.presented = .unifiedPlayer(media: media)
+            }
         }
     }
 

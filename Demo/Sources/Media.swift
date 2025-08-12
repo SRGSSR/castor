@@ -40,8 +40,8 @@ struct Media: Hashable, Identifiable {
         switch type {
         case let .url(url):
             return .simple(url: url, metadata: self, configuration: configuration)
-        case let .urn(identifier):
-            return .urn(identifier, configuration: configuration)
+        case let .urn(urn):
+            return .urn(urn, configuration: configuration)
         }
     }
 
@@ -49,8 +49,8 @@ struct Media: Hashable, Identifiable {
         switch type {
         case let .url(url):
             return .simple(url: url, metadata: castMetadata())
-        case let .urn(identifier):
-            return .custom(identifier: identifier, metadata: castMetadata())
+        case let .urn(urn):
+            return .custom(identifier: urn, metadata: castMetadata())
         }
     }
 
@@ -66,12 +66,8 @@ struct Media: Hashable, Identifiable {
 
 extension Media: AssetMetadata {
     private var imageSource: ImageSource {
-        if let imageUrl {
-            return .url(standardResolution: imageUrl)
-        }
-        else {
-            return .none
-        }
+        guard let imageUrl else { return .none }
+        return .url(standardResolution: imageUrl)
     }
 
     var playerMetadata: PlayerMetadata {

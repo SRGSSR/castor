@@ -55,17 +55,19 @@ struct RootView: View {
             CastMiniPlayerView(cast: cast)
                 .padding(.horizontal)
                 .padding(.vertical, 8)
-                .onTapGesture {
-                    switch playerType {
-                    case .standard:
-                        router.presented = .remotePlayer
-                    case .unified:
-                        router.presented = .unifiedPlayer
-                    }
-                }
+                .onTapGesture(perform: showPlayer)
                 .accessibilityAddTraits(.isButton)
                 .background(.thickMaterial)
                 .frame(height: 64)
+        }
+    }
+
+    private func showPlayer() {
+        switch playerType {
+        case .standard:
+            router.presented = .remotePlayer
+        case .unified:
+            router.presented = .unifiedPlayer
         }
     }
 }
