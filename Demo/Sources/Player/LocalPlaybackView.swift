@@ -46,7 +46,7 @@ private struct LocalTimeBar: View {
 }
 
 private struct LocalPaybackButton: View {
-    let player: Player
+    @ObservedObject var player: Player
 
     @State private var isBusy = false
 
