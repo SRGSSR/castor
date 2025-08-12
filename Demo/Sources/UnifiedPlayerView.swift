@@ -28,11 +28,10 @@ struct UnifiedPlayerView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         addButton()
                     }
-                    ToolbarItem(placement: .topBarTrailing) { // TODO: Should be removed!
+                    ToolbarItem(placement: .topBarTrailing) {
                         CastButton(cast: cast)
                     }
                 }
-                .toolbarBackground(.background, for: .navigationBar)
         }
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
