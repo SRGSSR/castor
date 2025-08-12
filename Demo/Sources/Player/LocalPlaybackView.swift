@@ -57,6 +57,7 @@ private struct LocalPaybackButton: View {
             }
             else {
                 ProgressView()
+                    .tint(.white)
             }
         }
         .onReceive(player: player, assign: \.isBusy, to: $isBusy)

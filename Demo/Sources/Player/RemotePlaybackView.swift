@@ -93,6 +93,7 @@ struct RemotePlaybackView: View {
         }
         else {
             ProgressView()
+                .tint(.white)
         }
     }
 
