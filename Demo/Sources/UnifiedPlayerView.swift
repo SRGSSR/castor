@@ -38,30 +38,10 @@ struct UnifiedPlayerView: View {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
                     if let remotePlayer = cast.player {
-                        let assets = medias.map { $0.asset() }
-                        switch option {
-                        case .prepend:
-                            remotePlayer.prependItems(from: assets)
-                        case .insertBefore:
-                            remotePlayer.insertItems(from: assets, before: remotePlayer.currentItem)
-                        case .insertAfter:
-                            remotePlayer.insertItems(from: assets, after: remotePlayer.currentItem)
-                        case .append:
-                            remotePlayer.appendItems(from: assets)
-                        }
+                        remotePlayer.add(option, medias: medias)
                     }
                     else {
-                        let entries = medias.map { PlaylistEntry(media: $0) }
-                        switch option {
-                        case .prepend:
-                            model.prependItems(from: entries)
-                        case .insertBefore:
-                            model.insertItemsBeforeCurrent(from: entries)
-                        case .insertAfter:
-                            model.insertItemsAfterCurrent(from: entries)
-                        case .append:
-                            model.appendItems(from: entries)
-                        }
+                        model.add(option, medias: medias)
                     }
                 }
             }

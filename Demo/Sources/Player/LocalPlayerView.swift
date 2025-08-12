@@ -35,17 +35,7 @@ struct LocalPlayerView: View {
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
-                    let entries = medias.map { PlaylistEntry(media: $0) }
-                    switch option {
-                    case .prepend:
-                        model.prependItems(from: entries)
-                    case .insertBefore:
-                        model.insertItemsBeforeCurrent(from: entries)
-                    case .insertAfter:
-                        model.insertItemsAfterCurrent(from: entries)
-                    case .append:
-                        model.appendItems(from: entries)
-                    }
+                    model.add(option, medias: medias)
                 }
             }
         }

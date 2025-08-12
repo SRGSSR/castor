@@ -110,3 +110,35 @@ extension PlaylistSelectionView {
         }
     }
 }
+
+extension PlayerViewModel {
+    func add(_ option: PlaylistSelectionView.InsertionOption, medias: [Media]) {
+        let entries = medias.map { PlaylistEntry(media: $0) }
+        switch option {
+        case .prepend:
+            prependItems(from: entries)
+        case .insertBefore:
+            insertItemsBeforeCurrent(from: entries)
+        case .insertAfter:
+            insertItemsAfterCurrent(from: entries)
+        case .append:
+            appendItems(from: entries)
+        }
+    }
+}
+
+extension CastPlayer {
+    func add(_ option: PlaylistSelectionView.InsertionOption, medias: [Media]) {
+        let assets = medias.map { $0.asset() }
+        switch option {
+        case .prepend:
+            prependItems(from: assets)
+        case .insertBefore:
+            insertItems(from: assets, before: currentItem)
+        case .insertAfter:
+            insertItems(from: assets, after: currentItem)
+        case .append:
+            appendItems(from: assets)
+        }
+    }
+}

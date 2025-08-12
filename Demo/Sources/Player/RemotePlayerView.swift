@@ -29,19 +29,8 @@ struct RemotePlayerView: View {
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
-                    if let remotePlayer = cast.player {
-                        let assets = medias.map { $0.asset() }
-                        switch option {
-                        case .prepend:
-                            remotePlayer.prependItems(from: assets)
-                        case .insertBefore:
-                            remotePlayer.insertItems(from: assets, before: remotePlayer.currentItem)
-                        case .insertAfter:
-                            remotePlayer.insertItems(from: assets, after: remotePlayer.currentItem)
-                        case .append:
-                            remotePlayer.appendItems(from: assets)
-                        }
-                    }
+                    guard let remotePlayer = cast.player else { return }
+                    remotePlayer.add(option, medias: medias)
                 }
             }
         }
