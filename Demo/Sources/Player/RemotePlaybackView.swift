@@ -5,6 +5,7 @@
 //
 
 import Castor
+import CoreMedia
 import SwiftUI
 
 private struct ItemCell: View {
@@ -27,6 +28,43 @@ private struct ItemCell: View {
     private func disclosureImage() -> some View {
         Image(systemName: "line.3.horizontal")
             .foregroundStyle(.secondary)
+    }
+}
+
+private struct TimeBar: View {
+    let player: CastPlayer
+
+    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
+
+    private var formattedElapsedTime: String? {
+        CMTime.formattedTime((progressTracker.time - progressTracker.timeRange.start), duration: progressTracker.timeRange.duration)
+    }
+
+    private var formattedTotalTime: String? {
+        CMTime.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration)
+    }
+
+    var body: some View {
+        Slider(progressTracker: progressTracker) {
+            Text("Progress")
+        } minimumValueLabel: {
+            label(withText: formattedElapsedTime)
+        } maximumValueLabel: {
+            label(withText: formattedTotalTime)
+        }
+        .opacity(progressTracker.isProgressAvailable ? 1 : 0)
+        .bind(progressTracker, to: player)
+    }
+
+    @ViewBuilder
+    private func label(withText text: String?) -> some View {
+        if let text {
+            Text(text)
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundColor(.white)
+                .shadow(color: .init(white: 0.2, opacity: 0.8), radius: 15)
+        }
     }
 }
 
@@ -72,17 +110,5 @@ struct RemotePlaybackView: View {
         } placeholder: {
             EmptyView()
         }
-    }
-}
-
-private struct TimeBar: View {
-    let player: CastPlayer
-
-    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
-
-    var body: some View {
-        Slider(progressTracker: progressTracker)
-            .opacity(progressTracker.isProgressAvailable ? 1 : 0)
-            .bind(progressTracker, to: player)
     }
 }
