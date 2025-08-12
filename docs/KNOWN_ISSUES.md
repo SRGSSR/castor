@@ -30,3 +30,11 @@ The Google Cast SDK limits metadata requests to a maximum of 20 visible `CastPla
 ### Workaround
 
 No workaround is available yet.
+
+## Long playlists cannot be loaded
+
+Google Cast imposes a 64 kB [limit](https://developers.google.com/cast/docs/media/messages) on message payloads. This restriction can prevent very large playlists from loading. Because each playlist entry may contain varying amounts of metadata, it’s difficult to define a precise maximum number of items that will fit within this limit.
+
+### Workaround
+
+Limit the number of items in a playlist, or load them in smaller batches.
