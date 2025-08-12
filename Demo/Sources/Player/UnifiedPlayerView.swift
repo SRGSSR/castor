@@ -60,12 +60,15 @@ struct UnifiedPlayerView: View {
 
     @ViewBuilder
     func mainView() -> some View {
-        if let remotePlayer = cast.player {
-            RemotePlaybackView(player: remotePlayer)
+        ZStack {
+            if let remotePlayer = cast.player {
+                RemotePlaybackView(player: remotePlayer)
+            }
+            else {
+                LocalPlaybackView(model: model, player: model.player)
+            }
         }
-        else {
-            LocalPlaybackView(model: model, player: model.player)
-        }
+        .animation(.default, value: cast.player)
     }
 
     private func addButton() -> some View {
