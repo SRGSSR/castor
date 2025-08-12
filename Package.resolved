@@ -1,5 +1,5 @@
 {
-  "originHash" : "28da9d78c78fa1eaae94eea9ee633007848420956f073428efa46afc99687c81",
+  "originHash" : "9e505055bddf52c6b05947e5297f2cd6f450a799ab063c82cc9a4dd71d7dbbb5",
   "pins" : [
     {
       "identity" : "comscore-swift-package-manager",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "revision" : "206116e5f92ba0c6693625f472a58bf6c338e550",
-        "version" : "12.0.0"
+        "branch" : "1265-support-transient-start-item-and-time",
+        "revision" : "c1d0aa7d1c27285b729bfe8fc63576308683ebf7"
       }
     },
     {

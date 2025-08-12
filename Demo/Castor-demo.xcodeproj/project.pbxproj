@@ -526,8 +526,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SRGSSR/pillarbox-apple";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.0.0;
+				branch = "1265-support-transient-start-item-and-time";
+				kind = branch;
 			};
 		};
 		6F93E37F2D9C0CEA00B412AA /* XCRemoteSwiftPackageReference "ShowTime" */ = {
