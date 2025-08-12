@@ -31,7 +31,7 @@ private struct ItemCell: View {
     }
 }
 
-private struct TimeBar: View {
+private struct RemoteTimeBar: View {
     let player: CastPlayer
 
     @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
@@ -86,11 +86,21 @@ struct RemotePlaybackView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    @ViewBuilder
+    private func playbackButton() -> some View {
+        if !player.isBusy {
+            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+        }
+        else {
+            ProgressView()
+        }
+    }
+
     private func controls() -> some View {
         ZStack {
             Color(white: 0, opacity: 0.4)
-            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
-            TimeBar(player: player)
+            playbackButton()
+            RemoteTimeBar(player: player)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 .padding()
         }

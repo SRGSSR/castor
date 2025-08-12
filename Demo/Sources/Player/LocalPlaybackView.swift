@@ -8,7 +8,7 @@ import CoreMedia
 import PillarboxPlayer
 import SwiftUI
 
-private struct TimeBar: View {
+private struct LocalTimeBar: View {
     let player: Player
 
     @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 10))
@@ -42,6 +42,24 @@ private struct TimeBar: View {
                 .foregroundColor(.white)
                 .shadow(color: .init(white: 0.2, opacity: 0.8), radius: 15)
         }
+    }
+}
+
+private struct LocalPaybackButton: View {
+    let player: Player
+
+    @State private var isBusy = false
+
+    var body: some View {
+        ZStack {
+            if !isBusy {
+                PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
+            }
+            else {
+                ProgressView()
+            }
+        }
+        .onReceive(player: player, assign: \.isBusy, to: $isBusy)
     }
 }
 
@@ -87,8 +105,8 @@ struct LocalPlaybackView: View {
     private func controls() -> some View {
         ZStack {
             Color(white: 0, opacity: 0.4)
-            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
-            TimeBar(player: player)
+            LocalPaybackButton(player: player)
+            LocalTimeBar(player: player)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 .padding()
         }
