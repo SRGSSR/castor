@@ -82,7 +82,7 @@ extension PlayerViewModel: Castable {
     func castEndSession(with state: CastResumeState?) {
         if let state {
             entries = state.assets.map { .init(media: Media(from: $0)) }
-            play()
+            resume(from: state)
         }
         else {
             entries = []
@@ -98,6 +98,13 @@ extension PlayerViewModel: Castable {
                 return .custom(identifier: urn, metadata: media.castMetadata())
             }
         }
+    }
+
+    private func resume(from state: CastResumeState?) {
+        guard let state, let entry = entries[safeIndex: state.index] else { return }
+        let startTime = state.time.isValid ? state.time : .zero
+        player.resume(at(startTime), in: entry.item)
+        play()
     }
 
     private func currentIndex() -> Int? {
