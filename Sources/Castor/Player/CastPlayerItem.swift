@@ -27,8 +27,7 @@ public final class CastPlayerItem: ObservableObject {
     ///
     /// Metadata must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.
     public var metadata: CastMetadata? {
-        guard let rawItem else { return nil }
-        return .init(rawMetadata: rawItem.mediaInformation.metadata)
+        .init(rawMetadata: rawItem?.mediaInformation.metadata)
     }
 
     init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {
