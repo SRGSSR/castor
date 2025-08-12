@@ -50,7 +50,7 @@ struct RemotePlaybackView: View {
 
     private func controls() -> some View {
         ZStack {
-            Color(white: 0, opacity: 0.2)
+            Color(white: 0, opacity: 0.4)
             PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
             TimeBar(player: player)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
@@ -82,6 +82,7 @@ private struct TimeBar: View {
 
     var body: some View {
         Slider(progressTracker: progressTracker)
+            .opacity(progressTracker.isProgressAvailable ? 1 : 0)
             .bind(progressTracker, to: player)
     }
 }
