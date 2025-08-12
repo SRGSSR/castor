@@ -82,6 +82,7 @@ struct RemotePlaybackView: View {
                 Text("No content")
             }
         }
+        .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 

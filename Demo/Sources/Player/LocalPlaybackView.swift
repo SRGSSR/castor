@@ -84,7 +84,7 @@ struct LocalPlaybackView: View {
                 Text("No content")
             }
         }
-        .animation(.default, value: player.mediaType)
+        .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .bind(visibilityTracker, to: player)
     }
