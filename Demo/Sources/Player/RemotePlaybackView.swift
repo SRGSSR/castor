@@ -91,7 +91,7 @@ struct RemotePlaybackView: View {
             artwork()
             controls()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .aspectRatio(16 / 9, contentMode: .fit)
     }
 
     @ViewBuilder

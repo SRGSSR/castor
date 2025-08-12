@@ -8,6 +8,23 @@ import CoreMedia
 import PillarboxPlayer
 import SwiftUI
 
+private struct ItemCell: View {
+    let media: Media
+
+    var body: some View {
+        HStack(spacing: 30) {
+            Text(media.title)
+            Spacer()
+            disclosureImage()
+        }
+    }
+
+    private func disclosureImage() -> some View {
+        Image(systemName: "line.3.horizontal")
+            .foregroundStyle(.secondary)
+    }
+}
+
 private struct LocalTimeBar: View {
     let player: Player
 
@@ -102,7 +119,7 @@ struct LocalPlaybackView: View {
         }
         .onTapGesture(perform: visibilityTracker.toggle)
         .accessibilityAddTraits(.isButton)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .aspectRatio(16 / 9, contentMode: .fit)
     }
 
     private func controls() -> some View {
@@ -119,7 +136,7 @@ struct LocalPlaybackView: View {
 
     private func playlistView() -> some View {
         List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
-            Text(entry.media.title)
+            ItemCell(media: entry.media)
         }
     }
 
