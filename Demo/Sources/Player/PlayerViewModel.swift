@@ -81,8 +81,7 @@ extension PlayerViewModel: Castable {
 
     func castEndSession(with state: CastResumeState?) {
         if let state {
-            let startTime = state.time.isValid ? state.time : .zero
-            entries = state.assets.map { .init(media: Media(from: $0), startTime: startTime) }
+            entries = state.assets.map { .init(media: Media(from: $0)) }
             play()
         }
         else {
