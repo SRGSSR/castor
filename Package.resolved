@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "branch" : "1265-support-transient-start-item-and-time",
-        "revision" : "c1d0aa7d1c27285b729bfe8fc63576308683ebf7"
+        "branch" : "main",
+        "revision" : "ef369dd9c09afb0807026fa2ecb074432cb90edc"
       }
     },
     {
