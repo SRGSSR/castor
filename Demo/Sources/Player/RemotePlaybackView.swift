@@ -63,7 +63,6 @@ private struct RemoteTimeBar: View {
                 .font(.caption)
                 .monospacedDigit()
                 .foregroundColor(.white)
-                .shadow(color: .init(white: 0.2, opacity: 0.8), radius: 15)
         }
     }
 }
