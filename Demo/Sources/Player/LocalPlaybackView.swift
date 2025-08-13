@@ -56,7 +56,6 @@ private struct LocalTimeBar: View {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
-                .foregroundColor(.white)
         }
     }
 }
@@ -82,7 +81,6 @@ private struct LocalPaybackButton: View {
         ZStack {
             if isBusy {
                 ProgressView()
-                    .tint(.white)
             }
             else {
                 Button(action: togglePlayPause) {
@@ -107,6 +105,7 @@ private struct LocalPaybackButton: View {
 struct LocalPlaybackView: View {
     @ObservedObject var model: PlayerViewModel
     @ObservedObject var player: Player
+    @Binding var isUserInterfaceHidden: Bool
 
     @StateObject private var visibilityTracker = VisibilityTracker()
 
@@ -125,6 +124,9 @@ struct LocalPlaybackView: View {
                 Text("No content")
             }
         }
+        .onChange(of: visibilityTracker.isUserInterfaceHidden) { newValue in
+            isUserInterfaceHidden = newValue
+        }
         .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .bind(visibilityTracker, to: player)
@@ -132,28 +134,28 @@ struct LocalPlaybackView: View {
 
     private func mainView() -> some View {
         ZStack {
-            if player.mediaType == .video {
-                VideoView(player: player)
-                    .background(.black)
-            }
-            else {
-                artwork()
-            }
-            controls()
+            artwork()
+            VideoView(player: player)
         }
+        .aspectRatio(16 / 9, contentMode: .fit)
+        .frame(maxWidth: .infinity)
+        .background(.black)
+        .overlay(content: controls)
         .onTapGesture(perform: visibilityTracker.toggle)
         .accessibilityAddTraits(.isButton)
-        .aspectRatio(16 / 9, contentMode: .fit)
     }
 
     private func controls() -> some View {
         ZStack {
-            Color(white: 0, opacity: 0.4)
             LocalPaybackButton(player: player)
             LocalTimeBar(player: player)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 .padding()
+                .frame(maxHeight: .infinity, alignment: .bottom)
         }
+        .tint(.white)
+        .foregroundColor(.white)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(white: 0, opacity: 0.4))
         .opacity(visibilityTracker.isUserInterfaceHidden ? 0 : 1)
         .animation(.default, value: visibilityTracker.isUserInterfaceHidden)
     }
@@ -170,5 +172,7 @@ struct LocalPlaybackView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
         }
+        .opacity(player.mediaType == .audio ? 1 : 0)
+        .animation(.default, value: player.mediaType)
     }
 }

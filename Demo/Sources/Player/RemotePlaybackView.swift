@@ -92,19 +92,20 @@ struct RemotePlaybackView: View {
             controls()
         }
         .aspectRatio(16 / 9, contentMode: .fit)
+        .frame(maxWidth: .infinity)
+        .background(.black)
     }
 
     @ViewBuilder
     private func playbackButton() -> some View {
         if player.isBusy {
             ProgressView()
-                .tint(.white)
         }
         else {
             Button(action: player.togglePlayPause) {
                 Image(systemName: player.shouldPlay ? "pause.fill" : "play.fill")
             }
-            font(.system(size: 44))
+            .font(.system(size: 44))
         }
     }
 
@@ -116,6 +117,8 @@ struct RemotePlaybackView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 .padding()
         }
+        .tint(.white)
+        .foregroundColor(.white)
         .disabled(!player.isActive)
     }
 
@@ -133,5 +136,6 @@ struct RemotePlaybackView: View {
         } placeholder: {
             EmptyView()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

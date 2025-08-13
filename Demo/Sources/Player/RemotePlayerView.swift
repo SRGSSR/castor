@@ -42,6 +42,7 @@ struct RemotePlayerView: View {
         } label: {
             Image(systemName: "plus")
         }
+        .disabled(cast.player == nil)
     }
 
     private func closeButton() -> some View {
@@ -51,4 +52,9 @@ struct RemotePlayerView: View {
             Text("Close")
         }
     }
+}
+
+#Preview {
+    RemotePlayerView()
+        .environmentObject(Cast())
 }

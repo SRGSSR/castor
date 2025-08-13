@@ -14,25 +14,26 @@ struct UnifiedPlayerView: View {
 
     @EnvironmentObject private var cast: Cast
     @State private var model = PlayerViewModel()
+    @State private var isUserInterfaceHidden = false
 
     @State private var isSelectionPresented = false
     @Environment(\.dismiss) private var dismiss
 
+    private var isUserInterfaceEffectivelyHidden: Bool {
+        isUserInterfaceHidden && cast.player == nil
+    }
+
     var body: some View {
-        NavigationStack {
-            mainView()
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        closeButton()
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        addButton()
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        CastButton(cast: cast)
-                    }
-                }
+        ZStack {
+            if let remotePlayer = cast.player {
+                RemotePlaybackView(player: remotePlayer)
+            }
+            else {
+                LocalPlaybackView(model: model, player: model.player, isUserInterfaceHidden: $isUserInterfaceHidden)
+            }
         }
+        .animation(.default, value: cast.player)
+        .overlay(alignment: .top, content: topBar)
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
@@ -58,17 +59,19 @@ struct UnifiedPlayerView: View {
         .makeCastable(model, with: cast)
     }
 
-    @ViewBuilder
-    func mainView() -> some View {
-        ZStack {
-            if let remotePlayer = cast.player {
-                RemotePlaybackView(player: remotePlayer)
-            }
-            else {
-                LocalPlaybackView(model: model, player: model.player)
-            }
+    private func topBar() -> some View {
+        HStack(spacing: 20) {
+            closeButton()
+            Spacer()
+            addButton()
+            CastButton(cast: cast)
         }
-        .animation(.default, value: cast.player)
+        .font(.system(size: 22))
+        .foregroundColor(.white)
+        .opacity(isUserInterfaceEffectivelyHidden ? 0 : 1)
+        .animation(.default, value: isUserInterfaceEffectivelyHidden)
+        .padding()
+        .preventsTouchPropagation()
     }
 
     private func addButton() -> some View {
@@ -83,7 +86,12 @@ struct UnifiedPlayerView: View {
         Button {
             dismiss()
         } label: {
-            Text("Close")
+            Image(systemName: "xmark")
         }
     }
+}
+
+#Preview {
+    UnifiedPlayerView(media: .init(title: "19h30", type: .urn("urn:rts:video:14827306")))
+        .environmentObject(Cast())
 }
