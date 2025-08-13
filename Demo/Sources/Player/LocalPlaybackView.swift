@@ -66,17 +66,41 @@ private struct LocalPaybackButton: View {
 
     @State private var isBusy = false
 
+    private var imageName: String {
+        if player.canReplay() {
+            return "arrow.trianglehead.counterclockwise"
+        }
+        else if player.shouldPlay {
+            return "pause.fill"
+        }
+        else {
+            return "play.fill"
+        }
+    }
+
     var body: some View {
         ZStack {
-            if !isBusy {
-                PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
-            }
-            else {
+            if isBusy {
                 ProgressView()
                     .tint(.white)
             }
+            else {
+                Button(action: togglePlayPause) {
+                    Image(systemName: imageName)
+                }
+                .font(.system(size: 44))
+            }
         }
         .onReceive(player: player, assign: \.isBusy, to: $isBusy)
+    }
+
+    private func togglePlayPause() {
+        if player.canReplay() {
+            player.replay()
+        }
+        else {
+            player.togglePlayPause()
+        }
     }
 }
 

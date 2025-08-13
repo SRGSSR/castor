@@ -96,12 +96,15 @@ struct RemotePlaybackView: View {
 
     @ViewBuilder
     private func playbackButton() -> some View {
-        if !player.isBusy {
-            PlaybackButton(shouldPlay: player.shouldPlay, perform: player.togglePlayPause)
-        }
-        else {
+        if player.isBusy {
             ProgressView()
                 .tint(.white)
+        }
+        else {
+            Button(action: player.togglePlayPause) {
+                Image(systemName: player.shouldPlay ? "pause.fill" : "play.fill")
+            }
+            font(.system(size: 44))
         }
     }
 
