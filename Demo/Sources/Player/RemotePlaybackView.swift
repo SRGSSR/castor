@@ -8,7 +8,7 @@ import Castor
 import CoreMedia
 import SwiftUI
 
-private struct ItemCell: View {
+private struct RemoteItemCell: View {
     @ObservedObject var item: CastPlayerItem
 
     var body: some View {
@@ -117,7 +117,7 @@ struct RemotePlaybackView: View {
 
     private func playlistView() -> some View {
         List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
-            ItemCell(item: item)
+            RemoteItemCell(item: item)
         }
     }
 

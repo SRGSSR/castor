@@ -8,7 +8,7 @@ import CoreMedia
 import PillarboxPlayer
 import SwiftUI
 
-private struct ItemCell: View {
+private struct LocalItemCell: View {
     let media: Media
 
     var body: some View {
@@ -62,7 +62,6 @@ private struct LocalTimeBar: View {
 
 private struct LocalPaybackButton: View {
     @ObservedObject var player: Player
-
     @State private var isBusy = false
 
     private var imageName: String {
@@ -159,7 +158,7 @@ struct LocalPlaybackView: View {
 
     private func playlistView() -> some View {
         List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
-            ItemCell(media: entry.media)
+            LocalItemCell(media: entry.media)
         }
     }
 
