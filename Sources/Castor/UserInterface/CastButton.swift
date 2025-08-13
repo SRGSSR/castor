@@ -32,6 +32,8 @@ public struct CastButton: View {
             NavigationStack {
                 CastDevicesView(cast: cast, showsCloseButton: !showsPopover)
                     .font(nil)
+                    .foregroundColor(nil)
+                    .tint(nil)
             }
             .frame(minWidth: minSize.width, minHeight: minSize.height)
         }
