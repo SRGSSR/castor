@@ -49,7 +49,7 @@ struct RemotePlayerView: View {
         Button {
             dismiss()
         } label: {
-            Text("Close")
+            Image(systemName: "xmark")
         }
     }
 }
