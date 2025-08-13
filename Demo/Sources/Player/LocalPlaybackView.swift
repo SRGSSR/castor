@@ -170,6 +170,5 @@ struct LocalPlaybackView: View {
                 .aspectRatio(contentMode: .fit)
         }
         .opacity(player.mediaType == .audio ? 1 : 0)
-        .animation(.default, value: player.mediaType)
     }
 }
