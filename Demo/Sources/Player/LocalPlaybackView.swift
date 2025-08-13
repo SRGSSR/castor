@@ -114,14 +114,11 @@ struct LocalPlaybackView: View {
             if let error = player.error {
                 Text(error.localizedDescription)
             }
-            else if !player.items.isEmpty {
+            else {
                 VStack(spacing: 0) {
                     mainView()
                     playlistView()
                 }
-            }
-            else {
-                Text("No content")
             }
         }
         .onChange(of: visibilityTracker.isUserInterfaceHidden) { newValue in

@@ -71,16 +71,9 @@ struct RemotePlaybackView: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
-        ZStack {
-            if !player.isEmpty {
-                VStack(spacing: 0) {
-                    mainView()
-                    playlistView()
-                }
-            }
-            else {
-                Text("No content")
-            }
+        VStack(spacing: 0) {
+            mainView()
+            playlistView()
         }
         .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
