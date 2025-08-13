@@ -4,10 +4,9 @@
 //  License information is available from the LICENSE file.
 //
 
-import AVFoundation
 import Castor
 import Combine
-import PillarboxCoreBusiness
+import CoreMedia
 import PillarboxPlayer
 import SwiftUI
 

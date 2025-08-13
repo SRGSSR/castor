@@ -6,6 +6,7 @@
 
 import Castor
 import Foundation
+import PillarboxCoreBusiness
 import PillarboxPlayer
 
 struct Media: Hashable, Identifiable {
