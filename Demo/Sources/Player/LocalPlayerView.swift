@@ -44,8 +44,10 @@ struct LocalPlayerView: View {
             }
             .makeCastable(model, with: cast)
     }
+}
 
-    private func topBar() -> some View {
+private extension LocalPlayerView {
+    func topBar() -> some View {
         HStack(spacing: 20) {
             closeButton()
             Spacer()
@@ -60,7 +62,7 @@ struct LocalPlayerView: View {
         .preventsTouchPropagation()
     }
 
-    private func addButton() -> some View {
+    func addButton() -> some View {
         Button {
             isPlaylistSelectionPresented.toggle()
         } label: {
@@ -68,7 +70,7 @@ struct LocalPlayerView: View {
         }
     }
 
-    private func closeButton() -> some View {
+    func closeButton() -> some View {
         Button {
             dismiss()
         } label: {
