@@ -108,9 +108,10 @@ private struct LocalErrorView: View {
     var body: some View {
         VStack {
             Text(error.localizedDescription)
+                .foregroundStyle(.white)
             Text("Tap to retry")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.gray)
         }
         .padding()
         .onTapGesture(perform: action)
