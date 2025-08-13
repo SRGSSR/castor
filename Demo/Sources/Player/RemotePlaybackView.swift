@@ -73,7 +73,7 @@ struct RemotePlaybackView: View {
     var body: some View {
         VStack(spacing: 0) {
             mainView()
-            playlistView()
+            playlist()
         }
         .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -115,7 +115,7 @@ struct RemotePlaybackView: View {
         .disabled(!player.isActive)
     }
 
-    private func playlistView() -> some View {
+    private func playlist() -> some View {
         List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
             RemoteItemCell(item: item)
         }

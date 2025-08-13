@@ -112,7 +112,7 @@ extension PlaylistSelectionView {
 }
 
 extension PlayerViewModel {
-    func add(_ option: PlaylistSelectionView.InsertionOption, medias: [Media]) {
+    func apply(_ option: PlaylistSelectionView.InsertionOption, with medias: [Media]) {
         let entries = medias.map { PlaylistEntry(media: $0) }
         switch option {
         case .prepend:
@@ -128,7 +128,7 @@ extension PlayerViewModel {
 }
 
 extension CastPlayer {
-    func add(_ option: PlaylistSelectionView.InsertionOption, medias: [Media]) {
+    func apply(_ option: PlaylistSelectionView.InsertionOption, with medias: [Media]) {
         let assets = medias.map { $0.asset() }
         switch option {
         case .prepend:

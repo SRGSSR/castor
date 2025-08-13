@@ -29,7 +29,7 @@ struct LocalPlayerView: View {
             .sheet(isPresented: $isPlaylistSelectionPresented) {
                 NavigationStack {
                     PlaylistSelectionView { option, medias in
-                        model.add(option, medias: medias)
+                        model.apply(option, with: medias)
                     }
                 }
             }

@@ -129,7 +129,7 @@ struct LocalPlaybackView: View {
     var body: some View {
         VStack(spacing: 0) {
             mainView()
-            playlistView()
+            playlist()
         }
         .onChange(of: visibilityTracker.isUserInterfaceHidden) { newValue in
             isUserInterfaceHidden = newValue
@@ -178,7 +178,7 @@ struct LocalPlaybackView: View {
         .animation(.default, value: visibilityTracker.isUserInterfaceHidden)
     }
 
-    private func playlistView() -> some View {
+    private func playlist() -> some View {
         List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
             LocalItemCell(media: entry.media)
         }

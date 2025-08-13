@@ -39,10 +39,10 @@ struct UnifiedPlayerView: View {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
                     if let remotePlayer = cast.player {
-                        remotePlayer.add(option, medias: medias)
+                        remotePlayer.apply(option, with: medias)
                     }
                     else {
-                        model.add(option, medias: medias)
+                        model.apply(option, with: medias)
                     }
                 }
             }

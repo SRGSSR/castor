@@ -30,7 +30,7 @@ struct RemotePlayerView: View {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
                     guard let remotePlayer = cast.player else { return }
-                    remotePlayer.add(option, medias: medias)
+                    remotePlayer.apply(option, with: medias)
                 }
             }
         }
