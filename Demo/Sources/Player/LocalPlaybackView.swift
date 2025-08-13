@@ -101,6 +101,23 @@ private struct LocalPaybackButton: View {
     }
 }
 
+private struct LocalErrorView: View {
+    let error: Error
+    let action: () -> Void
+
+    var body: some View {
+        VStack {
+            Text(error.localizedDescription)
+            Text("Tap to retry")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .onTapGesture(perform: action)
+        .accessibilityAddTraits(.isButton)
+    }
+}
+
 struct LocalPlaybackView: View {
     @ObservedObject var model: PlayerViewModel
     @ObservedObject var player: Player
@@ -109,16 +126,9 @@ struct LocalPlaybackView: View {
     @StateObject private var visibilityTracker = VisibilityTracker()
 
     var body: some View {
-        ZStack {
-            if let error = player.error {
-                Text(error.localizedDescription)
-            }
-            else {
-                VStack(spacing: 0) {
-                    mainView()
-                    playlistView()
-                }
-            }
+        VStack(spacing: 0) {
+            mainView()
+            playlistView()
         }
         .onChange(of: visibilityTracker.isUserInterfaceHidden) { newValue in
             isUserInterfaceHidden = newValue
@@ -130,12 +140,24 @@ struct LocalPlaybackView: View {
 
     private func mainView() -> some View {
         ZStack {
-            artwork()
-            VideoView(player: player)
+            if let error = player.error {
+                LocalErrorView(error: error, action: player.replay)
+            }
+            else {
+                playerView()
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .aspectRatio(16 / 9, contentMode: .fit)
         .frame(maxWidth: .infinity)
         .background(.black)
+    }
+
+    private func playerView() -> some View {
+        ZStack {
+            artwork()
+            VideoView(player: player)
+        }
         .overlay(content: controls)
         .onTapGesture(perform: visibilityTracker.toggle)
         .accessibilityAddTraits(.isButton)
