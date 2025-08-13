@@ -33,16 +33,18 @@ struct LocalPlayerView: View {
                     }
                 }
             }
-            .onAppear {
-                if let remotePlayer = cast.player {
-                    remotePlayer.loadItem(from: media.asset())
-                }
-                else {
-                    model.entries = [.init(media: media)]
-                    model.play()
-                }
-            }
+            .onAppear(perform: load)
             .makeCastable(model, with: cast)
+    }
+
+    private func load() {
+        if let remotePlayer = cast.player {
+            remotePlayer.loadItem(from: media.asset())
+        }
+        else {
+            model.entries = [.init(media: media)]
+            model.play()
+        }
     }
 }
 

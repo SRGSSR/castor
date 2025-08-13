@@ -133,7 +133,6 @@ struct LocalPlaybackView: View {
         .onChange(of: visibilityTracker.isUserInterfaceHidden) { newValue in
             isUserInterfaceHidden = newValue
         }
-        .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .bind(visibilityTracker, to: player)
     }
