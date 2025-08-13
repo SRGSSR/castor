@@ -14,13 +14,19 @@ struct LocalPlayerView: View {
     @StateObject private var model = PlayerViewModel()
     @State private var isUserInterfaceHidden = false
 
-    @State private var isSelectionPresented = false
+    @State private var isPresentingDeviceSelection = false
+    @State private var isPlaylistSelectionPresented = false
+
     @Environment(\.dismiss) private var dismiss
+
+    private var isUserInterfaceActuallyHidden: Bool {
+        !isPresentingDeviceSelection && isUserInterfaceHidden
+    }
 
     var body: some View {
         LocalPlaybackView(model: model, player: model.player, isUserInterfaceHidden: $isUserInterfaceHidden)
             .overlay(alignment: .top, content: topBar)
-            .sheet(isPresented: $isSelectionPresented) {
+            .sheet(isPresented: $isPlaylistSelectionPresented) {
                 NavigationStack {
                     PlaylistSelectionView { option, medias in
                         model.add(option, medias: medias)
@@ -44,19 +50,19 @@ struct LocalPlayerView: View {
             closeButton()
             Spacer()
             addButton()
-            CastButton(cast: cast)
+            CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
         }
         .font(.system(size: 22))
         .foregroundColor(.white)
-        .opacity(isUserInterfaceHidden ? 0 : 1)
-        .animation(.default, value: isUserInterfaceHidden)
+        .opacity(isUserInterfaceActuallyHidden ? 0 : 1)
+        .animation(.default, value: isUserInterfaceActuallyHidden)
         .padding()
         .preventsTouchPropagation()
     }
 
     private func addButton() -> some View {
         Button {
-            isSelectionPresented.toggle()
+            isPlaylistSelectionPresented.toggle()
         } label: {
             Image(systemName: "plus")
         }

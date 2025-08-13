@@ -10,6 +10,8 @@ import SwiftUI
 /// A cast button.
 public struct CastButton: View {
     @ObservedObject var cast: Cast
+    @Binding private var isPresenting: Bool
+
     @State private var isPresented = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -37,10 +39,14 @@ public struct CastButton: View {
             }
             .frame(minWidth: minSize.width, minHeight: minSize.height)
         }
+        .onChange(of: isPresented) { newValue in
+            isPresenting = newValue
+        }
     }
 
     /// Creates a Cast button.
-    public init(cast: Cast) {
+    public init(cast: Cast, isPresenting: Binding<Bool> = .constant(false)) {
         self.cast = cast
+        _isPresenting = isPresenting
     }
 }

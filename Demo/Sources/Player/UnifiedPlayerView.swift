@@ -16,11 +16,12 @@ struct UnifiedPlayerView: View {
     @State private var model = PlayerViewModel()
     @State private var isUserInterfaceHidden = false
 
-    @State private var isSelectionPresented = false
+    @State private var isPresentingDeviceSelection = false
+    @State private var isPlaylistSelectionPresented = false
     @Environment(\.dismiss) private var dismiss
 
-    private var isUserInterfaceEffectivelyHidden: Bool {
-        isUserInterfaceHidden && cast.player == nil
+    private var isUserInterfaceActuallyHidden: Bool {
+        !isPresentingDeviceSelection && isUserInterfaceHidden && cast.player == nil
     }
 
     var body: some View {
@@ -34,7 +35,7 @@ struct UnifiedPlayerView: View {
         }
         .animation(.default, value: cast.player)
         .overlay(alignment: .top, content: topBar)
-        .sheet(isPresented: $isSelectionPresented) {
+        .sheet(isPresented: $isPlaylistSelectionPresented) {
             NavigationStack {
                 PlaylistSelectionView { option, medias in
                     if let remotePlayer = cast.player {
@@ -64,19 +65,19 @@ struct UnifiedPlayerView: View {
             closeButton()
             Spacer()
             addButton()
-            CastButton(cast: cast)
+            CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
         }
         .font(.system(size: 22))
         .foregroundColor(.white)
-        .opacity(isUserInterfaceEffectivelyHidden ? 0 : 1)
-        .animation(.default, value: isUserInterfaceEffectivelyHidden)
+        .opacity(isUserInterfaceActuallyHidden ? 0 : 1)
+        .animation(.default, value: isUserInterfaceActuallyHidden)
         .padding()
         .preventsTouchPropagation()
     }
 
     private func addButton() -> some View {
         Button {
-            isSelectionPresented.toggle()
+            isPlaylistSelectionPresented.toggle()
         } label: {
             Image(systemName: "plus")
         }
