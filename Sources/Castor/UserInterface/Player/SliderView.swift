@@ -53,7 +53,7 @@ private extension SliderView {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
-                .foregroundColor(.primary)
+                .foregroundStyle(.primary)
         }
     }
 }

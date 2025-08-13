@@ -72,7 +72,7 @@ private extension UnifiedPlayerView {
             CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
         }
         .font(.system(size: 22))
-        .foregroundColor(.white)
+        .foregroundStyle(.white)
         .opacity(isUserInterfaceActuallyHidden ? 0 : 1)
         .animation(.default, value: isUserInterfaceActuallyHidden)
         .padding()

@@ -62,7 +62,7 @@ private struct RemoteTimeBar: View {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
         }
     }
 }
@@ -111,7 +111,7 @@ struct RemotePlaybackView: View {
                 .padding()
         }
         .tint(.white)
-        .foregroundColor(.white)
+        .foregroundStyle(.white)
         .disabled(!player.isActive)
     }
 

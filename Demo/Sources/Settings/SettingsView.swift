@@ -145,7 +145,7 @@ struct SettingsView: View {
         HStack(spacing: 0) {
             Text("Made with ")
             Image(systemName: "heart.fill")
-                .foregroundColor(.red)
+                .foregroundStyle(.red)
                 .pulseSymbolEffect17()
             Text(" in Switzerland")
         }

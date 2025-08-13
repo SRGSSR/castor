@@ -171,7 +171,7 @@ struct LocalPlaybackView: View {
                 .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .tint(.white)
-        .foregroundColor(.white)
+        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(white: 0, opacity: 0.4))
         .opacity(visibilityTracker.isUserInterfaceHidden ? 0 : 1)
