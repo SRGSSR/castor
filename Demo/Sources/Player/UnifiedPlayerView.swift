@@ -47,11 +47,11 @@ struct UnifiedPlayerView: View {
                 }
             }
         }
-        .onAppear(perform: load)
+        .onAppear(perform: playMedia)
         .makeCastable(model, with: cast)
     }
 
-    private func load() {
+    private func playMedia() {
         guard let media else { return }
         if let remotePlayer = cast.player {
             remotePlayer.loadItem(from: media.asset())
