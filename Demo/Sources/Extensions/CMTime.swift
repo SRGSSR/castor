@@ -10,7 +10,7 @@ import SwiftUI
 extension CMTime {
     private static let shortFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute]
+        formatter.allowedUnits = [.minute, .second]
         formatter.zeroFormattingBehavior = .pad
         return formatter
     }()
