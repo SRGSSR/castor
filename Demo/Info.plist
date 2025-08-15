@@ -26,5 +26,10 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>$(PRODUCT_NAME) uses the local network to discover Google Cast devices on your WiFi network.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

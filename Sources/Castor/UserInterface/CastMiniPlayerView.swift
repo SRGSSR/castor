@@ -13,8 +13,8 @@ private struct _CastMiniPlayerView: View {
     var body: some View {
         if ![.idle, .unknown].contains(player.state) {
             HStack(spacing: 20) {
-                artwork(with: player.metadata)
-                infoView(with: player.metadata)
+                artwork(for: player.currentAsset)
+                infoView(for: player.currentAsset)
                 Spacer()
                 playbackButton()
             }
@@ -22,14 +22,14 @@ private struct _CastMiniPlayerView: View {
         }
     }
 
-    private func artwork(with metadata: CastMetadata?) -> some View {
-        ArtworkImage(url: metadata?.imageUrl(matching: .init(type: .miniController)))
+    private func artwork(for asset: CastAsset?) -> some View {
+        ArtworkImage(url: asset?.metadata?.imageUrl(matching: .init(type: .miniController)))
     }
 
-    private func infoView(with metadata: CastMetadata?) -> some View {
+    private func infoView(for asset: CastAsset?) -> some View {
         ViewThatFits(in: .vertical) {
-            regularInfoView(with: metadata)
-            compactInfoView(with: metadata)
+            regularInfoView(for: asset)
+            compactInfoView(for: asset)
         }
     }
 
@@ -57,20 +57,20 @@ public struct CastMiniPlayerView: View {
 }
 
 private extension _CastMiniPlayerView {
-    func regularInfoView(with metadata: CastMetadata?) -> some View {
+    func regularInfoView(for asset: CastAsset?) -> some View {
         VStack(alignment: .leading) {
-            title(with: metadata)
+            title(for: asset)
             subtitle()
         }
     }
 
-    func compactInfoView(with metadata: CastMetadata?) -> some View {
-        title(with: metadata)
+    func compactInfoView(for asset: CastAsset?) -> some View {
+        title(for: asset)
             .minimumScaleFactor(0.7)
     }
 
-    private func title(with metadata: CastMetadata?) -> some View {
-        Text(metadata?.title ?? "Untitled")
+    private func title(for asset: CastAsset?) -> some View {
+        Text(asset?.metadata?.title ?? "Untitled")
             .font(.subheadline)
             .bold()
             .lineLimit(1)

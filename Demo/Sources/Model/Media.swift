@@ -4,7 +4,77 @@
 //  License information is available from the LICENSE file.
 //
 
+import Castor
 import Foundation
+import PillarboxCoreBusiness
+import PillarboxPlayer
+
+struct Media: Hashable, Identifiable {
+    enum `Type`: Hashable {
+        case url(URL)
+        case urn(String)
+    }
+
+    let id = UUID()
+    let title: String
+    let imageUrl: URL?
+    let type: Type
+
+    init(title: String, imageUrl: URL? = nil, type: Type) {
+        self.title = title
+        self.imageUrl = imageUrl
+        self.type = type
+    }
+
+    init(from asset: CastAsset) {
+        let title = asset.metadata?.title ?? "Untitled"
+        let imageUrl = asset.metadata?.imageUrl()
+        switch asset.kind {
+        case let .simple(url):
+            self.init(title: title, imageUrl: imageUrl, type: .url(url))
+        case let .custom(urn):
+            self.init(title: title, imageUrl: imageUrl, type: .urn(urn))
+        }
+    }
+
+    func item() -> PlayerItem {
+        switch type {
+        case let .url(url):
+            return .simple(url: url, metadata: self)
+        case let .urn(urn):
+            return .urn(urn)
+        }
+    }
+
+    func asset() -> CastAsset {
+        switch type {
+        case let .url(url):
+            return .simple(url: url, metadata: castMetadata())
+        case let .urn(urn):
+            return .custom(identifier: urn, metadata: castMetadata())
+        }
+    }
+
+    func castMetadata() -> CastMetadata {
+        .init(title: title, image: castImage())
+    }
+
+    private func castImage() -> CastImage? {
+        guard let imageUrl else { return nil }
+        return .init(url: imageUrl)
+    }
+}
+
+extension Media: AssetMetadata {
+    private var imageSource: ImageSource {
+        guard let imageUrl else { return .none }
+        return .url(standardResolution: imageUrl)
+    }
+
+    var playerMetadata: PlayerMetadata {
+        .init(title: title, imageSource: imageSource)
+    }
+}
 
 let kHlsUrlMedias: [Media] = [
     .init(
@@ -38,7 +108,7 @@ let kMP3UrlMedias: [Media] = [
     .init(
         title: "Couleur 3",
         imageUrl: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640",
-        type: .url("http://stream.srg-ssr.ch/m/couleur3/mp3_128")
+        type: .url("https://stream.srg-ssr.ch/m/couleur3/mp3_128")
     ),
     .init(
         title: "Radio Chablais",
@@ -48,7 +118,7 @@ let kMP3UrlMedias: [Media] = [
     .init(
         title: "Skyrock",
         imageUrl: "https://www.radio.net/300/skyrock.png",
-        type: .url("http://icecast.skyrock.net/s/natio_mp3_128k")
+        type: .url("https://icecast.skyrock.net/s/natio_mp3_128k")
     ),
     .init(
         title: "Country Radio Gilsdorf",
@@ -73,27 +143,22 @@ let kDashUrlMedias: [Media] = [
 let kUrnMedias: [Media] = [
     .init(
         title: "Horizontal video",
-        imageUrl: "https://www.rts.ch/2024/04/10/19/23/14827621.image/16x9",
         type: .urn("urn:rts:video:14827306")
     ),
     .init(
         title: "SRF 1",
-        imageUrl: "https://ws.srf.ch/asset/image/audio/d91bbe14-55dd-458c-bc88-963462972687/EPISODE_IMAGE",
         type: .urn("urn:srf:video:c4927fcf-e1a0-0001-7edd-1ef01d441651")
     ),
     .init(
         title: "RTS 1",
-        imageUrl: "https://www.rts.ch/2023/09/06/14/43/14253742.image/16x9",
         type: .urn("urn:rts:video:3608506")
     ),
     .init(
         title: "Puls - Gehirnerschütterung, Akutgeriatrie, Erlenpollen im Winter",
-        imageUrl: "https://ws.srf.ch/asset/image/audio/3bc7c819-9f77-4b2f-bbb1-6787df21d7bc/WEBVISUAL/1641807822.jpg",
         type: .urn("urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
     ),
     .init(
         title: "Bonjour la Suisse (5/5) - Que du bonheur?",
-        imageUrl: "https://www.rts.ch/2017/07/28/21/11/8806915.image/16x9",
         type: .urn("urn:rts:video:8806923")
     )
 ]

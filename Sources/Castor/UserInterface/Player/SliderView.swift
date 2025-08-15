@@ -12,12 +12,17 @@ struct SliderView: View {
     @ObservedObject var player: CastPlayer
 
     var body: some View {
-        HStack {
+        ZStack {
             if progressTracker.isProgressAvailable {
-                slider()
+                HStack {
+                    slider()
+                    skipToDefaultButton()
+                }
             }
-            if player.streamType == .live {
-                skipToDefaultButton()
+            else {
+                slider()
+                    .hidden()
+                    .overlay(content: skipToDefaultButton)
             }
         }
         .bind(progressTracker, to: player)
@@ -40,11 +45,14 @@ private extension SliderView {
         )
     }
 
+    @ViewBuilder
     func skipToDefaultButton() -> some View {
-        Button(action: player.skipToDefault) {
-            LiveLabel(player: player)
+        if player.streamType == .live {
+            Button(action: player.skipToDefault) {
+                LiveLabel(player: player)
+            }
+            .disabled(!player.canSkipToDefault())
         }
-        .disabled(!player.canSkipToDefault())
     }
 
     @ViewBuilder
@@ -53,7 +61,7 @@ private extension SliderView {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
-                .foregroundColor(.primary)
+                .foregroundStyle(.primary)
         }
     }
 }

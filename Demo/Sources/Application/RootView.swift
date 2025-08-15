@@ -11,6 +11,9 @@ struct RootView: View {
     @StateObject private var cast = Cast(configuration: .standard)
     @StateObject private var router = Router()
 
+    @AppStorage(UserDefaults.DemoSettingKey.playerType)
+    private var playerType: PlayerType = .standard
+
     var body: some View {
         TabView {
             examplesTab()
@@ -52,12 +55,19 @@ struct RootView: View {
             CastMiniPlayerView(cast: cast)
                 .padding(.horizontal)
                 .padding(.vertical, 8)
-                .onTapGesture {
-                    router.presented = .expandedCastPlayer(cast: cast)
-                }
+                .onTapGesture(perform: showPlayer)
                 .accessibilityAddTraits(.isButton)
                 .background(.thickMaterial)
                 .frame(height: 64)
+        }
+    }
+
+    private func showPlayer() {
+        switch playerType {
+        case .standard:
+            router.presented = .remotePlayer
+        case .unified:
+            router.presented = .unifiedPlayer
         }
     }
 }

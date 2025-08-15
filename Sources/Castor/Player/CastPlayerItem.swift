@@ -23,12 +23,11 @@ public final class CastPlayerItem: ObservableObject {
         rawItem != nil
     }
 
-    /// The metadata associated with the item.
+    /// The asset associated with the item.
     ///
-    /// Metadata must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.
-    public var metadata: CastMetadata? {
-        guard let rawItem else { return nil }
-        return .init(rawMetadata: rawItem.mediaInformation.metadata)
+    /// Must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.
+    public var asset: CastAsset? {
+        .init(rawMediaInformation: rawItem?.mediaInformation)
     }
 
     init(id: GCKMediaQueueItemID, queue: GCKMediaQueue) {

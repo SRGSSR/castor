@@ -7,8 +7,9 @@
 import Castor
 import SwiftUI
 
-struct ExpandedCastPlayerView: View {
-    @ObservedObject var cast: Cast
+struct RemotePlayerView: View {
+    @EnvironmentObject private var cast: Cast
+
     @State private var isSelectionPresented = false
     @Environment(\.dismiss) private var dismiss
 
@@ -27,7 +28,10 @@ struct ExpandedCastPlayerView: View {
         }
         .sheet(isPresented: $isSelectionPresented) {
             NavigationStack {
-                PlaylistSelectionView(player: cast.player)
+                PlaylistSelectionView { option, medias in
+                    guard let remotePlayer = cast.player else { return }
+                    remotePlayer.apply(option, with: medias)
+                }
             }
         }
     }
@@ -38,13 +42,19 @@ struct ExpandedCastPlayerView: View {
         } label: {
             Image(systemName: "plus")
         }
+        .disabled(cast.player == nil)
     }
 
     private func closeButton() -> some View {
         Button {
             dismiss()
         } label: {
-            Text("Close")
+            Image(systemName: "xmark")
         }
     }
+}
+
+#Preview {
+    RemotePlayerView()
+        .environmentObject(Cast())
 }

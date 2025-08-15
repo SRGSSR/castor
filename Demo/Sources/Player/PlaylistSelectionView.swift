@@ -8,7 +8,7 @@ import Castor
 import SwiftUI
 
 struct PlaylistSelectionView: View {
-    let player: CastPlayer?
+    let completion: (InsertionOption, [Media]) -> Void
 
     @State private var selectedMedias: Set<Media> = []
     @State private var selectedInsertionOption: InsertionOption = .append
@@ -85,22 +85,11 @@ struct PlaylistSelectionView: View {
         defer {
             dismiss()
         }
-        guard let player else { return }
-        let assets = Array(repeating: selectedMedias, count: multiplier).flatMap(\.self).map { $0.asset() }
-        switch selectedInsertionOption {
-        case .prepend:
-            player.prependItems(from: assets)
-        case .insertBefore:
-            player.insertItems(from: assets, before: player.currentItem)
-        case .insertAfter:
-            player.insertItems(from: assets, after: player.currentItem)
-        case .append:
-            player.appendItems(from: assets)
-        }
+        completion(selectedInsertionOption, Array(repeating: selectedMedias, count: multiplier).flatMap(\.self))
     }
 }
 
-private extension PlaylistSelectionView {
+extension PlaylistSelectionView {
     enum InsertionOption: CaseIterable {
         case prepend
         case insertBefore
@@ -118,6 +107,38 @@ private extension PlaylistSelectionView {
             case .append:
                 "Append"
             }
+        }
+    }
+}
+
+extension PlayerViewModel {
+    func apply(_ option: PlaylistSelectionView.InsertionOption, with medias: [Media]) {
+        let entries = medias.map { PlaylistEntry(media: $0) }
+        switch option {
+        case .prepend:
+            prependItems(from: entries)
+        case .insertBefore:
+            insertItemsBeforeCurrent(from: entries)
+        case .insertAfter:
+            insertItemsAfterCurrent(from: entries)
+        case .append:
+            appendItems(from: entries)
+        }
+    }
+}
+
+extension CastPlayer {
+    func apply(_ option: PlaylistSelectionView.InsertionOption, with medias: [Media]) {
+        let assets = medias.map { $0.asset() }
+        switch option {
+        case .prepend:
+            prependItems(from: assets)
+        case .insertBefore:
+            insertItems(from: assets, before: currentItem)
+        case .insertAfter:
+            insertItems(from: assets, after: currentItem)
+        case .append:
+            appendItems(from: assets)
         }
     }
 }

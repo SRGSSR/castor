@@ -85,8 +85,13 @@ public struct CastAsset {
     }
 
     private static func kind(from rawMediaInformation: GCKMediaInformation) -> Kind? {
-        if let identifier = rawMediaInformation.contentID {
-            return .custom(identifier)
+        if let entity = rawMediaInformation.entity {
+            if let url = URL(castableString: entity) {
+                return .simple(url)
+            }
+            else {
+                return .custom(entity)
+            }
         }
         else if let url = rawMediaInformation.contentURL {
             return .simple(url)
@@ -121,9 +126,11 @@ public extension CastAsset {
                 // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
                 builder.contentID = UUID().uuidString
                 return builder
-            case let .custom(id):
-                let builder = GCKMediaInformationBuilder()
-                builder.contentID = id
+            case let .custom(identifier):
+                let builder = GCKMediaInformationBuilder(entity: identifier)
+                // TODO: This workaround should be removed.
+                // A contentID is currently set to enable playback of URN based content using the SRGSSR receiver.
+                builder.contentID = identifier
                 return builder
             }
         }

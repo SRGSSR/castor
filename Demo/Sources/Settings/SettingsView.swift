@@ -17,6 +17,9 @@ struct SettingsView: View {
     @AppStorage(UserDefaults.DemoSettingKey.receiver)
     private var receiver: Receiver = .standard
 
+    @AppStorage(UserDefaults.DemoSettingKey.playerType)
+    private var playerType: PlayerType = .standard
+
     @AppStorage(UserDefaults.DemoSettingKey.smartNavigationEnabled)
     private var isSmartNavigationEnabled = true
 
@@ -69,6 +72,14 @@ struct SettingsView: View {
 
     private func playerSection() -> some View {
         Section {
+            Picker(selection: $playerType) {
+                ForEach(PlayerType.allCases, id: \.self) { playerType in
+                    Text(playerType.name)
+                        .tag(playerType)
+                }
+            } label: {
+                Text("Type")
+            }
             Toggle(isOn: $isSmartNavigationEnabled) {
                 Text("Smart navigation")
                 Text("Improves playlist navigation so that it feels more natural.").font(.footnote)
@@ -134,7 +145,7 @@ struct SettingsView: View {
         HStack(spacing: 0) {
             Text("Made with ")
             Image(systemName: "heart.fill")
-                .foregroundColor(.red)
+                .foregroundStyle(.red)
                 .pulseSymbolEffect17()
             Text(" in Switzerland")
         }

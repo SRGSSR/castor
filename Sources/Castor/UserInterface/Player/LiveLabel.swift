@@ -25,7 +25,7 @@ struct LiveLabel: View {
                     .font(.footnote)
                     .padding(.horizontal, 7)
                     .background(liveButtonColor)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .clipShape(.capsule)
             }
         }

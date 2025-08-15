@@ -7,27 +7,22 @@
 import GoogleCast
 
 public extension CastPlayer {
-    /// Player state.
+    /// The player state.
     var state: GCKMediaPlayerState {
         _mediaStatus?.playerState ?? .unknown
     }
 
-    /// Metadata associated with the current item.
-    var metadata: CastMetadata? {
-        .init(rawMetadata: rawMediaInformation?.metadata)
+    /// The asset currently being played, if any.
+    var currentAsset: CastAsset? {
+        .init(rawMediaInformation: rawMediaInformation)
     }
 
-    /// Custom data associated with the current item.
-    var customData: CastCustomData? {
-        asset?.customData
-    }
-
-    /// Returns if the player is busy.
+    /// A Boolean value indicating whether the player is busy or not.
     var isBusy: Bool {
         state == .buffering || state == .loading
     }
 
-    /// A Boolean value whether the player is active.
+    /// A Boolean value indicating whether the player is active or not.
     ///
     /// Actions performed on an inactive player will usually do nothing. User interfaces should usually disable or hide
     /// controls when a player is not active.
@@ -42,10 +37,6 @@ public extension CastPlayer {
 }
 
 extension CastPlayer {
-    var asset: CastAsset? {
-        .init(rawMediaInformation: rawMediaInformation)
-    }
-
     var rawMediaInformation: GCKMediaInformation? {
         _mediaStatus?.mediaInformation
     }

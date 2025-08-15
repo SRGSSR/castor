@@ -40,6 +40,8 @@ public final class CastPlayer: NSObject, ObservableObject {
     /// The current item.
     ///
     /// Does nothing if set to `nil` or to an item that does not belong to the list.
+    ///
+    /// > Important: Use ``CastPlayer/currentAsset`` to access metadata for the current item.
     public var currentItem: CastPlayerItem? {
         get {
             items.first { $0.id == _currentItemId }
