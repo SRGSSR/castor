@@ -30,7 +30,7 @@ struct CastResumeStateTests {
         #expect(state.assets.count == 1)
         #expect(state.index == 0)
         #expect(state.time == .zero)
-        #expect(state.mediaSelectionPreferredLanguages(for: .legible).isEmpty)
+        #expect(state.mediaSelectionLanguage(for: .legible) == nil)
     }
 
     @Test
@@ -57,7 +57,7 @@ struct CastResumeStateTests {
                 time: .zero
             )
         )
-        state.setMediaSelection(preferredLanguages: ["en", "fr"], for: .legible)
-        #expect(state.mediaSelectionPreferredLanguages(for: .legible) == ["en", "fr"])
+        state.setMediaSelection(language: "fr", for: .legible)
+        #expect(state.mediaSelectionLanguage(for: .legible) == "fr")
     }
 }

@@ -20,7 +20,7 @@ public struct CastResumeState {
     /// An `.invalid` time corresponds to the default playback position.
     public let time: CMTime
 
-    private var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:]
+    private var mediaSelectionLanguages: [AVMediaCharacteristic: String] = [:]
 
     /// Creates a state.
     ///
@@ -39,22 +39,20 @@ public struct CastResumeState {
 }
 
 public extension CastResumeState {
-    /// Sets media selection preferred languages for the specified media characteristic.
+    /// Sets the media selection language for the specified media characteristic.
     ///
     /// - Parameters:
-    ///   - languages: An Array of strings containing language identifiers, in order of desirability, that are
-    ///     preferred for selection. Languages can be indicated via BCP 47 language identifiers or via ISO 639-2/T
-    ///     language codes.
+    ///   - language: The code of the language to select.
     ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
     ///     include `.audible`, `.legible`, and `.visual`.
-    mutating func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
-        mediaSelectionPreferredLanguages[characteristic] = languages
+    mutating func setMediaSelection(language: String, for characteristic: AVMediaCharacteristic) {
+        mediaSelectionLanguages[characteristic] = language
     }
 
-    /// Returns media selection preferred languages for the specified media characteristic.
+    /// Returns the media selection language for the specified media characteristic.
     ///
     /// - Parameter characteristic: The characteristic.
-    func mediaSelectionPreferredLanguages(for characteristic: AVMediaCharacteristic) -> [String] {
-        mediaSelectionPreferredLanguages[characteristic] ?? []
+    func mediaSelectionLanguage(for characteristic: AVMediaCharacteristic) -> String? {
+        mediaSelectionLanguages[characteristic]
     }
 }
