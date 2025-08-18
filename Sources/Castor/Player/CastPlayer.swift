@@ -63,6 +63,7 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     var configuration: CastConfiguration
+    var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:]
 
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }

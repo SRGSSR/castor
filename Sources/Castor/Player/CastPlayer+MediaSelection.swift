@@ -58,6 +58,8 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
+        // TODO: Update `mediaSelectionPreferredLanguages` to match this new setting, dropping past settings entirely.
+
         var activeTracks = _activeTracks
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
@@ -111,12 +113,13 @@ public extension CastPlayer {
     /// This method can be used to override the default media option selection for some characteristic, e.g., to start
     /// playback with a predefined language for audio and / or subtitles.
     func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
+        mediaSelectionPreferredLanguages[characteristic] = languages
     }
 
     /// Returns media selection preferred languages for the specified media characteristic.
     ///
     /// - Parameter characteristic: The characteristic.
     func mediaSelectionPreferredLanguages(for characteristic: AVMediaCharacteristic) -> [String] {
-        []
+        mediaSelectionPreferredLanguages[characteristic] ?? []
     }
 }

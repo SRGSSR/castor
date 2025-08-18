@@ -20,7 +20,7 @@ public struct CastResumeState {
     /// An `.invalid` time corresponds to the default playback position.
     public let time: CMTime
 
-    private var preferredLanguages: [AVMediaCharacteristic: [String]] = [:]
+    private var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:]
 
     /// Creates a state.
     ///
@@ -48,13 +48,13 @@ public extension CastResumeState {
     ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
     ///     include `.audible`, `.legible`, and `.visual`.
     mutating func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
-        preferredLanguages[characteristic] = languages
+        mediaSelectionPreferredLanguages[characteristic] = languages
     }
 
     /// Returns media selection preferred languages for the specified media characteristic.
     ///
     /// - Parameter characteristic: The characteristic.
     func mediaSelectionPreferredLanguages(for characteristic: AVMediaCharacteristic) -> [String] {
-        preferredLanguages[characteristic] ?? []
+        mediaSelectionPreferredLanguages[characteristic] ?? []
     }
 }
