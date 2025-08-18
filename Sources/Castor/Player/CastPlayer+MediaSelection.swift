@@ -58,8 +58,6 @@ public extension CastPlayer {
     /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        // TODO: Update `mediaSelectionPreferredLanguages` to match this new setting, dropping past settings entirely.
-
         var activeTracks = _activeTracks
         activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
         switch mediaOption {
@@ -113,5 +111,22 @@ public extension CastPlayer {
     /// playback with a predefined language for audio and / or subtitles.
     func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
         mediaSelectionPreferredLanguages[characteristic] = languages
+    }
+
+    func applyMediaSelectionPreferredLanguages() {
+        mediaSelectionCharacteristics.forEach { characteristic in
+            guard let languages = mediaSelectionPreferredLanguages[characteristic],
+                  let option = mediaOption(matchingPreferredLanguages: languages, for: characteristic) else {
+                return
+            }
+            select(mediaOption: option, for: characteristic)
+        }
+    }
+
+    private func mediaOption(matchingPreferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption? {
+        let options = mediaSelectionOptions(for: characteristic)
+        return languages.lazy.compactMap { language in
+            options.first { $0.hasLanguageCode(language) }
+        }.first
     }
 }

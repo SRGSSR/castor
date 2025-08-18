@@ -35,4 +35,8 @@ public struct CastMediaTrack: Hashable {
     init(rawTrack: GCKMediaTrack) {
         self.rawTrack = rawTrack
     }
+
+    func hasLanguageCode(_ languageCode: String) -> Bool {
+        rawTrack.languageCode == languageCode
+    }
 }

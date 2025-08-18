@@ -21,8 +21,17 @@ public enum CastMediaSelectionOption: Hashable {
         switch self {
         case .off:
             return String(localized: "Off", bundle: .module, comment: "Media selection option")
-        case let .on(option):
-            return option.displayName
+        case let .on(track):
+            return track.displayName
+        }
+    }
+
+    func hasLanguageCode(_ languageCode: String) -> Bool {
+        switch self {
+        case .off:
+            return false
+        case let .on(track):
+            return track.hasLanguageCode(languageCode)
         }
     }
 }

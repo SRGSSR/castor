@@ -65,6 +65,13 @@ public final class CastPlayer: NSObject, ObservableObject {
     var configuration: CastConfiguration
     var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:]
 
+    var isLoading = false {
+        didSet {
+            guard isLoading != oldValue else { return }
+            applyMediaSelectionPreferredLanguages()
+        }
+    }
+
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
 
@@ -72,6 +79,8 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.configuration = configuration
 
         super.init()
+
+        remoteMediaClient.add(self)
 
         __repeatMode.bind(to: remoteMediaClient)
         __currentItemId.bind(to: remoteMediaClient)
@@ -81,5 +90,18 @@ public final class CastPlayer: NSObject, ObservableObject {
         __activeTracks.bind(to: remoteMediaClient)
         __targetSeekTime.bind(to: remoteMediaClient)
         __items.bind(to: remoteMediaClient)
+    }
+}
+
+extension CastPlayer: @preconcurrency GCKRemoteMediaClientListener {
+    public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+        switch mediaStatus?.playerState {
+        case .loading:
+            isLoading = true
+        case .playing, .paused:
+            isLoading = false
+        default:
+            break
+        }
     }
 }
