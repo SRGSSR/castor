@@ -102,6 +102,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 }
 
 extension CastPlayer: @preconcurrency GCKRemoteMediaClientListener {
+    // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         switch mediaStatus?.playerState {
         case .loading:

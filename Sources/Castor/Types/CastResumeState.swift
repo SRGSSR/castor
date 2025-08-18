@@ -39,6 +39,11 @@ public struct CastResumeState {
 }
 
 public extension CastResumeState {
+    /// The set of media characteristics for which a media selection is available.
+    var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
+        Set(mediaSelectionLanguages.keys)
+    }
+
     /// Sets the media selection language for the specified media characteristic.
     ///
     /// - Parameters:
@@ -47,11 +52,6 @@ public extension CastResumeState {
     ///     include `.audible`, `.legible`, and `.visual`.
     mutating func setMediaSelection(language: String, for characteristic: AVMediaCharacteristic) {
         mediaSelectionLanguages[characteristic] = language
-    }
-
-    /// The set of media characteristics for which a media selection is available.
-    var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
-        Set(mediaSelectionLanguages.keys)
     }
 
     /// Returns the media selection language for the specified media characteristic.

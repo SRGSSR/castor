@@ -112,7 +112,9 @@ public extension CastPlayer {
     func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
         mediaSelectionPreferredLanguages[characteristic] = languages
     }
+}
 
+extension CastPlayer {
     func applyMediaSelectionPreferredLanguages() {
         mediaSelectionCharacteristics.forEach { characteristic in
             guard let languages = mediaSelectionPreferredLanguages[characteristic],
@@ -127,6 +129,6 @@ public extension CastPlayer {
         let options = mediaSelectionOptions(for: characteristic)
         return languages.lazy.compactMap { language in
             options.first { $0.hasLanguageCode(language) }
-        }.first
+        } .first
     }
 }
