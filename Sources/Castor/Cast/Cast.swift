@@ -170,11 +170,11 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         currentSession = session
         if let player, let delegate {
             if let resumeState = targetResumeState {
-                player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+                player.resume(from: resumeState)
                 targetResumeState = nil
             }
             else if let resumeState = castable?.castStartSession() {
-                player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
+                player.resume(from: resumeState)
                 delegate.castStartSession()
             }
         }

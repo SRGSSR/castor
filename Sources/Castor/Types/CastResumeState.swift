@@ -49,6 +49,11 @@ public extension CastResumeState {
         mediaSelectionLanguages[characteristic] = language
     }
 
+    /// The set of media characteristics for which a media selection is available.
+    var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
+        Set(mediaSelectionLanguages.keys)
+    }
+
     /// Returns the media selection language for the specified media characteristic.
     ///
     /// - Parameter characteristic: The characteristic.
