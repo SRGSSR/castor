@@ -166,9 +166,7 @@ struct LocalPlaybackView: View {
     private func controls() -> some View {
         ZStack {
             LocalPaybackButton(player: player)
-            LocalTimeBar(player: player)
-                .padding()
-                .frame(maxHeight: .infinity, alignment: .bottom)
+            bottomBar()
         }
         .tint(.white)
         .foregroundStyle(.white)
@@ -176,6 +174,26 @@ struct LocalPlaybackView: View {
         .background(Color(white: 0, opacity: 0.4))
         .opacity(visibilityTracker.isUserInterfaceHidden ? 0 : 1)
         .animation(.default, value: visibilityTracker.isUserInterfaceHidden)
+    }
+
+    private func bottomBar() -> some View {
+        HStack {
+            LocalTimeBar(player: player)
+            settingsButton()
+        }
+        .padding()
+        .frame(maxHeight: .infinity, alignment: .bottom)
+    }
+
+    private func settingsButton() -> some View {
+        Menu {
+            player.standardSettingsMenu()
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.system(size: 20))
+                .tint(.white)
+        }
+        .menuOrder(.fixed)
     }
 
     private func playlist() -> some View {
