@@ -26,15 +26,7 @@ final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
     }
 
     static func value(from status: GCKMediaStatus?) -> [CastMediaTrack] {
-        activeTracks(from: status)
-    }
-
-    private static func activeTracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        guard let mediaStatus, let rawTracks = mediaStatus.mediaInformation?.mediaTracks, let activeTrackIDs = mediaStatus.activeTrackIDs else {
-            return []
-        }
-        // swiftlint:disable:next legacy_objc_type
-        return rawTracks.filter { activeTrackIDs.contains(NSNumber(value: $0.identifier)) }.map(CastMediaTrack.init)
+        status?.activeTracks() ?? []
     }
 
     func requestUpdate(to value: Value, completion: @escaping (Bool) -> Void) -> Bool {

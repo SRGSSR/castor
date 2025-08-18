@@ -50,7 +50,7 @@ public extension CastResumeState {
     ///   - language: The code of the language to select.
     ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
     ///     include `.audible`, `.legible`, and `.visual`.
-    mutating func setMediaSelection(language: String, for characteristic: AVMediaCharacteristic) {
+    mutating func setMediaSelection(language: String?, for characteristic: AVMediaCharacteristic) {
         mediaSelectionLanguages[characteristic] = language
     }
 

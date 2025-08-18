@@ -31,7 +31,7 @@ public enum CastMediaSelectionOption: Hashable {
         case .off:
             return false
         case let .on(track):
-            return track.hasLanguageCode(languageCode)
+            return track.languageCode == languageCode
         }
     }
 }
