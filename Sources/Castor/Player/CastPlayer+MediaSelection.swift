@@ -19,26 +19,6 @@ public extension CastPlayer {
         return rawTracks.map { .init(rawTrack: $0) }
     }
 
-    /// Selects a media option for a characteristic.
-    ///
-    /// - Parameters:
-    ///   - mediaOption: The option to select.
-    ///   - characteristic: The characteristic.
-    ///
-    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
-    /// attempting to set an option that is not supported.
-    func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
-        var activeTracks = _activeTracks
-        activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
-        switch mediaOption {
-        case .off:
-            break
-        case let .on(track):
-            activeTracks.append(track)
-        }
-        _activeTracks = activeTracks
-    }
-
     /// The list of media options associated with a characteristic.
     ///
     /// - Parameter characteristic: The characteristic.
@@ -67,6 +47,26 @@ public extension CastPlayer {
         let options = mediaSelectionOptions(for: characteristic)
         let currentOption = currentMediaOption(for: characteristic)
         return options.contains(currentOption) ? currentOption : .off
+    }
+
+    /// Selects a media option for a characteristic.
+    ///
+    /// - Parameters:
+    ///   - mediaOption: The option to select.
+    ///   - characteristic: The characteristic.
+    ///
+    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
+    /// attempting to set an option that is not supported.
+    func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
+        var activeTracks = _activeTracks
+        activeTracks.removeAll { $0.mediaCharacteristic == characteristic }
+        switch mediaOption {
+        case .off:
+            break
+        case let .on(track):
+            activeTracks.append(track)
+        }
+        _activeTracks = activeTracks
     }
 
     /// A binding to read and write the current media selection for a characteristic.
