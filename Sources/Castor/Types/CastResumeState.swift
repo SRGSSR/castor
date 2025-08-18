@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import CoreMedia
 
 /// State information useful when transitioning between remote and local playback.
@@ -20,7 +21,7 @@ public struct CastResumeState {
     public let time: CMTime
 
     /// Creates a state.
-    /// 
+    ///
     /// - Parameters:
     ///   - assets: The assets.
     ///   - index: The current index.
@@ -32,5 +33,25 @@ public struct CastResumeState {
         self.assets = assets
         self.index = index
         self.time = time
+    }
+}
+
+public extension CastResumeState {
+    /// Sets media selection preferred languages for the specified media characteristic.
+    ///
+    /// - Parameters:
+    ///   - languages: An Array of strings containing language identifiers, in order of desirability, that are
+    ///     preferred for selection. Languages can be indicated via BCP 47 language identifiers or via ISO 639-2/T
+    ///     language codes.
+    ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
+    ///     include `.audible`, `.legible`, and `.visual`.
+    mutating func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
+    }
+
+    /// Returns media selection preferred languages for the specified media characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic.
+    func mediaSelectionPreferredLanguages(for characteristic: AVMediaCharacteristic) -> [String] {
+        []
     }
 }
