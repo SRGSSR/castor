@@ -4,16 +4,19 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import Castor
 import PillarboxPlayer
 
 extension Player {
     func setMediaSelection(from resumeState: CastResumeState) {
-        resumeState.mediaSelectionCharacteristics.forEach { characteristic in
-            guard let language = resumeState.mediaSelectionLanguage(for: characteristic) else {
-                return
+        [AVMediaCharacteristic.audible, .legible].forEach { characteristic in
+            if let language = resumeState.mediaSelectionLanguage(for: characteristic) {
+                setMediaSelection(preferredLanguages: [language], for: characteristic)
             }
-            setMediaSelection(preferredLanguages: [language], for: characteristic)
+            else {
+                setMediaSelection(preferredLanguages: [], for: characteristic)
+            }
         }
     }
 }
