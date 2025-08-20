@@ -6,6 +6,7 @@
 
 import Castor
 import Foundation
+import GoogleCast
 import PillarboxCoreBusiness
 import PillarboxPlayer
 
@@ -46,11 +47,13 @@ struct Media: Hashable, Identifiable {
 
     let id = UUID()
     let title: String
+    let metadataType: GCKMediaMetadataType
     let imageUrl: URL?
     let type: Type
 
-    init(title: String, imageUrl: URL? = nil, type: Type) {
+    init(title: String, metadataType: GCKMediaMetadataType = .generic, imageUrl: URL? = nil, type: Type) {
         self.title = title
+        self.metadataType = metadataType
         self.imageUrl = imageUrl
         self.type = type
     }
@@ -91,7 +94,7 @@ struct Media: Hashable, Identifiable {
     }
 
     func castMetadata() -> CastMetadata {
-        .init(title: title, image: castImage())
+        .init(title: title, metadataType: metadataType, image: castImage())
     }
 
     private func castImage() -> CastImage? {
@@ -150,21 +153,25 @@ let kHlsUrlMedias: [Media] = [
 let kMP3UrlMedias: [Media] = [
     .init(
         title: "Couleur 3",
+        metadataType: .musicTrack,
         imageUrl: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640",
         type: .url("https://stream.srg-ssr.ch/m/couleur3/mp3_128")
     ),
     .init(
         title: "Radio Chablais",
+        metadataType: .musicTrack,
         imageUrl: "https://alpsoft.ch/wp-content/uploads/2021/10/feat-radio-chablais-1080x675.jpg",
         type: .url("https://radiochablais.ice.infomaniak.ch/radiochablais-high.mp3")
     ),
     .init(
         title: "Skyrock",
+        metadataType: .musicTrack,
         imageUrl: "https://www.radio.net/300/skyrock.png",
         type: .url("https://icecast.skyrock.net/s/natio_mp3_128k")
     ),
     .init(
         title: "Country Radio Gilsdorf",
+        metadataType: .musicTrack,
         imageUrl: "https://static.wixstatic.com/media/7b176c_f543664008a447f3b2adbb1d231b21e1~mv2.jpg",
         type: .url("http://streaming.aoip.international:8000/cr-gilsdorf")
     )
