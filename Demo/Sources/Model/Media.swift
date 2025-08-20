@@ -106,6 +106,11 @@ let kHlsUrlMedias: [Media] = [
         type: .url("https://cdn.prod.swi-services.ch/video-projects/94f5f5d1-5d53-4336-afda-9198462c45d9/localised-videos/ENG/renditions/ENG.mp4")
     ),
     .init(
+        title: "19h30 (FMP4)",
+        imageUrl: "https://il.srgssr.ch/images/?imageUrl=https%3A%2F%2Fimg.rts.ch%2Fmedias%2F2025%2Fimage%2Frwhwbf-28972611.image&format=webp&width=1920",
+        type: .url("https://rts-vod-amd.akamaized.net/ww/db6241ed-2be5-326f-a85e-40e1742950ca/b94ab623-6e55-387c-8743-9c8cfb59de59/master.m3u8")
+    ),
+    .init(
         title: "Tagesschau",
         imageUrl: "https://images.tagesschau.de/image/89045d82-5cd5-46ad-8f91-73911add30ee/AAABh3YLLz0/AAABibBx2rU/20x9-1280/tagesschau-logo-100.jpg",
         type: .url("https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8")
