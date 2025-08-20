@@ -88,21 +88,28 @@ public struct CastAsset {
     ///
     /// - Parameters:
     ///   - url: The URL to be played.
+    ///   - configuration: The asset configuration.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
     ///     to convert an `Encodable` value into a `CastCustomData`.
-    public static func url(_ url: URL, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
-        .init(kind: .url(url), metadata: metadata, customData: customData)
+    public static func url(_ url: URL, configuration: CastAssetURLConfiguration = .init(), metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
+        .init(kind: .url(url, configuration: configuration), metadata: metadata, customData: customData)
     }
 
     /// An asset represented by a URL.
     ///
     /// - Parameters:
     ///   - url: The URL to be played.
+    ///   - configuration: The asset configuration.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
-    public static func url<T>(_ url: URL, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
-        .init(kind: .url(url), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
+    public static func url<T>(
+        _ url: URL,
+        configuration: CastAssetURLConfiguration = .init(),
+        metadata: CastMetadata?,
+        customData: T
+    ) -> Self where T: Encodable {
+        .init(kind: .url(url, configuration: configuration), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }
 
     private static func kind(from rawMediaInformation: GCKMediaInformation) -> Kind? {
@@ -113,7 +120,12 @@ public struct CastAsset {
             return .identifier(identifier)
         }
         else if let url = rawMediaInformation.contentURL {
-            return .url(url)
+            let configuration = CastAssetURLConfiguration(
+                mimeType: rawMediaInformation.contentType,
+                hlsAudioSegmentFormat: rawMediaInformation.hlsSegmentFormat,
+                hlsVideoSegmentFormat: rawMediaInformation.hlsVideoSegmentFormat
+            )
+            return .url(url, configuration: configuration)
         }
         else {
             return nil
@@ -138,7 +150,7 @@ public extension CastAsset {
         case identifier(String)
 
         /// A type of asset identified by an URL.
-        case url(URL)
+        case url(URL, configuration: CastAssetURLConfiguration)
 
         func mediaInformationBuilder() -> GCKMediaInformationBuilder {
             switch self {
@@ -148,8 +160,12 @@ public extension CastAsset {
                 let builder = GCKMediaInformationBuilder()
                 builder.contentID = identifier
                 return builder
-            case let .url(url):
-                return GCKMediaInformationBuilder(contentURL: url)
+            case let .url(url, configuration: configuration):
+                let builder = GCKMediaInformationBuilder(contentURL: url)
+                builder.contentType = configuration.mimeType
+                builder.hlsSegmentFormat = configuration.hlsAudioSegmentFormat
+                builder.hlsVideoSegmentFormat = configuration.hlsVideoSegmentFormat
+                return builder
             }
         }
     }

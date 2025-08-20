@@ -95,8 +95,8 @@ extension PlayerViewModel: Castable {
                 return .entity(link, metadata: media.castMetadata())
             case let .urn(urn):
                 return .identifier(urn, metadata: media.castMetadata())
-            case let .url(url):
-                return .url(url, metadata: media.castMetadata())
+            case let .url(url, configuration: configuration):
+                return .url(url, configuration: configuration, metadata: media.castMetadata())
             }
         }
     }

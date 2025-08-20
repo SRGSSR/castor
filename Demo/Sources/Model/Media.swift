@@ -13,7 +13,35 @@ struct Media: Hashable, Identifiable {
     enum `Type`: Hashable {
         case deepLink(String)
         case urn(String)
-        case url(URL)
+        case url(URL, configuration: CastAssetURLConfiguration)
+
+        static func url(_ url: URL) -> Self {
+            .url(url, configuration: .init())
+        }
+
+        static func == (lhs: Media.`Type`, rhs: Media.`Type`) -> Bool {
+            switch (lhs, rhs) {
+            case let (.deepLink(lhsLink), .deepLink(rhsLink)):
+                return lhsLink == rhsLink
+            case let (.urn(lhsUrn), .urn(rhsUrn)):
+                return lhsUrn == rhsUrn
+            case let (.url(lhsUrl, configuration: _), .url(rhsUrl, configuration: _)):
+                return lhsUrl == rhsUrl
+            default:
+                return false
+            }
+        }
+
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case let .deepLink(link):
+                hasher.combine(link)
+            case let .urn(urn):
+                hasher.combine(urn)
+            case let .url(url, configuration: _):
+                hasher.combine(url)
+            }
+        }
     }
 
     let id = UUID()
@@ -35,8 +63,8 @@ struct Media: Hashable, Identifiable {
             self.init(title: title, imageUrl: imageUrl, type: .deepLink(entity))
         case let .identifier(identifier):
             self.init(title: title, imageUrl: imageUrl, type: .urn(identifier))
-        case let .url(url):
-            self.init(title: title, imageUrl: imageUrl, type: .url(url))
+        case let .url(url, configuration: configuration):
+            self.init(title: title, imageUrl: imageUrl, type: .url(url, configuration: configuration))
         }
     }
 
@@ -47,7 +75,7 @@ struct Media: Hashable, Identifiable {
             return .urn(link)
         case let .urn(urn):
             return .urn(urn)
-        case let .url(url):
+        case let .url(url, configuration: _):
             return .simple(url: url, metadata: self)
         }
     }
@@ -58,8 +86,8 @@ struct Media: Hashable, Identifiable {
             return .entity(link, metadata: castMetadata())
         case let .urn(urn):
             return .identifier(urn, metadata: castMetadata())
-        case let .url(url):
-            return .url(url, metadata: castMetadata())
+        case let .url(url, configuration: configuration):
+            return .url(url, configuration: configuration, metadata: castMetadata())
         }
     }
 
@@ -108,7 +136,10 @@ let kHlsUrlMedias: [Media] = [
     .init(
         title: "19h30 (FMP4)",
         imageUrl: "https://il.srgssr.ch/images/?imageUrl=https%3A%2F%2Fimg.rts.ch%2Fmedias%2F2025%2Fimage%2Frwhwbf-28972611.image&format=webp&width=1920",
-        type: .url("https://rts-vod-amd.akamaized.net/ww/db6241ed-2be5-326f-a85e-40e1742950ca/b94ab623-6e55-387c-8743-9c8cfb59de59/master.m3u8")
+        type: .url(
+            "https://rts-vod-amd.akamaized.net/ww/db6241ed-2be5-326f-a85e-40e1742950ca/b94ab623-6e55-387c-8743-9c8cfb59de59/master.m3u8",
+            configuration: .init(hlsVideoSegmentFormat: .FMP4)
+        )
     ),
     .init(
         title: "Tagesschau",
