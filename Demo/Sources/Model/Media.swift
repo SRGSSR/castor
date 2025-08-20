@@ -11,7 +11,7 @@ import PillarboxCoreBusiness
 import PillarboxPlayer
 
 struct Media: Hashable, Identifiable {
-    enum `Type`: Hashable {
+    enum `Type` {
         case deepLink(String)
         case urn(String)
         case url(URL, configuration: CastAssetURLConfiguration)
@@ -19,39 +19,15 @@ struct Media: Hashable, Identifiable {
         static func url(_ url: URL) -> Self {
             .url(url, configuration: .init())
         }
-
-        static func == (lhs: Media.`Type`, rhs: Media.`Type`) -> Bool {
-            switch (lhs, rhs) {
-            case let (.deepLink(lhsLink), .deepLink(rhsLink)):
-                return lhsLink == rhsLink
-            case let (.urn(lhsUrn), .urn(rhsUrn)):
-                return lhsUrn == rhsUrn
-            case let (.url(lhsUrl, configuration: _), .url(rhsUrl, configuration: _)):
-                return lhsUrl == rhsUrl
-            default:
-                return false
-            }
-        }
-
-        func hash(into hasher: inout Hasher) {
-            switch self {
-            case let .deepLink(link):
-                hasher.combine(link)
-            case let .urn(urn):
-                hasher.combine(urn)
-            case let .url(url, configuration: _):
-                hasher.combine(url)
-            }
-        }
     }
 
     let id = UUID()
     let title: String
     let metadataType: GCKMediaMetadataType
     let imageUrl: URL?
-    let type: Type
+    let type: `Type`
 
-    init(title: String, metadataType: GCKMediaMetadataType = .generic, imageUrl: URL? = nil, type: Type) {
+    init(title: String, metadataType: GCKMediaMetadataType = .generic, imageUrl: URL? = nil, type: `Type`) {
         self.title = title
         self.metadataType = metadataType
         self.imageUrl = imageUrl
@@ -111,6 +87,32 @@ extension Media: AssetMetadata {
 
     var playerMetadata: PlayerMetadata {
         .init(title: title, imageSource: imageSource)
+    }
+}
+
+extension Media.`Type`: Hashable {
+    static func == (lhs: Media.`Type`, rhs: Media.`Type`) -> Bool {
+        switch (lhs, rhs) {
+        case let (.deepLink(lhsLink), .deepLink(rhsLink)):
+            return lhsLink == rhsLink
+        case let (.urn(lhsUrn), .urn(rhsUrn)):
+            return lhsUrn == rhsUrn
+        case let (.url(lhsUrl, configuration: _), .url(rhsUrl, configuration: _)):
+            return lhsUrl == rhsUrl
+        default:
+            return false
+        }
+    }
+
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case let .deepLink(link):
+            hasher.combine(link)
+        case let .urn(urn):
+            hasher.combine(urn)
+        case let .url(url, configuration: _):
+            hasher.combine(url)
+        }
     }
 }
 
