@@ -116,7 +116,9 @@ extension Media.`Type`: Hashable {
     }
 }
 
-let kHlsUrlMedias: [Media] = [
+// TODO: Remove all @MainActor below as of Xcode 26.0 (demo assumes main actor isolation by default)
+
+@MainActor let kHlsUrlMedias: [Media] = [
     .init(
         title: "Apple Basic 4:3",
         imageUrl: kAppleImageUrl,
@@ -152,7 +154,7 @@ let kHlsUrlMedias: [Media] = [
     )
 ]
 
-let kMP3UrlMedias: [Media] = [
+@MainActor let kMP3UrlMedias: [Media] = [
     .init(
         title: "Couleur 3",
         metadataType: .musicTrack,
@@ -179,7 +181,7 @@ let kMP3UrlMedias: [Media] = [
     )
 ]
 
-let kDashUrlMedias: [Media] = [
+@MainActor let kDashUrlMedias: [Media] = [
     .init(
         title: "VOD",
         imageUrl: "https://dashif.org/img/dashif-logo-283x100_new.jpg",
@@ -192,7 +194,7 @@ let kDashUrlMedias: [Media] = [
     )
 ]
 
-let kUrnMedias: [Media] = [
+@MainActor let kUrnMedias: [Media] = [
     .init(
         title: "Horizontal video",
         type: .urn("urn:rts:video:14827306")
@@ -215,7 +217,7 @@ let kUrnMedias: [Media] = [
     )
 ]
 
-let kDeepLinkMedias: [Media] = [
+@MainActor let kDeepLinkMedias: [Media] = [
     .init(
         title: "Horizontal video",
         type: .deepLink("https://pillarbox.ch/play/urn:rts:video:14827306")
