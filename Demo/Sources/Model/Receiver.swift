@@ -45,7 +45,7 @@ enum Receiver: Int, CaseIterable {
         }
     }
 
-    var isSupportingUrns: Bool {
+    var isSrgSsrReceiver: Bool {
         switch self {
         case .srgssr, .amtins, .androidTv:
             true

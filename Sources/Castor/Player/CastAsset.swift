@@ -42,59 +42,78 @@ public struct CastAsset {
         self.kind = kind
     }
 
-    /// A simple asset which can be played directly.
+    /// An asset represented by an entity.
     ///
     /// - Parameters:
-    ///   - url: The URL to be played.
+    ///   - entity: An entity for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
     ///     to convert an `Encodable` value into a `CastCustomData`.
-    public static func simple(url: URL, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
-        .init(kind: .simple(url), metadata: metadata, customData: customData)
+    public static func entity(_ entity: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
+        .init(kind: .entity(entity), metadata: metadata, customData: customData)
     }
 
-    /// A simple asset which can be played directly.
+    /// An asset represented by an entity.
     ///
     /// - Parameters:
-    ///   - url: The URL to be played.
+    ///   - entity: An entity for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
-    public static func simple<T>(url: URL, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
-        .init(kind: .simple(url), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
+    public static func entity<T>(_ entity: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
+        .init(kind: .entity(entity), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }
 
-    /// A custom asset represented by some identifier.
+    /// An asset represented by an identifier.
     ///
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
     ///     to convert an `Encodable` value into a `CastCustomData`.
-    public static func custom(identifier: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
-        .init(kind: .custom(identifier), metadata: metadata, customData: customData)
+    public static func identifier(_ identifier: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
+        .init(kind: .identifier(identifier), metadata: metadata, customData: customData)
     }
 
-    /// A custom asset represented by some identifier.
+    /// An asset represented by an identifier.
     ///
     /// - Parameters:
     ///   - identifier: An identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
-    public static func custom<T>(identifier: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
-        .init(kind: .custom(identifier), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
+    public static func identifier<T>(_ identifier: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
+        .init(kind: .identifier(identifier), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
+    }
+
+    /// An asset represented by a URL.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to be played.
+    ///   - metadata: The metadata associated with the asset.
+    ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
+    ///     to convert an `Encodable` value into a `CastCustomData`.
+    public static func url(_ url: URL, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
+        .init(kind: .url(url), metadata: metadata, customData: customData)
+    }
+
+    /// An asset represented by a URL.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to be played.
+    ///   - metadata: The metadata associated with the asset.
+    ///   - customData: Custom data associated with the asset, encoded using the default `JSONEncoder`.
+    public static func url<T>(_ url: URL, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
+        .init(kind: .url(url), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }
 
     private static func kind(from rawMediaInformation: GCKMediaInformation) -> Kind? {
         if let entity = rawMediaInformation.entity {
-            if let url = URL(castableString: entity) {
-                return .simple(url)
-            }
-            else {
-                return .custom(entity)
-            }
+            return .entity(entity)
+        }
+        else if let identifier = rawMediaInformation.contentID {
+            return .identifier(identifier)
         }
         else if let url = rawMediaInformation.contentURL {
-            return .simple(url)
+            return .url(url)
         }
         else {
             return nil
@@ -112,26 +131,25 @@ public struct CastAsset {
 public extension CastAsset {
     /// Represents the type of the asset.
     enum Kind {
-        /// A type of asset identified by an URL.
-        case simple(URL)
+        /// A type of asset identified by an entity.
+        case entity(String)
 
         /// A type of asset identified by an identifier.
-        case custom(String)
+        case identifier(String)
+
+        /// A type of asset identified by an URL.
+        case url(URL)
 
         func mediaInformationBuilder() -> GCKMediaInformationBuilder {
             switch self {
-            case let .simple(url):
-                let builder = GCKMediaInformationBuilder(contentURL: url)
-                // TODO: This workaround should be removed.
-                // A random contentID is currently set to enable playback of URL based content using the SRGSSR receiver.
-                builder.contentID = UUID().uuidString
-                return builder
-            case let .custom(identifier):
-                let builder = GCKMediaInformationBuilder(entity: identifier)
-                // TODO: This workaround should be removed.
-                // A contentID is currently set to enable playback of URN based content using the SRGSSR receiver.
+            case let .entity(entity):
+                return GCKMediaInformationBuilder(entity: entity)
+            case let .identifier(identifier):
+                let builder = GCKMediaInformationBuilder()
                 builder.contentID = identifier
                 return builder
+            case let .url(url):
+                return GCKMediaInformationBuilder(contentURL: url)
             }
         }
     }

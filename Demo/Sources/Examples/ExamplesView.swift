@@ -22,8 +22,9 @@ struct ExamplesView: View {
             if cast.player != nil {
                 section("DASH streams", medias: kDashUrlMedias)
             }
-            if UserDefaults.standard.receiver.isSupportingUrns {
+            if UserDefaults.standard.receiver.isSrgSsrReceiver {
                 section("URN-based streams", medias: kUrnMedias)
+                section("Deep-linked streams", medias: kDeepLinkMedias)
             }
         }
         .animation(.linear(duration: 0.2), value: cast.player)

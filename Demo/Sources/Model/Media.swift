@@ -11,8 +11,9 @@ import PillarboxPlayer
 
 struct Media: Hashable, Identifiable {
     enum `Type`: Hashable {
-        case url(URL)
+        case deepLink(String)
         case urn(String)
+        case url(URL)
     }
 
     let id = UUID()
@@ -30,28 +31,35 @@ struct Media: Hashable, Identifiable {
         let title = asset.metadata?.title ?? "Untitled"
         let imageUrl = asset.metadata?.imageUrl()
         switch asset.kind {
-        case let .simple(url):
+        case let .entity(entity):
+            self.init(title: title, imageUrl: imageUrl, type: .deepLink(entity))
+        case let .identifier(identifier):
+            self.init(title: title, imageUrl: imageUrl, type: .urn(identifier))
+        case let .url(url):
             self.init(title: title, imageUrl: imageUrl, type: .url(url))
-        case let .custom(urn):
-            self.init(title: title, imageUrl: imageUrl, type: .urn(urn))
         }
     }
 
     func item() -> PlayerItem {
         switch type {
-        case let .url(url):
-            return .simple(url: url, metadata: self)
+        case let .deepLink(link):
+            // TODO: Parse link to extract URN
+            return .urn(link)
         case let .urn(urn):
             return .urn(urn)
+        case let .url(url):
+            return .simple(url: url, metadata: self)
         }
     }
 
     func asset() -> CastAsset {
         switch type {
-        case let .url(url):
-            return .simple(url: url, metadata: castMetadata())
+        case let .deepLink(link):
+            return .entity(link, metadata: castMetadata())
         case let .urn(urn):
-            return .custom(identifier: urn, metadata: castMetadata())
+            return .identifier(urn, metadata: castMetadata())
+        case let .url(url):
+            return .url(url, metadata: castMetadata())
         }
     }
 
@@ -160,6 +168,30 @@ let kUrnMedias: [Media] = [
     .init(
         title: "Bonjour la Suisse (5/5) - Que du bonheur?",
         type: .urn("urn:rts:video:8806923")
+    )
+]
+
+// TODO: Create deep link URL format
+let kDeepLinkMedias: [Media] = [
+    .init(
+        title: "Horizontal video",
+        type: .deepLink("urn:rts:video:14827306")
+    ),
+    .init(
+        title: "SRF 1",
+        type: .deepLink("urn:srf:video:c4927fcf-e1a0-0001-7edd-1ef01d441651")
+    ),
+    .init(
+        title: "RTS 1",
+        type: .deepLink("urn:rts:video:3608506")
+    ),
+    .init(
+        title: "Puls - Gehirnerschütterung, Akutgeriatrie, Erlenpollen im Winter",
+        type: .deepLink("urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
+    ),
+    .init(
+        title: "Bonjour la Suisse (5/5) - Que du bonheur?",
+        type: .deepLink("urn:rts:video:8806923")
     )
 ]
 
