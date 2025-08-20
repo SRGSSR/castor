@@ -11,7 +11,7 @@ public struct CastAssetURLConfiguration {
     /// The MIME type.
     public let mimeType: String?
 
-    /// The audio segment (HLS only).
+    /// The audio segment format (HLS only).
     public let hlsAudioSegmentFormat: GCKHLSSegmentFormat
 
     /// The video segment format (HLS only).
@@ -21,7 +21,7 @@ public struct CastAssetURLConfiguration {
     ///
     /// - Parameters:
     ///   - mimeType: The MIME type.
-    ///   - hlsAudioSegmentFormat: The audio segment (HLS only).
+    ///   - hlsAudioSegmentFormat: The audio segment format (HLS only).
     ///   - hlsVideoSegmentFormat: The video segment format (HLS only).
     public init(
         mimeType: String? = nil,

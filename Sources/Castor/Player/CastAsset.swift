@@ -120,12 +120,11 @@ public struct CastAsset {
             return .identifier(identifier)
         }
         else if let url = rawMediaInformation.contentURL {
-            let configuration = CastAssetURLConfiguration(
+            return .url(url, configuration: .init(
                 mimeType: rawMediaInformation.contentType,
                 hlsAudioSegmentFormat: rawMediaInformation.hlsSegmentFormat,
                 hlsVideoSegmentFormat: rawMediaInformation.hlsVideoSegmentFormat
-            )
-            return .url(url, configuration: configuration)
+            ))
         }
         else {
             return nil
