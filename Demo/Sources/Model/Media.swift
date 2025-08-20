@@ -71,8 +71,7 @@ struct Media: Hashable, Identifiable {
     func item() -> PlayerItem {
         switch type {
         case let .deepLink(link):
-            // TODO: Parse link to extract URN
-            return .urn(link)
+            return .urn(URL(string: link)?.lastPathComponent ?? "urn:unknown")
         case let .urn(urn):
             return .urn(urn)
         case let .url(url, configuration: _):
@@ -207,27 +206,26 @@ let kUrnMedias: [Media] = [
     )
 ]
 
-// TODO: Create deep link URL format
 let kDeepLinkMedias: [Media] = [
     .init(
         title: "Horizontal video",
-        type: .deepLink("urn:rts:video:14827306")
+        type: .deepLink("https://pillarbox.ch/play/urn:rts:video:14827306")
     ),
     .init(
         title: "SRF 1",
-        type: .deepLink("urn:srf:video:c4927fcf-e1a0-0001-7edd-1ef01d441651")
+        type: .deepLink("https://pillarbox.ch/play/urn:srf:video:c4927fcf-e1a0-0001-7edd-1ef01d441651")
     ),
     .init(
         title: "RTS 1",
-        type: .deepLink("urn:rts:video:3608506")
+        type: .deepLink("https://pillarbox.ch/play/urn:rts:video:3608506")
     ),
     .init(
         title: "Puls - Gehirnerschütterung, Akutgeriatrie, Erlenpollen im Winter",
-        type: .deepLink("urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
+        type: .deepLink("https://pillarbox.ch/play/urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
     ),
     .init(
         title: "Bonjour la Suisse (5/5) - Que du bonheur?",
-        type: .deepLink("urn:rts:video:8806923")
+        type: .deepLink("https://pillarbox.ch/play/urn:rts:video:8806923")
     )
 ]
 
