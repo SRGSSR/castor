@@ -32,7 +32,7 @@ public struct CastAsset {
     private init(kind: Kind, metadata: CastMetadata?, customData: CastCustomData?) {
         let builder = kind.mediaInformationBuilder()
         builder.metadata = metadata?.rawMetadata
-        builder.streamType = .unknown
+        builder.streamType = .none
         builder.customData = customData?.jsonObject
         self.init(rawMediaInformation: builder.build(), kind: kind)
     }
