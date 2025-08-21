@@ -24,7 +24,6 @@ struct ExamplesView: View {
             }
             if UserDefaults.standard.receiver.isSrgSsrReceiver {
                 section("URNs", medias: kUrnMedias)
-                section("Deep links", medias: kDeepLinkMedias)
             }
         }
         .animation(.linear(duration: 0.2), value: cast.player)

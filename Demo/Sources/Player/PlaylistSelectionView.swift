@@ -57,7 +57,6 @@ struct PlaylistSelectionView: View {
             section("DASH streams", medias: kDashUrlMedias)
             if UserDefaults.standard.receiver.isSrgSsrReceiver {
                 section("URN-based streams", medias: kUrnMedias)
-                section("Deep-linked streams", medias: kDeepLinkMedias)
             }
         }
     }

@@ -12,7 +12,6 @@ import PillarboxPlayer
 
 struct Media: Hashable, Identifiable {
     enum `Type` {
-        case deepLink(String)
         case urn(String)
         case url(URL, configuration: CastAssetURLConfiguration)
 
@@ -38,10 +37,8 @@ struct Media: Hashable, Identifiable {
         let title = asset.metadata?.title ?? "Untitled"
         let imageUrl = asset.metadata?.imageUrl()
         switch asset.kind {
-        case let .entity(entity):
-            self.init(title: title, imageUrl: imageUrl, type: .deepLink(entity))
-        case let .identifier(identifier):
-            self.init(title: title, imageUrl: imageUrl, type: .urn(identifier))
+        case let .entity(urn), let .identifier(urn):
+            self.init(title: title, imageUrl: imageUrl, type: .urn(urn))
         case let .url(url, configuration: configuration):
             self.init(title: title, imageUrl: imageUrl, type: .url(url, configuration: configuration))
         }
@@ -49,8 +46,6 @@ struct Media: Hashable, Identifiable {
 
     func item() -> PlayerItem {
         switch type {
-        case let .deepLink(link):
-            return .urn(URL(string: link)?.lastPathComponent ?? "urn:unknown")
         case let .urn(urn):
             return .urn(urn)
         case let .url(url, configuration: _):
@@ -60,8 +55,6 @@ struct Media: Hashable, Identifiable {
 
     func asset() -> CastAsset {
         switch type {
-        case let .deepLink(link):
-            return .entity(link, metadata: castMetadata())
         case let .urn(urn):
             return .identifier(urn, metadata: castMetadata())
         case let .url(url, configuration: configuration):
@@ -93,8 +86,6 @@ extension Media: AssetMetadata {
 extension Media.`Type`: Hashable {
     static func == (lhs: Media.`Type`, rhs: Media.`Type`) -> Bool {
         switch (lhs, rhs) {
-        case let (.deepLink(lhsLink), .deepLink(rhsLink)):
-            return lhsLink == rhsLink
         case let (.urn(lhsUrn), .urn(rhsUrn)):
             return lhsUrn == rhsUrn
         case let (.url(lhsUrl, configuration: _), .url(rhsUrl, configuration: _)):
@@ -106,8 +97,6 @@ extension Media.`Type`: Hashable {
 
     func hash(into hasher: inout Hasher) {
         switch self {
-        case let .deepLink(link):
-            hasher.combine(link)
         case let .urn(urn):
             hasher.combine(urn)
         case let .url(url, configuration: _):
@@ -214,29 +203,6 @@ extension Media.`Type`: Hashable {
     .init(
         title: "Bonjour la Suisse (5/5) - Que du bonheur?",
         type: .urn("urn:rts:video:8806923")
-    )
-]
-
-@MainActor let kDeepLinkMedias: [Media] = [
-    .init(
-        title: "Horizontal video",
-        type: .deepLink("https://pillarbox.ch/play/urn:rts:video:14827306")
-    ),
-    .init(
-        title: "SRF 1",
-        type: .deepLink("https://pillarbox.ch/play/urn:srf:video:c4927fcf-e1a0-0001-7edd-1ef01d441651")
-    ),
-    .init(
-        title: "RTS 1",
-        type: .deepLink("https://pillarbox.ch/play/urn:rts:video:3608506")
-    ),
-    .init(
-        title: "Puls - Gehirnerschütterung, Akutgeriatrie, Erlenpollen im Winter",
-        type: .deepLink("https://pillarbox.ch/play/urn:srf:video:40ca0277-0e53-4312-83e2-4710354ff53e")
-    ),
-    .init(
-        title: "Bonjour la Suisse (5/5) - Que du bonheur?",
-        type: .deepLink("https://pillarbox.ch/play/urn:rts:video:8806923")
     )
 ]
 

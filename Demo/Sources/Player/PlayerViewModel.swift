@@ -91,10 +91,8 @@ extension PlayerViewModel: Castable {
     private func castAssets() -> [CastAsset] {
         entries.map(\.media).map { media in
             switch media.type {
-            case let .deepLink(link):
-                return .entity(link, metadata: media.castMetadata())
             case let .urn(urn):
-                return .identifier(urn, metadata: media.castMetadata())
+                return .entity(urn, metadata: media.castMetadata())
             case let .url(url, configuration: configuration):
                 return .url(url, configuration: configuration, metadata: media.castMetadata())
             }
