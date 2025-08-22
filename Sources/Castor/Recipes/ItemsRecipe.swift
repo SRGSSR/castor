@@ -9,8 +9,8 @@ import GoogleCast
 final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: [CastPlayerItem] = []
 
-    // FIXME: Remove "unowned" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
-    private unowned let service: GCKRemoteMediaClient       // Avoid cyclic reference due to the media queue delegate being retained.
+    // FIXME: Remove "weak" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
+    private weak var service: GCKRemoteMediaClient?       // Avoid cyclic reference due to the media queue delegate being retained.
 
     private let update: ([CastPlayerItem]) -> Void
     private var completion: ((Bool) -> Void)?
@@ -23,7 +23,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
 
     private var requests = 0 {
         didSet {
-            guard requests == 0, oldValue != 0 else { return }
+            guard let service, requests == 0, oldValue != 0 else { return }
             items = items(items, merging: service.mediaQueue)
         }
     }
@@ -41,7 +41,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     }
 
     func requestUpdate(to value: [CastPlayerItem], completion: @escaping (Bool) -> Void) -> Bool {
-        guard service.canMakeRequest() else { return false }
+        guard let service, service.canMakeRequest() else { return false }
         self.completion = completion
 
         let previousIds = items.map(\.idNumber)
