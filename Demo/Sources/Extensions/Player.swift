@@ -10,13 +10,16 @@ import PillarboxPlayer
 
 extension Player {
     func setMediaSelection(from resumeState: CastResumeState) {
-        [AVMediaCharacteristic.audible, .legible].forEach { characteristic in
-            if let language = resumeState.mediaSelectionLanguage(for: characteristic) {
-                setMediaSelection(preferredLanguages: [language], for: characteristic)
-            }
-            else {
-                setMediaSelection(preferredLanguages: [], for: characteristic)
-            }
+        setMediaSelection(from: resumeState, for: .audible)
+        setMediaSelection(from: resumeState, for: .legible)
+    }
+
+    private func setMediaSelection(from resumeState: CastResumeState, for characteristic: AVMediaCharacteristic) {
+        if let language = resumeState.mediaSelectionLanguage(for: characteristic) {
+            setMediaSelection(preferredLanguages: [language], for: characteristic)
+        }
+        else {
+            setMediaSelection(preferredLanguages: [], for: characteristic)
         }
     }
 }
