@@ -19,10 +19,6 @@ public struct CastButton: View {
         UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
     }
 
-    private var minSize: CGSize {
-        showsPopover ? .init(width: 375, height: 500) : .zero
-    }
-
     // swiftlint:disable:next missing_docs
     public var body: some View {
         Button {
@@ -37,7 +33,7 @@ public struct CastButton: View {
                     .foregroundColor(nil)
                     .tint(nil)
             }
-            .frame(minWidth: minSize.width, minHeight: minSize.height)
+            .frame(idealWidth: 375, idealHeight: 500)
         }
         .onChange(of: isPresented) { newValue in
             isPresenting = newValue
