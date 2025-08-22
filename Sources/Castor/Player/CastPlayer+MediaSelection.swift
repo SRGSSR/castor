@@ -103,7 +103,7 @@ public extension CastPlayer {
     ///
     /// - Parameters:
     ///   - languages: An Array of strings containing language identifiers, in order of desirability, that are
-    ///     preferred for selection.
+    ///     preferred for selection. Languages must be indicated via RFC 1766 language tags.
     ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
     ///     include `.audible`, `.legible`, and `.visual`.
     ///
