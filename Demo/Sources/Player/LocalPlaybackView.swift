@@ -46,6 +46,7 @@ private struct LocalTimeBar: View {
         } maximumValueLabel: {
             label(withText: formattedTotalTime)
         }
+        .tint(.white)
         .opacity(progressTracker.isProgressAvailable ? 1 : 0)
         .bind(progressTracker, to: player)
     }
@@ -56,6 +57,7 @@ private struct LocalTimeBar: View {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
+                .foregroundStyle(.white)
         }
     }
 }
@@ -80,12 +82,14 @@ private struct LocalPaybackButton: View {
         ZStack {
             if isBusy {
                 ProgressView()
+                    .tint(.white)
             }
             else {
                 Button(action: togglePlayPause) {
                     Image(systemName: imageName)
                 }
                 .font(.system(size: 44))
+                .foregroundStyle(.white)
             }
         }
         .onReceive(player: player, assign: \.isBusy, to: $isBusy)
@@ -168,8 +172,6 @@ struct LocalPlaybackView: View {
             LocalPaybackButton(player: player)
             bottomBar()
         }
-        .tint(.white)
-        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(white: 0, opacity: 0.4))
         .opacity(visibilityTracker.isUserInterfaceHidden ? 0 : 1)

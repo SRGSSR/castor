@@ -52,6 +52,7 @@ private struct RemoteTimeBar: View {
         } maximumValueLabel: {
             label(withText: formattedTotalTime)
         }
+        .foregroundStyle(.white)
         .opacity(progressTracker.isProgressAvailable ? 1 : 0)
         .bind(progressTracker, to: player)
     }
@@ -93,12 +94,14 @@ struct RemotePlaybackView: View {
     private func playbackButton() -> some View {
         if player.isBusy {
             ProgressView()
+                .tint(.white)
         }
         else {
             Button(action: player.togglePlayPause) {
                 Image(systemName: player.shouldPlay ? "pause.fill" : "play.fill")
             }
             .font(.system(size: 44))
+            .foregroundStyle(.white)
         }
     }
 
@@ -108,8 +111,6 @@ struct RemotePlaybackView: View {
             playbackButton()
             bottomBar()
         }
-        .tint(.white)
-        .foregroundStyle(.white)
         .disabled(!player.isActive)
     }
 
