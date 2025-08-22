@@ -103,12 +103,12 @@ public extension CastPlayer {
     ///
     /// - Parameters:
     ///   - languages: An Array of strings containing language identifiers, in order of desirability, that are
-    ///     preferred for selection. Languages must be indicated via RFC 1766 language tags.
+    ///     preferred for selection. Languages must be indicated via RFC 1766 tags.
     ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
-    ///     include `.audible`, `.legible`, and `.visual`.
+    ///     include `.audible` and `.legible`.
     ///
     /// This method can be used to override the default media option selection for some characteristic, e.g., to start
-    /// playback with a predefined language for audio and / or subtitles.
+    /// playback with a predefined language for audio and/or subtitles.
     func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
         mediaSelectionPreferredLanguages[characteristic] = languages
     }
