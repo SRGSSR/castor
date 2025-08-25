@@ -55,7 +55,7 @@ struct PlaylistSelectionView: View {
             section("HLS streams", medias: kHlsUrlMedias)
             section("MP3 streams ", medias: kMP3UrlMedias)
             section("DASH streams", medias: kDashUrlMedias)
-            if UserDefaults.standard.receiver.isSupportingUrns {
+            if UserDefaults.standard.receiver.isSrgSsrReceiver {
                 section("URN-based streams", medias: kUrnMedias)
             }
         }

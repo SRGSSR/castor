@@ -17,13 +17,13 @@ struct ExamplesView: View {
 
     var body: some View {
         List {
-            section("HLS streams", medias: kHlsUrlMedias)
-            section("MP3 streams ", medias: kMP3UrlMedias)
+            section("HLS URLs", medias: kHlsUrlMedias)
+            section("MP3 URLs ", medias: kMP3UrlMedias)
             if cast.player != nil {
-                section("DASH streams", medias: kDashUrlMedias)
+                section("DASH URLs", medias: kDashUrlMedias)
             }
-            if UserDefaults.standard.receiver.isSupportingUrns {
-                section("URN-based streams", medias: kUrnMedias)
+            if UserDefaults.standard.receiver.isSrgSsrReceiver {
+                section("URNs", medias: kUrnMedias)
             }
         }
         .animation(.linear(duration: 0.2), value: cast.player)

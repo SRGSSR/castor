@@ -24,9 +24,16 @@ public struct CastMetadata {
     /// 
     /// - Parameters:
     ///   - title: The content title.
+    ///   - metadataType: The metadata type.
     ///   - images: The associated images.
-    public init(title: String?, images: [CastImage] = []) {
-        rawMetadata = GCKMediaMetadata()
+    ///
+    /// The metadata type is used by receivers to adjust their layout according to the type of content being played.
+    public init(
+        title: String?,
+        metadataType: GCKMediaMetadataType = .generic,
+        images: [CastImage] = []
+    ) {
+        rawMetadata = GCKMediaMetadata(metadataType: metadataType)
         if let title {
             rawMetadata.setString(title, forKey: kGCKMetadataKeyTitle)
         }
@@ -40,13 +47,20 @@ public struct CastMetadata {
     ///
     /// - Parameters:
     ///   - title: The content title.
+    ///   - metadataType: The metadata type.
     ///   - image: The associated image.
-    public init(title: String?, image: CastImage?) {
+    ///
+    /// The metadata type is used by receivers to adjust their layout according to the type of content being played.
+    public init(
+        title: String?,
+        metadataType: GCKMediaMetadataType = .generic,
+        image: CastImage?
+    ) {
         if let image {
-            self.init(title: title, images: [image])
+            self.init(title: title, metadataType: metadataType, images: [image])
         }
         else {
-            self.init(title: title)
+            self.init(title: title, metadataType: metadataType)
         }
     }
 

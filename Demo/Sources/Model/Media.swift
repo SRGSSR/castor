@@ -6,22 +6,29 @@
 
 import Castor
 import Foundation
+import GoogleCast
 import PillarboxCoreBusiness
 import PillarboxPlayer
 
 struct Media: Hashable, Identifiable {
-    enum `Type`: Hashable {
-        case url(URL)
+    enum `Type` {
         case urn(String)
+        case url(URL, configuration: CastAssetURLConfiguration)
+
+        static func url(_ url: URL) -> Self {
+            .url(url, configuration: .init())
+        }
     }
 
     let id = UUID()
     let title: String
+    let metadataType: GCKMediaMetadataType
     let imageUrl: URL?
-    let type: Type
+    let type: `Type`
 
-    init(title: String, imageUrl: URL? = nil, type: Type) {
+    init(title: String, metadataType: GCKMediaMetadataType = .generic, imageUrl: URL? = nil, type: `Type`) {
         self.title = title
+        self.metadataType = metadataType
         self.imageUrl = imageUrl
         self.type = type
     }
@@ -30,33 +37,33 @@ struct Media: Hashable, Identifiable {
         let title = asset.metadata?.title ?? "Untitled"
         let imageUrl = asset.metadata?.imageUrl()
         switch asset.kind {
-        case let .simple(url):
-            self.init(title: title, imageUrl: imageUrl, type: .url(url))
-        case let .custom(urn):
+        case let .entity(urn), let .identifier(urn):
             self.init(title: title, imageUrl: imageUrl, type: .urn(urn))
+        case let .url(url, configuration: configuration):
+            self.init(title: title, imageUrl: imageUrl, type: .url(url, configuration: configuration))
         }
     }
 
     func item() -> PlayerItem {
         switch type {
-        case let .url(url):
-            return .simple(url: url, metadata: self)
         case let .urn(urn):
             return .urn(urn)
+        case let .url(url, configuration: _):
+            return .simple(url: url, metadata: self)
         }
     }
 
     func asset() -> CastAsset {
         switch type {
-        case let .url(url):
-            return .simple(url: url, metadata: castMetadata())
         case let .urn(urn):
-            return .custom(identifier: urn, metadata: castMetadata())
+            return .identifier(urn, metadata: castMetadata())
+        case let .url(url, configuration: configuration):
+            return .url(url, configuration: configuration, metadata: castMetadata())
         }
     }
 
     func castMetadata() -> CastMetadata {
-        .init(title: title, image: castImage())
+        .init(title: title, metadataType: metadataType, image: castImage())
     }
 
     private func castImage() -> CastImage? {
@@ -76,7 +83,31 @@ extension Media: AssetMetadata {
     }
 }
 
-let kHlsUrlMedias: [Media] = [
+extension Media.`Type`: Hashable {
+    static func == (lhs: Media.`Type`, rhs: Media.`Type`) -> Bool {
+        switch (lhs, rhs) {
+        case let (.urn(lhsUrn), .urn(rhsUrn)):
+            return lhsUrn == rhsUrn
+        case let (.url(lhsUrl, configuration: _), .url(rhsUrl, configuration: _)):
+            return lhsUrl == rhsUrl
+        default:
+            return false
+        }
+    }
+
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case let .urn(urn):
+            hasher.combine(urn)
+        case let .url(url, configuration: _):
+            hasher.combine(url)
+        }
+    }
+}
+
+// TODO: Remove all @MainActor below as of Xcode 26.0 (demo assumes main actor isolation by default)
+
+@MainActor let kHlsUrlMedias: [Media] = [
     .init(
         title: "Apple Basic 4:3",
         imageUrl: kAppleImageUrl,
@@ -98,36 +129,48 @@ let kHlsUrlMedias: [Media] = [
         type: .url("https://cdn.prod.swi-services.ch/video-projects/94f5f5d1-5d53-4336-afda-9198462c45d9/localised-videos/ENG/renditions/ENG.mp4")
     ),
     .init(
+        title: "19h30 (FMP4)",
+        imageUrl: "https://il.srgssr.ch/images/?imageUrl=https%3A%2F%2Fimg.rts.ch%2Fmedias%2F2025%2Fimage%2Frwhwbf-28972611.image&format=webp&width=1920",
+        type: .url(
+            "https://rts-vod-amd.akamaized.net/ww/db6241ed-2be5-326f-a85e-40e1742950ca/b94ab623-6e55-387c-8743-9c8cfb59de59/master.m3u8",
+            configuration: .init(hlsVideoSegmentFormat: .FMP4)
+        )
+    ),
+    .init(
         title: "Tagesschau",
         imageUrl: "https://images.tagesschau.de/image/89045d82-5cd5-46ad-8f91-73911add30ee/AAABh3YLLz0/AAABibBx2rU/20x9-1280/tagesschau-logo-100.jpg",
         type: .url("https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8")
     )
 ]
 
-let kMP3UrlMedias: [Media] = [
+@MainActor let kMP3UrlMedias: [Media] = [
     .init(
         title: "Couleur 3",
+        metadataType: .musicTrack,
         imageUrl: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640",
         type: .url("https://stream.srg-ssr.ch/m/couleur3/mp3_128")
     ),
     .init(
         title: "Radio Chablais",
+        metadataType: .musicTrack,
         imageUrl: "https://alpsoft.ch/wp-content/uploads/2021/10/feat-radio-chablais-1080x675.jpg",
         type: .url("https://radiochablais.ice.infomaniak.ch/radiochablais-high.mp3")
     ),
     .init(
         title: "Skyrock",
+        metadataType: .musicTrack,
         imageUrl: "https://www.radio.net/300/skyrock.png",
         type: .url("https://icecast.skyrock.net/s/natio_mp3_128k")
     ),
     .init(
         title: "Country Radio Gilsdorf",
+        metadataType: .musicTrack,
         imageUrl: "https://static.wixstatic.com/media/7b176c_f543664008a447f3b2adbb1d231b21e1~mv2.jpg",
         type: .url("http://streaming.aoip.international:8000/cr-gilsdorf")
     )
 ]
 
-let kDashUrlMedias: [Media] = [
+@MainActor let kDashUrlMedias: [Media] = [
     .init(
         title: "VOD",
         imageUrl: "https://dashif.org/img/dashif-logo-283x100_new.jpg",
@@ -140,7 +183,7 @@ let kDashUrlMedias: [Media] = [
     )
 ]
 
-let kUrnMedias: [Media] = [
+@MainActor let kUrnMedias: [Media] = [
     .init(
         title: "Horizontal video",
         type: .urn("urn:rts:video:14827306")
