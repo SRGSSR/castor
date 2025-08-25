@@ -98,20 +98,6 @@ public extension CastPlayer {
             return .off
         }
     }
-
-    /// Sets media selection preferred languages for the specified media characteristic.
-    ///
-    /// - Parameters:
-    ///   - languages: An Array of strings containing language identifiers, in order of desirability, that are
-    ///     preferred for selection. Languages must be indicated via RFC 1766 tags.
-    ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
-    ///     include `.audible` and `.legible`.
-    ///
-    /// This method can be used to override the default media option selection for some characteristic, e.g., to start
-    /// playback with a predefined language for audio and/or subtitles.
-    func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
-        mediaSelectionPreferredLanguages[characteristic] = languages
-    }
 }
 
 extension CastPlayer {
@@ -129,6 +115,6 @@ extension CastPlayer {
         let options = mediaSelectionOptions(for: characteristic)
         return languages.lazy.compactMap { language in
             options.first { $0.hasLanguageCode(language) }
-        } .first
+        }.first
     }
 }

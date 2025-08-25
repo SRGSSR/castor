@@ -91,14 +91,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         __targetSeekTime.bind(to: remoteMediaClient)
         __items.bind(to: remoteMediaClient)
     }
-
-    func resume(from state: CastResumeState) {
-        loadItems(from: state.assets, with: .init(startTime: state.time, startIndex: state.index))
-        state.mediaSelectionCharacteristics.forEach { characteristic in
-            guard let language = state.mediaSelectionLanguage(for: characteristic) else { return }
-            setMediaSelection(preferredLanguages: [language], for: characteristic)
-        }
-    }
 }
 
 extension CastPlayer: @preconcurrency GCKRemoteMediaClientListener {

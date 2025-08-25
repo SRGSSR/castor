@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import Combine
 import Foundation
 import GoogleCast
@@ -20,6 +21,12 @@ public final class Cast: NSObject, ObservableObject {
 
     private let context = GCKCastContext.sharedInstance()
     private var targetResumeState: CastResumeState?
+
+    private var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:] {
+        didSet {
+            player?.mediaSelectionPreferredLanguages = mediaSelectionPreferredLanguages
+        }
+    }
 
     @ReceiverState(DevicesRecipe.self)
     private var _devices
@@ -101,7 +108,11 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     /// The player.
-    @Published public private(set) var player: CastPlayer?
+    @Published public private(set) var player: CastPlayer? {
+        didSet {
+            player?.mediaSelectionPreferredLanguages = mediaSelectionPreferredLanguages
+        }
+    }
 
     /// The devices found in the local network.
     public var devices: [CastDevice] {
@@ -159,6 +170,28 @@ public final class Cast: NSObject, ObservableObject {
     }
 }
 
+public extension Cast {
+    /// Sets media selection preferred languages for the specified media characteristic.
+    ///
+    /// - Parameters:
+    ///   - languages: An Array of strings containing language identifiers, in order of desirability, that are
+    ///     preferred for selection. Languages must be indicated via RFC 1766 tags.
+    ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
+    ///     include `.audible` and `.legible`.
+    ///
+    /// This method can be used to override the default media option selection for some characteristic, e.g., to start
+    /// playback with a predefined language for audio and/or subtitles.
+    func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
+        assert(!languages.isEmpty)
+        mediaSelectionPreferredLanguages[characteristic] = languages
+    }
+
+    /// Resets media selection preferred languages for the specified media characteristic.
+    func resetMediaSelectionPreferredLanguages(for characteristic: AVMediaCharacteristic) {
+        mediaSelectionPreferredLanguages.removeValue(forKey: characteristic)
+    }
+}
+
 extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
@@ -168,15 +201,13 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
-        if let player, let delegate {
-            if let resumeState = targetResumeState {
-                player.resume(from: resumeState)
-                targetResumeState = nil
-            }
-            else if let resumeState = castable?.castStartSession() {
-                player.resume(from: resumeState)
-                delegate.castStartSession()
-            }
+        if let resumeState = targetResumeState {
+            resume(from: resumeState)
+            targetResumeState = nil
+        }
+        else if let resumeState = castable?.castStartSession() {
+            resume(from: resumeState)
+            delegate?.castStartSession()
         }
     }
 
@@ -218,5 +249,14 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
+    }
+
+    private func resume(from state: CastResumeState) {
+        guard let player else { return }
+        player.loadItems(from: state.assets, with: .init(startTime: state.time, startIndex: state.index))
+        state.mediaSelectionCharacteristics.forEach { characteristic in
+            guard let language = state.mediaSelectionLanguage(for: characteristic) else { return }
+            setMediaSelection(preferredLanguages: [language], for: characteristic)
+        }
     }
 }
