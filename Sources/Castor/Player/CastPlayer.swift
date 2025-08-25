@@ -63,7 +63,12 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     var configuration: CastConfiguration
-    var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:]
+
+    var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:] {
+        didSet {
+            applyMediaSelectionPreferredLanguages()
+        }
+    }
 
     var isLoading = false {
         didSet {

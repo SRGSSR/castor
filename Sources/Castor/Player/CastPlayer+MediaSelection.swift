@@ -103,11 +103,13 @@ public extension CastPlayer {
 extension CastPlayer {
     func applyMediaSelectionPreferredLanguages() {
         mediaSelectionCharacteristics.forEach { characteristic in
-            guard let languages = mediaSelectionPreferredLanguages[characteristic],
-                  let option = mediaOption(matchingPreferredLanguages: languages, for: characteristic) else {
-                return
+            if let languages = mediaSelectionPreferredLanguages[characteristic],
+               let option = mediaOption(matchingPreferredLanguages: languages, for: characteristic) {
+                select(mediaOption: option, for: characteristic)
             }
-            select(mediaOption: option, for: characteristic)
+            else {
+                select(mediaOption: .off, for: characteristic)
+            }
         }
     }
 
