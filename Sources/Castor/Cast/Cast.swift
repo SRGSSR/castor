@@ -41,7 +41,11 @@ public final class Cast: NSObject, ObservableObject {
 
     private var currentSession: GCKCastSession? {
         didSet {
-            player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            player = .init(
+                remoteMediaClient: currentSession?.remoteMediaClient,
+                configuration: configuration,
+                mediaSelectionPreferredLanguages: mediaSelectionPreferredLanguages
+            )
         }
     }
 
@@ -130,7 +134,11 @@ public final class Cast: NSObject, ObservableObject {
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
 
-        player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+        player = .init(
+            remoteMediaClient: currentSession?.remoteMediaClient,
+            configuration: configuration,
+            mediaSelectionPreferredLanguages: mediaSelectionPreferredLanguages
+        )
 
         __currentDevice = .init(service: context.sessionManager)
 
