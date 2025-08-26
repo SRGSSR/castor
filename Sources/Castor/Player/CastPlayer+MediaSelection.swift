@@ -21,15 +21,7 @@ public extension CastPlayer {
     ///
     /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
-        let tracks = Self.tracks(from: _mediaStatus).filter { $0.mediaCharacteristic == characteristic }
-        switch characteristic {
-        case .audible where tracks.count > 1:
-            return tracks.map { .on($0) }
-        case .legible where !tracks.isEmpty:
-            return [.off] + tracks.map { .on($0) }
-        default:
-            return []
-        }
+        Self.mediaSelectionOptions(from: _mediaStatus, for: characteristic)
     }
 
     /// The currently selected media option for a characteristic.
@@ -105,22 +97,42 @@ extension CastPlayer {
         return rawTracks.map { .init(rawTrack: $0) }
     }
 
-    func applyMediaSelectionPreferredLanguages(for characteristics: Set<AVMediaCharacteristic>) {
+    static func mediaSelectionOptions(from mediaStatus: GCKMediaStatus?, for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
+        let tracks = tracks(from: mediaStatus).filter { $0.mediaCharacteristic == characteristic }
+        switch characteristic {
+        case .audible where tracks.count > 1:
+            return tracks.map { .on($0) }
+        case .legible where !tracks.isEmpty:
+            return [.off] + tracks.map { .on($0) }
+        default:
+            return []
+        }
+    }
+
+    private static func mediaOption(
+        from mediaStatus: GCKMediaStatus?,
+        matchingPreferredLanguages languages: [String],
+        for characteristic: AVMediaCharacteristic
+    ) -> CastMediaSelectionOption? {
+        let options = mediaSelectionOptions(from: mediaStatus, for: characteristic)
+        return languages.lazy.compactMap { language in
+            options.first { $0.hasLanguageCode(language) }
+        }.first
+    }
+
+    @discardableResult
+    func applyMediaSelectionPreferredLanguages(with mediaStatus: GCKMediaStatus?) -> Bool {
+        let characteristics = Self.mediaSelectionCharacteristics(from: mediaStatus)
+        guard !characteristics.isEmpty else { return false }
         characteristics.forEach { characteristic in
             if let languages = mediaSelectionPreferredLanguages[characteristic],
-               let option = mediaOption(matchingPreferredLanguages: languages, for: characteristic) {
+               let option = Self.mediaOption(from: mediaStatus, matchingPreferredLanguages: languages, for: characteristic) {
                 select(mediaOption: option, for: characteristic)
             }
             else {
                 select(mediaOption: .off, for: characteristic)
             }
         }
-    }
-
-    private func mediaOption(matchingPreferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption? {
-        let options = mediaSelectionOptions(for: characteristic)
-        return languages.lazy.compactMap { language in
-            options.first { $0.hasLanguageCode(language) }
-        }.first
+        return true
     }
 }
