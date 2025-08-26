@@ -101,7 +101,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 extension CastPlayer: @preconcurrency GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didStartMediaSessionWithID sessionID: Int) {
-        shouldApplyMediaSelection = true
+        shouldApplyMediaSelection = (sessionID == 1)
     }
 
     // swiftlint:disable:next missing_docs
