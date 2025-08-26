@@ -11,12 +11,7 @@ import SwiftUI
 public extension CastPlayer {
     /// The set of media characteristics for which a media selection is available.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
-        Set(Self.tracks(from: _mediaStatus).compactMap(\.mediaCharacteristic))
-    }
-
-    private static func tracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
-        guard let rawTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
-        return rawTracks.map { .init(rawTrack: $0) }
+        Self.mediaSelectionCharacteristics(from: _mediaStatus)
     }
 
     /// The list of media options associated with a characteristic.
@@ -101,6 +96,15 @@ public extension CastPlayer {
 }
 
 extension CastPlayer {
+    static func mediaSelectionCharacteristics(from mediaStatus: GCKMediaStatus?) -> Set<AVMediaCharacteristic> {
+        Set(tracks(from: mediaStatus).compactMap(\.mediaCharacteristic))
+    }
+
+    private static func tracks(from mediaStatus: GCKMediaStatus?) -> [CastMediaTrack] {
+        guard let rawTracks = mediaStatus?.mediaInformation?.mediaTracks else { return [] }
+        return rawTracks.map { .init(rawTrack: $0) }
+    }
+
     func applyMediaSelectionPreferredLanguages(for characteristics: Set<AVMediaCharacteristic>) {
         characteristics.forEach { characteristic in
             if let languages = mediaSelectionPreferredLanguages[characteristic],
