@@ -181,6 +181,8 @@ public extension Cast {
     ///
     /// This method can be used to override the default media option selection for some characteristic, e.g., to start
     /// playback with a predefined language for audio and/or subtitles.
+    ///
+    /// > Note: Media selection is not applied when joining an existing session.
     func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
         assert(!languages.isEmpty)
         mediaSelectionPreferredLanguages[characteristic] = languages
