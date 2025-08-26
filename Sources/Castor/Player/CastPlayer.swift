@@ -62,8 +62,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
     }
 
-    var isLoading = false
-
     var configuration: CastConfiguration
 
     var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] {
@@ -100,14 +98,8 @@ public final class CastPlayer: NSObject, ObservableObject {
 
 extension CastPlayer: @preconcurrency GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
-    public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        switch mediaStatus?.playerState {
-        case .playing, .paused:
-            let mediaSelectionCharacteristics = Self.mediaSelectionCharacteristics(from: _mediaStatus)
-            applyMediaSelectionPreferredLanguages(for: mediaSelectionCharacteristics)
-            isLoading = false
-        default:
-            break
-        }
+    public func remoteMediaClient(_ client: GCKRemoteMediaClient, didStartMediaSessionWithID sessionID: Int) {
+        let mediaSelectionCharacteristics = Self.mediaSelectionCharacteristics(from: client.mediaStatus)
+        applyMediaSelectionPreferredLanguages(for: mediaSelectionCharacteristics)
     }
 }
