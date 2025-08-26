@@ -72,7 +72,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     var isLoading = false {
         didSet {
-            guard isLoading != oldValue else { return }
+            guard isLoading != oldValue, !isLoading else { return }
             applyMediaSelectionPreferredLanguages()
         }
     }
