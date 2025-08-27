@@ -22,12 +22,6 @@ public final class Cast: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
     private var targetResumeState: CastResumeState?
 
-    private var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:] {
-        didSet {
-            player?.mediaSelectionPreferredLanguages = mediaSelectionPreferredLanguages
-        }
-    }
-
     @ReceiverState(DevicesRecipe.self)
     private var _devices
 
@@ -41,11 +35,7 @@ public final class Cast: NSObject, ObservableObject {
 
     private var currentSession: GCKCastSession? {
         didSet {
-            player = .init(
-                remoteMediaClient: currentSession?.remoteMediaClient,
-                configuration: configuration,
-                mediaSelectionPreferredLanguages: mediaSelectionPreferredLanguages
-            )
+            player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
         }
     }
 
@@ -112,11 +102,7 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     /// The player.
-    @Published public private(set) var player: CastPlayer? {
-        didSet {
-            player?.mediaSelectionPreferredLanguages = mediaSelectionPreferredLanguages
-        }
-    }
+    @Published public private(set) var player: CastPlayer?
 
     /// The devices found in the local network.
     public var devices: [CastDevice] {
@@ -134,11 +120,7 @@ public final class Cast: NSObject, ObservableObject {
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
 
-        player = .init(
-            remoteMediaClient: currentSession?.remoteMediaClient,
-            configuration: configuration,
-            mediaSelectionPreferredLanguages: mediaSelectionPreferredLanguages
-        )
+        player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
         __currentDevice = .init(service: context.sessionManager)
 
@@ -175,30 +157,6 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the given device is casting, `false` otherwise.
     public func isCasting(on device: CastDevice) -> Bool {
         _currentDevice == device
-    }
-}
-
-public extension Cast {
-    /// Sets media selection preferred languages for the specified media characteristic.
-    ///
-    /// - Parameters:
-    ///   - languages: An Array of strings containing language identifiers, in order of desirability, that are
-    ///     preferred for selection. Languages must be indicated via RFC 1766 tags.
-    ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
-    ///     include `.audible` and `.legible`.
-    ///
-    /// This method can be used to override the default media option selection for some characteristic, e.g., to start
-    /// playback with a predefined language for audio and/or subtitles.
-    ///
-    /// > Note: Media selection is not applied when joining an existing session.
-    func setMediaSelection(preferredLanguages languages: [String], for characteristic: AVMediaCharacteristic) {
-        assert(!languages.isEmpty)
-        mediaSelectionPreferredLanguages[characteristic] = languages
-    }
-
-    /// Resets media selection preferred languages for the specified media characteristic.
-    func resetMediaSelectionPreferredLanguages(for characteristic: AVMediaCharacteristic) {
-        mediaSelectionPreferredLanguages.removeValue(forKey: characteristic)
     }
 }
 
@@ -266,7 +224,7 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         player.loadItems(from: state.assets, with: .init(startTime: state.time, startIndex: state.index))
         state.mediaSelectionCharacteristics.forEach { characteristic in
             guard let language = state.mediaSelectionLanguage(for: characteristic) else { return }
-            setMediaSelection(preferredLanguages: [language], for: characteristic)
+            player.setMediaSelection(preferredLanguages: [language], for: characteristic)
         }
     }
 }

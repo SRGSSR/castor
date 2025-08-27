@@ -64,7 +64,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     var configuration: CastConfiguration
 
-    var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] {
+    var mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]] = [:] {
         didSet {
             applyMediaSelectionPreferredLanguages(with: _mediaStatus)
         }
@@ -72,16 +72,11 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     private var shouldApplyMediaSelection = false
 
-    init?(
-        remoteMediaClient: GCKRemoteMediaClient?,
-        configuration: CastConfiguration,
-        mediaSelectionPreferredLanguages: [AVMediaCharacteristic: [String]]
-    ) {
+    init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
 
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
-        self.mediaSelectionPreferredLanguages = mediaSelectionPreferredLanguages
 
         super.init()
 
