@@ -52,14 +52,9 @@ struct UnifiedPlayerView: View {
     }
 
     private func playMedia() {
-        guard let media else { return }
-        if let remotePlayer = cast.player {
-            remotePlayer.loadItem(from: media.asset())
-        }
-        else {
-            model.entries = [.init(media: media)]
-            model.play()
-        }
+        guard let media, cast.player == nil else { return }
+        model.entries = [.init(media: media)]
+        model.play()
     }
 }
 
