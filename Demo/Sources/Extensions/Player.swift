@@ -16,10 +16,10 @@ extension Player {
 
     private func setMediaSelection(from resumeState: CastResumeState, for characteristic: AVMediaCharacteristic) {
         if let language = resumeState.mediaSelectionLanguage(for: characteristic) {
-            setMediaSelection(preferredLanguages: [language], for: characteristic)
+            setMediaSelectionPreference(.on(languages: language), for: characteristic)
         }
         else {
-            setMediaSelection(preferredLanguages: [], for: characteristic)
+            setMediaSelectionPreference(.off, for: characteristic)
         }
     }
 }
