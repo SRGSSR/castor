@@ -20,6 +20,10 @@ public struct CastMediaSelectionPreference {
 
     let kind: Kind
 
+    private init(kind: Kind) {
+        self.kind = kind
+    }
+
     /// Enabled.
     ///
     /// - Parameter languages: A list of strings containing language identifiers, in order of desirability, that are
