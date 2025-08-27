@@ -223,8 +223,12 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         guard let player else { return }
         player.loadItems(from: state.assets, with: .init(startTime: state.time, startIndex: state.index))
         state.mediaSelectionCharacteristics.forEach { characteristic in
-            guard let language = state.mediaSelectionLanguage(for: characteristic) else { return }
-            player.setMediaSelection(preferredLanguages: [language], for: characteristic)
+            if let language = state.mediaSelectionLanguage(for: characteristic) {
+                player.setMediaSelectionPreference(.on(languages: language), for: characteristic)
+            }
+            else {
+                player.setMediaSelectionPreference(.off, for: characteristic)
+            }
         }
     }
 }
