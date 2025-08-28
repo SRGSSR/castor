@@ -16,7 +16,7 @@ private struct PlaybackSpeedMenuContent: View {
     var body: some View {
         Picker(selection: selection) {
             ForEach(playbackSpeeds, id: \.self) { speed in
-                Text("\(speed, specifier: "%g×")", comment: "Speed multiplier").tag(speed)
+                Text("\(speed, specifier: "%g×")", bundle: .module, comment: "Speed multiplier").tag(speed)
             }
         } label: {
             EmptyView()
@@ -92,7 +92,7 @@ private struct SettingsMenuContent: View {
         } label: {
             Button(action: {}) {
                 Text("Playback Speed", bundle: .module, comment: "Playback setting menu title")
-                Text("\(player.playbackSpeed, specifier: "%g×")", comment: "Speed multiplier")
+                Text("\(player.playbackSpeed, specifier: "%g×")", bundle: .module, comment: "Speed multiplier")
                 Image(systemName: "speedometer")
             }
         }

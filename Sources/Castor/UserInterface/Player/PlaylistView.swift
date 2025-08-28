@@ -92,7 +92,7 @@ private extension PlaylistView {
                 switch style {
                 case .large:
                     Label {
-                        Text("Repeat", comment: "Button to toggle between repeat modes")
+                        Text("Repeat", bundle: .module, comment: "Button to toggle between repeat modes")
                     } icon: {
                         Image(systemName: repeatModeImageName)
                     }
@@ -115,7 +115,7 @@ private extension PlaylistView {
                 switch style {
                 case .large:
                     Label {
-                        Text("Shuffle", comment: "Button to shuffle a playlist")
+                        Text("Shuffle", bundle: .module, comment: "Button to shuffle a playlist")
                     } icon: {
                         Image(systemName: "shuffle")
                     }
@@ -138,7 +138,7 @@ private extension PlaylistView {
                 switch style {
                 case .large:
                     Label {
-                        Text("Delete all", comment: "Button to delete all items from a playlist")
+                        Text("Delete all", bundle: .module, comment: "Button to delete all items from a playlist")
                     } icon: {
                         Image(systemName: "trash")
                     }
@@ -152,14 +152,14 @@ private extension PlaylistView {
         }
         .disabled(player.items.isEmpty)
         .confirmationDialog(
-            Text("All items in the playlist will be deleted.", comment: "Message warning the user before deleting all items in a playlist"),
+            Text("All items in the playlist will be deleted.", bundle: .module, comment: "Message warning the user before deleting all items in a playlist"),
             isPresented: $isDeleteAllPresented,
             titleVisibility: .visible
         ) {
             Button(role: .destructive) {
                 player.removeAllItems()
             } label: {
-                Text("Delete all Items", comment: "Title of the confirmation dialog displayed before deleting all items in a playlist")
+                Text("Delete all Items", bundle: .module, comment: "Title of the confirmation dialog displayed before deleting all items in a playlist")
             }
         }
     }

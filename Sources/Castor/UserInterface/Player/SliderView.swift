@@ -34,7 +34,7 @@ private extension SliderView {
         Slider(
             progressTracker: progressTracker,
             label: {
-                Text("Current position", comment: "Label associated with the seek bar")
+                Text("Current position", bundle: .module, comment: "Label associated with the seek bar")
             },
             minimumValueLabel: {
                 label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))

@@ -21,7 +21,7 @@ struct LiveLabel: View {
     var body: some View {
         Group {
             if player.streamType == .live {
-                Text(String(localized: "Live", comment: "Short label associated with live content").uppercased())
+                Text(String(localized: "Live", bundle: .module, comment: "Short label associated with live content").uppercased())
                     .font(.footnote)
                     .padding(.horizontal, 7)
                     .background(liveButtonColor)

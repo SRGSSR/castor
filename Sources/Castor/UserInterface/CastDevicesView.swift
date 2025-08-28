@@ -29,7 +29,7 @@ struct CastDevicesView: View {
             }
         }
         .animation(.default, value: cast.devices)
-        .navigationTitle(Text("Cast to", comment: "Cast device selection view title"))
+        .navigationTitle(Text("Cast to", bundle: .module, comment: "Cast device selection view title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading, content: closeButton)
@@ -63,7 +63,7 @@ struct CastDevicesView: View {
             Section {
                 currentDeviceCell(with: currentDevice)
             } header: {
-                Text("Current device", comment: "Header for displaying current device information")
+                Text("Current device", bundle: .module, comment: "Header for displaying current device information")
             }
         }
     }
@@ -77,7 +77,7 @@ struct CastDevicesView: View {
                     cell(for: device)
                 }
             } header: {
-                Text("Available devices", comment: "Header for available devices list section")
+                Text("Available devices", bundle: .module, comment: "Header for available devices list section")
             }
         }
     }
@@ -110,7 +110,7 @@ struct CastDevicesView: View {
 
     private func volumeSlider() -> some View {
         Slider(value: volume, in: cast.volumeRange) {
-            Text("Volume", comment: "Volume slider label")
+            Text("Volume", bundle: .module, comment: "Volume slider label")
         } minimumValueLabel: {
             MuteButton(cast: cast)
                 .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
@@ -126,13 +126,13 @@ struct CastDevicesView: View {
         Button {
             dismiss()
         } label: {
-            Text("Close", comment: "Close button")
+            Text("Close", bundle: .module, comment: "Close button")
         }
     }
 
     private func disconnectButton() -> some View {
         Button(action: cast.endSession) {
-            Text("Disconnect", comment: "Label of the button to disconnect from a Cast receiver")
+            Text("Disconnect", bundle: .module, comment: "Label of the button to disconnect from a Cast receiver")
         }
         .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
         .padding(.bottom)

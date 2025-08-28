@@ -79,7 +79,7 @@ private extension _CastMiniPlayerView {
     @ViewBuilder
     private func subtitle() -> some View {
         if let deviceName = cast.currentDevice?.name {
-            Text("Casting on \(deviceName)", comment: "Current Cast receiver (with device name as wildcard)")
+            Text("Casting on \(deviceName)", bundle: .module, comment: "Current Cast receiver (with device name as wildcard)")
                 .foregroundStyle(.secondary)
                 .font(.subheadline)
                 .lineLimit(1)
