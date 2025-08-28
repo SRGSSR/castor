@@ -4,6 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
+import AVFoundation
 import Combine
 import Foundation
 import GoogleCast
@@ -168,15 +169,13 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         currentSession = session
-        if let player, let delegate {
-            if let resumeState = targetResumeState {
-                player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
-                targetResumeState = nil
-            }
-            else if let resumeState = castable?.castStartSession() {
-                player.loadItems(from: resumeState.assets, with: .init(startTime: resumeState.time, startIndex: resumeState.index))
-                delegate.castStartSession()
-            }
+        if let resumeState = targetResumeState {
+            resume(from: resumeState)
+            targetResumeState = nil
+        }
+        else if let resumeState = castable?.castStartSession() {
+            resume(from: resumeState)
+            delegate?.castStartSession()
         }
     }
 
@@ -218,5 +217,18 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         withError error: any Error
     ) {
         currentSession = nil
+    }
+
+    private func resume(from state: CastResumeState) {
+        guard let player else { return }
+        player.loadItems(from: state.assets, with: .init(startTime: state.time, startIndex: state.index))
+        state.mediaSelectionCharacteristics.forEach { characteristic in
+            if let language = state.mediaSelectionLanguage(for: characteristic) {
+                player.setMediaSelectionPreference(.on(languages: language), for: characteristic)
+            }
+            else {
+                player.setMediaSelectionPreference(.off, for: characteristic)
+            }
+        }
     }
 }

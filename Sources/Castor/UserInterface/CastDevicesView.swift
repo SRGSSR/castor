@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CastDevicesView: View {
     @ObservedObject var cast: Cast
-    let showsCloseButton: Bool
     @Environment(\.dismiss) private var dismiss
 
     private var volume: Binding<Float> {
@@ -33,9 +32,7 @@ struct CastDevicesView: View {
         .navigationTitle("Cast to")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if showsCloseButton {
-                ToolbarItem(placement: .topBarLeading, content: closeButton)
-            }
+            ToolbarItem(placement: .topBarLeading, content: closeButton)
         }
     }
 

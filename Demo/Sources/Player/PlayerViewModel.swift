@@ -73,8 +73,13 @@ extension PlayerViewModel {
 
 extension PlayerViewModel: Castable {
     func castStartSession() -> CastResumeState? {
-        let resumeState = CastResumeState(assets: castAssets(), index: currentIndex(), time: time())
-        entries = []
+        defer {
+            entries = []
+        }
+        guard var resumeState = CastResumeState(assets: castAssets(), index: currentIndex(), time: time()) else {
+            return nil
+        }
+        resumeState.setMediaSelection(from: player)
         return resumeState
     }
 
@@ -99,9 +104,10 @@ extension PlayerViewModel: Castable {
         }
     }
 
-    private func resume(from state: CastResumeState?) {
-        guard let state, let entry = entries[safeIndex: state.index] else { return }
-        let startTime = state.time.isValid ? state.time : .zero
+    private func resume(from resumeState: CastResumeState?) {
+        guard let resumeState, let entry = entries[safeIndex: resumeState.index] else { return }
+        let startTime = resumeState.time.isValid ? resumeState.time : .zero
+        player.setMediaSelection(from: resumeState)
         player.resume(at(startTime), in: entry.item)
         play()
     }

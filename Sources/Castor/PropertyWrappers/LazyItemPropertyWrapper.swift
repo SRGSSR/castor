@@ -12,8 +12,8 @@ final class LazyItemPropertyWrapper<Instance>: NSObject, GCKMediaQueueDelegate
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
     private let id: GCKMediaQueueItemID
 
-    // FIXME: Remove "unowned" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
-    private unowned let queue: GCKMediaQueue            // Avoid cyclic reference due to the media queue delegate being retained.
+    // FIXME: Remove "weak" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
+    private weak var queue: GCKMediaQueue?             // Avoid cyclic reference due to the media queue delegate being retained.
 
     private weak var enclosingInstance: Instance?
 
@@ -37,7 +37,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     }
 
     func fetch() {
-        queue.item(withID: id)
+        queue?.item(withID: id)
     }
 
     // swiftlint:disable:next legacy_objc_type

@@ -19,6 +19,10 @@ public struct CastMediaTrack: Hashable {
         rawTrack.type.mediaCharacteristic()
     }
 
+    var languageCode: String? {
+        rawTrack.languageCode
+    }
+
     var displayName: String {
         if let displayName = rawTrack.name {
             return displayName

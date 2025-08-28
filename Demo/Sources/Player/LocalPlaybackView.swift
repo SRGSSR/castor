@@ -46,6 +46,7 @@ private struct LocalTimeBar: View {
         } maximumValueLabel: {
             label(withText: formattedTotalTime)
         }
+        .tint(.white)
         .opacity(progressTracker.isProgressAvailable ? 1 : 0)
         .bind(progressTracker, to: player)
     }
@@ -56,6 +57,7 @@ private struct LocalTimeBar: View {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
+                .foregroundStyle(.white)
         }
     }
 }
@@ -80,12 +82,14 @@ private struct LocalPaybackButton: View {
         ZStack {
             if isBusy {
                 ProgressView()
+                    .tint(.white)
             }
             else {
                 Button(action: togglePlayPause) {
                     Image(systemName: imageName)
                 }
                 .font(.system(size: 44))
+                .foregroundStyle(.white)
             }
         }
         .onReceive(player: player, assign: \.isBusy, to: $isBusy)
@@ -166,16 +170,32 @@ struct LocalPlaybackView: View {
     private func controls() -> some View {
         ZStack {
             LocalPaybackButton(player: player)
-            LocalTimeBar(player: player)
-                .padding()
-                .frame(maxHeight: .infinity, alignment: .bottom)
+            bottomBar()
         }
-        .tint(.white)
-        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(white: 0, opacity: 0.4))
         .opacity(visibilityTracker.isUserInterfaceHidden ? 0 : 1)
         .animation(.default, value: visibilityTracker.isUserInterfaceHidden)
+    }
+
+    private func bottomBar() -> some View {
+        HStack {
+            LocalTimeBar(player: player)
+            settingsButton()
+        }
+        .padding()
+        .frame(maxHeight: .infinity, alignment: .bottom)
+    }
+
+    private func settingsButton() -> some View {
+        Menu {
+            player.standardSettingsMenu()
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.system(size: 20))
+                .tint(.white)
+        }
+        .menuOrder(.fixed)
     }
 
     private func playlist() -> some View {

@@ -65,6 +65,7 @@ private struct _CastPlayerView: View {
                 .animation(.default, value: isPlaylistPresented)
             }
         }
+        .background(.background)
         .onChange(of: player.items) { items in
             if items.isEmpty {
                 isPlaylistPresented = false

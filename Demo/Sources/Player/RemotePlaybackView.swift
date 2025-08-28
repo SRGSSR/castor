@@ -52,6 +52,7 @@ private struct RemoteTimeBar: View {
         } maximumValueLabel: {
             label(withText: formattedTotalTime)
         }
+        .foregroundStyle(.white)
         .opacity(progressTracker.isProgressAvailable ? 1 : 0)
         .bind(progressTracker, to: player)
     }
@@ -93,12 +94,14 @@ struct RemotePlaybackView: View {
     private func playbackButton() -> some View {
         if player.isBusy {
             ProgressView()
+                .tint(.white)
         }
         else {
             Button(action: player.togglePlayPause) {
                 Image(systemName: player.shouldPlay ? "pause.fill" : "play.fill")
             }
             .font(.system(size: 44))
+            .foregroundStyle(.white)
         }
     }
 
@@ -106,13 +109,29 @@ struct RemotePlaybackView: View {
         ZStack {
             Color(white: 0, opacity: 0.4)
             playbackButton()
-            RemoteTimeBar(player: player)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                .padding()
+            bottomBar()
         }
-        .tint(.white)
-        .foregroundStyle(.white)
         .disabled(!player.isActive)
+    }
+
+    private func bottomBar() -> some View {
+        HStack {
+            RemoteTimeBar(player: player)
+            settingsButton()
+        }
+        .padding()
+        .frame(maxHeight: .infinity, alignment: .bottom)
+    }
+
+    private func settingsButton() -> some View {
+        Menu {
+            player.standardSettingsMenu()
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.system(size: 20))
+                .tint(.white)
+        }
+        .menuOrder(.fixed)
     }
 
     private func playlist() -> some View {
