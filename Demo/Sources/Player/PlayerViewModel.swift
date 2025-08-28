@@ -97,7 +97,9 @@ extension PlayerViewModel: Castable {
         entries.map(\.media).map { media in
             switch media.type {
             case let .urn(urn):
-                return .entity(urn, metadata: media.castMetadata())
+                // TODO: The SRG SSR receiver should be able to handle entities in a near future. Replace with `.entity`
+                //       when this is the case.
+                return .identifier(urn, metadata: media.castMetadata())
             case let .url(url, configuration: configuration):
                 return .url(url, configuration: configuration, metadata: media.castMetadata())
             }
