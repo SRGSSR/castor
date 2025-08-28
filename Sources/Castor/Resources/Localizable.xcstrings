@@ -49,6 +49,9 @@
     "Live" : {
       "comment" : "Short label associated with live content"
     },
+    "No devices available" : {
+      "comment" : "Message displayed when no Cast devices are available"
+    },
     "Not playing" : {
       "comment" : "Label displayed when no content is being played"
     },
@@ -66,9 +69,6 @@
     },
     "Subtitles" : {
       "comment" : "Playback setting menu title"
-    },
-    "title" : {
-
     },
     "Undefined" : {
       "comment" : "Undefined language"
