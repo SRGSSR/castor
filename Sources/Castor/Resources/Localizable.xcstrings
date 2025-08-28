@@ -361,7 +361,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suppr. tout"
+            "value" : "Tout supprimer"
           }
         },
         "it" : {
@@ -506,7 +506,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En attente"
+            "value" : "A l’arrêt"
           }
         },
         "it" : {
