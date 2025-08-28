@@ -2,79 +2,729 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%g×" : {
-      "comment" : "Speed multiplier"
+      "comment" : "Speed multiplier",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%g×"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%g×"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%g×"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%g×"
+          }
+        }
+      }
     },
     "All items in the playlist will be deleted." : {
-      "comment" : "Message warning the user before deleting all items in a playlist"
+      "comment" : "Message warning the user before deleting all items in a playlist",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "All items in the playlist will be deleted."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les éléments de la liste de lecture seront supprimés."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "All items in the playlist will be deleted."
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "All items in the playlist will be deleted."
+          }
+        }
+      }
     },
     "Audio" : {
-      "comment" : "Playback setting menu title"
+      "comment" : "Playback setting menu title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Audio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Audio"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Audio"
+          }
+        }
+      }
     },
     "Available devices" : {
-      "comment" : "Header for available devices list section"
+      "comment" : "Header for available devices list section",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Available devices"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils disponibles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Available devices"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Available devices"
+          }
+        }
+      }
     },
     "Cast to" : {
-      "comment" : "Cast device selection view title"
+      "comment" : "Cast device selection view title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cast to"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diffuser sur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cast to"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cast to"
+          }
+        }
+      }
     },
     "Casting on %@" : {
-      "comment" : "Current Cast receiver (with device name as wildcard)"
+      "comment" : "Current Cast receiver (with device name as wildcard)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Casting on %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diffusion sur %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Casting on %@"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Casting on %@"
+          }
+        }
+      }
     },
     "Check your Wi-Fi network and make sure Local Network Access is on." : {
-      "comment" : "Action suggested when no Cast receivers are found"
+      "comment" : "Action suggested when no Cast receivers are found",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez votre connexion Wi-Fi et assurez-vous que l'accès au réseau local est activé."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+          }
+        }
+      }
     },
     "Close" : {
-      "comment" : "Close button"
+      "comment" : "Close button",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close"
+          }
+        }
+      }
     },
     "Connected to %@" : {
-      "comment" : "Connected receiver (device name as wildcard)"
+      "comment" : "Connected receiver (device name as wildcard)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connected to %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté à %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connected to %@"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connected to %@"
+          }
+        }
+      }
     },
     "Connecting to %@" : {
-      "comment" : "Receiver being connected (device name as wildcard)"
+      "comment" : "Receiver being connected (device name as wildcard)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connecting to %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion à %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connecting to %@"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connecting to %@"
+          }
+        }
+      }
     },
     "Current device" : {
-      "comment" : "Header for displaying current device information"
+      "comment" : "Header for displaying current device information",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current device"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareil actuel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current device"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current device"
+          }
+        }
+      }
     },
     "Current position" : {
-      "comment" : "Label associated with the seek bar"
+      "comment" : "Label associated with the seek bar",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current position"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Position actuelle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current position"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current position"
+          }
+        }
+      }
     },
     "Delete all" : {
-      "comment" : "Button to delete all items from a playlist"
+      "comment" : "Button to delete all items from a playlist",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete all"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suppr. tout"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete all"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete all"
+          }
+        }
+      }
     },
     "Delete all Items" : {
-      "comment" : "Title of the confirmation dialog displayed before deleting all items in a playlist"
+      "comment" : "Title of the confirmation dialog displayed before deleting all items in a playlist",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete all Items"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les éléments"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete all Items"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete all Items"
+          }
+        }
+      }
     },
     "Disconnect" : {
-      "comment" : "Label of the button to disconnect from a Cast receiver"
+      "comment" : "Label of the button to disconnect from a Cast receiver",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disconnect"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecter"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disconnect"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disconnect"
+          }
+        }
+      }
     },
     "Live" : {
-      "comment" : "Short label associated with live content"
+      "comment" : "Short label associated with live content",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Live"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direct"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Live"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Live"
+          }
+        }
+      }
     },
     "No devices available" : {
-      "comment" : "Message displayed when no Cast devices are available"
+      "comment" : "Message displayed when no Cast devices are available",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "No devices available"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun appareil disponible"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "No devices available"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "No devices available"
+          }
+        }
+      }
     },
     "Not playing" : {
-      "comment" : "Label displayed when no content is being played"
+      "comment" : "Label displayed when no content is being played",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Not playing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Not playing"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Not playing"
+          }
+        }
+      }
     },
     "Off" : {
-      "comment" : "Media selection option"
+      "comment" : "Media selection option",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Off"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Off"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Off"
+          }
+        }
+      }
     },
     "Playback Speed" : {
-      "comment" : "Playback setting menu title"
+      "comment" : "Playback setting menu title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Playback Speed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vitesse de lecture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Playback Speed"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Playback Speed"
+          }
+        }
+      }
     },
     "Repeat" : {
-      "comment" : "Button to toggle between repeat modes"
+      "comment" : "Button to toggle between repeat modes",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Repeat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répéter"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Repeat"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Repeat"
+          }
+        }
+      }
     },
     "Shuffle" : {
-      "comment" : "Button to shuffle a playlist"
+      "comment" : "Button to shuffle a playlist",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Shuffle"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aléatoire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Shuffle"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Shuffle"
+          }
+        }
+      }
     },
     "Subtitles" : {
-      "comment" : "Playback setting menu title"
+      "comment" : "Playback setting menu title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Subtitles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sous-titres"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Subtitles"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Subtitles"
+          }
+        }
+      }
     },
     "Undefined" : {
-      "comment" : "Undefined language"
+      "comment" : "Undefined language",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Undefined"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non-spécifié"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Undefined"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Undefined"
+          }
+        }
+      }
     },
     "Volume" : {
-      "comment" : "Volume slider label"
+      "comment" : "Volume slider label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Volume"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Volume"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Volume"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
