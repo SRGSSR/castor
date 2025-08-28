@@ -1,0 +1,178 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    " in Switzerland" : {
+
+    },
+    "%lld seconds" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add content" : {
+
+    },
+    "amtins" : {
+
+    },
+    "Android TV" : {
+
+    },
+    "Append" : {
+
+    },
+    "Application" : {
+
+    },
+    "Backward by" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "DASH streams" : {
+
+    },
+    "DASH URLs" : {
+
+    },
+    "Displays touches for presentation purposes." : {
+
+    },
+    "DRM enabled" : {
+
+    },
+    "Examples" : {
+
+    },
+    "Forward by" : {
+
+    },
+    "HLS streams" : {
+
+    },
+    "HLS URLs" : {
+
+    },
+    "Identifier" : {
+
+    },
+    "Improves playlist navigation so that it feels more natural." : {
+
+    },
+    "Insert after" : {
+
+    },
+    "Insert before" : {
+
+    },
+    "Library" : {
+
+    },
+    "Made with " : {
+
+    },
+    "Made with love in Switzerland" : {
+
+    },
+    "MP3 streams " : {
+
+    },
+    "MP3 URLs " : {
+
+    },
+    "Multiplier" : {
+
+    },
+    "Name" : {
+
+    },
+    "Player" : {
+
+    },
+    "Prepend" : {
+
+    },
+    "Presenter mode" : {
+
+    },
+    "Progress" : {
+
+    },
+    "Receiver" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Skips" : {
+
+    },
+    "Smart navigation" : {
+
+    },
+    "SRG SSR" : {
+
+    },
+    "Standard" : {
+
+    },
+    "Tap to retry" : {
+
+    },
+    "TestFlight builds" : {
+
+    },
+    "Type" : {
+
+    },
+    "Unified" : {
+
+    },
+    "Updating this setting will exit the application." : {
+
+    },
+    "URN-based streams" : {
+
+    },
+    "URNs" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URNs"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URNs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URNs"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URNs"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URNs"
+          }
+        }
+      }
+    },
+    "Version information" : {
+
+    }
+  },
+  "version" : "1.1"
+}
