@@ -526,7 +526,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SRGSSR/pillarbox-apple";
 			requirement = {
-				branch = "media-selection-reset";
+				branch = main;
 				kind = branch;
 			};
 		};

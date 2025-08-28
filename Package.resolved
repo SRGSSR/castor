@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "branch" : "media-selection-reset",
-        "revision" : "a9cbeb4c457dab19c2256a69587fe04be34cdf80"
+        "branch" : "main",
+        "revision" : "56e119ee5e6f0f2c74c45125c8bf516a81ba1481"
       }
     },
     {
