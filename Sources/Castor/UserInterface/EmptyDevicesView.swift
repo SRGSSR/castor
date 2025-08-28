@@ -11,7 +11,7 @@ struct EmptyDevicesView: View {
         UnavailableView(
             "No devices available",
             systemImage: "tv.badge.wifi.fill",
-            description: Text("Check your Wi-Fi network and make sure Local Network Access is on.")
+            description: Text("Check your Wi-Fi network and make sure Local Network Access is on.", comment: "Action suggested when no Cast receivers are found")
         )
     }
 }

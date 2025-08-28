@@ -96,7 +96,7 @@ private struct _CastPlayerView: View {
         VStack(alignment: .leading) {
             informationTitle()
             if let device {
-                Text("Connected to \(device.name ?? "receiver")")
+                Text("Connected to \(device.name ?? "receiver")", comment: "Connected receiver (device name as wildcard)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -116,7 +116,7 @@ private struct _CastPlayerView: View {
     private func informationTitle() -> some View {
         Group {
             if player.items.isEmpty {
-                Text("Not Playing")
+                Text("Not playing", comment: "Label displayed when no content is being played")
                     .foregroundStyle(.secondary)
             }
             else {
@@ -140,7 +140,7 @@ public struct CastPlayerView: View {
             VStack(spacing: 20) {
                 ProgressView()
                 if let deviceName = cast.currentDevice?.name {
-                    Text("Connecting to \(deviceName)")
+                    Text("Connecting to \(deviceName)", comment: "Receiver being connected (device name as wildcard)")
                         .lineLimit(2)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)

@@ -5,55 +5,52 @@
       "comment" : "Speed multiplier"
     },
     "All items in the playlist will be deleted." : {
-
+      "comment" : "Message warning the user before deleting all items in a playlist"
     },
     "Audio" : {
       "comment" : "Playback setting menu title"
     },
     "Available devices" : {
-
+      "comment" : "Header for available devices list section"
     },
     "Cast to" : {
-
+      "comment" : "Cast device selection view title"
     },
     "Casting on %@" : {
-
+      "comment" : "Current Cast receiver (with device name as wildcard)"
     },
     "Check your Wi-Fi network and make sure Local Network Access is on." : {
-
+      "comment" : "Action suggested when no Cast receivers are found"
     },
     "Close" : {
-
+      "comment" : "Close button"
     },
     "Connected to %@" : {
-
+      "comment" : "Connected receiver (device name as wildcard)"
     },
     "Connecting to %@" : {
-
+      "comment" : "Receiver being connected (device name as wildcard)"
     },
     "Current device" : {
-
+      "comment" : "Header for displaying current device information"
     },
     "Current position" : {
-
+      "comment" : "Label associated with the seek bar"
     },
     "Delete all" : {
-
+      "comment" : "Button to delete all items from a playlist"
     },
     "Delete all Items" : {
-
-    },
-    "description" : {
-
+      "comment" : "Title of the confirmation dialog displayed before deleting all items in a playlist"
     },
     "Disconnect" : {
-
+      "comment" : "Label of the button to disconnect from a Cast receiver"
     },
-    "LIVE" : {
-
+    "Live" : {
+      "comment" : "Short label associated with live content"
     },
-    "Not Playing" : {
-
+    "Not playing" : {
+      "comment" : "Label displayed when no content is being played"
     },
     "Off" : {
       "comment" : "Media selection option"
@@ -62,10 +59,10 @@
       "comment" : "Playback setting menu title"
     },
     "Repeat" : {
-
+      "comment" : "Button to toggle between repeat modes"
     },
     "Shuffle" : {
-
+      "comment" : "Button to shuffle a playlist"
     },
     "Subtitles" : {
       "comment" : "Playback setting menu title"
@@ -77,7 +74,7 @@
       "comment" : "Undefined language"
     },
     "Volume" : {
-
+      "comment" : "Volume slider label"
     }
   },
   "version" : "1.0"

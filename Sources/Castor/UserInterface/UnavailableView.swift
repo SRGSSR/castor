@@ -67,10 +67,10 @@ struct UnavailableView: View {
 }
 
 #Preview("iOS 16.0") {
-    ContentUnavailableViewIOS16("title", systemImage: "circle.fill", description: Text("description"))
+    ContentUnavailableViewIOS16("title", systemImage: "circle.fill", description: Text(verbatim: "description"))
 }
 
 @available(iOS 17, *)
 #Preview("iOS 17.0+") {
-    ContentUnavailableView("title", systemImage: "circle.fill", description: Text("description"))
+    ContentUnavailableView("title", systemImage: "circle.fill", description: Text(verbatim: "description"))
 }
