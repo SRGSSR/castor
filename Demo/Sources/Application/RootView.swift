@@ -21,6 +21,7 @@ struct RootView: View {
         }
         .sheet(item: $router.presented) { destination in
             destination.view()
+                .environmentObject(cast) // FIXME: Only needed when the app is running on macOS (Designed for iPad).
         }
         // TODO: Starting with iOS 17 this can be moved on the `DemoApp` window group.
         .environmentObject(cast)
