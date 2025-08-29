@@ -66,6 +66,10 @@ struct SettingsView: View {
                 Text("Displays touches for presentation purposes.")
                     .font(.footnote)
             }
+            Button(action: openSettings) {
+                Text("Open settings")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
         } header: {
             Text("Application")
         }
@@ -175,6 +179,12 @@ private extension SettingsView {
             return
         }
         UIApplication.shared.open(url)
+    }
+}
+
+private extension SettingsView {
+    private func openSettings() {
+        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
     }
 }
 
