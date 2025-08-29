@@ -91,8 +91,12 @@ private extension PlaylistView {
             ZStack {
                 switch style {
                 case .large:
-                    Label("Repeat", systemImage: repeatModeImageName)
-                        .fixedSize()
+                    Label {
+                        Text("Repeat", bundle: .module, comment: "Button to toggle between repeat modes")
+                    } icon: {
+                        Image(systemName: repeatModeImageName)
+                    }
+                    .fixedSize()
                 case .compact:
                     Image(systemName: repeatModeImageName)
                 }
@@ -110,8 +114,12 @@ private extension PlaylistView {
             ZStack {
                 switch style {
                 case .large:
-                    Label("Shuffle", systemImage: "shuffle")
-                        .fixedSize()
+                    Label {
+                        Text("Shuffle", bundle: .module, comment: "Button to shuffle a playlist")
+                    } icon: {
+                        Image(systemName: "shuffle")
+                    }
+                    .fixedSize()
                 case .compact:
                     Image(systemName: "shuffle")
                 }
@@ -129,8 +137,12 @@ private extension PlaylistView {
             ZStack {
                 switch style {
                 case .large:
-                    Label("Delete all", systemImage: "trash")
-                        .fixedSize()
+                    Label {
+                        Text("Delete all", bundle: .module, comment: "Button to delete all items from a playlist")
+                    } icon: {
+                        Image(systemName: "trash")
+                    }
+                    .fixedSize()
                 case .compact:
                     Image(systemName: "trash")
                 }
@@ -139,11 +151,15 @@ private extension PlaylistView {
             .frame(maxWidth: .infinity)
         }
         .disabled(player.items.isEmpty)
-        .confirmationDialog("All items in the playlist will be deleted.", isPresented: $isDeleteAllPresented, titleVisibility: .visible) {
+        .confirmationDialog(
+            Text("All items in the playlist will be deleted.", bundle: .module, comment: "Message warning the user before deleting all items in a playlist"),
+            isPresented: $isDeleteAllPresented,
+            titleVisibility: .visible
+        ) {
             Button(role: .destructive) {
                 player.removeAllItems()
             } label: {
-                Text("Delete all Items")
+                Text("Delete all Items", bundle: .module, comment: "Title of the confirmation dialog displayed before deleting all items in a playlist")
             }
         }
     }

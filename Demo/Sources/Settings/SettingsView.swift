@@ -63,7 +63,8 @@ struct SettingsView: View {
         Section {
             Toggle(isOn: $isPresenterModeEnabled) {
                 Text("Presenter mode")
-                Text("Displays touches for presentation purposes.").font(.footnote)
+                Text("Displays touches for presentation purposes.")
+                    .font(.footnote)
             }
         } header: {
             Text("Application")
@@ -82,7 +83,8 @@ struct SettingsView: View {
             }
             Toggle(isOn: $isSmartNavigationEnabled) {
                 Text("Smart navigation")
-                Text("Improves playlist navigation so that it feels more natural.").font(.footnote)
+                Text("Improves playlist navigation so that it feels more natural.")
+                    .font(.footnote)
             }
         } header: {
              Text("Player")
