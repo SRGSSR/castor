@@ -7,7 +7,7 @@
 import CoreMedia
 
 public extension CMTimeRange {
-    /// Returns a Boolean value that indicates whether the time range is valid and not empty.
+    /// Returns a Boolean value indicating whether the time range is valid and non-empty.
     var isValidAndNotEmpty: Bool {
         isValid && !isEmpty
     }

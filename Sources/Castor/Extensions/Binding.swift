@@ -8,11 +8,6 @@ import SwiftUI
 
 @MainActor
 extension Binding {
-    /// Creates a binding to an object key path.
-    /// 
-    /// - Parameters:
-    ///   - object: The object to bind to.
-    ///   - keyPath: The key path to bind to.
     init<T>(_ object: T, at keyPath: ReferenceWritableKeyPath<T, Value>) {
         self.init(
             get: { object[keyPath: keyPath] },
