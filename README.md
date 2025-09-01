@@ -23,7 +23,7 @@ Castor is an SDK for easy [Google Cast](https://developers.google.com/cast) inte
 
 # Showcase
 
-[![Showcase](docs/README-images/showcase.png)](https://github.com/SRGSSR/pillarbox-apple)
+[![Showcase](docs/README-images/showcase.png)](https://github.com/SRGSSR/castor)
 
 From left to right:
 
