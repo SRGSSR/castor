@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-/// An object representing a receiver device.
+/// An object that represents a Cast receiver device.
 public struct CastDevice: Hashable {
     let rawDevice: GCKDevice
 

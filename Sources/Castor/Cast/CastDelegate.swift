@@ -4,13 +4,13 @@
 //  License information is available from the LICENSE file.
 //
 
-/// Methods for managing a cast session.
+/// A protocol for handling events related to a cast session.
 public protocol CastDelegate: AnyObject {
-    /// Called when the cast session is established.
+    /// Invoked when a Cast session has been established.
     func castStartSession()
 
-    /// Called when the cast session is being stopped.
-    /// 
-    /// - Parameter state: The state right before the cast session ends.
+    /// Invoked when the Cast session is about to stop.
+    ///
+    /// - Parameter state: The state immediately before the Cast session ends.
     func castEndSession(with state: CastResumeState?)
 }

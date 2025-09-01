@@ -6,9 +6,9 @@
 
 import AVFoundation
 
-/// A cast configuration.
+/// A Cast configuration.
 ///
-/// The configuration controls behaviors set at cast object creation time and that cannot be changed afterwards.
+/// The configuration defines behaviors set when the ``Cast`` object is created and cannot be changed afterwards.
 public struct CastConfiguration {
     /// The navigation mode.
     public let navigationMode: CastNavigationMode
@@ -19,7 +19,12 @@ public struct CastConfiguration {
     /// The backward skip interval in seconds.
     public let backwardSkipInterval: TimeInterval
 
-    /// Creates a player configuration.
+    /// Creates a configuration.
+    ///
+    /// - Parameters:
+    ///   - navigationMode: The navigation mode.
+    ///   - backwardSkipInterval: The forward skip interval in seconds.
+    ///   - forwardSkipInterval: The backward skip interval in seconds.
     public init(
         navigationMode: CastNavigationMode = .smart(interval: 3),
         backwardSkipInterval: TimeInterval = 10,
@@ -32,7 +37,7 @@ public struct CastConfiguration {
         self.forwardSkipInterval = forwardSkipInterval
     }
 
-    /// The skip interval for some direction, in seconds.
+    /// The skip interval, in seconds, for a given direction.
     public func interval(forSkip skip: CastSkip) -> TimeInterval {
         switch skip {
         case .backward:
