@@ -6,9 +6,9 @@
 
 import GoogleCast
 
-/// A cast player item.
+/// A player item for Cast playback.
 public final class CastPlayerItem: ObservableObject {
-    /// The id.
+    /// The identifier.
     public let id: GCKMediaQueueItemID
 
     @LazyItem private var rawItem: GCKMediaQueueItem?
@@ -18,14 +18,14 @@ public final class CastPlayerItem: ObservableObject {
         .init(value: id)
     }
 
-    /// A Boolean indicating whether the item has been fetched or not.
+    /// A Boolean value indicating whether the item has been fetched.
     public var isFetched: Bool {
         rawItem != nil
     }
 
     /// The asset associated with the item.
     ///
-    /// Must be retrieved by calling `fetch()`, for example on appearance of a view displaying the item.
+    /// Must be retrieved by calling `fetch()`, for example when a view displaying the item appears.
     public var asset: CastAsset? {
         .init(rawMediaInformation: rawItem?.mediaInformation)
     }
@@ -35,7 +35,7 @@ public final class CastPlayerItem: ObservableObject {
         _rawItem = .init(id: id, queue: queue)
     }
 
-    /// Fetch complete item information from the receiver.
+    /// Fetches the complete information for the item from the receiver.
     public func fetch() {
         _rawItem.fetch()
     }

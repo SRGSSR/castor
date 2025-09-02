@@ -7,19 +7,19 @@
 import CoreMedia
 
 public extension CastPlayer {
-    /// Checks whether seeking to a specific time is possible.
+    /// Checks whether it is possible to seek to a specific time.
     ///
-    /// - Parameter time: The time to seek to.
-    /// - Returns: `true` if possible.
+    /// - Parameter time: The target time to seek to.
+    /// - Returns: `true` if seeking to the specified time is possible.
     func canSeek(to time: CMTime) -> Bool {
         let seekableTimeRange = seekableTimeRange()
         guard seekableTimeRange.isValidAndNotEmpty else { return false }
         return seekableTimeRange.start <= time && time <= seekableTimeRange.end
     }
 
-    /// Performs a seek to a given time.
+    /// Seeks to the specified time.
     ///
-    /// - Parameter time: The time to reach.
+    /// - Parameter time: The target time to seek to.
     func seek(to time: CMTime) {
         _targetSeekTime = time
     }

@@ -5,12 +5,12 @@
 //
 
 public extension CastPlayer {
-    /// The currently allowed playback speed range.
+    /// The range of playback speeds currently allowed.
     var playbackSpeedRange: ClosedRange<Float> {
         streamType == .buffered ? 0.5...2 : 1...1
     }
 
-    /// The currently applicable playback speed.
+    /// The playback speed currently in effect.
     var playbackSpeed: Float {
         get {
             _playbackSpeed

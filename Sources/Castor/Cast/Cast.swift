@@ -167,7 +167,7 @@ public final class Cast: NSObject, ObservableObject {
     /// Checks whether the specified device is currently casting.
     ///
     /// - Parameter device: The device to check.
-    /// - Returns: `true` iff the device is casting.
+    /// - Returns: `true` if the device is casting; otherwise, `false`.
     public func isCasting(on device: CastDevice) -> Bool {
         _currentDevice == device
     }
