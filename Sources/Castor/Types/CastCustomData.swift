@@ -9,7 +9,7 @@ import Foundation
 /// Custom data transmitted between a sender and a receiver.
 ///
 /// > Important: Keep the payload size small to avoid exceeding the [maximum transport message size](https://developers.google.com/cast/docs/media/messages)
-/// of 64 kB.
+/// of 64 KB.
 public struct CastCustomData {
     let jsonObject: Any?
 
@@ -26,13 +26,13 @@ public struct CastCustomData {
         self.jsonObject = jsonObject
     }
 
-    /// Decode the data as a given type.
+    /// Decodes the data as a specified type.
     ///
     /// - Parameters:
     ///   - type: The type to decode to.
     ///   - decoder: The decoder to use.
     ///
-    /// Returns `nil` if decoding failed.
+    /// - Returns: The decoded value, or `nil` if decoding fails.
     public func decoded<T>(as type: T.Type, using decoder: JSONDecoder = .init()) -> T? where T: Decodable {
         guard let jsonObject, JSONSerialization.isValidJSONObject(jsonObject),
               let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) else {

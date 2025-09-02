@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-/// A mode setting how a player repeats playback of items in its queue.
+/// A mode that determines how the player repeats playback of items in its queue.
 public enum CastRepeatMode {
     /// Disabled.
     case off
@@ -16,8 +16,7 @@ public enum CastRepeatMode {
 
     /// Repeat all items.
     ///
-    /// The behavior of player advance and return navigation methods is adjusted to wrap around both ends of the item
-    /// queue.
+    /// Player navigation methods wrap around both ends of the item queue when this mode is active.
     case all
 
     init?(rawMode: GCKMediaRepeatMode) {

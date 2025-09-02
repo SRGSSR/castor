@@ -101,6 +101,9 @@ public struct CastAsset {
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
     ///     to convert an `Encodable` value into a `CastCustomData`.
+    ///
+    /// Some assets require additional configuration to be played successfully. Provide these using the
+    /// `configuration` parameter.
     public static func url(_ url: URL, configuration: CastAssetURLConfiguration = .init(), metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .url(url, configuration: configuration), metadata: metadata, customData: customData)
     }
@@ -112,6 +115,9 @@ public struct CastAsset {
     ///   - configuration: The configuration for the asset.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset, encoded using the default `JSONEncoder`.
+    ///
+    /// Some assets require additional configuration to be played successfully. Provide these using the
+    /// `configuration` parameter.
     public static func url<T>(
         _ url: URL,
         configuration: CastAssetURLConfiguration = .init(),

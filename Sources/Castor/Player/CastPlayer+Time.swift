@@ -8,7 +8,7 @@ import CoreMedia
 import GoogleCast
 
 public extension CastPlayer {
-    /// The current playback position.
+    /// The current playback time.
     func time() -> CMTime {
         remoteMediaClient.time()
     }
