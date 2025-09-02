@@ -7,7 +7,10 @@
 import GoogleCast
 import SwiftUI
 
-/// A cast button.
+/// A Cast button.
+///
+/// Displays a receiver selection popover (or modal sheet, depending on available width) and automatically reflects
+/// the current connection state.
 public struct CastButton: View {
     @ObservedObject var cast: Cast
     @Binding private var isPresenting: Bool

@@ -127,7 +127,7 @@ private struct _CastPlayerView: View {
     }
 }
 
-/// A cast player view.
+/// A Cast player view.
 public struct CastPlayerView: View {
     @ObservedObject private var cast: Cast
 
