@@ -13,8 +13,8 @@ public extension Slider {
     /// Creates a slider bound to a progress tracker.
     ///
     /// - Parameters:
-    ///   - progressTracker: The progress tracker.
-    ///   - label: A view describing the slider purpose.
+    ///   - progressTracker: The tracker that updates the slider value.
+    ///   - label: A view describing the purpose of the slider.
     ///   - minimumValueLabel: A view describing the lower bound.
     ///   - maximumValueLabel: A view describing the upper bound.
     ///   - onEditingChanged: A closure called when editing begins or ends.
@@ -45,8 +45,8 @@ public extension Slider where ValueLabel == EmptyView {
     /// Creates a slider bound to a progress tracker.
     ///
     /// - Parameters:
-    ///   - progressTracker: The progress tracker.
-    ///   - label: A view describing the slider purpose.
+    ///   - progressTracker: The tracker that updates the slider value.
+    ///   - label: A view describing the purpose of the slider.
     ///   - onEditingChanged: A closure called when editing begins or ends.
     init(
         progressTracker: CastProgressTracker,
@@ -69,9 +69,9 @@ public extension Slider where ValueLabel == EmptyView {
 @MainActor
 public extension Slider where Label == EmptyView, ValueLabel == EmptyView {
     /// Creates a slider bound to a progress tracker.
-    /// 
+    ///
     /// - Parameters:
-    ///   - progressTracker: The progress tracker.
+    ///   - progressTracker: The tracker that updates the slider value.
     ///   - onEditingChanged: A closure called when editing begins or ends.
     init(
         progressTracker: CastProgressTracker,

@@ -9,27 +9,27 @@ import GoogleCast
 import SwiftUI
 
 public extension CastPlayer {
-    /// The set of media characteristics for which a media selection is available.
+    /// The set of media characteristics that have an available media selection.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
         Self.mediaSelectionCharacteristics(from: _mediaStatus)
     }
 
-    /// The list of media options associated with a characteristic.
+    /// Returns the list of media options associated with a given characteristic.
     ///
-    /// - Parameter characteristic: The characteristic.
-    /// - Returns: The list of options associated with the characteristic.
+    /// - Parameter characteristic: The media characteristic to query.
+    /// - Returns: The list of options available for the specified characteristic.
     ///
-    /// Use `mediaSelectionCharacteristics` to retrieve available characteristics.
+    /// Use `mediaSelectionCharacteristics` to retrieve the available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
         Self.mediaSelectionOptions(from: _mediaStatus, for: characteristic)
     }
 
-    /// The currently selected media option for a characteristic.
+    /// Returns the currently selected media option for a given characteristic.
     ///
-    /// - Parameter characteristic: The characteristic.
-    /// - Returns: The selected option.
+    /// - Parameter characteristic: The media characteristic to query.
+    /// - Returns: The currently selected option.
     ///
-    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics.
+    /// Use `mediaSelectionCharacteristics` to retrieve the available characteristics.
     func selectedMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         let options = mediaSelectionOptions(for: characteristic)
         let currentOption = currentMediaOption(for: characteristic)
@@ -56,10 +56,10 @@ public extension CastPlayer {
         _activeTracks = activeTracks
     }
 
-    /// A binding to read and write the current media selection for a characteristic.
+    /// A binding to read and update the current media selection for a given characteristic.
     ///
-    /// - Parameter characteristic: The characteristic.
-    /// - Returns: The binding.
+    /// - Parameter characteristic: The media characteristic to bind.
+    /// - Returns: A binding representing the current selection.
     func mediaOption(for characteristic: AVMediaCharacteristic) -> Binding<CastMediaSelectionOption> {
         .init {
             self.selectedMediaOption(for: characteristic)
@@ -68,14 +68,13 @@ public extension CastPlayer {
         }
     }
 
-    /// The current media option for a characteristic.
+    /// Returns the current media option applied for a given characteristic.
     ///
-    /// - Parameter characteristic: The characteristic.
-    /// - Returns: The current option.
+    /// - Parameter characteristic: The media characteristic to query.
+    /// - Returns: The currently applied option.
     ///
-    /// Unlike `selectedMediaOption(for:)` this method provides the currently applied option. This method can
-    /// be useful if you need to access the actual selection made by `select(mediaOption:for:)` for `.automatic`
-    /// and `.off` options (forced options might be returned where applicable).
+    /// Unlike `selectedMediaOption(for:)`, this method reflects the actual selection applied by
+    /// `select(mediaOption:for:)`, including `.automatic` and `.off` options.
     func currentMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         switch characteristic {
         case .audible, .legible:
@@ -86,17 +85,16 @@ public extension CastPlayer {
         }
     }
 
-    /// Sets desired media selection preference for the specified media characteristic.
+    /// Sets the preferred media selection for a specified media characteristic.
     ///
     /// - Parameters:
     ///   - preference: The preference to apply.
-    ///   - characteristic: The media characteristic for which the preference must be applied. Supported values
-    ///     include `.audible` and `.legible`.
+    ///   - characteristic: The media characteristic to configure. Supported values include `.audible` and `.legible`.
     ///
-    /// This method can be used to override the default media option selection for some characteristic, e.g., to start
-    /// playback with a predefined language for audio and/or subtitles.
+    /// Use this method to override the default media option selection, for example, to start playback
+    /// with a predefined audio or subtitle language.
     ///
-    /// > Note: Media selection is only applied to the first content played in a session.
+    /// > Note: The media selection preference applies only to the first content played in a session.
     func setMediaSelectionPreference(_ preference: CastMediaSelectionPreference, for characteristic: AVMediaCharacteristic) {
         switch preference.kind {
         case .off:

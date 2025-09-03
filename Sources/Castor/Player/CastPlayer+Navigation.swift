@@ -8,24 +8,22 @@ import CoreMedia
 import GoogleCast
 
 public extension CastPlayer {
-    /// Checks whether returning to the previous content is possible.
+    /// Checks whether it is possible to return to the previous content.
     ///
-    /// - Returns: `true` if possible.
+    /// - Returns: `true` if returning to the previous content is possible.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Observes the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This check respects the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func canReturnToPrevious() -> Bool {
         canReturn(before: currentItem, in: items, streamType: streamType)
     }
 
-    /// Returns to the previous content.
+    /// Returns to the previous content in the queue.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Observes the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This action respects the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func returnToPrevious() {
         if shouldSeekToStartTime() {
             seek(to: .zero)
@@ -35,24 +33,22 @@ public extension CastPlayer {
         }
     }
 
-    /// Checks whether moving to the next content is possible.
+    /// Checks whether it is possible to move to the next content in the queue.
     ///
-    /// - Returns: `true` if possible.
+    /// - Returns: `true` if moving to the next content is possible.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Observes the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This check respects the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func canAdvanceToNext() -> Bool {
         canAdvanceToNextItem()
     }
 
-    /// Moves to the next content.
+    /// Moves to the next content in the queue.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Observes the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This action respects the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func advanceToNext() {
         advanceToNextItem()
     }

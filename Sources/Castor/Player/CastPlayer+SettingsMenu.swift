@@ -133,11 +133,11 @@ public extension CastPlayer {
     /// Returns content for a standard player settings menu.
     ///
     /// - Parameters:
-    ///    - speeds: The offered playback speeds.
-    ///    - action: The action to perform when the user interacts with an item from the menu.
+    ///    - speeds: The available playback speeds.
+    ///    - action: The action to perform when the user selects an item from the menu.
     ///
-    /// The returned view is meant to be used as content of a `Menu`. Using it for any other purpose has undefined
-    /// behavior.
+    /// The returned view is intended for use as the content of a `Menu`. Using it for other purposes may result in
+    /// undefined behavior.
     func standardSettingsMenu(
         speeds: Set<Float> = [0.5, 1, 1.25, 1.5, 2],
         action: @escaping (_ update: CastSettingsUpdate) -> Void = { _ in }
@@ -148,11 +148,11 @@ public extension CastPlayer {
     /// Returns content for a playback speed menu.
     ///
     /// - Parameters:
-    ///    - speeds: The offered playback speeds.
-    ///    - action: The action to perform when the user interacts with an item from the menu.
+    ///    - speeds: The available playback speeds.
+    ///    - action: The action to perform when the user selects an item from the menu.
     ///
-    /// The returned view is meant to be used as content of a `Menu`. Using it for any other purpose has undefined
-    /// behavior.
+    /// The returned view is intended for use as the content of a `Menu`. Using it for other purposes may result in
+    /// undefined behavior.
     func playbackSpeedMenu(
         speeds: Set<Float> = [0.5, 1, 1.25, 1.5, 2],
         action: @escaping (_ speed: Float) -> Void = { _ in }
@@ -163,11 +163,11 @@ public extension CastPlayer {
     /// Returns content for a media selection menu.
     ///
     /// - Parameters:
-    ///    - characteristic: The characteristic for which selection is made.
-    ///    - action: The action to perform when the user interacts with an item from the menu.
+    ///    - characteristic: The media characteristic for which selection is made.
+    ///    - action: The action to perform when the user selects an item from the menu.
     ///
-    /// The returned view is meant to be used as content of a `Menu`. Using it for any other purpose has undefined
-    /// behavior.
+    /// The returned view is intended for use as the content of a `Menu`. Using it for other purposes may result in
+    /// undefined behavior.
     func mediaSelectionMenu(
         characteristic: AVMediaCharacteristic,
         action: @escaping (_ option: CastMediaSelectionOption) -> Void = { _ in }

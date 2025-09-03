@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-/// Hints provided to a `GCKUIImagePicker` about the type and size of an image to be selected.
+/// Hints provided to a `GCKUIImagePicker` regarding the type and size of the image to be selected.
 public struct CastImageHints {
     let rawImageHints: GCKUIImageHints
 

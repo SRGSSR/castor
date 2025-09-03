@@ -8,7 +8,7 @@ import GoogleCast
 import SwiftUI
 
 public extension CastPlayer {
-    /// The items queued by the player.
+    /// The items currently queued by the player.
     var items: [CastPlayerItem] {
         get {
             _items
@@ -22,30 +22,29 @@ public extension CastPlayer {
         assets.map { $0.rawItem() }
     }
 
-    /// Loads player items from assets and starts playback.
+    /// Loads player items from the specified assets and starts playback.
     ///
     /// - Parameters:
-    ///   - assets: The assets for the item to load.
-    ///   - options: The loading options.
+    ///   - assets: The assets to load as player items.
+    ///   - options: The options to use when loading.
     func loadItems(from assets: [CastAsset], with options: CastLoadOptions = .init()) {
         remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: options.rawOptions)
     }
 
-    /// Loads the player item from an asset and starts playback.
+    /// Loads a player item from the specified asset and starts playback.
     ///
     /// - Parameters:
-    ///   - asset: The asset for the item to load.
-    ///   - options: The loading options.
+    ///   - asset: The asset to load as a player item.
+    ///   - options: The options to use when loading.
     func loadItem(from asset: CastAsset, with options: CastLoadOptions = .init()) {
         loadItems(from: [asset], with: options)
     }
 
-    /// Inserts items before another one.
+    /// Inserts items before a specified item in the queue.
     ///
     /// - Parameters:
-    ///   - assets: The assets for the items to insert.
-    ///   - beforeItem: The item before which insertion must take place. Pass `nil` to insert the items at the front
-    ///     of the queue.
+    ///   - assets: The assets to insert as player items.
+    ///   - beforeItem: The item before which the new items should be inserted. Pass `nil` to insert at the front of the queue.
     @discardableResult
     func insertItems(from assets: [CastAsset], before beforeItem: CastPlayerItem?) -> Bool {
         if let beforeItem {
@@ -58,12 +57,11 @@ public extension CastPlayer {
         return true
     }
 
-    /// Inserts items after another one.
+    /// Inserts items after a specified item in the queue.
     ///
     /// - Parameters:
-    ///   - assets: The assets for the items to insert.
-    ///   - afterItem: The item after which insertion must take place. Pass `nil` to insert the items at the back
-    ///     of the queue.
+    ///   - assets: The assets to insert as player items.
+    ///   - afterItem: The item after which the new items should be inserted. Pass `nil` to insert at the end of the queue.
     @discardableResult
     func insertItems(from assets: [CastAsset], after afterItem: CastPlayerItem?) -> Bool {
         if let afterItem {
@@ -77,31 +75,29 @@ public extension CastPlayer {
         return true
     }
 
-    /// Inserts an item after another one.
+    /// Inserts an item after a specified item in the queue.
     ///
     /// - Parameters:
-    ///   - asset: The asset for the item to insert.
-    ///   - afterItem: The item after which insertion must take place. Pass `nil` to insert the item at the back
-    ///     of the queue.
+    ///   - asset: The asset to insert as a player item.
+    ///   - afterItem: The item after which the new item should be inserted. Pass `nil` to insert at the end of the queue.
     @discardableResult
     func insertItem(from asset: CastAsset, after afterItem: CastPlayerItem?) -> Bool {
         insertItems(from: [asset], after: afterItem)
     }
 
-    /// Insert an item before another one.
+    /// Inserts an item before a specified item in the queue.
     ///
     /// - Parameters:
-    ///   - asset: The asset for the item to insert.
-    ///   - beforeItem: The item before which insertion must take place. Pass `nil` to insert the item at the front
-    ///     of the queue.
+    ///   - asset: The asset to insert as a player item.
+    ///   - beforeItem: The item before which the new item should be inserted. Pass `nil` to insert at the front of the queue.
     @discardableResult
     func insertItem(from asset: CastAsset, before beforeItem: CastPlayerItem?) -> Bool {
         insertItems(from: [asset], before: beforeItem)
     }
 
-    /// Prepends items to the queue.
+    /// Appends items to the end of the queue.
     ///
-    /// - Parameter assets: The assets for the items to insert.
+    /// - Parameter assets: The assets to append as player items.
     func appendItems(from assets: [CastAsset]) {
         if !items.isEmpty {
             remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: kGCKMediaQueueInvalidItemID)
@@ -111,16 +107,16 @@ public extension CastPlayer {
         }
     }
 
-    /// Prepends an item to the queue.
+    /// Appends an item to the end of the queue.
     ///
-    /// - Parameter asset: The asset for the item to insert.
+    /// - Parameter asset: The asset to append as a player item.
     func appendItem(from asset: CastAsset) {
         appendItems(from: [asset])
     }
 
-    /// Prepends items to the queue.
+    /// Prepends items to the front of the queue.
     ///
-    /// - Parameter assets: The assets for the items to prepend.
+    /// - Parameter assets: The assets to prepend as player items.
     func prependItems(from assets: [CastAsset]) {
         if let firstItem = items.first {
             remoteMediaClient.queueInsert(Self.rawItems(from: assets), beforeItemWithID: firstItem.id)
@@ -130,9 +126,9 @@ public extension CastPlayer {
         }
     }
 
-    /// Prepends an item to the queue.
+    /// Prepends an item to the front of the queue.
     ///
-    /// - Parameter asset: The asset for the item to prepend.
+    /// - Parameter asset: The asset to prepend as a player item.
     func prependItem(from asset: CastAsset) {
         prependItems(from: [asset])
     }
@@ -141,7 +137,7 @@ public extension CastPlayer {
 public extension CastPlayer {
     /// Removes an item from the queue.
     ///
-    /// - Parameter item: The item to remove.
+    /// - Parameter item: The player item to remove.
     func remove(_ item: CastPlayerItem) {
         items.removeAll { $0 == item }
     }
@@ -153,13 +149,12 @@ public extension CastPlayer {
 }
 
 public extension CastPlayer {
-    /// Moves an item before another one.
+    /// Moves an item before another item in the queue.
     ///
     /// - Parameters:
-    ///   - item: The item to move. The method does nothing if the item does not belong to the queue.
-    ///   - beforeItem: The item before which the moved item must be relocated. Pass `nil` to move the item to the
-    ///     front of the queue. If the item does not belong to the queue the method does nothing.
-    /// - Returns: `true` iff the item could be moved.
+    ///   - item: The item to move. Has no effect if the item does not belong to the queue.
+    ///   - beforeItem: The item before which the moved item should be placed. Pass `nil` to move it to the front.
+    /// - Returns: `true` if the item was successfully moved; otherwise, `false`.
     @discardableResult
     func move(_ item: CastPlayerItem, before beforeItem: CastPlayerItem?) -> Bool {
         guard canMove(item, before: beforeItem), let movedIndex = items.firstIndex(of: item) else {
@@ -175,13 +170,12 @@ public extension CastPlayer {
         return true
     }
 
-    /// Moves an item before another one.
+    /// Moves an item after another item in the queue.
     ///
     /// - Parameters:
-    ///   - item: The item to move.
-    ///   - afterItem: The item after which the moved item must be relocated. Pass `nil` to move the item to the
-    ///     back of the queue. If the item does not belong to the queue the method does nothing.
-    /// - Returns: `true` iff the item could be moved.
+    ///   - item: The item to move. Has no effect if the item does not belong to the queue.
+    ///   - afterItem: The item after which the moved item should be placed. Pass `nil` to move it to the back.
+    /// - Returns: `true` if the item was successfully moved; otherwise, `false`.
     @discardableResult
     func move(_ item: CastPlayerItem, after afterItem: CastPlayerItem?) -> Bool {
         guard canMove(item, after: afterItem), let movedIndex = items.firstIndex(of: item) else {

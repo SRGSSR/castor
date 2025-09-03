@@ -6,9 +6,9 @@
 
 import SwiftUI
 
-/// A view that displays a Cast icon reflecting the current connection state.
+/// A view that displays a Cast icon, reflecting the current connection state.
 ///
-/// > Warning: Resize using ``font(_:)``.
+/// > Warning: Adjust the icon size using ``font(_:)``.
 public struct CastIcon: View {
     @ObservedObject var cast: Cast
 

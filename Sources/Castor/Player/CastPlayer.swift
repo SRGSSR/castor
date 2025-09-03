@@ -8,7 +8,7 @@ import AVFoundation
 import Combine
 import GoogleCast
 
-/// A cast player.
+/// A player used to interact with a Cast receiver device.
 @MainActor
 public final class CastPlayer: NSObject, ObservableObject {
     let remoteMediaClient: GCKRemoteMediaClient
@@ -39,7 +39,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     /// The current item.
     ///
-    /// Does nothing if set to `nil` or to an item that does not belong to the list.
+    /// Setting this property to `nil` or to an item that does not belong to the list has no effect.
     ///
     /// > Important: Use ``CastPlayer/currentAsset`` to access metadata for the current item.
     public var currentItem: CastPlayerItem? {
@@ -52,7 +52,7 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
     }
 
-    /// The mode with which the player repeats playback of items in its queue.
+    /// The mode that determines how the player repeats playback of items in its queue.
     public var repeatMode: CastRepeatMode {
         get {
             _repeatMode

@@ -5,7 +5,7 @@
 //
 
 public extension CastPlayer {
-    /// A Boolean value whether the player should play content when possible.
+    /// A Boolean value that indicates whether the player should automatically play content when possible.
     var shouldPlay: Bool {
         get {
             _shouldPlay
@@ -15,22 +15,22 @@ public extension CastPlayer {
         }
     }
 
-    /// Plays.
+    /// Starts playback.
     func play() {
         shouldPlay = true
     }
 
-    /// Pauses.
+    /// Pauses playback.
     func pause() {
         shouldPlay = false
     }
 
-    /// Toggles between play and pause.
+    /// Toggles playback between play and pause.
     func togglePlayPause() {
         shouldPlay.toggle()
     }
 
-    /// Stops.
+    /// Stops playback.
     func stop() {
         remoteMediaClient.stop()
     }

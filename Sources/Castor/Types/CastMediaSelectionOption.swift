@@ -4,19 +4,19 @@
 //  License information is available from the LICENSE file.
 //
 
-/// An option for media selection (audible, legible, etc.).
+/// An option for media selection, such as audio or subtitle tracks.
 public enum CastMediaSelectionOption: Hashable {
     /// Disabled.
     ///
-    /// Options might still be forced where applicable.
+    /// Some options may still be forced where applicable.
     case off
 
     /// Enabled.
     ///
-    /// You can extract `AVMediaSelectionOption` characteristics for display purposes.
+    /// You can extract `AVMediaSelectionOption` characteristics for display.
     case on(CastMediaTrack)
 
-    /// A name suitable for display.
+    /// A display-friendly name.
     public var displayName: String {
         switch self {
         case .off:

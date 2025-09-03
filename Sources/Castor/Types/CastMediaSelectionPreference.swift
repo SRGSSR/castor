@@ -4,7 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-/// A preference for media selection (audible, legible, etc.).
+/// A preferred option for media selection, such as audio or subtitle tracks.
 public struct CastMediaSelectionPreference {
     enum Kind {
         case off
@@ -13,7 +13,7 @@ public struct CastMediaSelectionPreference {
 
     /// Disabled.
     ///
-    /// Options might still be forced where applicable.
+    /// Some options may still be forced where applicable.
     public static var off: Self {
         .init(kind: .off)
     }
@@ -26,8 +26,8 @@ public struct CastMediaSelectionPreference {
 
     /// Enabled.
     ///
-    /// - Parameter languages: A list of strings containing language identifiers, in order of desirability, that are
-    ///   preferred for selection. Languages must be indicated via RFC 1766 tags.
+    /// - Parameter languages: An ordered list of language identifiers preferred for selection. Languages should be
+    ///   specified using RFC 1766 tags.
     public static func on(languages: String...) -> Self {
         .init(kind: .on(languages: languages))
     }

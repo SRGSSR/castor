@@ -5,47 +5,43 @@
 //
 
 public extension CastPlayer {
-    /// Checks whether returning to the previous item in the queue is possible.
+    /// Checks whether it is possible to return to the previous item in the queue.
     ///
-    /// - Returns: `true` if possible.
+    /// - Returns: `true` if returning to the previous item is possible.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Ignores the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This check ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func canReturnToPreviousItem() -> Bool {
         canReturnToItem(before: currentItem, in: items)
     }
 
     /// Returns to the previous item in the queue.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Ignores the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This action ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func returnToPreviousItem() {
         guard let previousIndex = index(before: currentItem, in: items) else { return }
         currentItem = items[previousIndex]
     }
 
-    /// Checks whether moving to the next item in the queue is possible.
+    /// Checks whether it is possible to move to the next item in the queue.
     ///
-    /// - Returns: `true` if possible.
+    /// - Returns: `true` if moving to the next item is possible.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Ignores the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This check ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func canAdvanceToNextItem() -> Bool {
         canAdvanceToItem(after: currentItem, in: items)
     }
 
     /// Moves to the next item in the queue.
     ///
-    /// The behavior of this method is adjusted to wrap around both ends of the item queue when ``CastPlayer/repeatMode``
-    /// has been set to ``CastRepeatMode/all``.
+    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
-    /// > Important: Ignores the ``CastConfiguration/navigationMode`` set in the ``Cast/configuration``.
+    /// > Important: This action ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func advanceToNextItem() {
         guard let nextIndex = index(after: currentItem, in: items) else { return }
         currentItem = items[nextIndex]

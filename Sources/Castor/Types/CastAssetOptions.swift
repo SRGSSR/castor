@@ -7,15 +7,15 @@
 import CoreMedia
 import GoogleCast
 
-/// Options for loading assets.
+/// Options used when loading assets.
 public struct CastLoadOptions {
     let rawOptions = GCKMediaQueueLoadOptions()
 
-    /// Creates options.
-    /// 
+    /// Creates loading options.
+    ///
     /// - Parameters:
-    ///   - startTime: The start time.
-    ///   - startIndex: The start index.
+    ///   - startTime: The time at which playback should start.
+    ///   - startIndex: The index of the item at which playback should start.
     public init(startTime: CMTime = .invalid, startIndex: Int = 0) {
         if startTime.isValid {
             rawOptions.playPosition = startTime.seconds

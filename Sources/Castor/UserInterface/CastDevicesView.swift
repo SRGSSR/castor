@@ -112,7 +112,7 @@ struct CastDevicesView: View {
         Slider(value: volume, in: cast.volumeRange) {
             Text("Volume", bundle: .module, comment: "Volume slider label")
         } minimumValueLabel: {
-            MuteButton(cast: cast)
+            CastMuteButton(cast: cast)
                 .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
                 .toAnyView()
         } maximumValueLabel: {

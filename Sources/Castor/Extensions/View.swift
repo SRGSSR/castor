@@ -23,11 +23,11 @@ public extension View {
 }
 
 public extension View {
-    /// Supports casting with the provided delegate.
+    /// Enables casting with the specified delegate.
     ///
     /// - Parameters:
-    ///   - cast: The cast object.
-    ///   - delegate: The delegate.
+    ///   - cast: The Cast object.
+    ///   - delegate: The delegate to handle Cast events.
     func supportsCast(_ cast: Cast, with delegate: CastDelegate) -> some View {
         onAppear {
             cast.delegate = delegate
@@ -37,8 +37,8 @@ public extension View {
     /// Makes a view context castable.
     ///
     /// - Parameters:
-    ///   - castable: The object that can be cast.
-    ///   - cast: The cast object.
+    ///   - castable: The view context that can be cast.
+    ///   - cast: The Cast object.
     func makeCastable(_ castable: Castable, with cast: Cast) -> some View {
         onAppear {
             cast.castable = castable

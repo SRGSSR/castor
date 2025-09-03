@@ -8,17 +8,17 @@ import Combine
 import CoreMedia
 import GoogleCast
 
-/// An observable object tracking playback progress.
+/// An observable object that tracks playback progress.
 @MainActor
 public final class CastProgressTracker: ObservableObject {
     @Published private var _progress: Float?
 
     /// The player to attach.
     ///
-    /// Use `View.bind(_:to:)` in SwiftUI code.
+    /// Use `View.bind(_:to:)` when working with SwiftUI.
     @Published public var player: CastPlayer?
 
-    /// A Boolean describing whether user interaction is currently changing the progress value.
+    /// A Boolean value indicating whether the user is currently interacting with and changing the progress value.
     @Published public var isInteracting = false {
         willSet {
             if !newValue, let progress = _progress {
@@ -29,11 +29,9 @@ public final class CastProgressTracker: ObservableObject {
 
     /// The current progress.
     ///
-    /// Returns a value in ``range``. The progress might be different from the actual player progress during
-    /// user interaction.
+    /// Returns a value within ``range``. During user interaction, this value may differ from the actual player progress.
     ///
-    /// This property returns 0 when no progress information is available. Use ``isProgressAvailable`` to check whether
-    /// progress is available or not.
+    /// Returns 0 if no progress information is available. Use ``isProgressAvailable`` to check for availability.
     public var progress: Float {
         get {
             Self.validProgress(_progress, in: range)
@@ -44,39 +42,39 @@ public final class CastProgressTracker: ObservableObject {
         }
     }
 
-    /// A Boolean reporting whether progress information is available.
+    /// A Boolean value indicating whether progress information is available.
     ///
-    /// This Boolean is a recommendation you can use to entirely hide progress information in cases where it is not
-    /// meaningful (e.g., when loading content or for livestreams).
+    /// Use this value to hide progress indicators in cases where progress is not meaningful, such as during content
+    /// loading or for livestreams.
     public var isProgressAvailable: Bool {
         _progress != nil
     }
 
     /// The current time range.
     ///
-    /// Returns `.invalid` when the time range is unknown.
+    /// Returns `.invalid` if the time range is unknown.
     public var timeRange: CMTimeRange {
         player?.seekableTimeRange() ?? .invalid
     }
 
     /// The time corresponding to the current progress.
     ///
-    /// Returns `.invalid` when the time range is unknown. The returned value might be different from the player current
-    /// time when interaction takes place.
+    /// Returns `.invalid` if the time range is unknown. During user interaction, this value may differ from the
+    /// player's actual current time.
     public var time: CMTime {
         Self.time(forProgress: _progress, in: timeRange)
     }
 
-    /// The allowed range for progress values.
+    /// The valid range for progress values.
     public var range: ClosedRange<Float> {
         _progress != nil ? 0...1 : 0...0
     }
 
-    /// Creates a progress tracker updating its progress at the specified interval.
+    /// Creates a progress tracker that updates at the specified interval.
     ///
-    /// - Parameter interval: The interval at which progress must be updated, according to progress of the current
+    /// - Parameter interval: The interval at which progress should be updated based on the current playback.
     ///
-    /// Additional updates will happen when time jumps or when playback starts or stops.
+    /// Additional updates occur when the playback time jumps or when playback starts or stops.
     public init(interval: CMTime) {
         $player.map { [$isInteracting] player -> AnyPublisher<Float?, Never> in
             guard let player else { return Just(nil).eraseToAnyPublisher() }

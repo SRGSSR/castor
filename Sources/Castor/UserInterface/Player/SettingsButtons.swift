@@ -19,7 +19,7 @@ struct SettingsButtons: View {
                 Spacer()
             }
             SettingsMenu(player: player)
-            MuteButton(cast: cast)
+            CastMuteButton(cast: cast)
             CastButton(cast: cast)
         }
         .font(.system(size: 22))

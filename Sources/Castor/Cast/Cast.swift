@@ -10,7 +10,16 @@ import Foundation
 import GoogleCast
 import SwiftUI
 
-/// This object that handles everything related to Google Cast.
+/// An observable object that manages all aspects of Google Cast.
+///
+/// `Cast` is a top-level type responsible for handling available devices, active sessions, and the volume of the
+/// current device.
+///
+/// Create and store a `Cast` instance in your top-level application view, then use ``SwiftUICore/View/supportsCast(_:with:)``
+/// to register a delegate. The delegate can respond to session start and end events by presenting or dismissing views related
+/// to the current cast session, typically through a router.
+///
+/// Once a session is established, use ``Cast/player`` to load content and control playback.
 @MainActor
 public final class Cast: NSObject, ObservableObject {
     /// The package version.
@@ -73,24 +82,24 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    /// The allowed range for volume values.
+    /// The allowed range for the volume of the current device.
     public var volumeRange: ClosedRange<Float> {
         currentSession?.traits?.volumeRange ?? 0...0
     }
 
-    /// A Boolean indicating whether the volume can be adjusted.
+    /// A Boolean indicating whether the volume of the current device can be adjusted.
     public var canAdjustVolume: Bool {
         currentSession?.isFixedVolume == false
     }
 
-    /// A Boolean indicating whether the device can be muted.
+    /// A Boolean indicating whether the current device can be muted.
     public var canMute: Bool {
         currentSession?.supportsMuting == true
     }
 
     /// The current device.
     ///
-    /// Does nothing if set to `nil` or to an item that does not belong to the list.
+    /// Does nothing if set to `nil` or to a device that does not belong to ``Cast/devices``.
     public var currentDevice: CastDevice? {
         get {
             _currentDevice
@@ -102,19 +111,21 @@ public final class Cast: NSObject, ObservableObject {
     }
 
     /// The player.
+    ///
+    /// Use this object to load content and control playback.
     @Published public private(set) var player: CastPlayer?
 
-    /// The devices found in the local network.
+    /// The list of devices discovered on the local network.
     public var devices: [CastDevice] {
         _devices
     }
 
-    /// The connection state to a device.
+    /// The current connection state with a device.
     @Published public private(set) var connectionState: GCKConnectionState
 
-    /// Default initializer.
+    /// Creates an instance.
     ///
-    /// - Parameter configuration: The configuration to apply to the cast.
+    /// - Parameter configuration: The Cast configuration.
     public init(configuration: CastConfiguration = .init()) {
         self.configuration = configuration
         currentSession = context.sessionManager.currentCastSession
@@ -141,20 +152,22 @@ public final class Cast: NSObject, ObservableObject {
             .assign(to: &$connectionState)
     }
 
-    /// Starts a new session with the given device.
-    /// - Parameter device: The device to use for this session.
+    /// Starts a new session using the specified device.
+    ///
+    /// - Parameter device: The device to connect to for this session.
     public func startSession(with device: CastDevice) {
         _currentDevice = device
     }
 
-    /// Ends the current session and stops casting if one sender device is connected.
+    /// Ends the current session and stops casting if a single sender device is connected.
     public func endSession() {
         _currentDevice = nil
     }
 
-    /// Check if the given device if currently casting.
-    /// - Parameter device: The device.
-    /// - Returns: `true` if the given device is casting, `false` otherwise.
+    /// Checks whether the specified device is currently casting.
+    ///
+    /// - Parameter device: The device to check.
+    /// - Returns: `true` if the device is casting; otherwise, `false`.
     public func isCasting(on device: CastDevice) -> Bool {
         _currentDevice == device
     }

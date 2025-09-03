@@ -4,13 +4,15 @@
 //  License information is available from the LICENSE file.
 //
 
-/// A protocol describing a castable context.
+/// A protocol that defines a castable context.
 public protocol Castable: AnyObject {
-    /// Called when the cast session is established.
+    /// Invoked when a Cast session has been established.
+    ///
+    /// - Returns: The current state.
     func castStartSession() -> CastResumeState?
 
-    /// Called when the cast session is being stopped.
+    /// Invoked when the Cast session is about to stop.
     ///
-    /// - Parameter state: The state right before the cast session ends.
+    /// - Parameter state: The state immediately before the Cast session ends.
     func castEndSession(with state: CastResumeState?)
 }

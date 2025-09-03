@@ -6,11 +6,11 @@
 
 import GoogleCast
 
-/// Metadata associated to an item.
+/// Metadata associated with an asset.
 public struct CastMetadata {
     let rawMetadata: GCKMediaMetadata
 
-    /// The content title.
+    /// The title of the content.
     public var title: String? {
         rawMetadata.string(forKey: kGCKMetadataKeyTitle)
     }
@@ -21,13 +21,13 @@ public struct CastMetadata {
     }
 
     /// Creates metadata.
-    /// 
+    ///
     /// - Parameters:
-    ///   - title: The content title.
-    ///   - metadataType: The metadata type.
+    ///   - title: The title of the content.
+    ///   - metadataType: The type of the metadata.
     ///   - images: The associated images.
     ///
-    /// The metadata type is used by receivers to adjust their layout according to the type of content being played.
+    /// The metadata type helps receivers adjust their layout according to the type of content being played.
     public init(
         title: String?,
         metadataType: GCKMediaMetadataType = .generic,
@@ -46,11 +46,11 @@ public struct CastMetadata {
     /// Creates metadata.
     ///
     /// - Parameters:
-    ///   - title: The content title.
-    ///   - metadataType: The metadata type.
+    ///   - title: The title of the content.
+    ///   - metadataType: The type of the metadata.
     ///   - image: The associated image.
     ///
-    /// The metadata type is used by receivers to adjust their layout according to the type of content being played.
+    /// The metadata type helps receivers adjust their layout according to the type of content being played.
     public init(
         title: String?,
         metadataType: GCKMediaMetadataType = .generic,
@@ -64,12 +64,11 @@ public struct CastMetadata {
         }
     }
 
-    /// The image URL matching a set of hints.
+    /// The image URL that matches a set of hints.
     ///
-    /// If no hints are provided the first image is returned if available. To take into account hints you must
-    /// implement a `GCKUIImagePicker` and associate it with your `GCKCastContext`. Please refer to the [official
-    /// documentation](https://developers.google.com/cast/docs/ios_sender/advanced#override_image_selection_and_caching)
-    /// for more information.
+    /// If no hints are provided, the first image is returned if available. To use hints, implement a `GCKUIImagePicker`
+    /// and associate it with your `GCKCastContext`. For more information, see the
+    /// [official documentation](https://developers.google.com/cast/docs/ios_sender/advanced#override_image_selection_and_caching).
     public func imageUrl(matching hints: CastImageHints? = nil) -> URL? {
         if let hints {
             return GCKCastContext.sharedInstance().imagePicker?.getImageWith(hints.rawImageHints, from: rawMetadata)?.url

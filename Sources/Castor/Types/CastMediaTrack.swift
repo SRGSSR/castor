@@ -7,7 +7,7 @@
 import AVFoundation
 import GoogleCast
 
-/// An option for media selection (audible, legible, etc.).
+/// A selectable option for media, such as audio or subtitle tracks.
 public struct CastMediaTrack: Hashable {
     private let rawTrack: GCKMediaTrack
 

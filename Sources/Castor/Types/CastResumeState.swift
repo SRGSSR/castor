@@ -7,17 +7,17 @@
 import AVFoundation
 import CoreMedia
 
-/// State information useful when transitioning between remote and local playback.
+/// State information useful for transitioning between remote and local playback.
 public struct CastResumeState {
-    /// The assets.
+    /// The assets in the queue.
     public let assets: [CastAsset]
 
-    /// The current index.
+    /// The current index in the asset list.
     public let index: Int
 
-    /// The current time.
+    /// The current playback time.
     ///
-    /// An `.invalid` time corresponds to the default playback position.
+    /// A value of `.invalid` corresponds to the default playback position.
     public let time: CMTime
 
     private var mediaSelectionLanguages: [AVMediaCharacteristic: String] = [:]
@@ -25,11 +25,11 @@ public struct CastResumeState {
     /// Creates a state.
     ///
     /// - Parameters:
-    ///   - assets: The assets.
-    ///   - index: The current index.
-    ///   - time: The current time. Use `.invalid` for the default playback position.
+    ///   - assets: The assets in the queue.
+    ///   - index: The current index in the asset list.
+    ///   - time: The current playback time. Use `.invalid` for the default position.
     ///
-    /// Fails if no valid index into the asset list is provided.
+    /// Fails if the provided index is not valid for the asset list.
     public init?(assets: [CastAsset], index: Int?, time: CMTime) {
         guard let index, assets.indices.contains(index) else { return nil }
         self.assets = assets
@@ -39,24 +39,23 @@ public struct CastResumeState {
 }
 
 public extension CastResumeState {
-    /// The set of media characteristics for which a media selection is available.
+    /// The set of media characteristics that have an available media selection.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
         Set(mediaSelectionLanguages.keys)
     }
 
-    /// Sets the media selection language for the specified media characteristic.
+    /// Sets the media selection language for a specified media characteristic.
     ///
     /// - Parameters:
-    ///   - language: The code of the selected language. Languages must be indicated via RFC 1766 tags.
-    ///   - characteristic: The media characteristic for which the selection criteria are to be applied. Supported values
-    ///     include `.audible` and `.legible`.
+    ///   - language: The language code to select, specified using RFC 1766 tags.
+    ///   - characteristic: The media characteristic to configure. Supported values include `.audible` and `.legible`.
     mutating func setMediaSelection(language: String?, for characteristic: AVMediaCharacteristic) {
         mediaSelectionLanguages[characteristic] = language
     }
 
-    /// Returns the media selection language for the specified media characteristic.
+    /// Returns the media selection language for a given media characteristic.
     ///
-    /// - Parameter characteristic: The characteristic.
+    /// - Parameter characteristic: The media characteristic to query.
     func mediaSelectionLanguage(for characteristic: AVMediaCharacteristic) -> String? {
         mediaSelectionLanguages[characteristic]
     }
