@@ -7,7 +7,7 @@
 import SwiftUI
 
 /// A mute button.
-public struct MuteButton: View {
+public struct CastMuteButton: View {
     @ObservedObject var cast: Cast
 
     // swiftlint:disable:next missing_docs
@@ -15,7 +15,7 @@ public struct MuteButton: View {
         Button {
             cast.isMuted.toggle()
         } label: {
-            VolumeIcon(cast: cast)
+            CastVolumeIcon(cast: cast)
         }
         .disabled(!cast.canMute)
     }

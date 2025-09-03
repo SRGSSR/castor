@@ -9,7 +9,7 @@ import SwiftUI
 /// A view that displays an icon reflecting the current volume.
 ///
 /// > Warning: Adjust the icon size using ``font(_:)``
-public struct VolumeIcon: View {
+public struct CastVolumeIcon: View {
     @ObservedObject var cast: Cast
 
     private var minimumValueImageName: String {
