@@ -130,6 +130,10 @@ struct LocalPlaybackView: View {
 
     @StateObject private var visibilityTracker = VisibilityTracker()
 
+    var areControlsHidden: Bool {
+        visibilityTracker.isUserInterfaceHidden || player.error != nil || player.items.isEmpty
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             mainView()
@@ -147,6 +151,11 @@ struct LocalPlaybackView: View {
             if let error = player.error {
                 LocalErrorView(error: error, action: player.replay)
             }
+            else if player.items.isEmpty {
+                Text("No content")
+                    .padding()
+                    .foregroundStyle(.white)
+            }
             else {
                 playerView()
             }
@@ -155,6 +164,9 @@ struct LocalPlaybackView: View {
         .aspectRatio(16 / 9, contentMode: .fit)
         .frame(maxWidth: .infinity)
         .background(.black)
+        .overlay(content: controls)
+        .onTapGesture(perform: visibilityTracker.toggle)
+        .accessibilityAddTraits(.isButton)
     }
 
     private func playerView() -> some View {
@@ -162,11 +174,9 @@ struct LocalPlaybackView: View {
             artwork()
             VideoView(player: player)
         }
-        .overlay(content: controls)
-        .onTapGesture(perform: visibilityTracker.toggle)
-        .accessibilityAddTraits(.isButton)
     }
 
+    @ViewBuilder
     private func controls() -> some View {
         ZStack {
             LocalPaybackButton(player: player)
@@ -174,8 +184,10 @@ struct LocalPlaybackView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(white: 0, opacity: 0.4))
-        .opacity(visibilityTracker.isUserInterfaceHidden ? 0 : 1)
+        .opacity(areControlsHidden ? 0 : 1)
         .animation(.default, value: visibilityTracker.isUserInterfaceHidden)
+        .onTapGesture(perform: visibilityTracker.toggle)
+        .accessibilityAddTraits(.isButton)
     }
 
     private func bottomBar() -> some View {

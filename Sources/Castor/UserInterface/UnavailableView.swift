@@ -7,7 +7,7 @@
 import SwiftUI
 
 @available(iOS, introduced: 16.0, deprecated: 17.0, message: "Use `SwiftUI.ContentUnavailableView`")
-private struct ContentUnavailableViewIOS16<Label, Description>: View where Label: View, Description: View {
+private struct ContentUnavailableViewOS16<Label, Description>: View where Label: View, Description: View {
     let label: () -> Label
     let description: () -> Description
 
@@ -16,7 +16,8 @@ private struct ContentUnavailableViewIOS16<Label, Description>: View where Label
             title()
             subtitle()
         }
-        .offset(y: -10)
+        .padding(.top, 15)
+        .padding([.horizontal, .bottom], 30)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
@@ -61,18 +62,21 @@ struct UnavailableView<Label, Description>: View where Label: View, Description:
             ContentUnavailableView(label: label, description: description)
         }
         else {
-            ContentUnavailableViewIOS16(label: label, description: description)
+            ContentUnavailableViewOS16(label: label, description: description)
         }
     }
 
-    init(@ViewBuilder label: @escaping () -> Label, @ViewBuilder description: @escaping () -> Description) {
+    init(
+        @ViewBuilder label: @escaping () -> Label,
+        @ViewBuilder description: @escaping () -> Description = { EmptyView() }
+    ) {
         self.label = label
         self.description = description
     }
 }
 
-#Preview("iOS 16.0") {
-    ContentUnavailableViewIOS16 {
+#Preview("16.0") {
+    ContentUnavailableViewOS16 {
         Label {
             Text(verbatim: "title")
         } icon: {
@@ -84,7 +88,7 @@ struct UnavailableView<Label, Description>: View where Label: View, Description:
 }
 
 @available(iOS 17, *)
-#Preview("iOS 17.0+") {
+#Preview("17.0+") {
     ContentUnavailableView {
         Label {
             Text(verbatim: "title")

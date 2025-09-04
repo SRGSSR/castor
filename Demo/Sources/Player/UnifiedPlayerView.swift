@@ -71,7 +71,6 @@ private extension UnifiedPlayerView {
         .opacity(isUserInterfaceActuallyHidden ? 0 : 1)
         .animation(.default, value: isUserInterfaceActuallyHidden)
         .padding()
-        .preventsTouchPropagation()
     }
 
     func addButton() -> some View {

@@ -19,11 +19,6 @@ private struct PulseSymbolEffect17: ViewModifier {
 }
 
 extension View {
-    /// Prevents touch propagation to views located below the receiver.
-    func preventsTouchPropagation() -> some View {
-        background(Color(white: 1, opacity: 0.0001))
-    }
-
     func pulseSymbolEffect17() -> some View {
         modifier(PulseSymbolEffect17())
     }
