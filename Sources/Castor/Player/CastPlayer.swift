@@ -9,6 +9,10 @@ import Combine
 import GoogleCast
 
 /// A player used to interact with a Cast receiver device.
+///
+/// You do not instantiate a `CastPlayer` directly. Instead, use a ``Cast`` instance to manage receivers and establish
+/// sessions. Then use the ``Cast/player`` it provides to control playback, receive status updates, access metadata,
+/// and manage items for the current session.
 @MainActor
 public final class CastPlayer: NSObject, ObservableObject {
     let remoteMediaClient: GCKRemoteMediaClient
