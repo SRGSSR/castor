@@ -22,7 +22,7 @@ Here’s a simple example that observes player state to implement a labeled play
 
 ```swift
 struct PlaybackButton: View {
-    @ObservedObject var player: Player
+    @ObservedObject var player: CastPlayer
 
     var body: some View {
         Button(action: player.togglePlayPause) {
