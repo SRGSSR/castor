@@ -186,11 +186,10 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
             resume(from: resumeState)
             targetResumeState = nil
         }
-        else if let resumeState = castable?.castStartSession() {
-            resume(from: resumeState)
-            delegate?.castStartSession()
-        }
         else {
+            if let resumeState = castable?.castStartSession() {
+                resume(from: resumeState)
+            }
             delegate?.castStartSession()
         }
     }
