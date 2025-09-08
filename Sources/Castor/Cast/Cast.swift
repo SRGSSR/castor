@@ -190,6 +190,9 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
             resume(from: resumeState)
             delegate?.castStartSession()
         }
+        else {
+            delegate?.castStartSession()
+        }
     }
 
     // swiftlint:disable:next missing_docs
