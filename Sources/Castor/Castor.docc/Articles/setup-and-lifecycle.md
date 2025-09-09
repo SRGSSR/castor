@@ -4,7 +4,7 @@
     @PageColor(purple)
 }
 
-Integrate Google Cast into an iOS application using the ``Castor`` SDK.
+Integrate Google Cast into an iOS application using the Castor SDK.
 
 ## Overview
 
