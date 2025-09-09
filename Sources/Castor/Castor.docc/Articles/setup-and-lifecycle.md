@@ -117,7 +117,7 @@ Once your ``Cast`` object is initialized and available in your SwiftUI views, yo
 
 Once the ``Cast`` object is instantiated and injected into the environment, your app needs a way to respond to session lifecycle events. ``Castor`` provides two protocols for this: ``CastDelegate`` and ``Castable``.
 
-### CastDelegate
+### Delegate
 
 This protocol is designed for global session handling, often implemented by a top-level object like a router. Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session stops, so your app can decide how to handle playback resumption.
 
