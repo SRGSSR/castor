@@ -14,6 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0E335D252E6F3F9C0083E91B /* setup-and-lifecycle.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "setup-and-lifecycle.md"; sourceTree = "<group>"; };
 		0ECF4A4D2D48E1F400238371 /* Castor-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Castor-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EFEFEF42D49161A003034F7 /* castor */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = castor; path = ..; sourceTree = "<group>"; };
 		6F615FD22D4A3DDE00DBCEDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -84,6 +85,7 @@
 		0ECF4A442D48E1F400238371 = {
 			isa = PBXGroup;
 			children = (
+				0E335D252E6F3F9C0083E91B /* setup-and-lifecycle.md */,
 				6F615FD22D4A3DDE00DBCEDC /* Info.plist */,
 				0EFEFEF32D49161A003034F7 /* Packages */,
 				0ECA4CA72D48E496008A3FA6 /* Preview Content */,
