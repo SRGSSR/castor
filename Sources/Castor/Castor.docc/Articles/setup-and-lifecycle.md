@@ -48,13 +48,17 @@ func application(
     _ application: UIApplication, 
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
 ) -> Bool {
-    let criteria = GCKDiscoveryCriteria(applicationID: "CA570A") // Replace "CA570A" by your App ID or use kGCKDefaultMediaReceiverApplicationID for the default Google Cast receiver
+    let criteria = GCKDiscoveryCriteria(applicationID: "CA570A")
     let options = GCKCastOptions(discoveryCriteria: criteria)
     options.physicalVolumeButtonsWillControlDeviceVolume = true
     GCKCastContext.setSharedInstanceWith(options)
     return true
 }
 ```
+
+> Note: The [`kGCKDefaultMediaReceiverApplicationID`](https://developers.google.com/cast/docs/reference/ios/interface_g_c_k_discovery_criteria#:~:text=const-,kGCKDefaultMediaReceiverApplicationID) can be used to target the default Cast receiver.
+
+This ensures that if you don't have a custom App ID, your app will still be able to connect to the default receiver and play media across supported devices.
 
 > Tip: To ensure compatibility with Android TV receivers, enable the following option:
 >
