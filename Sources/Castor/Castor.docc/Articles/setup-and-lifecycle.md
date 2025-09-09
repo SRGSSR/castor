@@ -48,7 +48,7 @@ func application(
     _ application: UIApplication, 
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
 ) -> Bool {
-    let criteria = GCKDiscoveryCriteria(applicationID: <#"CC1AD845"#>)
+    let criteria = GCKDiscoveryCriteria(applicationID: "CA570A") // Replace "CA570A" by your App ID or use kGCKDefaultMediaReceiverApplicationID for the default Google Cast receiver
     let options = GCKCastOptions(discoveryCriteria: criteria)
     options.physicalVolumeButtonsWillControlDeviceVolume = true
     GCKCastContext.setSharedInstanceWith(options)
