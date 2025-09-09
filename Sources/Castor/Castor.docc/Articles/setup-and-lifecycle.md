@@ -106,7 +106,7 @@ struct MyApp: App {
 
 ### Establish a session
 
-Once your ``Cast`` object is initialized and available in your ``SwiftUI`` views, you can start a ``Cast`` session in two main ways:
+Once your ``Cast`` object is initialized and available in your SwiftUI views, you can start a ``Cast`` session in two main ways:
 
 1. Using the ``CastButton``  
     This button automatically displays available devices and allows the user to initiate a session by selecting a device.
