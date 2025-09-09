@@ -86,7 +86,7 @@ private struct _CastPlayerView: View {
             .padding(10)
             .background(
                 Circle()
-                    .fill(Color(white: 0, opacity: 0.4))
+                    .fill(.black.opacity(0.4))
             )
             .opacity(player.isBusy ? 1 : 0)
             .animation(.default, value: player.isBusy)

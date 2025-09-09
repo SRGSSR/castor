@@ -183,7 +183,7 @@ struct LocalPlaybackView: View {
             bottomBar()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(white: 0, opacity: 0.4))
+        .background(.black.opacity(0.4))
         .opacity(areControlsHidden ? 0 : 1)
         .animation(.default, value: visibilityTracker.isUserInterfaceHidden)
         .onTapGesture(perform: visibilityTracker.toggle)
