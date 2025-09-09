@@ -117,6 +117,14 @@ Once your ``Cast`` object is initialized and available in your SwiftUI views, yo
 
 Once the ``Cast`` object is instantiated and injected into the environment, your app needs a way to respond to session lifecycle events. ``Castor`` provides two protocols for this: ``CastDelegate`` and ``Castable``.
 
+By using both protocols, you can clearly separate responsibilities:
+
+- ``CastDelegate`` manages cast session transitions at the app level, handling navigation, UI updates, and other global behaviors.
+- ``Castable`` manages cast session transitions at the view level, handling synchronization between a local player and a remote player.
+
+> Note:
+> The ``SwiftUICore/View/supportsCast(_:with:)`` and ``SwiftUICore/View/makeCastable(_:with:)`` view modifiers provide a convenient way to make a ``SwiftUI`` view respond to ``CastDelegate`` events or become ``Castable``.
+
 #### Delegate
 
 This protocol is designed for global session handling, often implemented by a top-level object like a router. Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session stops, so your app can decide how to handle playback resumption.
@@ -127,11 +135,3 @@ This protocol is intended for playback-related contexts, typically views or obje
 
 - **Session start**: ``Castable/castStartSession()`` returns a ``CastResumeState`` that enables seamless transfer of local playback to a Cast receiver, including synchronization of position, selected audio and subtitles tracks.
 - **Session end**: ``Castable/castEndSession(with:)`` receives the ``CastResumeState``, to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
-
-By using both protocols, you can clearly separate responsibilities:
-
-- ``CastDelegate`` manages cast session transitions at the app level, handling navigation, UI updates, and other global behaviors.
-- ``Castable`` manages cast session transitions at the view level, handling synchronization between a local player and a remote player.
-
-> Note:
-> The ``SwiftUICore/View/supportsCast(_:with:)`` and ``SwiftUICore/View/makeCastable(_:with:)`` view modifiers provide a convenient way to make a ``SwiftUI`` view respond to ``CastDelegate`` events or become ``Castable``.
