@@ -122,12 +122,11 @@ By using both protocols, you can clearly separate responsibilities:
 - ``CastDelegate`` manages cast session transitions at the app level, handling navigation, UI updates, and other global behaviors.
 - ``Castable`` manages cast session transitions at the view level, handling synchronization between a local player and a remote player.
 
-> Note:
-> The ``SwiftUICore/View/supportsCast(_:with:)`` and ``SwiftUICore/View/makeCastable(_:with:)`` view modifiers provide a convenient way to make a ``SwiftUI`` view respond to ``CastDelegate`` events or become ``Castable``.
-
 #### Delegate
 
 This protocol is designed for global session handling, often implemented by a top-level object like a router. Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session stops, so your app can decide how to handle playback resumption.
+
+> Note: The ``SwiftUICore/View/supportsCast(_:with:)`` modifier should namely be attached to the root level view of the application.
 
 #### Castable
 
@@ -135,3 +134,5 @@ This protocol is intended for playback-related contexts, typically views or obje
 
 - **Session start**: ``Castable/castStartSession()`` returns a ``CastResumeState`` that enables seamless transfer of local playback to a Cast receiver, including synchronization of position, selected audio and subtitles tracks.
 - **Session end**: ``Castable/castEndSession(with:)`` receives the ``CastResumeState``, to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
+
+> Note: The ``SwiftUICore/View/makeCastable(_:with:)`` modifier is intended for playback views which must be able to provide a resumption context in the event a Google Cast session is established.
