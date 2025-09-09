@@ -79,7 +79,7 @@ A ``Cast`` instance is responsible for:
 - Handling media playback through the associated ``CastPlayer``  
 - Notifying the application about lifecycle events via its delegate.
 
-By storing the ``Cast`` instance at the top level of your application, you ensure that session management and device discovery remain active throughout the app lifecycle.
+By storing the ``Cast`` instance at the top level of your application as a [`StateObject`](https://developer.apple.com/documentation/swiftui/stateobject), you ensure that session management and device discovery remain active throughout the app lifecycle. Injecting it into SwiftUI's environment using [`.environmentObject(_:)`](https://developer.apple.com/documentation/swiftui/view/environmentobject(_:)) allows any child view to access it via [`@EnvironmentObject`](https://developer.apple.com/documentation/swiftui/environmentobject).
 
 Here is an example:
 
@@ -89,16 +89,11 @@ import SwiftUI
 
 @main
 struct MyApp: App {
-    // Ensures the Cast instance lives for the whole app lifecycle.
     @StateObject private var cast = Cast()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                // Injects it into SwiftUI's environment 
-                // so that any child view can use 
-                // @EnvironmentObject var cast: Cast
-                // to access devices, session state, and CastPlayer.
                 .environmentObject(cast)
         }
     }
