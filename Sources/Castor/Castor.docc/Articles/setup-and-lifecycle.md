@@ -35,10 +35,6 @@ After obtaining your App ID, you must configure the _Info.plist_ file as follows
 
 These entries are required for iOS to allow local network access and device discovery using _Bonjour_.
 
-### Add the dependency using SPM
-
-You can add ``Castor`` to your iOS project using SPM directly in Xcode. Simply provide the ``Castor`` GitHub repository [URL](https://github.com/SRGSSR/castor).
-
 ### Initialize the Google Cast SDK
 
 Next, the Google Cast SDK must be initialized at application launch.
