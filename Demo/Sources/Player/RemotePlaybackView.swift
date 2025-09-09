@@ -107,7 +107,7 @@ struct RemotePlaybackView: View {
 
     private func controls() -> some View {
         ZStack {
-            Color(white: 0, opacity: 0.4)
+            Color.black.opacity(0.4)
             playbackButton()
             bottomBar()
         }
