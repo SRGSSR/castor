@@ -8,8 +8,7 @@ Integrate Google Cast into an iOS application using the ``Castor`` SDK.
 
 ## Overview
 
-To integrate Google Cast into an iOS application with ``Castor``, you must first configure your project correctly.
-This includes obtaining the App ID for your receiver, adding the necessary network permissions in the _Info.plist_, and initializing the Cast context at launch.
+To integrate Google Cast into an iOS application with ``Castor``, you must first configure your project correctly. This includes obtaining the App ID for your receiver, adding the necessary network permissions in the _Info.plist_, and initializing the Cast context at launch.
 
 ## Configure the project
 
@@ -17,8 +16,7 @@ The App ID allows the application to identify and communicate with the designate
 
 ### Get the App ID
 
-If you do not yet have an App ID, you can [create one](https://developers.google.com/cast/codelabs/cast-receiver#3) via the Google Cast Developer Console.  
-You can also use the default App ID provided by Google: `CC1AD845`.
+If you do not yet have an App ID, you can [create one](https://developers.google.com/cast/codelabs/cast-receiver#3) via the Google Cast Developer Console. You can also use the default App ID provided by Google: `CC1AD845`.
 
 ### Configure the _Info.plist_ file
 
@@ -39,12 +37,12 @@ These entries are required for iOS to allow local network access and device disc
 
 ### Add the dependency using SPM
 
-You can add ``Castor`` to your iOS project using SPM directly in Xcode.  
-Simply provide the ``Castor`` GitHub repository [URL](https://github.com/SRGSSR/castor).
+You can add ``Castor`` to your iOS project using SPM directly in Xcode. Simply provide the ``Castor`` GitHub repository [URL](https://github.com/SRGSSR/castor).
 
 ### Initialize the Google Cast SDK
 
 Next, the Google Cast SDK must be initialized at application launch.
+
 Here is an example of initialization in the `UIApplicationDelegate`:
 
 ```swift
@@ -70,13 +68,11 @@ func application(
 
 ## Lifecycle management
 
-Once the project is properly configured and the Google Cast SDK is initialized, the next step is to integrate ``Castor`` itself.  
-``Castor`` provides a high-level abstraction around the `GoogleCast` SDK, centralizing the logic for discovery, connection, and session management through its core component: the ``Cast`` object.
+Once the project is properly configured and the Google Cast SDK is initialized, the next step is to integrate ``Castor`` itself. ``Castor`` provides a high-level abstraction around the `GoogleCast` SDK, centralizing the logic for discovery, connection, and session management through its core component: the ``Cast`` object.
 
 ### Initialization
 
-The ``Cast`` object is the central entry point of the Castor library.  
-It acts as an observable object that integrates directly with the Google Cast SDK and exposes a higher-level API.
+The ``Cast`` object is the central entry point of the Castor library. It acts as an observable object that integrates directly with the Google Cast SDK and exposes a higher-level API.
 
 A ``Cast`` instance is responsible for:
 
@@ -118,9 +114,9 @@ struct MyApp: App {
 Once your ``Cast`` object is initialized and available in your ``SwiftUI`` views, you can start a ``Cast`` session in two main ways:
 
 1. Using the ``CastButton``  
-   This button automatically displays available devices and allows the user to initiate a session by selecting a device.
+    This button automatically displays available devices and allows the user to initiate a session by selecting a device.
 2. Manually listing devices
-You can access the list of available devices via the ``Cast`` object and start a session programmatically using ``Cast/startSession(with:)``.
+    You can access the list of available devices via the ``Cast`` object and start a session programmatically using ``Cast/startSession(with:)``.
 
 ### Load content
 
@@ -128,13 +124,11 @@ Once a ``Cast`` session is established, you can load media content onto the rece
 
 ### Handle session events
 
-Once the ``Cast`` object is instantiated and injected into the environment, your app needs a way to respond to session lifecycle events.  
-``Castor`` provides two protocols for this: ``CastDelegate`` and ``Castable``.
+Once the ``Cast`` object is instantiated and injected into the environment, your app needs a way to respond to session lifecycle events. ``Castor`` provides two protocols for this: ``CastDelegate`` and ``Castable``.
 
 ### CastDelegate
 
-This protocol is designed for global session handling, often implemented by a top-level object like a router.  
-Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session stops, so your app can decide how to handle playback resumption.
+This protocol is designed for global session handling, often implemented by a top-level object like a router. Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session stops, so your app can decide how to handle playback resumption.
 
 ### Castable
 
