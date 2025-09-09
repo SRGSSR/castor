@@ -113,10 +113,6 @@ Once your ``Cast`` object is initialized and available in your SwiftUI views, yo
 2. Manually listing devices
     You can access the list of available devices via the ``Cast`` object and start a session programmatically using ``Cast/startSession(with:)``.
 
-### Load content
-
-Once a ``Cast`` session is established, you can load media content onto the receiver using the ``CastPlayer`` associated with your ``Cast`` object using ``CastPlayer/loadItem(from:with:)``.
-
 ### Handle session events
 
 Once the ``Cast`` object is instantiated and injected into the environment, your app needs a way to respond to session lifecycle events. ``Castor`` provides two protocols for this: ``CastDelegate`` and ``Castable``.
