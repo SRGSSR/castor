@@ -33,10 +33,12 @@ You can load one or several items from media assets. Since ``CastPlayer`` confor
         struct PlayerView: View {
             @ObservedObject var player: CastPlayer
 
-            Button {
-                player.loadItem(from: .url(URL(string: "https://server.com/stream_1.m3u8")!, metadata: nil))
-            } label: {
-                Text("Load")
+            var body: some View {
+                Button {
+                    player.loadItem(from: .url(URL(string: "https://server.com/stream_1.m3u8")!, metadata: nil))
+                } label: {
+                    Text("Load")
+                }
             }
         }
         ```
@@ -48,14 +50,16 @@ You can load one or several items from media assets. Since ``CastPlayer`` confor
         ```swift
         struct PlayerView: View {
             @ObservedObject var player: CastPlayer
-            
-            Button {
-                player.loadItems(from: [
-                    .url(URL(string: "https://server.com/stream_1.m3u8")!, metadata: nil),
-                    .url(URL(string: "https://server.com/stream_2.m3u8")!, metadata: nil)
-                ])
-            } label: {
-                Text("Load")
+
+            var body: some View {
+                Button {
+                    player.loadItems(from: [
+                        .url(URL(string: "https://server.com/stream_1.m3u8")!, metadata: nil),
+                        .url(URL(string: "https://server.com/stream_2.m3u8")!, metadata: nil)
+                    ])
+                } label: {
+                    Text("Load")
+                }
             }
         }
         ```
