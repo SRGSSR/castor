@@ -23,7 +23,7 @@ A content that can be played in the ``Cast`` universe is called a ``CastAsset``.
 
 > Warning: Playing a media URL directly can sometimes be tricky. For example, if you try to play an HLS URL directly, the Cast receiver might not respond correctly. This is because the receiver often requires additional information, such as the MIME type and the type of audio and video segments, to handle the stream properly. You can provide this information using the ``CastAsset/url(_:configuration:metadata:customData:)-6xskn`` initializer along with a ``CastAssetURLConfiguration``.
 
-You can load one or several items from media assets. Since ``CastPlayer`` conforms to [`ObservableObject`](https://developer.apple.com/documentation/combine/observableobject) and cannot be instantiate manually, it should be stored as a [`ObservedObject`](https://developer.apple.com/documentation/swiftui/observedobject) within a SwiftUI view. This ensures the player's lifecycle aligns with the view and that UI updates automatically reflect changes in playback state.
+You can load one or several items from media assets. Since ``CastPlayer`` conforms to [`ObservableObject`](https://developer.apple.com/documentation/combine/observableobject) and cannot be instantiated manually, it should be stored as an [`ObservedObject`](https://developer.apple.com/documentation/swiftui/observedobject) within a SwiftUI view. This ensures the player's lifecycle aligns with the view and that UI updates automatically reflect changes in playback state.
 
 @TabNavigator {
     @Tab("Single item") {
