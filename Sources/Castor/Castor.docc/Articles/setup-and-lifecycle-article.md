@@ -39,32 +39,59 @@ These entries are required for iOS to allow local network access and device disc
 
 Next, the Google Cast SDK must be initialized at application launch.
 
-Here is an example of initialization in the `UIApplicationDelegate`:
+Here is an example of initialization in the `UIApplicationDelegate`. Two approaches are shown, using the default Cast receiver and a custom Cast receiver identifier.
 
-```swift
-import GoogleCast 
+<!-- markdownlint-disable MD046 -->
+@TabNavigator {
+    @Tab("Default Cast receiver identifier") {
+        Shows how to initialize the Google Cast SDK using the default Cast receiver.
 
-func application(
-    _ application: UIApplication, 
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-) -> Bool {
-    let criteria = GCKDiscoveryCriteria(applicationID: "CA570A")
-    let options = GCKCastOptions(discoveryCriteria: criteria)
-    options.physicalVolumeButtonsWillControlDeviceVolume = true
-    GCKCastContext.setSharedInstanceWith(options)
-    return true
+        ```swift 
+        import GoogleCast
+
+        final class AppDelegate: NSObject, UIApplicationDelegate {
+            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+                let criteria = GCKDiscoveryCriteria(applicationID: kGCKDefaultMediaReceiverApplicationID)
+                let options = GCKCastOptions(discoveryCriteria: criteria)
+                GCKCastContext.setSharedInstanceWith(options)
+                return true
+            }
+        }
+        ```
+    }
+
+    @Tab("Custom Cast receiver identifier") {
+        Shows how to initialize the Google Cast SDK using a custom Cast receiver ID. Replace **`<YOUR_APP_ID>`** with the App ID of your own Cast receiver.
+
+        ```swift
+        import GoogleCast
+
+        final class AppDelegate: NSObject, UIApplicationDelegate {
+            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+                let criteria = GCKDiscoveryCriteria(applicationID: "<YOUR_APP_ID>")
+                let options = GCKCastOptions(discoveryCriteria: criteria)
+                GCKCastContext.setSharedInstanceWith(options)
+                return true
+            }
+        }
+        ```
+    }
 }
-```
+<!-- markdownlint-restore -->
 
-> Note: The [`kGCKDefaultMediaReceiverApplicationID`](https://developers.google.com/cast/docs/reference/ios/interface_g_c_k_discovery_criteria#:~:text=const-,kGCKDefaultMediaReceiverApplicationID) can be used to target the default Cast receiver.
-
-This ensures that if you don't have a custom App ID, your app will still be able to connect to the default receiver and play media across supported devices.
-
-> Tip: To ensure compatibility with Android TV receivers, enable the following option:
+> Tip:
+> To allow users to control the Cast device volume using the physical volume buttons on their device, enable the following option:
+>
+> ```swift
+> options.physicalVolumeButtonsWillControlDeviceVolume = true
+> ```
+>
+> To ensure compatibility with Android TV receivers, enable the following option:
 >
 > ```swift
 > options.launchOptions?.androidReceiverCompatible = true
 > ```
+>
 
 ## Lifecycle management
 
