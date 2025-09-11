@@ -142,8 +142,8 @@ Once the ``Cast`` object is instantiated and injected into the environment, your
 
 By using both protocols, you can clearly separate responsibilities:
 
-- ``CastDelegate`` manages cast session transitions at the app level, handling navigation, UI updates, and other global behaviors.
-- ``Castable`` manages cast session transitions at the view level, handling synchronization between a local player and a remote player.
+- ``CastDelegate`` manages Cast session transitions at the app level, handling navigation, UI updates, and other global behaviors.
+- ``Castable`` manages Cast session transitions at the view level, handling synchronization between a local player and a remote player.
 
 #### Delegate
 
