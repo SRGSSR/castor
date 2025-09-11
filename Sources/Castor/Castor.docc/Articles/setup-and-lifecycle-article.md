@@ -153,9 +153,9 @@ Attach a delegate to a ``Cast`` instance using the ``SwiftUICore/View/supportsCa
 
 #### Castable
 
-This protocol is intended for playback-related contexts, typically views or objects managing media playback.
+This protocol is designed for playback-related contexts, typically views or objects that manage media playback. It is commonly implemented by models underlying local player views, enabling playback to be transferred between sender and receiver:
 
-- **Session start**: ``Castable/castStartSession()`` returns a ``CastResumeState`` that enables seamless transfer of local playback to a Cast receiver, including synchronization of position, selected audio and subtitles tracks.
-- **Session end**: ``Castable/castEndSession(with:)`` receives the ``CastResumeState``, to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
+- **Session start**: ``Castable/castStartSession()`` returns a ``CastResumeState`` that allows transfer of local playback to a Cast receiver, including synchronization of position, audio selection, and subtitle tracks.
+- **Session end**: ``Castable/castEndSession(with:)`` receivers the ``CastResumeState`` to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
 
-> Note: The ``SwiftUICore/View/makeCastable(_:with:)`` modifier is intended for playback views which must be able to provide a resumption context in the event a Google Cast session is established.
+To define a local playback context, apply the ``SwiftUICore/View/makeCastable(_:with:)`` modifier to a player view hierarchy, passing the ``Castable`` object as a parameter.
