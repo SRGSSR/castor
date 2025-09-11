@@ -149,7 +149,7 @@ By using both protocols, you can clearly separate responsibilities:
 
 This protocol is designed for global session handling, often implemented by a top-level object like a router. Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session stops, so your app can decide how to handle playback resumption.
 
-> Note: The ``SwiftUICore/View/supportsCast(_:with:)`` modifier should namely be attached to the root level view of the application.
+Attach a delegate to a ``Cast`` instance using the ``SwiftUICore/View/supportsCast(_:with:)`` modifier, typically at the root view of your application.
 
 #### Castable
 
