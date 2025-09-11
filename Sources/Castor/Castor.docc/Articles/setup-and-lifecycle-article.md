@@ -112,8 +112,6 @@ A ``Cast`` instance is responsible for:
 
 By storing the ``Cast`` instance at the top level of your application as a [`StateObject`](https://developer.apple.com/documentation/swiftui/stateobject), you ensure that session management and device discovery remain active throughout the app lifecycle. Injecting it into SwiftUI's environment using [`environmentObject(_:)`](https://developer.apple.com/documentation/swiftui/view/environmentobject(_:)) allows any child view to access it via [`@EnvironmentObject`](https://developer.apple.com/documentation/swiftui/environmentobject).
 
-Here is an example:
-
 ```swift
 import Castor
 import SwiftUI
@@ -135,10 +133,8 @@ struct MyApp: App {
 
 Once your ``Cast`` object is initialized and available in your SwiftUI views, you can start a ``Cast`` session in two main ways:
 
-1. Using the ``CastButton``  
-    This button automatically displays available devices and allows the user to initiate a session by selecting a device.
-2. Manually listing devices
-    You can access the list of available devices via the ``Cast`` object and start a session programmatically using ``Cast/startSession(with:)``.
+1. Using the ``CastButton``: This button automatically displays available devices and allows the user to initiate a session by selecting a device.
+2. Manually listing devices: You can access the list of available devices via the ``Cast`` object and start a session programmatically using ``Cast/startSession(with:)``.
 
 ### Handle session events
 
