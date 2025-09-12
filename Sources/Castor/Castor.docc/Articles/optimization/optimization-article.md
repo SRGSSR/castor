@@ -9,7 +9,7 @@ Avoid wasting system resources unnecessarily.
 
 ## Overview
 
-When your application integrates Google Cast through ``Castor``, resource usage must be carefully managed. Although player item itself is offloaded to the receiver device, the sender application still consumes system resources: it maintains a Cast session, communicates over the network, and updates the user interface in real time.
+When your application integrates Google Cast with ``Castor``, you should carefully manage resource usage. Although playback items are offloaded to the receiver device, the sender app still consumes system resources by maintaining the Cast session, communicating over the network, and updating the user interface in real time.
 
 Poorly optimized usage can lead to unnecessary resource consumption or degraded user experience. For example, an application might start playback on the Cast receiver while also keeping local playback active, even though this scenario rarely makes sense and wastes CPU, memory, and battery.
 
