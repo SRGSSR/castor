@@ -11,7 +11,7 @@ Associate metadata with the content being cast.
 
 When casting content, metadata describes what is being played. Providing consistent metadata ensures a smooth and unified casting experience across devices. Metadata serves two main purposes:
 
-- **Sender UI:** Presents content information such as title, artwork, and chapters in your app interface.
+- **Sender UI:** Presents content information such as title and artwork in your app interface.
 - **Receiver UI:** Displays the same information on the Cast device's playback interface.
 
 ## Creating metadata
