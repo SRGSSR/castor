@@ -49,7 +49,7 @@ Images are represented using ``CastImage``.
 
 - Use ``CastMetadata/imageUrl(matching:)`` to select an image that best matches display hints.
 - By default, the first image is returned if no hints are provided.
-- Implement a [`GCKUIImagePicker`](https://developers.google.com/cast/docs/reference/ios/protocol_g_c_k_u_i_image_picker-p?hl=en) to control image selection for specific layouts.
+- Implement a [`GCKUIImagePicker`](https://developers.google.com/cast/docs/reference/ios/protocol_g_c_k_u_i_image_picker-p?hl=en) to control image selection based on criteria like image size or type.
 
 > Note: Always provide at least one image. Keep image sizes reasonable to avoid exceeding Cast message size limits (64 KB).
 
