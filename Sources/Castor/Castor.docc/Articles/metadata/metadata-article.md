@@ -41,7 +41,7 @@ Metadata is represented by the ``CastMetadata`` type. Metadata includes a title,
     }
 }
 
-> Important: The [`GCKMediaMetadataType`](https://developers.google.com/cast/docs/reference/ios/g_c_k_media_metadata_8h#a24f7de80a98dfc6f8626c01167a97a6a) helps receivers adjust their layout based on the type of content. For example, when casting a radio channel, nothing is being displayed on the screen, so you should use **`GCKMediaMetadataTypeMusicTrack`** to ensure the receiver displays the artwork correctly. Otherwise, the receiver may fail to show the channel's artwork, leaving a black screen.
+> Important: The [`GCKMediaMetadataType`](https://developers.google.com/cast/docs/reference/ios/g_c_k_media_metadata_8h#a24f7de80a98dfc6f8626c01167a97a6a) helps receivers adjust their layout based on the type of content. For example, when casting a radio channel, nothing is being displayed on the screen, so you should set `.musicTrack` as metadata type to ensure the receiver displays the artwork correctly. Otherwise, the receiver may fail to show the channel's artwork, leaving a black screen.
 
 ### Images
 
