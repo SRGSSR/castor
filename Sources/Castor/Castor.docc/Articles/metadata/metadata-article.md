@@ -16,7 +16,7 @@ When casting content, metadata describes what is being played. Providing consist
 
 ## Creating metadata
 
-Metadata is represented by the ``CastMetadata`` type. Metadata includes a title, a metadata type, and optional artwork images. You can then create metadata with no image, one image or multiple images.
+Metadata is represented by the ``CastMetadata`` type. Metadata includes a title, a metadata type, and optional artwork images. You can create metadata with no image, one image or multiple images.
 
 @TabNavigator {
     @Tab("No image") {
