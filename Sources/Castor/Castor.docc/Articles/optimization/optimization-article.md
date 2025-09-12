@@ -31,7 +31,7 @@ Even though playback happens on the receiver device, the sender application shou
 
 ## Limit metadata sent to the receiver
 
-When sending media items to a Cast receiver, your application must provide metadata (such as title, description, and artwork). However, the Google Cast SDK imposes strict size limits on the messages exchanged between the sender and the receiver.
+When sending media items to a Cast receiver, your application must provide metadata (such as title, description, and artwork). However, because the Google Cast SDK imposes strict size limits on the messages exchanged between the sender and the receiver, you should:
 
 - **Avoid large payloads:** Long text, multiple high-resolution images, or excessive ``CastCustomData`` can exceed these limits and cause the load request to fail.
 - **Prefer lightweight metadata:** Stick to the essentials (title, one or two images at reasonable resolution, and short description).
