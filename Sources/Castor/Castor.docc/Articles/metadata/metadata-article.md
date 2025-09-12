@@ -55,7 +55,7 @@ Images are represented using ``CastImage``.
 
 ### Fetching metadata
 
-In ``Castor``, a ``CastPlayerItem`` represents an item in a Cast queue. While its identifier is immediately available, the full metadata including, title, images and custom data must be explicitly fetched from the Cast receiver by calling ``CastPlayerItem/fetch()`` method.
+A ``CastPlayerItem`` represents an item in a Cast queue. While its identifier is immediately available, the full metadata including, title, images and custom data must be explicitly fetched from the Cast receiver by calling the ``CastPlayerItem/fetch()`` method:
 
 - Call ``CastPlayerItem/fetch()`` only when the view displaying the item appears. Avoid fetching items that are not currently visible on the screen.
 - After calling ``CastPlayerItem/fetch()``, the ``CastPlayerItem/asset`` property provides access to a ``CastMetadata`` containing the full metadata.
