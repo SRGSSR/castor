@@ -6,7 +6,13 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
+            "value" : "%g×"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "%g×"
           }
         },
@@ -18,13 +24,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%g×"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%g×"
           }
         }
@@ -35,8 +41,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "All items in the playlist will be deleted."
+            "state" : "translated",
+            "value" : "Alle Elemente in der Wiedergabeliste werden gelöscht."
           }
         },
         "fr" : {
@@ -47,14 +53,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "All items in the playlist will be deleted."
+            "state" : "translated",
+            "value" : "Tutti gli elementi della playlist verranno eliminati."
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "All items in the playlist will be deleted."
+            "state" : "translated",
+            "value" : "Tut ils elements en la glista da reproducziun vegnan stizzads."
           }
         }
       }
@@ -64,7 +70,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Audio"
           }
         },
@@ -76,13 +82,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Audio"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Audio"
           }
         }
@@ -93,8 +99,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Available devices"
+            "state" : "translated",
+            "value" : "Verfügbare Geräte"
           }
         },
         "fr" : {
@@ -105,14 +111,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Available devices"
+            "state" : "translated",
+            "value" : "Dispositivi disponibili"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Available devices"
+            "state" : "translated",
+            "value" : "Apparats disponibels"
           }
         }
       }
@@ -122,8 +128,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cast to"
+            "state" : "translated",
+            "value" : "Übertragen an"
           }
         },
         "fr" : {
@@ -134,14 +140,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cast to"
+            "state" : "translated",
+            "value" : "Trasmetti a"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cast to"
+            "state" : "translated",
+            "value" : "Transmetter a"
           }
         }
       }
@@ -151,8 +157,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Casting on %@"
+            "state" : "translated",
+            "value" : "Übertragung auf %@"
           }
         },
         "fr" : {
@@ -163,14 +169,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Casting on %@"
+            "state" : "translated",
+            "value" : "Trasmissione su %@"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Casting on %@"
+            "state" : "translated",
+            "value" : "Transmetter sin %@"
           }
         }
       }
@@ -180,8 +186,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+            "state" : "translated",
+            "value" : "Überprüfen Sie Ihr WLAN und stellen Sie sicher, dass der lokale Netzwerkzugriff aktiviert ist."
           }
         },
         "fr" : {
@@ -192,14 +198,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+            "state" : "translated",
+            "value" : "Controlla la tua rete Wi-Fi e assicurati che l’accesso alla rete locale sia attivato."
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+            "state" : "translated",
+            "value" : "Controllescha tia rait Wi-Fi ed assicurati che l’access al rait local saja activà."
           }
         }
       }
@@ -209,8 +215,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
+            "state" : "translated",
+            "value" : "Schließen"
           }
         },
         "fr" : {
@@ -221,14 +227,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
+            "state" : "translated",
+            "value" : "Chiudi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
+            "state" : "translated",
+            "value" : "Serrar"
           }
         }
       }
@@ -238,8 +244,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connected to %@"
+            "state" : "translated",
+            "value" : "Verbunden mit %@"
           }
         },
         "fr" : {
@@ -250,14 +256,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connected to %@"
+            "state" : "translated",
+            "value" : "Connesso a %@"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connected to %@"
+            "state" : "translated",
+            "value" : "Conness cun %@"
           }
         }
       }
@@ -267,8 +273,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connecting to %@"
+            "state" : "translated",
+            "value" : "Verbinden mit %@"
           }
         },
         "fr" : {
@@ -279,14 +285,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connecting to %@"
+            "state" : "translated",
+            "value" : "Connessione a %@"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connecting to %@"
+            "state" : "translated",
+            "value" : "Connectar cun %@"
           }
         }
       }
@@ -296,8 +302,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current device"
+            "state" : "translated",
+            "value" : "Aktuelles Gerät"
           }
         },
         "fr" : {
@@ -308,14 +314,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current device"
+            "state" : "translated",
+            "value" : "Dispositivo attuale"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current device"
+            "state" : "translated",
+            "value" : "Apparat actual"
           }
         }
       }
@@ -325,8 +331,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current position"
+            "state" : "translated",
+            "value" : "Aktuelle Position"
           }
         },
         "fr" : {
@@ -337,14 +343,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current position"
+            "state" : "translated",
+            "value" : "Posizione attuale"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current position"
+            "state" : "translated",
+            "value" : "Posiziun actuala"
           }
         }
       }
@@ -354,8 +360,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all"
+            "state" : "translated",
+            "value" : "Alles löschen"
           }
         },
         "fr" : {
@@ -366,14 +372,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all"
+            "state" : "translated",
+            "value" : "Elimina tutto"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all"
+            "state" : "translated",
+            "value" : "Stizzar tut"
           }
         }
       }
@@ -383,8 +389,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all Items"
+            "state" : "translated",
+            "value" : "Alle Elemente löschen"
           }
         },
         "fr" : {
@@ -395,14 +401,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all Items"
+            "state" : "translated",
+            "value" : "Elimina tutti gli elementi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all Items"
+            "state" : "translated",
+            "value" : "Stizzar tut ils elements"
           }
         }
       }
@@ -412,8 +418,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disconnect"
+            "state" : "translated",
+            "value" : "Trennen"
           }
         },
         "fr" : {
@@ -424,14 +430,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disconnect"
+            "state" : "translated",
+            "value" : "Disconnettersi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disconnect"
+            "state" : "translated",
+            "value" : "Deconnectar"
           }
         }
       }
@@ -441,7 +447,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Live"
           }
         },
@@ -453,13 +459,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Live"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Live"
           }
         }
@@ -470,8 +476,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No devices available"
+            "state" : "translated",
+            "value" : "Keine Geräte verfügbar"
           }
         },
         "fr" : {
@@ -482,14 +488,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No devices available"
+            "state" : "translated",
+            "value" : "Nessun dispositivo disponibile"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No devices available"
+            "state" : "translated",
+            "value" : "Nagins apparats disponibels"
           }
         }
       }
@@ -499,26 +505,26 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not playing"
+            "state" : "translated",
+            "value" : "Keine Wiedergabe"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A l’arrêt"
+            "value" : "A l'arrêt"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not playing"
+            "state" : "translated",
+            "value" : "Non in riproduzione"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not playing"
+            "state" : "translated",
+            "value" : "Betg en reproducziun"
           }
         }
       }
@@ -528,8 +534,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Off"
+            "state" : "translated",
+            "value" : "Aus"
           }
         },
         "fr" : {
@@ -540,14 +546,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Off"
+            "state" : "translated",
+            "value" : "Non attivi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Off"
+            "state" : "translated",
+            "value" : "Deactivà"
           }
         }
       }
@@ -557,8 +563,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Playback Speed"
+            "state" : "translated",
+            "value" : "Wiedergabetempo"
           }
         },
         "fr" : {
@@ -569,14 +575,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Playback Speed"
+            "state" : "translated",
+            "value" : "Velocità riproduzione"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Playback Speed"
+            "state" : "translated",
+            "value" : "Spertadad da reproducziun"
           }
         }
       }
@@ -586,8 +592,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Repeat"
+            "state" : "translated",
+            "value" : "Wiederholen"
           }
         },
         "fr" : {
@@ -598,14 +604,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Repeat"
+            "state" : "translated",
+            "value" : "Ripeti"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Repeat"
+            "state" : "translated",
+            "value" : "Repeter"
           }
         }
       }
@@ -615,8 +621,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Shuffle"
+            "state" : "translated",
+            "value" : "Zufallswiedergabe"
           }
         },
         "fr" : {
@@ -627,14 +633,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Shuffle"
+            "state" : "translated",
+            "value" : "Casuale"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Shuffle"
+            "state" : "translated",
+            "value" : "Reproducziun casuala"
           }
         }
       }
@@ -644,8 +650,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Subtitles"
+            "state" : "translated",
+            "value" : "Untertitel"
           }
         },
         "fr" : {
@@ -656,14 +662,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Subtitles"
+            "state" : "translated",
+            "value" : "Sottotitoli"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Subtitles"
+            "state" : "translated",
+            "value" : "Suttitels"
           }
         }
       }
@@ -673,8 +679,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Undefined"
+            "state" : "translated",
+            "value" : "Nicht angegeben"
           }
         },
         "fr" : {
@@ -685,14 +691,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Undefined"
+            "state" : "translated",
+            "value" : "Non definito"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Undefined"
+            "state" : "translated",
+            "value" : "Nundefinì"
           }
         }
       }
@@ -702,8 +708,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Volume"
+            "state" : "translated",
+            "value" : "Lautstärke"
           }
         },
         "fr" : {
@@ -714,14 +720,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Volume"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Volume"
+            "state" : "translated",
+            "value" : "Volum"
           }
         }
       }
