@@ -2,6 +2,7 @@
 
 @Metadata {
     @PageColor(purple)
+    @PageImage(purpose: card, source: setup-and-lifecycle-card, alt: "An image depicting a gear enclosed within two clockwise arrows.")
 }
 
 Integrate Google Cast into an iOS application using the Castor SDK.
