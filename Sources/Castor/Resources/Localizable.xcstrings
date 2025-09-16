@@ -436,6 +436,9 @@
         }
       }
     },
+    "Disconnected" : {
+      "comment" : "Disconnected from a receiver"
+    },
     "Live" : {
       "comment" : "Short label associated with live content",
       "localizations" : {
