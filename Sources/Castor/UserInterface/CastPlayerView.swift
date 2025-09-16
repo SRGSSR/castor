@@ -133,26 +133,38 @@ public struct CastPlayerView: View {
 
     // swiftlint:disable:next missing_docs
     public var body: some View {
-        if let player = cast.player {
-            _CastPlayerView(player: player, device: cast.currentDevice)
-        }
-        else {
-            VStack(spacing: 20) {
-                ProgressView()
-                if let deviceName = cast.currentDevice?.name {
-                    Text("Connecting to \(deviceName)", bundle: .module, comment: "Receiver being connected (device name as wildcard)")
-                        .lineLimit(2)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.secondary)
-                }
+        ZStack {
+            if let player = cast.player {
+                _CastPlayerView(player: player, device: cast.currentDevice)
             }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            else if let deviceName = cast.currentDevice?.name {
+                loadingView(with: deviceName)
+            }
+            else {
+                disconnectedView()
+            }
         }
+        .animation(.default, value: cast.player)
+        .animation(.default, value: cast.currentDevice)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // swiftlint:disable:next missing_docs
     public init(cast: Cast) {
         self.cast = cast
+    }
+
+    private func loadingView(with deviceName: String) -> some View {
+        VStack(spacing: 20) {
+            ProgressView()
+            Text("Connecting to \(deviceName)", bundle: .module, comment: "Receiver being connected (device name as wildcard)")
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func disconnectedView() -> some View {
+        Text("Disconnected", bundle: .module, comment: "Disconnected from a receiver")
     }
 }

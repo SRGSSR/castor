@@ -44,7 +44,7 @@ Here is an example of initialization in the `UIApplicationDelegate`. Two approac
 
 <!-- markdownlint-disable MD046 -->
 @TabNavigator {
-    @Tab("Default Cast receiver identifier") {
+    @Tab("Default Receiver") {
         Shows how to initialize the Google Cast SDK using the default Cast receiver.
 
         ```swift 
@@ -61,7 +61,7 @@ Here is an example of initialization in the `UIApplicationDelegate`. Two approac
         ```
     }
 
-    @Tab("Custom Cast receiver identifier") {
+    @Tab("Custom Receiver") {
         Shows how to initialize the Google Cast SDK using a custom Cast receiver ID. Replace **`<YOUR_APP_ID>`** with the App ID of your own Cast receiver.
 
         ```swift
