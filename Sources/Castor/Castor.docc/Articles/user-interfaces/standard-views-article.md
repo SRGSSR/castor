@@ -1,15 +1,15 @@
-# Standard Views
+# User Interface
 
 @Metadata {
     @PageColor(purple)
     @PageImage(purpose: card, source: standard-views-card, alt: "An image depicting Google Cast buttons and player views.")
 }
 
-Provide a user-friendly Cast experience with built-in views.
+Integrate Cast experience in your application.
 
 ## Overview
 
-``Castor`` provides modern SwiftUI views that are easier to integrate. These views also come with APIs to create fully custom player interfaces if you prefer to design your own experience.
+``Castor`` provides modern SwiftUI views that are easier to integrate. APIs are available to create fully custom player interfaces.
 
 ## Castor standard views
 
@@ -85,7 +85,14 @@ struct ContentView: View {
 }
 <!-- markdownlint-restore -->
 
-> Note: If these views do not meet your needs, you are free to create your own views from scratch. ``Castor`` provides low-level APIs that are also used by our standard views.
+## Custom views
+
+If the provided views don't meet your needs, you can create your own custom views from scratch:  
+
+- To implement a Cast device selection list, use ``Cast``. With it, you can list available devices and start or end a session.  
+- Once a session is established, the ``Cast`` object exposes a ``Cast/player`` property that provides a ``CastPlayer`` instance. You can use this instance to manage the player state and the item list.  
+
+When building a user interface, you can also use ``CastIcon`` to display the Cast connection state, or ``CastProgressTracker`` to handle playback position—for example, in combination with ``SwiftUI/Slider``.  
 
 ## Google Cast views
 
