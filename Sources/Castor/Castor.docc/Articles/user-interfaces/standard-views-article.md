@@ -95,4 +95,4 @@ Google Cast provides default views for sender applications, including the Cast b
 - `GCKUIStyleAttributesMiniController`  
 - `GCKUIStyleAttributesExpandedController`
 
-> Note: The default Google Cast views are functional but not very modern appearance and can be challenging to customize. For more details, refer to the Google Cast iOS Sender UI customization [guide](https://developers.google.com/cast/docs/ios_sender/customize_ui#style_hierarchy). Additionally, to integrate these views into a SwiftUI interface, you will need to bridge them using `UIViewRepresentable` or `UIViewControllerRepresentable`.
+The default Google Cast views are functional but not very modern appearance and can be challenging to customize. For more details, refer to the Google Cast iOS Sender UI customization [guide](https://developers.google.com/cast/docs/ios_sender/customize_ui#style_hierarchy). Additionally, to integrate these views into a SwiftUI interface, you will need to bridge them using `UIViewRepresentable` or `UIViewControllerRepresentable`.
