@@ -36,7 +36,7 @@ struct ContentView: View {
 }
 ```
 
-> Note: To create a custom Cast button, you can rely on ``CastIcon``, which automatically animates based on the current ``Cast/connectionState`` and reflects the appropriate connection status. You can then choose to display the list of available devices (``Cast/devices``), or trigger a custom experience such as presenting your own device picker or integrating the action into an existing part of your UI.
+> Note: To create a custom Cast button, use ``CastIcon``, which automatically animates according to the current ``Cast/connectionState``. You can then present the list of available ``Cast/devices`` with a custom experience, such as your own device picker.
 
 ### Mini and expanded views
 
