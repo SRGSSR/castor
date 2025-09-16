@@ -21,7 +21,7 @@ Castor includes several built-in views to cover common Cast use cases. Below are
 
 ``CastButton`` is a SwiftUI view that displays a receiver selection popover (or a modal sheet, depending on the available width) and automatically reflects the current connection state.
 
-For example, you can add the button to the top-right corner like this:
+For example, you can add a Cast button to a toolbar as follows:
 
 ```swift
 struct ContentView: View {
