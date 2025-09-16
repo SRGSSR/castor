@@ -5,7 +5,7 @@
     @PageImage(purpose: card, source: standard-views-card, alt: "An image depicting Google Cast buttons and player views.")
 }
 
-User friendly default views.
+Provide a user-friendly Cast experience with built-in views.
 
 ## Overview
 
