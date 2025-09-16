@@ -15,7 +15,7 @@ Provide a user-friendly Cast experience with built-in views.
 
 Castor includes several built-in views to cover common Cast use cases. Below are examples for the main components: ``CastButton``, ``CastMiniPlayerView``, and ``CastPlayerView``.
 
-> Tip: By default, the provided views uses the `.accentColor`. You can change this color using the `.foregroundStyle` modifier, but note that this will not affect the color within the child views or the ``SwiftUI/Slider`` color. To update the default `accentColor` in the view displayed by the ``CastButton``, use the `.tint` modifier.
+> Tip: By default, the provided views use the `.accentColor`. You can change this color using the `.foregroundStyle` modifier, but note that this will not affect the color within the child views or a ``SwiftUI/Slider`` color. To update the default `accentColor` in the view displayed by the ``CastButton``, use the `.tint` modifier.
 
 ### Cast button
 
