@@ -90,7 +90,7 @@ struct ContentView: View {
 If the provided views don't meet your needs, you can create your own custom views from scratch:  
 
 - To implement a Cast device selection list, use ``Cast``. With it, you can list available devices and start or end a session.  
-- Once a session is established, the ``Cast`` object exposes a ``Cast/player`` property that provides a ``CastPlayer`` instance. You can use this instance to manage the player state and the item list.  
+- Once a session is established, the ``Cast`` object exposes a ``Cast/player`` property that provides a ``CastPlayer`` instance. You can use this instance to manage the player state and the item list.
 
 When building a user interface, you can also use ``CastIcon`` to display the Cast connection state, or ``CastProgressTracker`` to handle playback position—for example, in combination with ``SwiftUI/Slider``.  
 
