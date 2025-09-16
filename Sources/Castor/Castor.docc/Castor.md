@@ -26,9 +26,10 @@ The Castor framework integrates seamlessly with SwiftUI, leveraging its declarat
 @Links(visualStyle: detailedGrid) {
     - <doc:setup-and-lifecycle-article>
     - <doc:playback-article>
+    - <doc:standard-views-article>
+    - <doc:metadata-article>
     - <doc:state-observation-article>
     - <doc:optimization-article>
-    - <doc:metadata-article>
 }
 
 ## Topics
