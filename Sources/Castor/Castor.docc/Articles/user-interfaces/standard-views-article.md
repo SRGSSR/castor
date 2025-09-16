@@ -62,7 +62,7 @@ struct ContentView: View {
     }
 
     @Tab("Expanded") {
-        ``CastPlayerView`` displays a full player interface with connection status, artwork, and playback controls. You can display the expanded-player when the mini-player is tapped like this:
+        ``CastPlayerView`` presents a full player interface with connection status, artwork, and playback controls. Display the expanded player when the mini player is tapped, as follows:
 
         ```swift
         struct ContentView: View {
