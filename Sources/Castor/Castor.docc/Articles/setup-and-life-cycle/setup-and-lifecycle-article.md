@@ -9,25 +9,27 @@ Integrate Google Cast into an iOS application using the Castor SDK.
 
 ## Overview
 
-To integrate Google Cast into an iOS application with ``Castor``, you must first configure your project correctly. This includes obtaining the App ID for your receiver, adding the necessary network permissions in the _Info.plist_, and initializing the Cast context at launch.
+To integrate Google Cast into an iOS application with ``Castor``, you must first configure your project. This includes obtaining the App ID for your receiver, adding the required network permissions in the _Info.plist_, and initializing the Cast context at launch.
 
 ## Configure the project
 
-The App ID allows the application to identify and communicate with the designated receiver, while the network permissions ensure the app can discover and connect to compatible devices on the local network.
+An App ID allows a Cast-enabled application to identify and communicate with an associated receiver, while network permissions ensure the app can discover and connect to compatible devices on the local network.
 
-### Get the App ID
+### Obtain an App ID
 
-If you do not yet have an App ID, you can [create one](https://developers.google.com/cast/codelabs/cast-receiver#3) via the Google Cast Developer Console. You can also use the default App ID provided by Google: `CC1AD845`.
+Each product should have its own dedicated receiver registered with a specific App ID in the [Google Cast Developer Console](https://developers.google.com/cast/codelabs/cast-receiver#3). Do not share the same App ID across products, as this can cause conflicts and degrade the user experience.  
+
+During early development, you can use Google’s default receiver (App ID `CC1AD845`) to start building your sender while your dedicated receiver is in progress. Switch to your own receiver as soon as possible to ensure full functionality and a consistent experience.
 
 ### Configure the _Info.plist_ file
 
-After obtaining your App ID, you must configure the _Info.plist_ file as follows:
+After obtaining your App ID, configure the _Info.plist_ file accordingly:
 
 ```xml
 <key>NSBonjourServices</key>
 <array>
   <string>_googlecast._tcp</string>
-  <string>_<YOUR_APP_ID>._googlecast._tcp</string> <!-- Replace <YOUR_APP_ID> by CC1AD845 (default App ID) or your own App ID -->
+  <string>_<YOUR_APP_ID>._googlecast._tcp</string>
 </array>
 
 <key>NSLocalNetworkUsageDescription</key>
@@ -160,3 +162,5 @@ This protocol is designed for playback-related contexts, typically views or obje
 - **Session end**: ``Castable/castEndSession(with:)`` receivers the ``CastResumeState`` to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
 
 To define a local playback context, apply the ``SwiftUICore/View/makeCastable(_:with:)`` modifier to a player view hierarchy, passing the ``Castable`` object as a parameter.
+
+> Important: ``CastResumeState`` is built from the queue items returned by the receiver in its media status information. For proper resumption with all items when ending a session, the receiver must return the complete list of items.
