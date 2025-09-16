@@ -23,13 +23,13 @@ During early development, you can use Google’s default receiver (App ID `CC1AD
 
 ### Configure the _Info.plist_ file
 
-After obtaining your App ID, you must configure the _Info.plist_ file as follows:
+After obtaining your App ID, configure the _Info.plist_ file accordingly:
 
 ```xml
 <key>NSBonjourServices</key>
 <array>
   <string>_googlecast._tcp</string>
-  <string>_<YOUR_APP_ID>._googlecast._tcp</string> <!-- Replace <YOUR_APP_ID> by CC1AD845 (default App ID) or your own App ID -->
+  <string>_<YOUR_APP_ID>._googlecast._tcp</string>
 </array>
 
 <key>NSLocalNetworkUsageDescription</key>
