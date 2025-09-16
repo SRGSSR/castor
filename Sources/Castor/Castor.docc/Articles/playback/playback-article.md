@@ -109,7 +109,7 @@ The playback queue can be accessed via the ``CastPlayer/items`` property. You ca
     }
 }
 
-### Navigating
+### Navigating items
 
 You can programmatically navigate through the playlist, moving forward to the next item or backward to the previous item as needed.
 
