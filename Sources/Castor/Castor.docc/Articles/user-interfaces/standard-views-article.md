@@ -52,12 +52,10 @@ struct ContentView: View {
             @EnvironmentObject private var cast: Cast
 
             var body: some View {
-                VStack {
-                    Spacer()
-                    CastMiniPlayerView(cast: cast)
-                        .frame(height: 64)
-                        .padding()
-                }
+                Color.clear
+                    .safeAreaInset(edge: .bottom) {
+                        CastMiniPlayerView(cast: cast)
+                    }
             }
         }
         ```
