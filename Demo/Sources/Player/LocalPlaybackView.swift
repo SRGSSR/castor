@@ -112,6 +112,7 @@ private struct LocalErrorView: View {
     var body: some View {
         VStack {
             Text(error.localizedDescription)
+                .multilineTextAlignment(.center)
                 .foregroundStyle(.white)
             Text("Tap to retry")
                 .font(.subheadline)
