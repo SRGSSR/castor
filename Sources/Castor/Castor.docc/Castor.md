@@ -26,7 +26,7 @@ The Castor framework integrates seamlessly with SwiftUI, leveraging its declarat
 @Links(visualStyle: detailedGrid) {
     - <doc:setup-and-lifecycle-article>
     - <doc:playback-article>
-    - <doc:standard-views-article>
+    - <doc:user-interface-article>
     - <doc:metadata-article>
     - <doc:state-observation-article>
     - <doc:optimization-article>
@@ -35,6 +35,8 @@ The Castor framework integrates seamlessly with SwiftUI, leveraging its declarat
 ## Topics
 
 ### Session and Device Management
+
+- <doc:setup-and-lifecycle-article>
 
 - ``Cast``
 - ``Castable``
@@ -61,6 +63,9 @@ The Castor framework integrates seamlessly with SwiftUI, leveraging its declarat
 
 ### Metadata
 
+- <doc:metadata-article>
+- <doc:optimization-article>
+
 - ``CastCustomData``
 - ``CastImage``
 - ``CastImageHints``
@@ -74,6 +79,9 @@ The Castor framework integrates seamlessly with SwiftUI, leveraging its declarat
 - ``CastPlayerItem``
 
 ### User Interface
+
+- <doc:user-interface-article>
+- <doc:state-observation-article>
 
 - ``CastButton``
 - ``CastIcon``

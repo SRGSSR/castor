@@ -2,7 +2,7 @@
 
 @Metadata {
     @PageColor(purple)
-    @PageImage(purpose: card, source: standard-views-card, alt: "An image depicting Google Cast buttons and player views.")
+    @PageImage(purpose: card, source: user-interface-card, alt: "An image depicting a user interface.")
 }
 
 Integrate the Cast experience into your application.
