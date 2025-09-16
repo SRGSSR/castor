@@ -26,7 +26,7 @@ A content that can be played in the ``Cast`` universe is called a ``CastAsset``.
 You can load one or several items from media assets. Since ``CastPlayer`` conforms to [`ObservableObject`](https://developer.apple.com/documentation/combine/observableobject) and cannot be instantiated manually, it should be stored as an [`ObservedObject`](https://developer.apple.com/documentation/swiftui/observedobject) within a SwiftUI view. This ensures the player's lifecycle aligns with the view and that UI updates automatically reflect changes in playback state.
 
 @TabNavigator {
-    @Tab("Single item") {
+    @Tab("Single Item") {
         Load a player with a single item.
 
         ```swift
@@ -44,7 +44,7 @@ You can load one or several items from media assets. Since ``CastPlayer`` confor
         ```
     }
 
-    @Tab("Multiple items") {
+    @Tab("Multiple Items") {
         Load a player with multiple items.
 
         ```swift
@@ -81,7 +81,7 @@ The ``CastPlayer`` supports queue-based playback, allowing you to manage multipl
 The playback queue can be accessed via the ``CastPlayer/items`` property. You can modify the queue using the API to append, prepend, insert, or remove items as needed.
 
 @TabNavigator {
-    @Tab("Append or prepend items") {
+    @Tab("Append/Prepend Items") {
         Add new items to the front or back of the queue.
 
         ```swift
@@ -90,7 +90,7 @@ The playback queue can be accessed via the ``CastPlayer/items`` property. You ca
         ```
     }
     
-    @Tab("Insert item") {
+    @Tab("Insert Items") {
         Insert before or after a specific item in the queue.
 
         ```swift
@@ -99,7 +99,7 @@ The playback queue can be accessed via the ``CastPlayer/items`` property. You ca
         ```
     }
     
-    @Tab("Remove items") {
+    @Tab("Remove Items") {
         Remove a specific item or clear the entire queue.
 
         ```swift
@@ -116,7 +116,7 @@ You can programmatically navigate through the playlist, moving forward to the ne
 > Important: When the last item in the queue is consumed with ``CastPlayer/repeatMode`` ``CastRepeatMode/off``, the ``CastPlayer`` stops and the items are cleared automatically.
 
 @TabNavigator {
-    @Tab("Advance to next item") {
+    @Tab("Next Item") {
         Checks whether we can advance, and if so, moves to the next item.
 
         ```swift
@@ -126,7 +126,7 @@ You can programmatically navigate through the playlist, moving forward to the ne
         ```
     }
     
-    @Tab("Return to previous item") {
+    @Tab("Previous Item") {
         Checks whether we can return, and if so, moves to the previous item.
 
         ```swift

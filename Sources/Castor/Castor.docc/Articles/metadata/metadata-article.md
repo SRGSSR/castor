@@ -19,20 +19,20 @@ When casting content, metadata describes what is being played. Providing consist
 Metadata is represented by the ``CastMetadata`` type. Metadata includes a title, a metadata type, and optional artwork images. You can create metadata with no image, one image or multiple images.
 
 @TabNavigator {
-    @Tab("No image") {
+    @Tab("No Image") {
         ```swift
         let metadata = CastMetadata(title: "Video", metadataType: .movie, image: nil)
         ```
     }
 
-    @Tab("One image") {
+    @Tab("One Image") {
         ```swift
         let image = CastImage(url: URL(string: "https://example.com/poster.jpg"))
         let metadata = CastMetadata(title: "Video", metadataType: .movie, image: image)
         ```
     }
 
-    @Tab("Multiple images") {
+    @Tab("Multiple Images") {
         ```swift
         let image1 = CastImage(url: URL(string: "https://example.com/poster1.jpg"))
         let image2 = CastImage(url: URL(string: "https://example.com/poster2.jpg"))
