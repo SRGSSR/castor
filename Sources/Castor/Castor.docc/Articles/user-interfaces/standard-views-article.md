@@ -70,16 +70,14 @@ struct ContentView: View {
             @State private var isPresented = false
 
             var body: some View {
-                VStack {
-                    Spacer()
-                    CastMiniPlayerView(cast: cast)
-                        .frame(height: 64)
-                        .padding()
-                        .onTapGesture { isPresented.toggle() }
-                        .sheet(isPresented: $isPresented) {
-                            CastPlayerView(cast: cast)
-                        }
-                }
+                Color.clear
+                    .safeAreaInset(edge: .bottom) {
+                        CastMiniPlayerView(cast: cast)
+                            .onTapGesture { isPresented.toggle() }
+                    }
+                    .sheet(isPresented: $isPresented) {
+                        CastPlayerView(cast: cast)
+                    }
             }
         }
         ```
