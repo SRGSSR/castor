@@ -45,7 +45,7 @@ struct ContentView: View {
 <!-- markdownlint-disable MD046 -->
 @TabNavigator {
     @Tab("Mini") {
-        ``CastMiniPlayerView`` shows a compact view of the current Cast playback. You can add the mini-player view at the bottom like this:
+        ``CastMiniPlayerView`` displays a compact view of the current Cast playback. Add the mini player to the bottom of your interface as follows:
 
         ```swift
         struct ContentView: View {
