@@ -9,15 +9,17 @@ Integrate Google Cast into an iOS application using the Castor SDK.
 
 ## Overview
 
-To integrate Google Cast into an iOS application with ``Castor``, you must first configure your project correctly. This includes obtaining the App ID for your receiver, adding the necessary network permissions in the _Info.plist_, and initializing the Cast context at launch.
+To integrate Google Cast into an iOS application with ``Castor``, you must first configure your project. This includes obtaining the App ID for your receiver, adding the required network permissions in the _Info.plist_, and initializing the Cast context at launch.
 
 ## Configure the project
 
-The App ID allows the application to identify and communicate with the designated receiver, while the network permissions ensure the app can discover and connect to compatible devices on the local network.
+An App ID allows a Cast-enabled application to identify and communicate with an associated receiver, while network permissions ensure the app can discover and connect to compatible devices on the local network.
 
-### Get the App ID
+### Obtain an App ID
 
-If you do not yet have an App ID, you can [create one](https://developers.google.com/cast/codelabs/cast-receiver#3) via the Google Cast Developer Console. You can also use the default App ID provided by Google: `CC1AD845`.
+Each product should have its own dedicated receiver registered with a specific App ID in the [Google Cast Developer Console](https://developers.google.com/cast/codelabs/cast-receiver#3). Do not share the same App ID across products, as this can cause conflicts and degrade the user experience.  
+
+During early development, you can use Google’s default receiver (App ID `CC1AD845`) to start building your sender while your dedicated receiver is in progress. Switch to your own receiver as soon as possible to ensure full functionality and a consistent experience.
 
 ### Configure the _Info.plist_ file
 
