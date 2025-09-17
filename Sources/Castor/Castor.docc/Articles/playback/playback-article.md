@@ -140,5 +140,3 @@ You can programmatically navigate through the playlist, moving forward to the ne
         ```
     }
 }
-
-> Note: When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, both ``CastPlayer/advanceToNextItem()`` and ``CastPlayer/returnToPreviousItem()`` wrap around the queue. This means that returning from the first item moves to the last item, and advancing from the last item moves to the first. These methods ignore the ``CastConfiguration/navigationMode`` set in ``Cast/configuration``. To respect the navigation rules from the configuration, use ``CastPlayer/returnToPrevious()`` and ``CastPlayer/advanceToNext()`` instead.
