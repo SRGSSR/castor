@@ -67,17 +67,17 @@ struct PlaybackButtons: View {
     }
 
     private func previousButton() -> some View {
-        Button(action: player.returnToPrevious) {
+        Button(action: player.returnToPreviousItem) {
             Image(systemName: "backward.end.fill")
         }
-        .disabled(!player.canReturnToPrevious())
+        .disabled(!player.canReturnToPreviousItem())
     }
 
     private func nextButton() -> some View {
-        Button(action: player.advanceToNext) {
+        Button(action: player.advanceToNextItem) {
             Image(systemName: "forward.end.fill")
         }
-        .disabled(!player.canAdvanceToNext())
+        .disabled(!player.canAdvanceToNextItem())
     }
 
     private func largestShape() -> some View {
