@@ -4,44 +4,20 @@
 //  License information is available from the LICENSE file.
 //
 
-public extension CastPlayer {
-    /// Checks whether it is possible to return to the previous item in the queue.
-    ///
-    /// - Returns: `true` if returning to the previous item is possible.
-    ///
-    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
-    ///
-    /// > Important: This check ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
+extension CastPlayer {
     func canReturnToPreviousItem() -> Bool {
         canReturnToItem(before: currentItem, in: items)
     }
 
-    /// Returns to the previous item in the queue.
-    ///
-    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
-    ///
-    /// > Important: This action ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func returnToPreviousItem() {
         guard let previousIndex = index(before: currentItem, in: items) else { return }
         currentItem = items[previousIndex]
     }
 
-    /// Checks whether it is possible to move to the next item in the queue.
-    ///
-    /// - Returns: `true` if moving to the next item is possible.
-    ///
-    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
-    ///
-    /// > Important: This check ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func canAdvanceToNextItem() -> Bool {
         canAdvanceToItem(after: currentItem, in: items)
     }
 
-    /// Moves to the next item in the queue.
-    ///
-    /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
-    ///
-    /// > Important: This action ignores the ``CastConfiguration/navigationMode`` specified in ``Cast/configuration``.
     func advanceToNextItem() {
         guard let nextIndex = index(after: currentItem, in: items) else { return }
         currentItem = items[nextIndex]
