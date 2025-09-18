@@ -294,6 +294,9 @@
         }
       }
     },
+    "Connects to a Cast device" : {
+      "comment" : "Accessibility hint associated with the Cast button when "
+    },
     "Current device" : {
       "comment" : "Header for displaying current device information",
       "localizations" : {
@@ -471,6 +474,9 @@
         }
       }
     },
+    "Manages the Cast session" : {
+      "comment" : "Accessibility hint associated with the Cast button when connected"
+    },
     "No devices available" : {
       "comment" : "Message displayed when no Cast devices are available",
       "localizations" : {
@@ -618,9 +624,6 @@
           }
         }
       }
-    },
-    "Selects a Cast device" : {
-      "comment" : "Accessibility hint associated with the Cast button"
     },
     "Shuffle" : {
       "comment" : "Button to shuffle a playlist",
