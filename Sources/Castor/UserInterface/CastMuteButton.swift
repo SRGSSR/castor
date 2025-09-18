@@ -33,7 +33,7 @@ private extension CastMuteButton {
             String(localized: "Muted", bundle: .module, comment: "Accessibility label for muted state")
         }
         else {
-            String(localized: "Unuted", bundle: .module, comment: "Accessibility label for unmuted state")
+            String(localized: "Unmuted", bundle: .module, comment: "Accessibility label for unmuted state")
         }
     }
 

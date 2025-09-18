@@ -70,6 +70,7 @@ struct PlaybackButtons: View {
         Button(action: player.returnToPreviousItem) {
             Image(systemName: "backward.end.fill")
         }
+        .accessibilityLabel(String(localized: "Previous", bundle: .module, comment: "Previous item button accessibility label"))
         .disabled(!player.canReturnToPreviousItem())
     }
 
@@ -77,6 +78,7 @@ struct PlaybackButtons: View {
         Button(action: player.advanceToNextItem) {
             Image(systemName: "forward.end.fill")
         }
+        .accessibilityLabel(String(localized: "Next", bundle: .module, comment: "Next item button accessibility label"))
         .disabled(!player.canAdvanceToNextItem())
     }
 

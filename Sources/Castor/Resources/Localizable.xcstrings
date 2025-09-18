@@ -442,6 +442,9 @@
     "Disconnected" : {
       "comment" : "Disconnected from a receiver"
     },
+    "Hide playlist" : {
+      "comment" : "Playlist button accessibility label"
+    },
     "Live" : {
       "comment" : "Short label associated with live content",
       "localizations" : {
@@ -476,6 +479,9 @@
     },
     "Muted" : {
       "comment" : "Accessibility label for muted state"
+    },
+    "Next" : {
+      "comment" : "Next item button accessibility label"
     },
     "No devices available" : {
       "comment" : "Message displayed when no Cast devices are available",
@@ -596,6 +602,9 @@
         }
       }
     },
+    "Previous" : {
+      "comment" : "Previous item button accessibility label"
+    },
     "Repeat" : {
       "comment" : "Button to toggle between repeat modes",
       "localizations" : {
@@ -624,6 +633,12 @@
           }
         }
       }
+    },
+    "Settings" : {
+      "comment" : "Settings button accessibility label"
+    },
+    "Show playlist" : {
+      "comment" : "Playlist button accessibility label"
     },
     "Shuffle" : {
       "comment" : "Button to shuffle a playlist",
@@ -715,7 +730,7 @@
     "Unknown" : {
       "comment" : "Generic name for a Cast device"
     },
-    "Unuted" : {
+    "Unmuted" : {
       "comment" : "Accessibility label for unmuted state"
     },
     "Volume" : {

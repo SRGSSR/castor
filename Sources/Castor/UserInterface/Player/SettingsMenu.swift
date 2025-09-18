@@ -16,6 +16,13 @@ struct SettingsMenu: View {
             Image(systemName: "gearshape.fill")
         }
         .menuOrder(.fixed)
+        .accessibilityLabel(accessibilityLabel)
         .disabled(!player.isActive)
+    }
+}
+
+private extension SettingsMenu {
+    var accessibilityLabel: String {
+        String(localized: "Settings", bundle: .module, comment: "Settings button accessibility label")
     }
 }
