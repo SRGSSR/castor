@@ -495,10 +495,62 @@
       }
     },
     "Go backward %lld seconds" : {
-      "comment" : "Skip backward button accessibility label (number of seconds as wildcards)"
+      "comment" : "Skip backward button accessibility label (number of seconds as wildcards)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Sekunden zurückspulen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reculer de %lld secondes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riavvolgi di %lld secondi"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turnar enavos %lld secundas"
+          }
+        }
+      }
     },
     "Go forward %lld seconds" : {
-      "comment" : "Skip forward button accessibility label (number of seconds as wildcards)"
+      "comment" : "Skip forward button accessibility label (number of seconds as wildcards)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Sekunden vorspulen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avancer de %lld secondes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanza di %lld secondi"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanzar %lld secundas"
+          }
+        }
+      }
     },
     "Hide playlist" : {
       "comment" : "Playlist button accessibility label",
@@ -762,10 +814,62 @@
       }
     },
     "Pause" : {
-      "comment" : "Pause button accessibility label"
+      "comment" : "Pause button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausa"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausa"
+          }
+        }
+      }
     },
     "Play" : {
-      "comment" : "Play button accessibility label"
+      "comment" : "Play button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduci"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducziun"
+          }
+        }
+      }
     },
     "Playback Speed" : {
       "comment" : "Playback setting menu title",
