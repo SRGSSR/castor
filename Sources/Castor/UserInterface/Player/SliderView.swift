@@ -37,10 +37,10 @@ private extension SliderView {
                 Text("Current position", bundle: .module, comment: "Label associated with the seek bar")
             },
             minimumValueLabel: {
-                label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                labelForTime(progressTracker.time, duration: progressTracker.timeRange.duration)
             },
             maximumValueLabel: {
-                label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                labelForTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration)
             }
         )
     }
@@ -56,38 +56,52 @@ private extension SliderView {
     }
 
     @ViewBuilder
-    func label(withText text: String?) -> some View {
-        if let text {
+    func labelForTime(_ time: CMTime, duration: CMTime) -> some View {
+        if let text = Self.formattedTime(time, duration: duration, unitsStyle: .positional),
+           let accessibilityLabel = Self.formattedTime(time, duration: duration, unitsStyle: .full) {
             Text(text)
                 .font(.caption)
                 .monospacedDigit()
                 .foregroundStyle(.primary)
+                .accessibilityLabel(accessibilityLabel)
         }
     }
 }
 
 private extension SliderView {
-    static let shortFormatter: DateComponentsFormatter = {
+    private static let shortFormatters: [DateComponentsFormatter.UnitsStyle: DateComponentsFormatter] = [
+        .positional: shortFormatter(unitsStyle: .positional),
+        .full: shortFormatter(unitsStyle: .full)
+    ]
+
+    private static let longFormatters: [DateComponentsFormatter.UnitsStyle: DateComponentsFormatter] = [
+        .positional: longFormatter(unitsStyle: .positional),
+        .full: longFormatter(unitsStyle: .full)
+    ]
+
+    private static func shortFormatter(unitsStyle: DateComponentsFormatter.UnitsStyle) -> DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.second, .minute]
+        formatter.unitsStyle = unitsStyle
         formatter.zeroFormattingBehavior = .pad
         return formatter
-    }()
+    }
 
-    static let longFormatter: DateComponentsFormatter = {
+    private static func longFormatter(unitsStyle: DateComponentsFormatter.UnitsStyle) -> DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute, .hour]
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = unitsStyle
         formatter.zeroFormattingBehavior = .pad
         return formatter
-    }()
+    }
 
-    static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
+    static func formattedTime(_ time: CMTime, duration: CMTime, unitsStyle: DateComponentsFormatter.UnitsStyle) -> String? {
         guard time.isValid, duration.isValid else { return nil }
         if duration.seconds < 60 * 60 {
-            return shortFormatter.string(from: time.seconds)!
+            return shortFormatters[unitsStyle]?.string(from: time.seconds)
         }
         else {
-            return longFormatter.string(from: time.seconds)!
+            return longFormatters[unitsStyle]?.string(from: time.seconds)
         }
     }
 }
