@@ -53,6 +53,10 @@ extension CastDevice {
     static func name(for device: CastDevice?) -> String {
         device?.name ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
     }
+
+    static func route(to device: CastDevice?) -> String {
+        String(localized: "Casting on \(name(for: device))", bundle: .module, comment: "Current Cast receiver (with device name as wildcard)")
+    }
 }
 
 extension GCKDevice {

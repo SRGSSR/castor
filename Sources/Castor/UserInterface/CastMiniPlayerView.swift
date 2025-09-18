@@ -43,11 +43,7 @@ private struct _CastMiniPlayerView: View {
 
 private extension _CastMiniPlayerView {
     var accessibilityLabel: String {
-        var label = name(for: player.currentAsset)
-        if let deviceName = cast.currentDevice?.name {
-            label.append(", \(route(to: deviceName))")
-        }
-        return label
+        "\(CastAsset.name(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
     }
 }
 
@@ -81,28 +77,17 @@ private extension _CastMiniPlayerView {
             .minimumScaleFactor(0.7)
     }
 
-    private func name(for asset: CastAsset?) -> String {
-        asset?.metadata?.title ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
-    }
-
-    private func route(to deviceName: String) -> String {
-        String(localized: "Casting on \(deviceName)", bundle: .module, comment: "Current Cast receiver (with device name as wildcard)")
-    }
-
     private func title(for asset: CastAsset?) -> some View {
-        Text(name(for: asset))
+        Text(CastAsset.name(for: asset))
             .font(.subheadline)
             .bold()
             .lineLimit(1)
     }
 
-    @ViewBuilder
     private func subtitle() -> some View {
-        if let deviceName = cast.currentDevice?.name {
-            Text(route(to: deviceName))
-                .foregroundStyle(.secondary)
-                .font(.subheadline)
-                .lineLimit(1)
-        }
+        Text(CastDevice.route(to: cast.currentDevice))
+            .foregroundStyle(.secondary)
+            .font(.subheadline)
+            .lineLimit(1)
     }
 }

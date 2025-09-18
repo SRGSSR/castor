@@ -120,7 +120,7 @@ private struct _CastPlayerView: View {
                     .foregroundStyle(.secondary)
             }
             else {
-                Text(player.currentAsset?.metadata?.title ?? "Untitled")
+                Text(CastAsset.name(for: player.currentAsset))
             }
         }
         .bold()
