@@ -11,6 +11,8 @@ struct PlaybackButtons: View {
     @ObservedObject var player: CastPlayer
     let layout: PlaybackButtonsLayout
 
+    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
+
     var body: some View {
         ZStack {
             largestShape()
@@ -18,6 +20,7 @@ struct PlaybackButtons: View {
         }
         .font(.system(size: 44))
         .disabled(!player.isActive)
+        .bind(progressTracker, to: player)
     }
 
     private func buttons() -> some View {
@@ -32,9 +35,13 @@ struct PlaybackButtons: View {
         Group {
             switch layout {
             case .navigation:
-                previousButton()
+                PreviousItemButton(player: player)
             case .skip:
-                skipBackwardButton()
+                SkipBackwardButton(
+                    player: player,
+                    interval: cast.configuration.backwardSkipInterval,
+                    progressTracker: progressTracker
+                )
             }
         }
         .font(.system(size: 30))
@@ -44,42 +51,16 @@ struct PlaybackButtons: View {
         Group {
             switch layout {
             case .navigation:
-                nextButton()
+                NextItemButton(player: player)
             case .skip:
-                skipForwardButton()
+                SkipForwardButton(
+                    player: player,
+                    interval: cast.configuration.forwardSkipInterval,
+                    progressTracker: progressTracker
+                )
             }
         }
         .font(.system(size: 30))
-    }
-
-    private func skipBackwardButton() -> some View {
-        Button(action: player.skipBackward) {
-            Image.goBackward(withInterval: cast.configuration.backwardSkipInterval)
-        }
-        .disabled(!player.canSkipBackward())
-    }
-
-    private func skipForwardButton() -> some View {
-        Button(action: player.skipForward) {
-            Image.goForward(withInterval: cast.configuration.forwardSkipInterval)
-        }
-        .disabled(!player.canSkipForward())
-    }
-
-    private func previousButton() -> some View {
-        Button(action: player.returnToPreviousItem) {
-            Image(systemName: "backward.end.fill")
-        }
-        .accessibilityLabel(String(localized: "Previous", bundle: .module, comment: "Previous item button accessibility label"))
-        .disabled(!player.canReturnToPreviousItem())
-    }
-
-    private func nextButton() -> some View {
-        Button(action: player.advanceToNextItem) {
-            Image(systemName: "forward.end.fill")
-        }
-        .accessibilityLabel(String(localized: "Next", bundle: .module, comment: "Next item button accessibility label"))
-        .disabled(!player.canAdvanceToNextItem())
     }
 
     private func largestShape() -> some View {

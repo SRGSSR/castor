@@ -10,6 +10,10 @@ struct ShuffleButton: View {
     @ObservedObject var player: CastPlayer
     let style: ButtonStyle
 
+    private var label: String {
+        String(localized: "Shuffle", bundle: .module, comment: "Shuffle button accessibility label")
+    }
+
     var body: some View {
         Button {
             player.items.shuffle()
@@ -18,7 +22,7 @@ struct ShuffleButton: View {
                 switch style {
                 case .large:
                     Label {
-                        Text("Shuffle", bundle: .module, comment: "Button to shuffle a playlist")
+                        Text(label)
                     } icon: {
                         Image(systemName: "shuffle")
                     }
@@ -30,6 +34,7 @@ struct ShuffleButton: View {
             }
             .frame(maxWidth: .infinity)
         }
+        .accessibilityLabel(label)
         .disabled(player.items.isEmpty)
     }
 }

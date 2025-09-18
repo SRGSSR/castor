@@ -12,6 +12,10 @@ struct TrashButton: View {
 
     @State private var isPresented = false
 
+    private var label: String {
+        String(localized: "Delete all", bundle: .module, comment: "Button to delete all items from a playlist")
+    }
+
     var body: some View {
         Button {
             isPresented.toggle()
@@ -20,7 +24,7 @@ struct TrashButton: View {
                 switch style {
                 case .large:
                     Label {
-                        Text("Delete all", bundle: .module, comment: "Button to delete all items from a playlist")
+                        Text(label)
                     } icon: {
                         Image(systemName: "trash")
                     }
@@ -32,6 +36,7 @@ struct TrashButton: View {
             }
             .frame(maxWidth: .infinity)
         }
+        .accessibilityLabel(label)
         .disabled(player.items.isEmpty)
         .confirmationDialog(
             Text("All items in the playlist will be deleted.", bundle: .module, comment: "Message warning the user before deleting all items in a playlist"),
