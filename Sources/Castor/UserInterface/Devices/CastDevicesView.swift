@@ -74,6 +74,7 @@ struct CastDevicesView: View {
         switch cast.connectionState {
         case .connecting:
             ProgressView()
+                .accessibilityHidden(true)
         case .connected:
             Image(systemName: "wifi")
         default:

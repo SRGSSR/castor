@@ -89,6 +89,7 @@ private struct _CastPlayerView: View {
                     .fill(.black.opacity(0.4))
             )
             .opacity(player.isBusy ? 1 : 0)
+            .accessibilityHidden(true)
             .animation(.default, value: player.isBusy)
     }
 
@@ -157,6 +158,7 @@ public struct CastPlayerView: View {
     private func loadingView(with deviceName: String) -> some View {
         VStack(spacing: 20) {
             ProgressView()
+                .accessibilityHidden(true)
             Text("Connecting to \(deviceName)", bundle: .module, comment: "Receiver being connected (device name as wildcard)")
                 .lineLimit(2)
                 .multilineTextAlignment(.center)
