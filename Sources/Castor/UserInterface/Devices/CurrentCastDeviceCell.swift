@@ -72,7 +72,11 @@ struct CurrentCastDeviceCell: View {
 
 private extension CurrentCastDeviceCell {
     var accessibilityLabel: String {
-        String(localized: "Connected to \(deviceName)", bundle: .module, comment: "Current device accessibility label when connected to a receiver device (device name as wildcard)")
+        String(
+            localized: "Connected to \(deviceName)",
+            bundle: .module,
+            comment: "Current device accessibility label when connected to a receiver device (device name as wildcard)"
+        )
     }
 
     private var deviceName: String {

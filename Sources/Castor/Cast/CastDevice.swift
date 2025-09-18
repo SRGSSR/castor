@@ -64,4 +64,3 @@ extension GCKDevice {
         .init(from: self)
     }
 }
-

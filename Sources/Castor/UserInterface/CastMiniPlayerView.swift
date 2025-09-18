@@ -41,12 +41,6 @@ private struct _CastMiniPlayerView: View {
     }
 }
 
-private extension _CastMiniPlayerView {
-    var accessibilityLabel: String {
-        "\(CastAsset.name(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
-    }
-}
-
 /// A mini cast player view.
 public struct CastMiniPlayerView: View {
     @ObservedObject private var cast: Cast
@@ -89,5 +83,11 @@ private extension _CastMiniPlayerView {
             .foregroundStyle(.secondary)
             .font(.subheadline)
             .lineLimit(1)
+    }
+}
+
+private extension _CastMiniPlayerView {
+    var accessibilityLabel: String {
+        "\(CastAsset.name(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
     }
 }
