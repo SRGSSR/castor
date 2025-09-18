@@ -48,19 +48,15 @@ private extension CastIcon {
     var accessibilityLabel: String {
         switch cast.connectionState {
         case .connecting:
-            String(localized: "Connecting to \(deviceName)", bundle: .module, comment: "Cast icon accessibility label when connecting to a receiver (name as placeholder)")
+            String(localized: "Connecting to \(deviceName)", bundle: .module, comment: "Cast icon accessibility label when connecting to a receiver device (device name as wildcard)")
         case .connected:
-            String(localized: "Connected to \(deviceName)", bundle: .module, comment: "Cast icon accessibility label when connected to a receiver (name as placeholder)")
+            String(localized: "Connected to \(deviceName)", bundle: .module, comment: "Cast icon accessibility label when connected to a receiver device (device name as wildcard)")
         default:
-            String(localized: "Not connected to \(defaultDeviceName)", bundle: .module, comment: "Cast icon accessibility label when not connected to a receiver (name as placeholder)")
+            String(localized: "Not casting", bundle: .module, comment: "Cast icon accessibility label when not connected to a receiver device")
         }
     }
 
     private var deviceName: String {
-        cast.currentDevice?.name ?? defaultDeviceName
-    }
-
-    private var defaultDeviceName: String {
-        String(localized: "a Cast receiver", bundle: .module, comment: "Receiver name used as placeholder when receiver name is unknown in accessibility labels")
+        CastDevice.name(for: cast.currentDevice)
     }
 }

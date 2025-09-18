@@ -36,8 +36,28 @@ public struct CastDevice: Hashable {
     }
 }
 
+extension CastDevice {
+    static func imageName(for device: CastDevice) -> String {
+        switch device.type {
+        case .TV:
+            "tv"
+        case .speaker:
+            "hifispeaker"
+        case .speakerGroup:
+            "hifispeaker.2"
+        default:
+            "tv.and.hifispeaker.fill"
+        }
+    }
+
+    static func name(for device: CastDevice?) -> String {
+        device?.name ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
+    }
+}
+
 extension GCKDevice {
     func toCastDevice() -> CastDevice {
         .init(from: self)
     }
 }
+

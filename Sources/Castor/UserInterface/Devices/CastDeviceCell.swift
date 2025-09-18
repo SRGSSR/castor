@@ -17,28 +17,15 @@ struct CastDeviceCell: View {
             Label {
                 descriptionView(for: device)
             } icon: {
-                Image(systemName: Self.imageName(for: device))
+                Image(systemName: CastDevice.imageName(for: device))
             }
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
     }
 
-    private static func imageName(for device: CastDevice) -> String {
-        switch device.type {
-        case .TV:
-            "tv"
-        case .speaker:
-            "hifispeaker"
-        case .speakerGroup:
-            "hifispeaker.2"
-        default:
-            "tv.and.hifispeaker.fill"
-        }
-    }
-
     private func descriptionView(for device: CastDevice) -> some View {
-        Text(device.name ?? "Unknown")
+        Text(CastDevice.name(for: device))
             .lineLimit(1)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }

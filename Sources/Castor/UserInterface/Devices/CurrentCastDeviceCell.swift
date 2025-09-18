@@ -43,6 +43,8 @@ struct CurrentCastDeviceCell: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .accessibilityElement()
+        .accessibilityLabel(accessibilityLabel)
     }
 
     private func volumeSlider() -> some View {
@@ -65,5 +67,15 @@ struct CurrentCastDeviceCell: View {
         }
         .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
         .padding(.bottom)
+    }
+}
+
+private extension CurrentCastDeviceCell {
+    var accessibilityLabel: String {
+        String(localized: "Connected to \(deviceName)", bundle: .module, comment: "Current device accessibility label when connected to a receiver device (device name as wildcard)")
+    }
+
+    private var deviceName: String {
+        CastDevice.name(for: cast.currentDevice)
     }
 }
