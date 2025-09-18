@@ -30,6 +30,9 @@
         }
       }
     },
+    "a Cast receiver" : {
+      "comment" : "Receiver name used as placeholder when receiver name is unknown in accessibility labels"
+    },
     "All items in the playlist will be deleted." : {
       "comment" : "Message warning the user before deleting all items in a playlist",
       "localizations" : {
@@ -234,7 +237,7 @@
       }
     },
     "Connected to %@" : {
-      "comment" : "Connected receiver (device name as wildcard)",
+      "comment" : "Cast icon accessibility label when connected to a receiver (name as placeholder)\nConnected receiver (device name as wildcard)",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -263,7 +266,7 @@
       }
     },
     "Connecting to %@" : {
-      "comment" : "Receiver being connected (device name as wildcard)",
+      "comment" : "Cast icon accessibility label when connecting to a receiver (name as placeholder)\nReceiver being connected (device name as wildcard)",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -497,6 +500,9 @@
         }
       }
     },
+    "Not connected to %@" : {
+      "comment" : "Cast icon accessibility label when not connected to a receiver (name as placeholder)"
+    },
     "Not playing" : {
       "comment" : "Label displayed when no content is being played",
       "localizations" : {
@@ -612,6 +618,9 @@
           }
         }
       }
+    },
+    "Selects a Cast device" : {
+      "comment" : "Accessibility hint associated with the Cast button"
     },
     "Shuffle" : {
       "comment" : "Button to shuffle a playlist",

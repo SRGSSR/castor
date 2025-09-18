@@ -14,21 +14,24 @@ public struct CastIcon: View {
 
     // swiftlint:disable:next missing_docs
     public var body: some View {
-        switch cast.connectionState {
-        case .connecting:
-            if #available(iOS 17, *) {
-                castImage(name: "google.cast")
-                    .symbolEffect(.variableColor.iterative.reversing)
-            }
-            else {
+        ZStack {
+            switch cast.connectionState {
+            case .connecting:
+                if #available(iOS 17, *) {
+                    castImage(name: "google.cast")
+                        .symbolEffect(.variableColor.iterative.reversing)
+                }
+                else {
+                    castImage(name: "google.cast.fill")
+                        .symbolRenderingMode(.multicolor)
+                }
+            case .connected:
                 castImage(name: "google.cast.fill")
-                    .symbolRenderingMode(.multicolor)
+            default:
+                castImage(name: "google.cast")
             }
-        case .connected:
-            castImage(name: "google.cast.fill")
-        default:
-            castImage(name: "google.cast")
         }
+        .accessibilityLabel(accessibilityLabel)
     }
 
     /// Creates a Cast icon.
@@ -38,5 +41,26 @@ public struct CastIcon: View {
 
     private func castImage(name: String) -> some View {
         Image(name, bundle: .module)
+    }
+}
+
+private extension CastIcon {
+    var accessibilityLabel: String {
+        switch cast.connectionState {
+        case .connecting:
+            String(localized: "Connecting to \(deviceName)", bundle: .module, comment: "Cast icon accessibility label when connecting to a receiver (name as placeholder)")
+        case .connected:
+            String(localized: "Connected to \(deviceName)", bundle: .module, comment: "Cast icon accessibility label when connected to a receiver (name as placeholder)")
+        default:
+            String(localized: "Not connected to \(defaultDeviceName)", bundle: .module, comment: "Cast icon accessibility label when not connected to a receiver (name as placeholder)")
+        }
+    }
+
+    private var deviceName: String {
+        cast.currentDevice?.name ?? defaultDeviceName
+    }
+
+    private var defaultDeviceName: String {
+        String(localized: "a Cast receiver", bundle: .module, comment: "Receiver name used as placeholder when receiver name is unknown in accessibility labels")
     }
 }
