@@ -28,6 +28,7 @@ struct RepeatModeButton: View {
             }
             .frame(maxWidth: .infinity)
         }
+        .accessibilityLabel(accessibilityLabel)
         .disabled(!player.isActive)
     }
 
@@ -50,6 +51,19 @@ struct RepeatModeButton: View {
             player.repeatMode = .off
         case .all:
             player.repeatMode = .one
+        }
+    }
+}
+
+private extension RepeatModeButton {
+    var accessibilityLabel: String {
+        switch player.repeatMode {
+        case .off:
+            String(localized: "Repeat, Off", bundle: .module, comment: "Repeat off mode accessibility label")
+        case .one:
+            String(localized: "Repeat, One", bundle: .module, comment: "Repeat one mode accessibility label")
+        case .all:
+            String(localized: "Repeat, All", bundle: .module, comment: "Repeat all accessibility label")
         }
     }
 }

@@ -634,6 +634,15 @@
         }
       }
     },
+    "Repeat, All" : {
+      "comment" : "Repeat all accessibility label"
+    },
+    "Repeat, Off" : {
+      "comment" : "Repeat off mode accessibility label"
+    },
+    "Repeat, One" : {
+      "comment" : "Repeat one mode accessibility label"
+    },
     "Settings" : {
       "comment" : "Settings button accessibility label"
     },
