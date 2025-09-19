@@ -350,7 +350,7 @@
       }
     },
     "Connects to a Cast device" : {
-      "comment" : "Accessibility hint associated with the Cast button when ",
+      "comment" : "Accessibility hint associated with the Cast button when not connected",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -52,7 +52,7 @@ private extension CastButton {
         case .connected, .connecting:
             String(localized: "Manages the Cast session", bundle: .module, comment: "Accessibility hint associated with the Cast button when connected")
         default:
-            String(localized: "Connects to a Cast device", bundle: .module, comment: "Accessibility hint associated with the Cast button when ")
+            String(localized: "Connects to a Cast device", bundle: .module, comment: "Accessibility hint associated with the Cast button when not connected")
         }
     }
 }
