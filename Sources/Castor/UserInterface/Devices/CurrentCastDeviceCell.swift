@@ -33,7 +33,7 @@ struct CurrentCastDeviceCell: View {
     private func descriptionView(for device: CastDevice) -> some View {
         VStack(alignment: .leading) {
             HStack {
-                Text(device.name ?? "Unknown")
+                Text(deviceName)
                     .lineLimit(1)
             }
             if let status = device.status {
