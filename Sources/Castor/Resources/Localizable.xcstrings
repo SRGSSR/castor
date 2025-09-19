@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ elapsed" : {
+      "comment" : "Elapsed time accessibility label"
+    },
+    "%@ total" : {
+      "comment" : "Total time accessibility label"
+    },
     "%g×" : {
       "comment" : "Speed multiplier",
       "localizations" : {

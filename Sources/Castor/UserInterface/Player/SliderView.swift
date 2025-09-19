@@ -37,10 +37,12 @@ private extension SliderView {
                 Text("Current position", bundle: .module, comment: "Label associated with the seek bar")
             },
             minimumValueLabel: {
-                labelForTime(progressTracker.time, duration: progressTracker.timeRange.duration)
+                labelForElapsedTime(progressTracker.time, duration: progressTracker.timeRange.duration)
+                    .toAnyView()
             },
             maximumValueLabel: {
-                labelForTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration)
+                labelForDuration(progressTracker.timeRange.duration)
+                    .toAnyView()
             }
         )
     }
@@ -56,52 +58,31 @@ private extension SliderView {
     }
 
     @ViewBuilder
-    func labelForTime(_ time: CMTime, duration: CMTime) -> some View {
-        if let text = Self.formattedTime(time, duration: duration, unitsStyle: .positional),
-           let accessibilityLabel = Self.formattedTime(time, duration: duration, unitsStyle: .full) {
-            Text(text)
-                .font(.caption)
-                .monospacedDigit()
-                .foregroundStyle(.primary)
-                .accessibilityLabel(accessibilityLabel)
+    func labelForElapsedTime(_ time: CMTime, duration: CMTime) -> some View {
+        if let time = FormattedTime(time: time, duration: duration) {
+            label(
+                text: time.positional,
+                accessibilityLabel: String(localized: "\(time.full) elapsed", bundle: .module, comment: "Elapsed time accessibility label")
+            )
         }
     }
-}
 
-private extension SliderView {
-    private static let shortFormatters: [DateComponentsFormatter.UnitsStyle: DateComponentsFormatter] = [
-        .positional: shortFormatter(unitsStyle: .positional),
-        .full: shortFormatter(unitsStyle: .full)
-    ]
-
-    private static let longFormatters: [DateComponentsFormatter.UnitsStyle: DateComponentsFormatter] = [
-        .positional: longFormatter(unitsStyle: .positional),
-        .full: longFormatter(unitsStyle: .full)
-    ]
-
-    private static func shortFormatter(unitsStyle: DateComponentsFormatter.UnitsStyle) -> DateComponentsFormatter {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute]
-        formatter.unitsStyle = unitsStyle
-        formatter.zeroFormattingBehavior = .pad
-        return formatter
+    @ViewBuilder
+    func labelForDuration(_ duration: CMTime) -> some View {
+        if let time = FormattedTime(duration: duration) {
+            label(
+                text: time.positional,
+                accessibilityLabel: String(localized: "\(time.full) total", bundle: .module, comment: "Total time accessibility label")
+            )
+        }
     }
 
-    private static func longFormatter(unitsStyle: DateComponentsFormatter.UnitsStyle) -> DateComponentsFormatter {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute, .second]
-        formatter.unitsStyle = unitsStyle
-        formatter.zeroFormattingBehavior = .pad
-        return formatter
-    }
-
-    static func formattedTime(_ time: CMTime, duration: CMTime, unitsStyle: DateComponentsFormatter.UnitsStyle) -> String? {
-        guard time.isValid, duration.isValid else { return nil }
-        if duration.seconds < 60 * 60 {
-            return shortFormatters[unitsStyle]?.string(from: time.seconds)
-        }
-        else {
-            return longFormatters[unitsStyle]?.string(from: time.seconds)
-        }
+    @ViewBuilder
+    func label(text: String, accessibilityLabel: String) -> some View {
+        Text(text)
+            .font(.caption)
+            .monospacedDigit()
+            .foregroundStyle(.primary)
+            .accessibilityLabel(accessibilityLabel)
     }
 }
