@@ -24,6 +24,7 @@ public struct CastButton: View {
         } label: {
             CastIcon(cast: cast)
         }
+        .accessibilityHint(accessibilityHint)
         .popover(isPresented: $isPresented) {
             NavigationStack {
                 CastDevicesView(cast: cast)
@@ -42,5 +43,16 @@ public struct CastButton: View {
     public init(cast: Cast, isPresenting: Binding<Bool> = .constant(false)) {
         self.cast = cast
         _isPresenting = isPresenting
+    }
+}
+
+private extension CastButton {
+    var accessibilityHint: String {
+        switch cast.connectionState {
+        case .connected, .connecting:
+            String(localized: "Manages the Cast session", bundle: .module, comment: "Accessibility hint associated with the Cast button when connected")
+        default:
+            String(localized: "Connects to a Cast device", bundle: .module, comment: "Accessibility hint associated with the Cast button when not connected")
+        }
     }
 }

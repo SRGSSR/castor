@@ -37,10 +37,20 @@ private extension SliderView {
                 Text("Current position", bundle: .module, comment: "Label associated with the seek bar")
             },
             minimumValueLabel: {
-                label(withText: Self.formattedTime(progressTracker.time, duration: progressTracker.timeRange.duration))
+                if let time = FormattedTime(time: progressTracker.time, duration: progressTracker.timeRange.duration) {
+                    label(
+                        text: time.positional,
+                        accessibilityLabel: String(localized: "\(time.full) elapsed", bundle: .module, comment: "Elapsed time accessibility label")
+                    )
+                }
             },
             maximumValueLabel: {
-                label(withText: Self.formattedTime(progressTracker.timeRange.duration, duration: progressTracker.timeRange.duration))
+                if let time = FormattedTime(duration: progressTracker.timeRange.duration) {
+                    label(
+                        text: time.positional,
+                        accessibilityLabel: String(localized: "\(time.full) total", bundle: .module, comment: "Total time accessibility label")
+                    )
+                }
             }
         )
     }
@@ -56,38 +66,11 @@ private extension SliderView {
     }
 
     @ViewBuilder
-    func label(withText text: String?) -> some View {
-        if let text {
-            Text(text)
-                .font(.caption)
-                .monospacedDigit()
-                .foregroundStyle(.primary)
-        }
-    }
-}
-
-private extension SliderView {
-    static let shortFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute]
-        formatter.zeroFormattingBehavior = .pad
-        return formatter
-    }()
-
-    static let longFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.second, .minute, .hour]
-        formatter.zeroFormattingBehavior = .pad
-        return formatter
-    }()
-
-    static func formattedTime(_ time: CMTime, duration: CMTime) -> String? {
-        guard time.isValid, duration.isValid else { return nil }
-        if duration.seconds < 60 * 60 {
-            return shortFormatter.string(from: time.seconds)!
-        }
-        else {
-            return longFormatter.string(from: time.seconds)!
-        }
+    func label(text: String, accessibilityLabel: String) -> some View {
+        Text(text)
+            .font(.caption)
+            .monospacedDigit()
+            .foregroundStyle(.primary)
+            .accessibilityLabel(accessibilityLabel)
     }
 }

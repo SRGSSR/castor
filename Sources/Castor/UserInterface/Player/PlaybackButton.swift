@@ -20,6 +20,7 @@ struct PlaybackButton: View {
                 Image(systemName: imageName)
             }
         }
+        .accessibilityLabel(accessibilityLabel)
     }
 
     private func largestShape() -> some View {
@@ -29,5 +30,16 @@ struct PlaybackButton: View {
             Image(systemName: "pause.fill")
         }
         .hidden()
+    }
+}
+
+private extension PlaybackButton {
+    var accessibilityLabel: String {
+        if player.shouldPlay {
+            String(localized: "Pause", bundle: .module, comment: "Pause button accessibility label")
+        }
+        else {
+            String(localized: "Play", bundle: .module, comment: "Play button accessibility label")
+        }
     }
 }
