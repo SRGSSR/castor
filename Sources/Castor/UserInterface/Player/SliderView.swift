@@ -37,12 +37,20 @@ private extension SliderView {
                 Text("Current position", bundle: .module, comment: "Label associated with the seek bar")
             },
             minimumValueLabel: {
-                labelForElapsedTime(progressTracker.time, duration: progressTracker.timeRange.duration)
-                    .toAnyView()
+                if let time = FormattedTime(time: progressTracker.time, duration: progressTracker.timeRange.duration) {
+                    label(
+                        text: time.positional,
+                        accessibilityLabel: String(localized: "\(time.full) elapsed", bundle: .module, comment: "Elapsed time accessibility label")
+                    )
+                }
             },
             maximumValueLabel: {
-                labelForDuration(progressTracker.timeRange.duration)
-                    .toAnyView()
+                if let time = FormattedTime(duration: progressTracker.timeRange.duration) {
+                    label(
+                        text: time.positional,
+                        accessibilityLabel: String(localized: "\(time.full) total", bundle: .module, comment: "Total time accessibility label")
+                    )
+                }
             }
         )
     }
@@ -54,26 +62,6 @@ private extension SliderView {
                 LiveLabel(player: player)
             }
             .disabled(!player.canSkipToDefault())
-        }
-    }
-
-    @ViewBuilder
-    func labelForElapsedTime(_ time: CMTime, duration: CMTime) -> some View {
-        if let time = FormattedTime(time: time, duration: duration) {
-            label(
-                text: time.positional,
-                accessibilityLabel: String(localized: "\(time.full) elapsed", bundle: .module, comment: "Elapsed time accessibility label")
-            )
-        }
-    }
-
-    @ViewBuilder
-    func labelForDuration(_ duration: CMTime) -> some View {
-        if let time = FormattedTime(duration: duration) {
-            label(
-                text: time.positional,
-                accessibilityLabel: String(localized: "\(time.full) total", bundle: .module, comment: "Total time accessibility label")
-            )
         }
     }
 
