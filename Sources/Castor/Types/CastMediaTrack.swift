@@ -18,12 +18,12 @@ public struct CastMediaTrack: Hashable {
     var mediaCharacteristic: AVMediaCharacteristic? {
         rawTrack.type.mediaCharacteristic()
     }
-    
+
     /// The language code, specified using RFC 1766 tags.
     public var languageCode: String? {
         rawTrack.languageCode
     }
-    
+
     /// A display-friendly name.
     public var displayName: String {
         if let displayName = rawTrack.name {
