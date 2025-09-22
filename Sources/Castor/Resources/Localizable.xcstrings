@@ -1,12 +1,70 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ elapsed" : {
+      "comment" : "Elapsed time accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vergangen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ écoulé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ trascorso"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ passà"
+          }
+        }
+      }
+    },
+    "%@ total" : {
+      "comment" : "Total time accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ insgesamt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ au total"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ totale"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ total"
+          }
+        }
+      }
+    },
     "%g×" : {
       "comment" : "Speed multiplier",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%g×"
           }
         },
@@ -18,13 +76,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%g×"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%g×"
           }
         }
@@ -35,8 +93,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "All items in the playlist will be deleted."
+            "state" : "translated",
+            "value" : "Alle Elemente in der Wiedergabeliste werden gelöscht."
           }
         },
         "fr" : {
@@ -47,14 +105,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "All items in the playlist will be deleted."
+            "state" : "translated",
+            "value" : "Tutti gli elementi della playlist verranno eliminati."
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "All items in the playlist will be deleted."
+            "state" : "translated",
+            "value" : "Tut ils elements en la glista da reproducziun vegnan stizzads."
           }
         }
       }
@@ -64,7 +122,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Audio"
           }
         },
@@ -76,13 +134,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Audio"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Audio"
           }
         }
@@ -93,8 +151,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Available devices"
+            "state" : "translated",
+            "value" : "Verfügbare Geräte"
           }
         },
         "fr" : {
@@ -105,14 +163,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Available devices"
+            "state" : "translated",
+            "value" : "Dispositivi disponibili"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Available devices"
+            "state" : "translated",
+            "value" : "Apparats disponibels"
           }
         }
       }
@@ -122,8 +180,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cast to"
+            "state" : "translated",
+            "value" : "Übertragen an"
           }
         },
         "fr" : {
@@ -134,14 +192,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cast to"
+            "state" : "translated",
+            "value" : "Trasmetti a"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cast to"
+            "state" : "translated",
+            "value" : "Transmetter a"
           }
         }
       }
@@ -151,8 +209,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Casting on %@"
+            "state" : "translated",
+            "value" : "Übertragung auf %@"
           }
         },
         "fr" : {
@@ -163,14 +221,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Casting on %@"
+            "state" : "translated",
+            "value" : "Trasmissione su %@"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Casting on %@"
+            "state" : "translated",
+            "value" : "Transmetter sin %@"
           }
         }
       }
@@ -180,8 +238,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+            "state" : "translated",
+            "value" : "Überprüfen Sie Ihr WLAN und stellen Sie sicher, dass der lokale Netzwerkzugriff aktiviert ist."
           }
         },
         "fr" : {
@@ -192,14 +250,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+            "state" : "translated",
+            "value" : "Controlla la tua rete Wi-Fi e assicurati che l’accesso alla rete locale sia attivato."
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check your Wi-Fi network and make sure Local Network Access is on."
+            "state" : "translated",
+            "value" : "Controllescha tia rait Wi-Fi ed assicurati che l’access al rait local saja activà."
           }
         }
       }
@@ -209,8 +267,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
+            "state" : "translated",
+            "value" : "Schließen"
           }
         },
         "fr" : {
@@ -221,25 +279,25 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
+            "state" : "translated",
+            "value" : "Chiudi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
+            "state" : "translated",
+            "value" : "Serrar"
           }
         }
       }
     },
     "Connected to %@" : {
-      "comment" : "Connected receiver (device name as wildcard)",
+      "comment" : "Cast icon accessibility label when connected to a receiver device (device name as wildcard)\nConnected receiver (device name as wildcard)\nCurrent device accessibility label when connected to a receiver device (device name as wildcard)",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connected to %@"
+            "state" : "translated",
+            "value" : "Verbunden mit %@"
           }
         },
         "fr" : {
@@ -250,25 +308,25 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connected to %@"
+            "state" : "translated",
+            "value" : "Connesso a %@"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connected to %@"
+            "state" : "translated",
+            "value" : "Conness cun %@"
           }
         }
       }
     },
     "Connecting to %@" : {
-      "comment" : "Receiver being connected (device name as wildcard)",
+      "comment" : "Cast icon accessibility label when connecting to a receiver device (device name as wildcard)\nReceiver being connected (device name as wildcard)",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connecting to %@"
+            "state" : "translated",
+            "value" : "Verbinden mit %@"
           }
         },
         "fr" : {
@@ -279,14 +337,43 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connecting to %@"
+            "state" : "translated",
+            "value" : "Connessione a %@"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Connecting to %@"
+            "state" : "translated",
+            "value" : "Connectar cun %@"
+          }
+        }
+      }
+    },
+    "Connects to a Cast device" : {
+      "comment" : "Accessibility hint associated with the Cast button when not connected",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindet mit einem Cast-Gerät"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se connecter à un appareil compatible Cast"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si connette a un dispositivo Cast"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecta cun in apparat Cast"
           }
         }
       }
@@ -296,8 +383,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current device"
+            "state" : "translated",
+            "value" : "Aktuelles Gerät"
           }
         },
         "fr" : {
@@ -308,14 +395,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current device"
+            "state" : "translated",
+            "value" : "Dispositivo attuale"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current device"
+            "state" : "translated",
+            "value" : "Apparat actual"
           }
         }
       }
@@ -325,8 +412,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current position"
+            "state" : "translated",
+            "value" : "Aktuelle Position"
           }
         },
         "fr" : {
@@ -337,14 +424,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current position"
+            "state" : "translated",
+            "value" : "Posizione attuale"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current position"
+            "state" : "translated",
+            "value" : "Posiziun actuala"
           }
         }
       }
@@ -354,8 +441,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all"
+            "state" : "translated",
+            "value" : "Alles löschen"
           }
         },
         "fr" : {
@@ -366,14 +453,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all"
+            "state" : "translated",
+            "value" : "Elimina tutto"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all"
+            "state" : "translated",
+            "value" : "Stizzar tut"
           }
         }
       }
@@ -383,8 +470,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all Items"
+            "state" : "translated",
+            "value" : "Alle Elemente löschen"
           }
         },
         "fr" : {
@@ -395,14 +482,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all Items"
+            "state" : "translated",
+            "value" : "Elimina tutti gli elementi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete all Items"
+            "state" : "translated",
+            "value" : "Stizzar tut ils elements"
           }
         }
       }
@@ -412,8 +499,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disconnect"
+            "state" : "translated",
+            "value" : "Trennen"
           }
         },
         "fr" : {
@@ -424,27 +511,140 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disconnect"
+            "state" : "translated",
+            "value" : "Disconnettersi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disconnect"
+            "state" : "translated",
+            "value" : "Deconnectar"
           }
         }
       }
     },
     "Disconnected" : {
-      "comment" : "Disconnected from a receiver"
+      "comment" : "Disconnected from a receiver",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Getrennt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecté"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disconnesso"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deconnectà"
+          }
+        }
+      }
+    },
+    "Go backward %lld seconds" : {
+      "comment" : "Skip backward button accessibility label (number of seconds as wildcards)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Sekunden zurückspulen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reculer de %lld secondes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riavvolgi di %lld secondi"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turnar enavos %lld secundas"
+          }
+        }
+      }
+    },
+    "Go forward %lld seconds" : {
+      "comment" : "Skip forward button accessibility label (number of seconds as wildcards)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Sekunden vorspulen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avancer de %lld secondes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanza di %lld secondi"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanzar %lld secundas"
+          }
+        }
+      }
+    },
+    "Hide playlist" : {
+      "comment" : "Playlist button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabeliste ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cacher la liste de lecture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi playlist"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuppentar glista da reproducziun"
+          }
+        }
+      }
     },
     "Live" : {
       "comment" : "Short label associated with live content",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Live"
           }
         },
@@ -456,14 +656,101 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Live"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Live"
+          }
+        }
+      }
+    },
+    "Manages the Cast session" : {
+      "comment" : "Accessibility hint associated with the Cast button when connected",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwaltet die Cast-Sitzung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gérer la session Cast"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestisce la sessione Cast"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administra la sesida da Cast"
+          }
+        }
+      }
+    },
+    "Muted" : {
+      "comment" : "Accessibility label for muted state",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton aus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son coupé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio disattivato"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senza tun"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "comment" : "Next item button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivant"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Successivo"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proxim"
           }
         }
       }
@@ -473,8 +760,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No devices available"
+            "state" : "translated",
+            "value" : "Keine Geräte verfügbar"
           }
         },
         "fr" : {
@@ -485,14 +772,43 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No devices available"
+            "state" : "translated",
+            "value" : "Nessun dispositivo disponibile"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No devices available"
+            "state" : "translated",
+            "value" : "Nagins apparats disponibels"
+          }
+        }
+      }
+    },
+    "Not casting" : {
+      "comment" : "Cast icon accessibility label when not connected to a receiver device",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Übertragung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune diffusion Cast en cours"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna trasmissione"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nagina transmissiun"
           }
         }
       }
@@ -502,26 +818,26 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not playing"
+            "state" : "translated",
+            "value" : "Keine Wiedergabe"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A l’arrêt"
+            "value" : "A l'arrêt"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not playing"
+            "state" : "translated",
+            "value" : "Non in riproduzione"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not playing"
+            "state" : "translated",
+            "value" : "Betg en reproducziun"
           }
         }
       }
@@ -531,8 +847,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Off"
+            "state" : "translated",
+            "value" : "Aus"
           }
         },
         "fr" : {
@@ -543,14 +859,72 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Off"
+            "state" : "translated",
+            "value" : "Non attivi"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Off"
+            "state" : "translated",
+            "value" : "Deactivà"
+          }
+        }
+      }
+    },
+    "Pause" : {
+      "comment" : "Pause button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausa"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausa"
+          }
+        }
+      }
+    },
+    "Play" : {
+      "comment" : "Play button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduci"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducziun"
           }
         }
       }
@@ -560,8 +934,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Playback Speed"
+            "state" : "translated",
+            "value" : "Wiedergabetempo"
           }
         },
         "fr" : {
@@ -572,14 +946,43 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Playback Speed"
+            "state" : "translated",
+            "value" : "Velocità riproduzione"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Playback Speed"
+            "state" : "translated",
+            "value" : "Spertadad da reproducziun"
+          }
+        }
+      }
+    },
+    "Previous" : {
+      "comment" : "Previous item button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Précédent"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precedente"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precedent"
           }
         }
       }
@@ -589,8 +992,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Repeat"
+            "state" : "translated",
+            "value" : "Wiederholen"
           }
         },
         "fr" : {
@@ -601,25 +1004,170 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Repeat"
+            "state" : "translated",
+            "value" : "Ripeti"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Repeat"
+            "state" : "translated",
+            "value" : "Repeter"
+          }
+        }
+      }
+    },
+    "Repeat, All" : {
+      "comment" : "Repeat all accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederholen, Alle"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répéter, Tout"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripeti, Tutto"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeter, Tut"
+          }
+        }
+      }
+    },
+    "Repeat, Off" : {
+      "comment" : "Repeat off mode accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederholen, Aus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répéter, Désactivé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripeti, Disattivato"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeter, Deactivà"
+          }
+        }
+      }
+    },
+    "Repeat, One" : {
+      "comment" : "Repeat one mode accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederholen, Eins"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répéter, Un seul"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripeti, Uno"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeter, In"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "comment" : "Settings button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parameters"
+          }
+        }
+      }
+    },
+    "Show playlist" : {
+      "comment" : "Playlist button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabeliste anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrer la liste de lecture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra playlist"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mussar glista da reproducziun"
           }
         }
       }
     },
     "Shuffle" : {
-      "comment" : "Button to shuffle a playlist",
+      "comment" : "Shuffle button accessibility label",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Shuffle"
+            "state" : "translated",
+            "value" : "Zufallswiedergabe"
           }
         },
         "fr" : {
@@ -630,14 +1178,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Shuffle"
+            "state" : "translated",
+            "value" : "Casuale"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Shuffle"
+            "state" : "translated",
+            "value" : "Reproducziun casuala"
           }
         }
       }
@@ -647,8 +1195,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Subtitles"
+            "state" : "translated",
+            "value" : "Untertitel"
           }
         },
         "fr" : {
@@ -659,14 +1207,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Subtitles"
+            "state" : "translated",
+            "value" : "Sottotitoli"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Subtitles"
+            "state" : "translated",
+            "value" : "Suttitels"
           }
         }
       }
@@ -676,8 +1224,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Undefined"
+            "state" : "translated",
+            "value" : "Nicht angegeben"
           }
         },
         "fr" : {
@@ -688,14 +1236,72 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Undefined"
+            "state" : "translated",
+            "value" : "Non definito"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Undefined"
+            "state" : "translated",
+            "value" : "Nundefinì"
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "comment" : "Generic name for a Cast device",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inconnu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sconosciuto"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nunenconuschent"
+          }
+        }
+      }
+    },
+    "Unmuted" : {
+      "comment" : "Accessibility label for unmuted state",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton ein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son activé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio attivato"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cun tun"
           }
         }
       }
@@ -705,8 +1311,8 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Volume"
+            "state" : "translated",
+            "value" : "Lautstärke"
           }
         },
         "fr" : {
@@ -717,14 +1323,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Volume"
           }
         },
         "rm" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Volume"
+            "state" : "translated",
+            "value" : "Volum"
           }
         }
       }

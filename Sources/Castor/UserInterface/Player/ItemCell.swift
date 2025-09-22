@@ -17,12 +17,14 @@ struct ItemCell: View {
             Spacer()
             disclosureImage()
         }
+        .accessibilityElement()
+        .accessibilityLabel(title)
         .onAppear(perform: item.fetch)
     }
 
     private var title: String {
         guard item.isFetched else { return .placeholder(length: .random(in: 20...30)) }
-        return item.asset?.metadata?.title ?? "Untitled"
+        return CastAsset.name(for: item.asset)
     }
 
     private func artworkImage() -> some View {

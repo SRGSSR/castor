@@ -18,10 +18,26 @@ public struct CastMuteButton: View {
             CastVolumeIcon(cast: cast)
         }
         .disabled(!cast.canMute)
+        .accessibilityLabel(accessibilityLabel)
     }
 
     /// Creates a mute button.
     public init(cast: Cast) {
         self.cast = cast
+    }
+}
+
+private extension CastMuteButton {
+    var accessibilityLabel: String {
+        if cast.isMuted {
+            String(localized: "Muted", bundle: .module, comment: "Accessibility label for muted state")
+        }
+        else {
+            String(localized: "Unmuted", bundle: .module, comment: "Accessibility label for unmuted state")
+        }
+    }
+
+    private var deviceName: String {
+        CastDevice.name(for: cast.currentDevice)
     }
 }

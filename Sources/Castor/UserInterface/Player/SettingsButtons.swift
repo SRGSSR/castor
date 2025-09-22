@@ -27,11 +27,7 @@ struct SettingsButtons: View {
     }
 
     private func playlistButton() -> some View {
-        Button {
-            isPlaylistPresented.toggle()
-        } label: {
-            Image(systemName: isPlaylistPresented ? "list.bullet.circle.fill" : "list.bullet.circle")
-        }
-        .disabled(player.items.isEmpty)
+        PlaylistButton(isPlaylistPresented: $isPlaylistPresented)
+            .disabled(player.items.isEmpty)
     }
 }

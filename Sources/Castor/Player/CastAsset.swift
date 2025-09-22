@@ -190,3 +190,9 @@ public extension CastAsset {
         }
     }
 }
+
+extension CastAsset {
+    static func name(for asset: CastAsset?) -> String {
+        asset?.metadata?.title ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
+    }
+}

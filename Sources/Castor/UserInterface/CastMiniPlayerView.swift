@@ -8,7 +8,7 @@ import SwiftUI
 
 private struct _CastMiniPlayerView: View {
     @ObservedObject var player: CastPlayer
-    let cast: Cast
+    @ObservedObject var cast: Cast
 
     var body: some View {
         if ![.idle, .unknown].contains(player.state) {
@@ -31,6 +31,8 @@ private struct _CastMiniPlayerView: View {
             regularInfoView(for: asset)
             compactInfoView(for: asset)
         }
+        .accessibilityElement()
+        .accessibilityLabel(accessibilityLabel)
     }
 
     private func playbackButton() -> some View {
@@ -70,19 +72,22 @@ private extension _CastMiniPlayerView {
     }
 
     private func title(for asset: CastAsset?) -> some View {
-        Text(asset?.metadata?.title ?? "Untitled")
+        Text(CastAsset.name(for: asset))
             .font(.subheadline)
             .bold()
             .lineLimit(1)
     }
 
-    @ViewBuilder
     private func subtitle() -> some View {
-        if let deviceName = cast.currentDevice?.name {
-            Text("Casting on \(deviceName)", bundle: .module, comment: "Current Cast receiver (with device name as wildcard)")
-                .foregroundStyle(.secondary)
-                .font(.subheadline)
-                .lineLimit(1)
-        }
+        Text(CastDevice.route(to: cast.currentDevice))
+            .foregroundStyle(.secondary)
+            .font(.subheadline)
+            .lineLimit(1)
+    }
+}
+
+private extension _CastMiniPlayerView {
+    var accessibilityLabel: String {
+        "\(CastAsset.name(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
     }
 }
