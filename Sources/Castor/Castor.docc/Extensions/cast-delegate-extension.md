@@ -1,4 +1,4 @@
-# ``Castor/Castable``
+# ``Castor/CastDelegate``
 
 ## Topics
 
