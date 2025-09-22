@@ -16,7 +16,7 @@
 - ``isCasting(on:)``
 - ``startSession(with:)``
 
-### Controlling Volume
+### Controlling the Volume
 
 - ``canAdjustVolume``
 - ``canMute``
@@ -24,7 +24,7 @@
 - ``volume``
 - ``volumeRange``
 
-### Managing Playback
+### Managing the Playback
 
 - ``player``
 

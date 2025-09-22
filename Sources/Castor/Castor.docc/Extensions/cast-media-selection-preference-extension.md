@@ -2,7 +2,7 @@
 
 ## Topics
 
-### Getting Options
+### Getting Preferences
 
 - ``off``
 - ``on(languages:)``

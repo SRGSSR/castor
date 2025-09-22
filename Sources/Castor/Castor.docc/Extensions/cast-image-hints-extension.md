@@ -5,4 +5,3 @@
 ### Creating Hints
 
 - ``init(type:size:)``
-

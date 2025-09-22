@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-/// An object representing an asset that can be played by a ``CastPlayer``.
+/// An object representing an asset that can be played by a `CastPlayer`.
 public struct CastAsset {
     private let rawMediaInformation: GCKMediaInformation
 
