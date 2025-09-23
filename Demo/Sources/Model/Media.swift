@@ -105,9 +105,7 @@ extension Media.`Type`: Hashable {
     }
 }
 
-// TODO: Remove all @MainActor below as of Xcode 26.0 (demo assumes main actor isolation by default)
-
-@MainActor let kHlsUrlMedias: [Media] = [
+let kHlsUrlMedias: [Media] = [
     .init(
         title: "Apple Basic 4:3",
         imageUrl: kAppleImageUrl,
@@ -143,7 +141,7 @@ extension Media.`Type`: Hashable {
     )
 ]
 
-@MainActor let kMP3UrlMedias: [Media] = [
+let kMP3UrlMedias: [Media] = [
     .init(
         title: "Couleur 3",
         metadataType: .musicTrack,
@@ -170,7 +168,7 @@ extension Media.`Type`: Hashable {
     )
 ]
 
-@MainActor let kDashUrlMedias: [Media] = [
+let kDashUrlMedias: [Media] = [
     .init(
         title: "VOD",
         imageUrl: "https://dashif.org/img/dashif-logo-283x100_new.jpg",
@@ -183,7 +181,7 @@ extension Media.`Type`: Hashable {
     )
 ]
 
-@MainActor let kUrnMedias: [Media] = [
+let kUrnMedias: [Media] = [
     .init(
         title: "Horizontal video",
         type: .urn("urn:rts:video:14827306")
