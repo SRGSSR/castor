@@ -74,7 +74,8 @@ public final class CastPlayer: NSObject, ObservableObject {
         }
     }
 
-    private var shouldApplyMediaSelection = false
+    private var startedSessionID: Int?
+    private var shouldApplyMediaSelection = true
 
     init?(remoteMediaClient: GCKRemoteMediaClient?, configuration: CastConfiguration) {
         guard let remoteMediaClient else { return nil }
@@ -100,12 +101,12 @@ public final class CastPlayer: NSObject, ObservableObject {
 extension CastPlayer: @preconcurrency GCKRemoteMediaClientListener {
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didStartMediaSessionWithID sessionID: Int) {
-        shouldApplyMediaSelection = (sessionID == 1)
+        startedSessionID = sessionID
     }
 
     // swiftlint:disable:next missing_docs
     public func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        if shouldApplyMediaSelection {
+        if startedSessionID != nil && shouldApplyMediaSelection {
             shouldApplyMediaSelection = !applyMediaSelectionPreferredLanguages(with: mediaStatus)
         }
     }
