@@ -4,7 +4,7 @@
 
 ### Creating an Icon
 
-- ``init(cast:)
+- ``init(cast:)``
 
 ### Getting the Body
 

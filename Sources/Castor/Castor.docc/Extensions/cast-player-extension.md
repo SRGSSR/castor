@@ -10,6 +10,7 @@
 - ``insertItem(from:before:)``
 - ``insertItems(from:after:)``
 - ``insertItems(from:before:)``
+- ``items``
 - ``loadItem(from:with:)``
 - ``loadItems(from:with:)``
 - ``move(_:after:)``
@@ -23,13 +24,18 @@
 
 - ``pause()``
 - ``play()``
+- ``repeatMode``
+- ``shouldPlay``
 - ``stop()``
 - ``togglePlayPause()``
 
 ### Observing Playback Properties
 
 - ``currentAsset``
+- ``isActive``
+- ``isBusy``
 - ``state``
+- ``streamType``
 - ``time()``
 
 ### Seeking Through Media
