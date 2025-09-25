@@ -167,6 +167,12 @@ public struct CastPlayerView: View {
     }
 
     private func disconnectedView() -> some View {
-        Text("Disconnected", bundle: .module, comment: "Disconnected from a receiver")
+        UnavailableView {
+            Label {
+                Text("Disconnected", bundle: .module, comment: "Disconnected from a receiver")
+            } icon: {
+                Image("google.cast", bundle: .module)
+            }
+        }
     }
 }
