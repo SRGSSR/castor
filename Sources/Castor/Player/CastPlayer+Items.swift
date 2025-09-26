@@ -35,7 +35,7 @@ public extension CastPlayer {
 
         let loadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
         loadRequestDataBuilder.queueData = queueDataBuilder.build()
-        loadRequestDataBuilder.autoplay = NSNumber(booleanLiteral: options.shouldPlay)
+        loadRequestDataBuilder.autoplay = .init(value: options.shouldPlay)
         loadRequestDataBuilder.playbackRate = options.playbackSpeed
         if options.startTime.isValid {
             loadRequestDataBuilder.startTime = options.startTime.seconds
