@@ -9,7 +9,8 @@ import GoogleCast
 
 /// Options used when loading assets.
 public struct CastLoadOptions {
-    let rawOptions = GCKMediaQueueLoadOptions()
+    let startTime: CMTime
+    let startIndex: Int
 
     /// Creates loading options.
     ///
@@ -17,9 +18,7 @@ public struct CastLoadOptions {
     ///   - startTime: The time at which playback should start.
     ///   - startIndex: The index of the item at which playback should start.
     public init(startTime: CMTime = .invalid, startIndex: Int = 0) {
-        if startTime.isValid {
-            rawOptions.playPosition = startTime.seconds
-        }
-        rawOptions.startIndex = UInt(max(startIndex, 0))
+        self.startTime = startTime
+        self.startIndex = max(startIndex, 0)
     }
 }
