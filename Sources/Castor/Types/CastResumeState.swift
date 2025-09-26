@@ -21,8 +21,7 @@ public struct CastResumeState {
     ///
     /// - Parameters:
     ///   - assets: The assets in the queue.
-    ///   - index: The current index in the asset list.
-    ///   - time: The current playback time. Use `.invalid` for the default position.
+    ///   - options: The options to use when resuming playback.
     ///
     /// Fails if the provided index is not valid for the asset list.
     public init?(assets: [CastAsset], options: CastLoadOptions) {
