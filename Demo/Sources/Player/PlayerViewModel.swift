@@ -110,6 +110,7 @@ extension PlayerViewModel: Castable {
         guard let resumeState, let entry = entries[safeIndex: resumeState.index] else { return }
         let startTime = resumeState.time.isValid ? resumeState.time : .zero
         player.setMediaSelection(from: resumeState)
+        player.setDesiredPlaybackSpeed(resumeState.playbackSpeed)
         player.resume(at(startTime), in: entry.item)
         play()
     }
