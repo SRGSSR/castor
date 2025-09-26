@@ -61,7 +61,7 @@ public final class Cast: NSObject, ObservableObject {
             _isMuted || _volume == 0
         }
         set {
-            guard _isMuted != newValue || volume == 0 else { return }
+            guard canMute, _isMuted != newValue || volume == 0 else { return }
             _isMuted = newValue
             if !newValue, volume == 0 {
                 volume = 0.1
@@ -77,7 +77,7 @@ public final class Cast: NSObject, ObservableObject {
             _volume
         }
         set {
-            guard _volume != newValue else { return }
+            guard canAdjustVolume, _volume != newValue, volumeRange.contains(newValue) else { return }
             _volume = newValue
         }
     }
