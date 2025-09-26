@@ -76,7 +76,14 @@ extension PlayerViewModel: Castable {
         defer {
             entries = []
         }
-        guard var resumeState = CastResumeState(assets: castAssets(), index: currentIndex(), time: time()) else {
+        let options = CastLoadOptions(
+            startTime: time(),
+            startIndex: currentIndex() ?? 0,
+            shouldPlay: player.shouldPlay,
+            playbackSpeed: player.effectivePlaybackSpeed,
+            repeatMode: .off // TODO
+        )
+        guard var resumeState = CastResumeState(assets: castAssets(), options: options) else {
             return nil
         }
         resumeState.setMediaSelection(from: player)
@@ -107,12 +114,14 @@ extension PlayerViewModel: Castable {
     }
 
     private func resume(from resumeState: CastResumeState?) {
-        guard let resumeState, let entry = entries[safeIndex: resumeState.index] else { return }
-        let startTime = resumeState.time.isValid ? resumeState.time : .zero
+        guard let resumeState else { return }
+        let options = resumeState.options
+        guard let entry = entries[safeIndex: options.startIndex] else { return }
+        let startTime = options.startTime.isValid ? options.startTime : .zero
         player.setMediaSelection(from: resumeState)
-        player.setDesiredPlaybackSpeed(resumeState.playbackSpeed)
+        player.setDesiredPlaybackSpeed(options.playbackSpeed)
+        player.shouldPlay = options.shouldPlay
         player.resume(at(startTime), in: entry.item)
-        play()
     }
 
     private func currentIndex() -> Int? {

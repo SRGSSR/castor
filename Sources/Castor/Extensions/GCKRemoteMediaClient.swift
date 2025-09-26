@@ -20,14 +20,20 @@ extension GCKRemoteMediaClient {
         guard let mediaStatus else { return nil }
         let resumeItems = Self.resumeItems(from: mediaStatus)
         let index = resumeItems.firstIndex { $0.item.itemID == mediaStatus.currentItemID }
-        guard var resumeState = CastResumeState(assets: resumeItems.map(\.asset), index: index, time: time() - seekableTimeRange().start) else {
+        let options = CastLoadOptions(
+            startTime: time() - seekableTimeRange().start,
+            startIndex: index ?? 0,
+            shouldPlay: mediaStatus.shouldPlay,
+            playbackSpeed: mediaStatus.playbackRate,
+            repeatMode: .off // TODO
+        )
+        guard var resumeState = CastResumeState(assets: resumeItems.map(\.asset), options: options) else {
             return nil
         }
         mediaStatus.activeTracks().forEach { track in
             guard let language = track.languageCode, let characteristic = track.mediaCharacteristic else { return }
             resumeState.setMediaSelection(language: language, for: characteristic)
         }
-        resumeState.playbackSpeed = mediaStatus.playbackRate
         return resumeState
     }
 }
