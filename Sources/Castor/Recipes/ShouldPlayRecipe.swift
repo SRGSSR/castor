@@ -26,7 +26,7 @@ final class ShouldPlayRecipe: NSObject, MutableReceiverStateRecipe {
     }
 
     static func value(from status: GCKMediaStatus?) -> Bool {
-        [.playing, .buffering, .loading].contains(status?.playerState)
+        status?.shouldPlay == true
     }
 
     private static func request(for value: Bool, using remoteMediaClient: GCKRemoteMediaClient) -> GCKRequest {
