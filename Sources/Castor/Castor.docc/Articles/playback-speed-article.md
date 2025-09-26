@@ -16,8 +16,6 @@ Playback speed is part of the essential properties automatically published by a 
 
 To adjust the playback speed programmatically, use the ``CastPlayer/playbackSpeed`` property. You can retrieve the available speed range with ``CastPlayer/playbackSpeedRange``.
 
-> Tip: For custom user interfaces built in SwiftUI, use ``CastPlayer/playbackSpeed``. This provides a binding to the current playback speed, ensuring seamless integration with SwiftUI views.
-
 ### Provide speed controls
 
 When building a playback user interface, one of the most common requirements is to provide users with the ability to change the playback speed.
