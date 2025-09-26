@@ -138,6 +138,12 @@ let kHlsUrlMedias: [Media] = [
         title: "Tagesschau",
         imageUrl: "https://images.tagesschau.de/image/89045d82-5cd5-46ad-8f91-73911add30ee/AAABh3YLLz0/AAABibBx2rU/20x9-1280/tagesschau-logo-100.jpg",
         type: .url("https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8")
+    ),
+    .init(
+        title: "Couleur 3",
+        metadataType: .musicTrack,
+        imageUrl: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640",
+        type: .url("https://stxt-audiostreaming.akamaized.net/hls/live/2117380/couleur3/master.m3u8")
     )
 ]
 

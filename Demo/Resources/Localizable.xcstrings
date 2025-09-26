@@ -31,9 +31,6 @@
     "Cancel" : {
 
     },
-    "DASH streams" : {
-
-    },
     "DASH URLs" : {
 
     },
@@ -47,9 +44,6 @@
 
     },
     "Forward by" : {
-
-    },
-    "HLS streams" : {
 
     },
     "HLS URLs" : {
@@ -74,9 +68,6 @@
 
     },
     "Made with love in Switzerland" : {
-
-    },
-    "MP3 streams " : {
 
     },
     "MP3 URLs " : {
@@ -137,9 +128,6 @@
 
     },
     "Updating this setting will exit the application." : {
-
-    },
-    "URN-based streams" : {
 
     },
     "URNs" : {
