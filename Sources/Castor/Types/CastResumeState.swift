@@ -20,6 +20,9 @@ public struct CastResumeState {
     /// A value of `.invalid` corresponds to the default playback position.
     public let time: CMTime
 
+    /// The current playback speed.
+    public var playbackSpeed: Float = 1
+
     private var mediaSelectionLanguages: [AVMediaCharacteristic: String] = [:]
 
     /// Creates a state.

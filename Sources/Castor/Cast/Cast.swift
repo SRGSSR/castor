@@ -236,6 +236,7 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     private func resume(from state: CastResumeState) {
         guard let player else { return }
+        player.playbackSpeed = state.playbackSpeed
         player.loadItems(from: state.assets, with: .init(startTime: state.time, startIndex: state.index))
         state.mediaSelectionCharacteristics.forEach { characteristic in
             if let language = state.mediaSelectionLanguage(for: characteristic) {

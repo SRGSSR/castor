@@ -27,6 +27,7 @@ extension GCKRemoteMediaClient {
             guard let language = track.languageCode, let characteristic = track.mediaCharacteristic else { return }
             resumeState.setMediaSelection(language: language, for: characteristic)
         }
+        resumeState.playbackSpeed = mediaStatus.playbackRate
         return resumeState
     }
 }
