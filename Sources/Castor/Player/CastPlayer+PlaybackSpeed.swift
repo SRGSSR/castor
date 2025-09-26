@@ -16,7 +16,7 @@ public extension CastPlayer {
             _playbackSpeed
         }
         set {
-            _playbackSpeed = newValue
+            _playbackSpeed = newValue.clamped(to: playbackSpeedRange)
         }
     }
 }
