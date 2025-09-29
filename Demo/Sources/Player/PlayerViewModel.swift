@@ -121,6 +121,7 @@ extension PlayerViewModel: Castable {
         player.setMediaSelection(from: resumeState)
         player.setDesiredPlaybackSpeed(options.playbackSpeed)
         player.shouldPlay = options.shouldPlay
+        player.repeatMode = .init(from: options.repeatMode)
         player.resume(at(startTime), in: entry.item)
     }
 
