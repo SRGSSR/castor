@@ -80,7 +80,7 @@ extension PlayerViewModel: Castable {
             startTime: time(),
             startIndex: currentIndex() ?? 0,
             shouldPlay: player.shouldPlay,
-            playbackSpeed: player.effectivePlaybackSpeed,
+            playbackSpeed: player.playbackSpeed,
             repeatMode: .init(from: player.repeatMode)
         )
         guard var resumeState = CastResumeState(assets: castAssets(), options: options) else {
@@ -118,10 +118,10 @@ extension PlayerViewModel: Castable {
         let options = resumeState.options
         guard let entry = entries[safeIndex: options.startIndex] else { return }
         let startTime = options.startTime.isValid ? options.startTime : .zero
-        player.setMediaSelection(from: resumeState)
-        player.setDesiredPlaybackSpeed(options.playbackSpeed)
         player.shouldPlay = options.shouldPlay
+        player.playbackSpeed = options.playbackSpeed
         player.repeatMode = .init(from: options.repeatMode)
+        player.setMediaSelection(from: resumeState)
         player.resume(at(startTime), in: entry.item)
     }
 

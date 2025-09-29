@@ -146,8 +146,7 @@ private struct LocalRepeatModeMenu: View {
     var body: some View {
         Menu {
             Picker(selection: $player.repeatMode) {
-                // FIXME: Use CaseIterable
-                ForEach([RepeatMode.off, .one, .all], id: \.self) { mode in
+                ForEach(RepeatMode.allCases, id: \.self) { mode in
                     Text(mode.name).tag(mode)
                 }
             } label: {
