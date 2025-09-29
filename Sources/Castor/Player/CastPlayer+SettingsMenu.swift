@@ -90,11 +90,12 @@ private struct SettingsMenuContent: View {
                 action(.playbackSpeed(speed))
             }
         } label: {
-            Button(action: {}) {
+            Label {
                 Text("Playback Speed", bundle: .module, comment: "Playback setting menu title")
-                Text("\(player.playbackSpeed, specifier: "%g×")", bundle: .module, comment: "Speed multiplier")
+            } icon: {
                 Image(systemName: "speedometer")
             }
+            Text("\(player.playbackSpeed, specifier: "%g×")", bundle: .module, comment: "Speed multiplier")
         }
     }
 
@@ -102,11 +103,12 @@ private struct SettingsMenuContent: View {
         Menu {
             mediaSelectionMenuContent(characteristic: .audible)
         } label: {
-            Button(action: {}) {
+            Label {
                 Text("Audio", bundle: .module, comment: "Playback setting menu title")
-                Text(player.selectedMediaOption(for: .audible).displayName)
+            } icon: {
                 Image(systemName: "waveform.circle")
             }
+            Text(player.selectedMediaOption(for: .audible).displayName)
         }
     }
 
@@ -114,11 +116,12 @@ private struct SettingsMenuContent: View {
         Menu {
             mediaSelectionMenuContent(characteristic: .legible)
         } label: {
-            Button(action: {}) {
+            Label {
                 Text("Subtitles", bundle: .module, comment: "Playback setting menu title")
-                Text(player.selectedMediaOption(for: .legible).displayName)
+            } icon: {
                 Image(systemName: "captions.bubble")
             }
+            Text(player.selectedMediaOption(for: .legible).displayName)
         }
     }
 

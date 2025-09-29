@@ -11,6 +11,10 @@ extension GCKMediaStatus {
         queueItemCount != 0
     }
 
+    var shouldPlay: Bool {
+        [.playing, .buffering, .loading].contains(playerState)
+    }
+
     func items() -> [GCKMediaQueueItem] {
         (0..<queueItemCount).compactMap { queueItem(at: $0) }
     }

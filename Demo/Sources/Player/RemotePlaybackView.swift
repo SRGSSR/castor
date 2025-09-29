@@ -68,6 +68,42 @@ private struct RemoteTimeBar: View {
     }
 }
 
+private struct RemoteSettingsMenu: View {
+    let player: CastPlayer
+
+    var body: some View {
+        Menu {
+            player.standardSettingsMenu()
+            RemoteRepeatModeMenu(player: player)
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.system(size: 20))
+                .tint(.white)
+        }
+        .menuOrder(.fixed)
+    }
+}
+
+private struct RemoteRepeatModeMenu: View {
+    @ObservedObject var player: CastPlayer
+
+    var body: some View {
+        Menu {
+            Picker(selection: $player.repeatMode) {
+                ForEach(CastRepeatMode.allCases, id: \.self) { mode in
+                    Text(mode.name).tag(mode)
+                }
+            } label: {
+                EmptyView()
+            }
+            .pickerStyle(.inline)
+        } label: {
+            Label("Repeat", systemImage: "repeat.circle")
+            Text(player.repeatMode.name)
+        }
+    }
+}
+
 struct RemotePlaybackView: View {
     @ObservedObject var player: CastPlayer
 
@@ -117,21 +153,10 @@ struct RemotePlaybackView: View {
     private func bottomBar() -> some View {
         HStack {
             RemoteTimeBar(player: player)
-            settingsButton()
+            RemoteSettingsMenu(player: player)
         }
         .padding()
         .frame(maxHeight: .infinity, alignment: .bottom)
-    }
-
-    private func settingsButton() -> some View {
-        Menu {
-            player.standardSettingsMenu()
-        } label: {
-            Image(systemName: "ellipsis.circle")
-                .font(.system(size: 20))
-                .tint(.white)
-        }
-        .menuOrder(.fixed)
     }
 
     private func playlist() -> some View {

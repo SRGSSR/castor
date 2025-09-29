@@ -4,10 +4,12 @@
 
 ### Creating a Resume State
 
-- ``init(assets:index:time:)``
+- ``init(assets:options:)``
+
+### Reading a State
+
 - ``assets``
-- ``index``
-- ``time``
+- ``options``
 
 ### Managing Media Selection
 

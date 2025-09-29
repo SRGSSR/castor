@@ -28,7 +28,19 @@ public extension CastPlayer {
     ///   - assets: The assets to load as player items.
     ///   - options: The options to use when loading.
     func loadItems(from assets: [CastAsset], with options: CastLoadOptions = .init()) {
-        remoteMediaClient.queueLoad(Self.rawItems(from: assets), with: options.rawOptions)
+        let queueDataBuilder = GCKMediaQueueDataBuilder(queueType: .generic)
+        queueDataBuilder.items = Self.rawItems(from: assets)
+        queueDataBuilder.startIndex = UInt(options.startIndex)
+        queueDataBuilder.repeatMode = options.repeatMode.rawMode()
+
+        let loadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
+        loadRequestDataBuilder.queueData = queueDataBuilder.build()
+        loadRequestDataBuilder.autoplay = .init(value: options.shouldPlay)
+        loadRequestDataBuilder.playbackRate = options.playbackSpeed
+        if options.startTime.isValid {
+            loadRequestDataBuilder.startTime = options.startTime.seconds
+        }
+        remoteMediaClient.loadMedia(with: loadRequestDataBuilder.build())
     }
 
     /// Loads a player item from the specified asset and starts playback.

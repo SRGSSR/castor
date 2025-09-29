@@ -6,6 +6,8 @@
 
 public extension CastPlayer {
     /// A Boolean value that indicates whether the player should automatically play content when possible.
+    ///
+    /// > Note: Use ``CastLoadOptions`` to configure behavior when loading items.
     var shouldPlay: Bool {
         get {
             _shouldPlay

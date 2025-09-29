@@ -12,13 +12,8 @@ public struct CastResumeState {
     /// The assets in the queue.
     public let assets: [CastAsset]
 
-    /// The current index in the asset list.
-    public let index: Int
-
-    /// The current playback time.
-    ///
-    /// A value of `.invalid` corresponds to the default playback position.
-    public let time: CMTime
+    /// The options to use when resuming playback.
+    public let options: CastLoadOptions
 
     private var mediaSelectionLanguages: [AVMediaCharacteristic: String] = [:]
 
@@ -26,15 +21,13 @@ public struct CastResumeState {
     ///
     /// - Parameters:
     ///   - assets: The assets in the queue.
-    ///   - index: The current index in the asset list.
-    ///   - time: The current playback time. Use `.invalid` for the default position.
+    ///   - options: The options to use when resuming playback.
     ///
     /// Fails if the provided index is not valid for the asset list.
-    public init?(assets: [CastAsset], index: Int?, time: CMTime) {
-        guard let index, assets.indices.contains(index) else { return nil }
+    public init?(assets: [CastAsset], options: CastLoadOptions) {
+        guard assets.indices.contains(options.startIndex) else { return nil }
         self.assets = assets
-        self.index = index
-        self.time = time
+        self.options = options
     }
 }
 
