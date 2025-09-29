@@ -124,6 +124,46 @@ private struct LocalErrorView: View {
     }
 }
 
+private struct LocalSettingsMenu: View {
+    let player: Player
+
+    var body: some View {
+        Menu {
+            player.standardSettingsMenu()
+            LocalRepeatModeMenu(player: player)
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.system(size: 20))
+                .tint(.white)
+        }
+        .menuOrder(.fixed)
+    }
+}
+
+private struct LocalRepeatModeMenu: View {
+    @ObservedObject var player: Player
+
+    var body: some View {
+        Menu {
+            Picker(selection: $player.repeatMode) {
+                // FIXME: Use CaseIterable
+                ForEach([RepeatMode.off, .one, .all], id: \.self) { mode in
+                    Text(mode.name).tag(mode)
+                }
+            } label: {
+                EmptyView()
+            }
+            .pickerStyle(.inline)
+        } label: {
+            Button(action: {}) {
+                Text("Repeat")
+                Text(player.repeatMode.name)
+                Image(systemName: "repeat.circle")
+            }
+        }
+    }
+}
+
 struct LocalPlaybackView: View {
     @ObservedObject var model: PlayerViewModel
     @ObservedObject var player: Player
@@ -194,21 +234,10 @@ struct LocalPlaybackView: View {
     private func bottomBar() -> some View {
         HStack {
             LocalTimeBar(player: player)
-            settingsButton()
+            LocalSettingsMenu(player: player)
         }
         .padding()
         .frame(maxHeight: .infinity, alignment: .bottom)
-    }
-
-    private func settingsButton() -> some View {
-        Menu {
-            player.standardSettingsMenu()
-        } label: {
-            Image(systemName: "ellipsis.circle")
-                .font(.system(size: 20))
-                .tint(.white)
-        }
-        .menuOrder(.fixed)
     }
 
     private func playlist() -> some View {

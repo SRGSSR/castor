@@ -6,8 +6,20 @@
 
 import Castor
 import PillarboxPlayer
+import SwiftUI
 
 extension RepeatMode {
+    var name: LocalizedStringKey {
+        switch self {
+        case .off:
+            "Off"
+        case .one:
+            "One"
+        case .all:
+            "All"
+        }
+    }
+
     init(from repeatMode: CastRepeatMode) {
         switch repeatMode {
         case .off:
