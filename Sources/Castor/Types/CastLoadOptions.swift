@@ -27,7 +27,7 @@ public struct CastLoadOptions {
     public let repeatMode: CastRepeatMode
 
     /// Creates loading options.
-    /// 
+    ///
     /// - Parameters:
     ///   - startIndex: The index of the item at which playback should start.
     ///   - startTime: The time at which playback should start. Use `.invalid` for the default position.
