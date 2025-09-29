@@ -7,7 +7,7 @@
 import GoogleCast
 
 /// A mode that determines how the player repeats playback of items in its queue.
-public enum CastRepeatMode {
+public enum CastRepeatMode: CaseIterable {
     /// Disabled.
     case off
 
