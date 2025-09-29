@@ -98,11 +98,8 @@ private struct RemoteRepeatModeMenu: View {
             }
             .pickerStyle(.inline)
         } label: {
-            Button(action: {}) {
-                Text("Repeat")
-                Text(player.repeatMode.name)
-                Image(systemName: "repeat.circle")
-            }
+            Label("Repeat", systemImage: "repeat.circle")
+            Text(player.repeatMode.name)
         }
     }
 }
