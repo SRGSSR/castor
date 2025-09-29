@@ -11,6 +11,8 @@ public extension CastPlayer {
     }
 
     /// The playback speed currently in effect.
+    ///
+    /// > Note: Use ``CastLoadOptions`` to configure behavior when loading items.
     var playbackSpeed: Float {
         get {
             _playbackSpeed

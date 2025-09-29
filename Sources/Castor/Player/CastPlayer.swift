@@ -57,6 +57,8 @@ public final class CastPlayer: NSObject, ObservableObject {
     }
 
     /// The mode that determines how the player repeats playback of items in its queue.
+    ///
+    /// > Note: Use ``CastLoadOptions`` to configure behavior when loading items.
     public var repeatMode: CastRepeatMode {
         get {
             _repeatMode
