@@ -4,7 +4,7 @@
 
 ### Creating Options
 
-- ``init(startTime:startIndex:shouldPlay:playbackSpeed:repeatMode:)``
+- ``init(startIndex:startTime:shouldPlay:playbackSpeed:repeatMode:)``
 
 ### Reading Options
 

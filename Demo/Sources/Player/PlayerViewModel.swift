@@ -77,8 +77,8 @@ extension PlayerViewModel: Castable {
             entries = []
         }
         let options = CastLoadOptions(
-            startTime: time(),
             startIndex: currentIndex() ?? 0,
+            startTime: time(),
             shouldPlay: player.shouldPlay,
             playbackSpeed: player.playbackSpeed,
             repeatMode: .init(from: player.repeatMode)
