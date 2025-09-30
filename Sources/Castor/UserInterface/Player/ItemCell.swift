@@ -24,7 +24,7 @@ struct ItemCell: View {
 
     private var title: String {
         guard item.isFetched else { return .placeholder(length: .random(in: 20...30)) }
-        return CastAsset.name(for: item.asset)
+        return CastAsset.description(for: item.asset)
     }
 
     private func artworkImage() -> some View {

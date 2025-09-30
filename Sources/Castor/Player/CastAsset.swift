@@ -192,9 +192,9 @@ public extension CastAsset {
 }
 
 extension CastAsset {
-    static func name(for asset: CastAsset?) -> String {
+    static func description(for asset: CastAsset?) -> String {
         guard let asset else {
-            return String(localized: "Idle", bundle: .module, comment: "Generic label displayed when the Cast receiver is idle")
+            return String(localized: "Not playing", bundle: .module, comment: "Label displayed when no content is being played")
         }
         return asset.metadata?.title ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast asset")
     }

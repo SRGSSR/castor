@@ -72,7 +72,7 @@ private extension _CastMiniPlayerView {
     }
 
     private func title(for asset: CastAsset?) -> some View {
-        Text(CastAsset.name(for: asset))
+        Text(CastAsset.description(for: asset))
             .font(.subheadline)
             .bold()
             .lineLimit(1)
@@ -88,6 +88,6 @@ private extension _CastMiniPlayerView {
 
 private extension _CastMiniPlayerView {
     var accessibilityLabel: String {
-        "\(CastAsset.name(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
+        "\(CastAsset.description(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
     }
 }

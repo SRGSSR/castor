@@ -55,7 +55,7 @@ extension CastDevice {
     }
 
     static func route(to device: CastDevice?) -> String {
-        String(localized: "Casting on \(name(for: device))", bundle: .module, comment: "Current Cast receiver (with device name as wildcard)")
+        String(localized: "Connected to \(name(for: device))", bundle: .module, comment: "Connected receiver (device name as wildcard)")
     }
 }
 
