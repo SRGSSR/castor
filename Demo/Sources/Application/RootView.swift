@@ -7,12 +7,48 @@
 import Castor
 import SwiftUI
 
-struct RootView: View {
-    @StateObject private var cast = Cast(configuration: .standard)
-    @StateObject private var router = Router()
+private struct MiniPlayer: View {
+    @ObservedObject var player: CastPlayer
+
+    @EnvironmentObject private var cast: Cast
+    @EnvironmentObject private var router: Router
 
     @AppStorage(UserDefaults.DemoSettingKey.playerType)
     private var playerType: PlayerType = .standard
+
+    var body: some View {
+        ZStack {
+            if isLoaded {
+                CastMiniPlayerView(cast: cast)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(.thickMaterial)
+                    .onTapGesture(perform: showPlayer)
+                    .accessibilityAddTraits(.isButton)
+                    .frame(height: 64)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.default, value: isLoaded)
+    }
+
+    private var isLoaded: Bool {
+        !player.items.isEmpty
+    }
+
+    private func showPlayer() {
+        switch playerType {
+        case .standard:
+            router.presented = .remotePlayer
+        case .unified:
+            router.presented = .unifiedPlayer
+        }
+    }
+}
+
+struct RootView: View {
+    @StateObject private var cast = Cast(configuration: .standard)
+    @StateObject private var router = Router()
 
     var body: some View {
         TabView {
@@ -52,23 +88,8 @@ struct RootView: View {
 
     @ViewBuilder
     private func miniPlayer() -> some View {
-        if cast.player != nil {
-            CastMiniPlayerView(cast: cast)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-                .onTapGesture(perform: showPlayer)
-                .accessibilityAddTraits(.isButton)
-                .background(.thickMaterial)
-                .frame(height: 64)
-        }
-    }
-
-    private func showPlayer() {
-        switch playerType {
-        case .standard:
-            router.presented = .remotePlayer
-        case .unified:
-            router.presented = .unifiedPlayer
+        if let player = cast.player {
+            MiniPlayer(player: player)
         }
     }
 }
