@@ -26,7 +26,6 @@ private struct MiniPlayer: View {
                     .onTapGesture(perform: showPlayer)
                     .accessibilityAddTraits(.isButton)
                     .frame(height: 64)
-                    .geometryGroup17()
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }

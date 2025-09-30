@@ -18,6 +18,7 @@ private struct _CastMiniPlayerView: View {
             playbackButton()
         }
         .contentShape(.rect)
+        .geometryGroup17()
     }
 
     private func artwork(for asset: CastAsset?) -> some View {
