@@ -18,6 +18,18 @@ private struct PulseSymbolEffect17: ViewModifier {
     }
 }
 
+private struct GeometryGroup17: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            content
+                .geometryGroup()
+        }
+        else {
+            content
+        }
+    }
+}
+
 extension View {
     /// Prevents touch propagation to views located below the receiver.
     func preventsTouchPropagation() -> some View {
@@ -26,5 +38,9 @@ extension View {
 
     func pulseSymbolEffect17() -> some View {
         modifier(PulseSymbolEffect17())
+    }
+
+    func geometryGroup17() -> some View {
+        modifier(GeometryGroup17())
     }
 }
