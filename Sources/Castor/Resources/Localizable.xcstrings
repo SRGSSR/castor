@@ -639,6 +639,9 @@
         }
       }
     },
+    "Idle" : {
+      "comment" : "Generic name displayed when no asset is loaded"
+    },
     "Live" : {
       "comment" : "Short label associated with live content",
       "localizations" : {
@@ -1249,7 +1252,7 @@
       }
     },
     "Unknown" : {
-      "comment" : "Generic name for a Cast device",
+      "comment" : "Generic name for a Cast asset\nGeneric name for a Cast device",
       "localizations" : {
         "de" : {
           "stringUnit" : {
