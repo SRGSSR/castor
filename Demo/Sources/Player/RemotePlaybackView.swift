@@ -22,7 +22,7 @@ private struct RemoteItemCell: View {
 
     private var title: String {
         guard item.isFetched else { return "..." }
-        return item.asset?.metadata?.title ?? "Untitled"
+        return item.asset?.metadata?.title ?? "Unknown"
     }
 
     private func disclosureImage() -> some View {
