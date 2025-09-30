@@ -11,15 +11,13 @@ private struct _CastMiniPlayerView: View {
     @ObservedObject var cast: Cast
 
     var body: some View {
-        if ![.idle, .unknown].contains(player.state) {
-            HStack(spacing: 20) {
-                artwork(for: player.currentAsset)
-                infoView(for: player.currentAsset)
-                Spacer()
-                playbackButton()
-            }
-            .contentShape(.rect)
+        HStack(spacing: 20) {
+            artwork(for: player.currentAsset)
+            infoView(for: player.currentAsset)
+            Spacer()
+            playbackButton()
         }
+        .contentShape(.rect)
     }
 
     private func artwork(for asset: CastAsset?) -> some View {
@@ -38,6 +36,7 @@ private struct _CastMiniPlayerView: View {
     private func playbackButton() -> some View {
         PlaybackButton(player: player)
             .font(.system(size: 40))
+            .disabled(!player.isActive)
     }
 }
 
