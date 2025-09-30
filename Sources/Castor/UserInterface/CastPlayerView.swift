@@ -121,7 +121,7 @@ private struct _CastPlayerView: View {
                     .foregroundStyle(.secondary)
             }
             else {
-                Text(CastAsset.name(for: player.currentAsset))
+                Text(CastAsset.description(for: player.currentAsset))
             }
         }
         .bold()

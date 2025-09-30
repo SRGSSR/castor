@@ -6,6 +6,18 @@
 
 import SwiftUI
 
+private struct GeometryGroup17: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            content
+                .geometryGroup()
+        }
+        else {
+            content
+        }
+    }
+}
+
 public extension View {
     /// Binds a progress tracker to a player.
     ///
@@ -53,5 +65,9 @@ extension View {
 
     func redacted(_ condition: Bool) -> some View {
         redacted(reason: condition ? .placeholder : .init())
+    }
+
+    func geometryGroup17() -> some View {
+        modifier(GeometryGroup17())
     }
 }

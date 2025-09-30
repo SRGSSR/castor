@@ -11,15 +11,14 @@ private struct _CastMiniPlayerView: View {
     @ObservedObject var cast: Cast
 
     var body: some View {
-        if ![.idle, .unknown].contains(player.state) {
-            HStack(spacing: 20) {
-                artwork(for: player.currentAsset)
-                infoView(for: player.currentAsset)
-                Spacer()
-                playbackButton()
-            }
-            .contentShape(.rect)
+        HStack(spacing: 20) {
+            artwork(for: player.currentAsset)
+            infoView(for: player.currentAsset)
+            Spacer()
+            playbackButton()
         }
+        .contentShape(.rect)
+        .geometryGroup17()
     }
 
     private func artwork(for asset: CastAsset?) -> some View {
@@ -38,10 +37,11 @@ private struct _CastMiniPlayerView: View {
     private func playbackButton() -> some View {
         PlaybackButton(player: player)
             .font(.system(size: 40))
+            .disabled(!player.isActive)
     }
 }
 
-/// A mini cast player view.
+/// A mini Cast player view.
 public struct CastMiniPlayerView: View {
     @ObservedObject private var cast: Cast
 
@@ -72,7 +72,7 @@ private extension _CastMiniPlayerView {
     }
 
     private func title(for asset: CastAsset?) -> some View {
-        Text(CastAsset.name(for: asset))
+        Text(CastAsset.description(for: asset))
             .font(.subheadline)
             .bold()
             .lineLimit(1)
@@ -88,6 +88,6 @@ private extension _CastMiniPlayerView {
 
 private extension _CastMiniPlayerView {
     var accessibilityLabel: String {
-        "\(CastAsset.name(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
+        "\(CastAsset.description(for: player.currentAsset)), \(CastDevice.route(to: cast.currentDevice))"
     }
 }

@@ -204,35 +204,6 @@
         }
       }
     },
-    "Casting on %@" : {
-      "comment" : "Current Cast receiver (with device name as wildcard)",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Übertragung auf %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diffusion sur %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trasmissione su %@"
-          }
-        },
-        "rm" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transmetter sin %@"
-          }
-        }
-      }
-    },
     "Check your Wi-Fi network and make sure Local Network Access is on." : {
       "comment" : "Action suggested when no Cast receivers are found",
       "localizations" : {
@@ -825,7 +796,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A l'arrêt"
+            "value" : "À l'arrêt"
           }
         },
         "it" : {
@@ -1249,7 +1220,7 @@
       }
     },
     "Unknown" : {
-      "comment" : "Generic name for a Cast device",
+      "comment" : "Generic name for a Cast asset\nGeneric name for a Cast device",
       "localizations" : {
         "de" : {
           "stringUnit" : {
