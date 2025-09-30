@@ -40,7 +40,7 @@ private struct _CastMiniPlayerView: View {
     }
 }
 
-/// A mini cast player view.
+/// A mini Cast player view.
 public struct CastMiniPlayerView: View {
     @ObservedObject private var cast: Cast
 
