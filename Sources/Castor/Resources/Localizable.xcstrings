@@ -640,7 +640,7 @@
       }
     },
     "Idle" : {
-      "comment" : "Generic name displayed when no asset is loaded"
+      "comment" : "Generic label displayed when the Cast receiver is idle"
     },
     "Live" : {
       "comment" : "Short label associated with live content",
