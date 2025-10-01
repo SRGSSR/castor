@@ -161,6 +161,6 @@ This protocol is designed for playback-related contexts, typically views or obje
 - **Session start**: ``Castable/castStartSession()`` returns a ``CastResumeState`` that allows transfer of local playback to a Cast receiver, including synchronization of position, audio selection, and subtitle tracks.
 - **Session end**: ``Castable/castEndSession(with:)`` receivers the ``CastResumeState`` to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
 
-To define a local playback context, apply the ``SwiftUICore/View/makeCastable(_:with:)`` modifier to a player view hierarchy, passing the ``Castable`` object as a parameter.
+To define a local playback context, apply the ``SwiftUICore/View/castable(_:with:)`` modifier to a player view hierarchy, passing the ``Castable`` object as a parameter.
 
 > Important: ``CastResumeState`` is built from the queue items returned by the receiver in its media status information. For proper resumption with all items when ending a session, the receiver must return the complete list of items.
