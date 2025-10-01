@@ -20,6 +20,11 @@ struct EmptyDevicesView: View {
                 bundle: .module,
                 comment: "Action suggested when no Cast receivers are found"
             )
+            if canOpenSettings() {
+                Button(action: openSettings) {
+                    Text("Open Settings", bundle: .module, comment: "Open settings button accessibility label")
+                }
+            }
         }
     }
 
@@ -30,6 +35,26 @@ struct EmptyDevicesView: View {
         else {
             return "tv.fill"
         }
+    }
+}
+
+private extension EmptyDevicesView {
+    static let settingsUrl = {
+        if ProcessInfo.processInfo.isRunningOnMac {
+            // https://gist.github.com/rmcdongit/f66ff91e0dad78d4d6346a75ded4b751
+            URL(string: "x-apple.systempreferences:com.apple.preference.security")!
+        }
+        else {
+            URL(string: UIApplication.openSettingsURLString)!
+        }
+    }()
+
+    func openSettings() {
+        UIApplication.shared.open(Self.settingsUrl)
+    }
+
+    func canOpenSettings() -> Bool {
+        UIApplication.shared.canOpenURL(Self.settingsUrl)
     }
 }
 

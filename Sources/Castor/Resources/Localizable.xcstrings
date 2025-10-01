@@ -842,6 +842,35 @@
         }
       }
     },
+    "Open Settings" : {
+      "comment" : "Open settings button accessibility label",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir Réglages"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri Impostazioni"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avrir Parameters"
+          }
+        }
+      }
+    },
     "Pause" : {
       "comment" : "Pause button accessibility label",
       "localizations" : {
