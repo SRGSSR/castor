@@ -842,6 +842,9 @@
         }
       }
     },
+    "Open Settings" : {
+      "comment" : "Open settings button accessibility label"
+    },
     "Pause" : {
       "comment" : "Pause button accessibility label",
       "localizations" : {
