@@ -21,8 +21,8 @@ extension GCKRemoteMediaClient {
         let resumeItems = Self.resumeItems(from: mediaStatus)
         let index = resumeItems.firstIndex { $0.item.itemID == mediaStatus.currentItemID }
         let options = CastLoadOptions(
-            startIndex: index ?? 0,
-            startTime: time() - seekableTimeRange().start,
+            index: index ?? 0,
+            time: time() - seekableTimeRange().start,
             shouldPlay: mediaStatus.shouldPlay,
             playbackSpeed: mediaStatus.playbackRate,
             repeatMode: .init(rawMode: mediaStatus.queueRepeatMode) ?? .off

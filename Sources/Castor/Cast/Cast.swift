@@ -15,7 +15,7 @@ import SwiftUI
 /// `Cast` is a top-level type responsible for handling available devices, active sessions, and the volume of the
 /// current device.
 ///
-/// Create and store a `Cast` instance in your top-level application view, then use ``SwiftUICore/View/supportsCast(_:with:)``
+/// Create and store a `Cast` instance in your top-level application view, then use ``SwiftUICore/View/supportsCast(_:with:)-(_,CastDelegate)``
 /// to register a delegate. The delegate can respond to session start and end events by presenting or dismissing views related
 /// to the current cast session, typically through a router.
 ///

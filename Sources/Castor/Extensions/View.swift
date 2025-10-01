@@ -49,9 +49,9 @@ public extension View {
     /// Makes a view context castable.
     ///
     /// - Parameters:
-    ///   - castable: The view context that can be cast.
     ///   - cast: The Cast object.
-    func makeCastable(_ castable: Castable, with cast: Cast) -> some View {
+    ///   - castable: The view context that can be cast.
+    func supportsCast(_ cast: Cast, with castable: Castable) -> some View {
         onAppear {
             cast.castable = castable
         }

@@ -36,7 +36,6 @@ private final class AppDelegate: NSObject, UIApplicationDelegate {
         options.physicalVolumeButtonsWillControlDeviceVolume = true
         options.launchOptions?.androidReceiverCompatible = true
         GCKCastContext.setSharedInstanceWith(options)
-        GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     }
 }
 

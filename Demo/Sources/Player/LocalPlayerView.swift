@@ -34,7 +34,7 @@ struct LocalPlayerView: View {
                 }
             }
             .onAppear(perform: playMedia)
-            .makeCastable(model, with: cast)
+            .supportsCast(cast, with: model)
     }
 
     private func playMedia() {
