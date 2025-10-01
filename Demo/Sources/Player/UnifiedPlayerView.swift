@@ -48,7 +48,7 @@ struct UnifiedPlayerView: View {
             }
         }
         .onAppear(perform: playMedia)
-        .castable(model, with: cast)
+        .supportsCast(cast, with: model)
     }
 
     private func playMedia() {
