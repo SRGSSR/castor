@@ -4,12 +4,12 @@
 
 ### Creating Options
 
-- ``init(startIndex:startTime:shouldPlay:playbackSpeed:repeatMode:)``
+- ``init(index:time:shouldPlay:playbackSpeed:repeatMode:)``
 
 ### Reading Options
 
+- ``index``
 - ``playbackSpeed``
 - ``repeatMode``
 - ``shouldPlay``
-- ``startIndex``
-- ``startTime``
+- ``time``

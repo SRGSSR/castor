@@ -25,7 +25,7 @@ public struct CastResumeState {
     ///
     /// Fails if the provided index is not valid for the asset list.
     public init?(assets: [CastAsset], options: CastLoadOptions) {
-        guard assets.indices.contains(options.startIndex) else { return nil }
+        guard assets.indices.contains(options.index) else { return nil }
         self.assets = assets
         self.options = options
     }

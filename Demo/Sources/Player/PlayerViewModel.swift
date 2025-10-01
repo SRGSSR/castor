@@ -77,8 +77,8 @@ extension PlayerViewModel: Castable {
             entries = []
         }
         let options = CastLoadOptions(
-            startIndex: currentIndex() ?? 0,
-            startTime: time(),
+            index: currentIndex() ?? 0,
+            time: time(),
             shouldPlay: player.shouldPlay,
             playbackSpeed: player.playbackSpeed,
             repeatMode: .init(from: player.repeatMode)
@@ -116,8 +116,8 @@ extension PlayerViewModel: Castable {
     private func resume(from resumeState: CastResumeState?) {
         guard let resumeState else { return }
         let options = resumeState.options
-        guard let entry = entries[safeIndex: options.startIndex] else { return }
-        let startTime = options.startTime.isValid ? options.startTime : .zero
+        guard let entry = entries[safeIndex: options.index] else { return }
+        let startTime = options.time.isValid ? options.time : .zero
         player.shouldPlay = options.shouldPlay
         player.playbackSpeed = options.playbackSpeed
         player.repeatMode = .init(from: options.repeatMode)

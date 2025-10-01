@@ -13,7 +13,7 @@ import Testing
 struct CastResumeStateTests {
     @Test
     func empty() throws {
-        #expect(CastResumeState(assets: [], options: .init(startIndex: 0, startTime: .invalid)) == nil)
+        #expect(CastResumeState(assets: [], options: .init(index: 0, time: .invalid)) == nil)
     }
 
     @Test
@@ -23,7 +23,7 @@ struct CastResumeStateTests {
                 assets: [
                     .url(URL(string: "https://localhost/stream.m3u8")!, metadata: nil)
                 ],
-                options: .init(startIndex: 0, startTime: .zero)
+                options: .init(index: 0, time: .zero)
             )
         )
         #expect(state.assets.count == 1)
@@ -36,7 +36,7 @@ struct CastResumeStateTests {
                 assets: [
                     .url(URL(string: "https://localhost/stream.m3u8")!, metadata: nil)
                 ],
-                options: .init(startIndex: 1, startTime: .zero)
+                options: .init(index: 1, time: .zero)
             ) == nil
         )
     }
@@ -48,7 +48,7 @@ struct CastResumeStateTests {
                 assets: [
                     .url(URL(string: "https://localhost/stream.m3u8")!, metadata: nil)
                 ],
-                options: .init(startIndex: 0, startTime: .zero)
+                options: .init(index: 0, time: .zero)
             )
         )
         state.setMediaSelection(language: "fr", for: .legible)
