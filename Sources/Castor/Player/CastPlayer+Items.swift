@@ -34,6 +34,7 @@ public extension CastPlayer {
         queueDataBuilder.repeatMode = options.repeatMode.rawMode()
 
         let loadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
+        loadRequestDataBuilder.mediaInformation = .init()
         loadRequestDataBuilder.queueData = queueDataBuilder.build()
         loadRequestDataBuilder.autoplay = .init(value: options.shouldPlay)
         loadRequestDataBuilder.playbackRate = options.playbackSpeed
