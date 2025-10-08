@@ -50,18 +50,24 @@ struct LocalPlayerView: View {
 
 private extension LocalPlayerView {
     func topBar() -> some View {
-        HStack(spacing: 20) {
+        HStack {
             closeButton()
             Spacer()
-            addButton()
-            CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
+            topTrailingButtons()
         }
         .font(.system(size: 22))
         .foregroundStyle(.white)
         .opacity(isUserInterfaceActuallyHidden ? 0 : 1)
         .animation(.default, value: isUserInterfaceActuallyHidden)
+    }
+
+    func topTrailingButtons() -> some View {
+        HStack(spacing: 20) {
+            addButton()
+            CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
+        }
         .padding()
-        .preventsTouchPropagation()
+        .contentShape(.rect)
     }
 
     func addButton() -> some View {
@@ -78,6 +84,8 @@ private extension LocalPlayerView {
         } label: {
             Image(systemName: "xmark")
         }
+        .padding()
+        .contentShape(.rect)
     }
 }
 
