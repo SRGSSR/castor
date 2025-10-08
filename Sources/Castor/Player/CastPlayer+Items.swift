@@ -29,13 +29,12 @@ public extension CastPlayer {
     ///   - options: The options to use when loading.
     func loadItems(from assets: [CastAsset], with options: CastLoadOptions = .init()) {
         let queueDataBuilder = GCKMediaQueueDataBuilder(queueType: .generic)
-        let items = Self.rawItems(from: assets)
-        queueDataBuilder.items = items
+        queueDataBuilder.items = Self.rawItems(from: assets)
         queueDataBuilder.startIndex = UInt(options.index)
         queueDataBuilder.repeatMode = options.repeatMode.rawMode()
 
         let loadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
-        loadRequestDataBuilder.mediaInformation = items[safeIndex: options.index]?.mediaInformation
+        loadRequestDataBuilder.mediaInformation = .init()
         loadRequestDataBuilder.queueData = queueDataBuilder.build()
         loadRequestDataBuilder.autoplay = .init(value: options.shouldPlay)
         loadRequestDataBuilder.playbackRate = options.playbackSpeed
