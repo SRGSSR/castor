@@ -17,13 +17,13 @@ final class MultizoneDevicesRecipe: NSObject, ReceiverStateRecipe {
         }
     }
 
-    init(service: GCKCastSession, update: @escaping ([CastMultizoneDevice]) -> Void) {
+    init(service: GCKCastSession?, update: @escaping ([CastMultizoneDevice]) -> Void) {
         self.update = update
         super.init()
-        service.add(self)
+        service?.add(self)
     }
 
-    static func status(from service: GCKCastSession) -> [CastMultizoneDevice] {
+    static func status(from service: GCKCastSession?) -> [CastMultizoneDevice] {
         []
     }
 }

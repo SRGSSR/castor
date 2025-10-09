@@ -36,6 +36,9 @@ public final class Cast: NSObject, ObservableObject {
 
     @CurrentDevice private var _currentDevice: CastDevice?
 
+    @ReceiverState(MultizoneDevicesRecipe.self)
+    private var _multizoneDevices
+
     @MutableReceiverState(VolumeRecipe.self)
     private var _volume
 
@@ -45,6 +48,7 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            __multizoneDevices.bind(to: currentSession)
         }
     }
 
@@ -118,6 +122,11 @@ public final class Cast: NSObject, ObservableObject {
     /// The list of devices discovered on the local network.
     public var devices: [CastDevice] {
         _devices
+    }
+
+    /// The list of multizone devices discovered on the local network.
+    public var multizoneDevices: [CastMultizoneDevice] {
+        _multizoneDevices
     }
 
     /// The current connection state with a device.
