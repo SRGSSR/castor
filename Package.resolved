@@ -1,94 +1,13 @@
 {
-  "originHash" : "9e505055bddf52c6b05947e5297f2cd6f450a799ab063c82cc9a4dd71d7dbbb5",
+  "originHash" : "6d002d9e5aa60fa7ad201bdb0f8ffcc56e6fa76473064fc61b9d276660d8fed6",
   "pins" : [
-    {
-      "identity" : "comscore-swift-package-manager",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/comScore/Comscore-Swift-Package-Manager.git",
-      "state" : {
-        "revision" : "a56decdcf19228ae2b4b35a4836768bb1cfaa6b1",
-        "version" : "6.15.0"
-      }
-    },
-    {
-      "identity" : "cwlcatchexception",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mattgallagher/CwlCatchException.git",
-      "state" : {
-        "revision" : "07b2ba21d361c223e25e3c1e924288742923f08c",
-        "version" : "2.2.1"
-      }
-    },
-    {
-      "identity" : "cwlpreconditiontesting",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mattgallagher/CwlPreconditionTesting.git",
-      "state" : {
-        "revision" : "0139c665ebb45e6a9fbdb68aabfd7c39f3fe0071",
-        "version" : "2.2.2"
-      }
-    },
-    {
-      "identity" : "difference",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/krzysztofzablocki/Difference.git",
-      "state" : {
-        "revision" : "02fe1111edc8318c4f8a0da96336fcbcc201f38b",
-        "version" : "1.0.1"
-      }
-    },
     {
       "identity" : "google-cast-sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/google-cast-sdk.git",
       "state" : {
-        "revision" : "3aeee2495b3bb03737d5105dbf21afdd6b267658",
-        "version" : "4.8.3"
-      }
-    },
-    {
-      "identity" : "iosv5",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/CommandersAct/iOSV5.git",
-      "state" : {
-        "revision" : "fcf7d1be6c3e2f9dee55b7b42c5901478f59e89d",
-        "version" : "5.4.15"
-      }
-    },
-    {
-      "identity" : "nimble",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Quick/Nimble.git",
-      "state" : {
-        "revision" : "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
-        "version" : "13.7.1"
-      }
-    },
-    {
-      "identity" : "pillarbox-apple",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SRGSSR/pillarbox-apple",
-      "state" : {
-        "revision" : "d609125d31e5a8df21d79f9617551e0ff124eb8e",
-        "version" : "13.0.0"
-      }
-    },
-    {
-      "identity" : "showtime",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/KaneCheshire/ShowTime.git",
-      "state" : {
-        "revision" : "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
-        "version" : "2.5.3"
-      }
-    },
-    {
-      "identity" : "swift-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections.git",
-      "state" : {
-        "revision" : "8c0c0a8b49e080e54e5e328cc552821ff07cd341",
-        "version" : "1.2.1"
+        "revision" : "516f7111116bc412230309636842d3bbf77efdd8",
+        "version" : "4.8.4"
       }
     }
   ],
