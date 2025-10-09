@@ -21,6 +21,7 @@ struct CastDevicesView: View {
             }
         }
         .animation(.default, value: cast.devices)
+        .animation(.default, value: cast.multizoneDevices)
         .navigationTitle(Text("Cast to", bundle: .module, comment: "Cast device selection view title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -31,6 +32,7 @@ struct CastDevicesView: View {
     private func devicesList() -> some View {
         List {
             currentDeviceSection()
+            multizoneDevicesSection()
             availableDevicesSection()
         }
         .animation(.default, value: cast.currentDevice)
@@ -43,6 +45,20 @@ struct CastDevicesView: View {
                 CurrentCastDeviceCell(device: currentDevice, cast: cast)
             } header: {
                 Text("Current device", bundle: .module, comment: "Header for displaying current device information")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func multizoneDevicesSection() -> some View {
+        let devices = cast.multizoneDevices
+        if !devices.isEmpty {
+            Section {
+                ForEach(devices, id: \.self) { device in
+                    Text(CastMultizoneDevice.name(for: device))
+                }
+            } header: {
+                Text("Paired devices", bundle: .module, comment: "Header for available devices list section")
             }
         }
     }

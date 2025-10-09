@@ -126,7 +126,7 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The list of multizone devices discovered on the local network.
     public var multizoneDevices: [CastMultizoneDevice] {
-        _multizoneDevices
+        _multizoneDevices.count > 1 ? _multizoneDevices : []
     }
 
     /// The current connection state with a device.
