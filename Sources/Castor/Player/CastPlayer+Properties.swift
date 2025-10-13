@@ -36,7 +36,7 @@ public extension CastPlayer {
     }
 }
 
-extension CastPlayer {
+private extension CastPlayer {
     var rawMediaInformation: GCKMediaInformation? {
         _mediaStatus?.mediaInformation
     }
