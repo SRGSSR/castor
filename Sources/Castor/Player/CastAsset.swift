@@ -131,7 +131,7 @@ public struct CastAsset {
         if let entity = rawMediaInformation.entity {
             return .entity(entity)
         }
-        else if let identifier = rawMediaInformation.contentID {
+        else if let identifier = rawMediaInformation.contentID, !identifier.isEmpty {
             return .identifier(identifier)
         }
         else if let url = rawMediaInformation.contentURL {
