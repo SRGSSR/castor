@@ -29,6 +29,7 @@ public final class Cast: NSObject, ObservableObject {
     weak var delegate: CastDelegate?
 
     private let context = GCKCastContext.sharedInstance()
+
     private var targetResumeState: CastResumeState?
 
     @ReceiverState(DevicesRecipe.self)
@@ -39,66 +40,21 @@ public final class Cast: NSObject, ObservableObject {
     @ReceiverState(MultizoneDevicesRecipe.self)
     private var _multizoneDevices
 
-    @MutableReceiverState(VolumeRecipe.self)
-    private var _volume
-
-    @MutableReceiverState(MutedRecipe.self)
-    private var _isMuted
-
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
             __multizoneDevices.bind(to: currentSession)
         }
     }
+    
+    /// The current device manager.
+    public let currentDeviceManager: CastDeviceManager
 
     /// The Cast configuration.
     public var configuration: CastConfiguration {
         didSet {
             player?.configuration = configuration
         }
-    }
-
-    /// A Boolean setting whether the audio output of the current device must be muted.
-    public var isMuted: Bool {
-        get {
-            _isMuted || _volume == 0
-        }
-        set {
-            guard canMute, _isMuted != newValue || volume == 0 else { return }
-            _isMuted = newValue
-            if !newValue, volume == 0 {
-                volume = 0.1
-            }
-        }
-    }
-
-    /// The audio output volume of the current device.
-    ///
-    /// Valid values range from 0 (silent) to 1 (maximum volume).
-    public var volume: Float {
-        get {
-            _volume
-        }
-        set {
-            guard canAdjustVolume, _volume != newValue, volumeRange.contains(newValue) else { return }
-            _volume = newValue
-        }
-    }
-
-    /// The allowed range for the volume of the current device.
-    public var volumeRange: ClosedRange<Float> {
-        currentSession?.traits?.volumeRange ?? 0...0
-    }
-
-    /// A Boolean indicating whether the volume of the current device can be adjusted.
-    public var canAdjustVolume: Bool {
-        currentSession?.isFixedVolume == false
-    }
-
-    /// A Boolean indicating whether the current device can be muted.
-    public var canMute: Bool {
-        currentSession?.supportsMuting == true
     }
 
     /// The current device.
@@ -137,6 +93,9 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter configuration: The Cast configuration.
     public init(configuration: CastConfiguration = .init()) {
         self.configuration = configuration
+
+        currentDeviceManager = .init(sessionManager: context.sessionManager)
+
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
 
@@ -147,8 +106,6 @@ public final class Cast: NSObject, ObservableObject {
         super.init()
 
         __devices.bind(to: context.discoveryManager)
-        __volume.bind(to: context.sessionManager)
-        __isMuted.bind(to: context.sessionManager)
 
         context.sessionManager.add(self)
 

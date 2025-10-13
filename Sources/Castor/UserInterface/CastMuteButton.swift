@@ -8,28 +8,28 @@ import SwiftUI
 
 /// A mute button.
 public struct CastMuteButton: View {
-    @ObservedObject var cast: Cast
+    @ObservedObject var deviceManager: CastDeviceManager
 
     // swiftlint:disable:next missing_docs
     public var body: some View {
         Button {
-            cast.isMuted.toggle()
+            deviceManager.isMuted.toggle()
         } label: {
-            CastVolumeIcon(cast: cast)
+            CastVolumeIcon(deviceManager: deviceManager)
         }
-        .disabled(!cast.canMute)
+        .disabled(!deviceManager.canMute)
         .accessibilityLabel(accessibilityLabel)
     }
 
     /// Creates a mute button.
-    public init(cast: Cast) {
-        self.cast = cast
+    public init(deviceManager: CastDeviceManager) {
+        self.deviceManager = deviceManager
     }
 }
 
 private extension CastMuteButton {
     var accessibilityLabel: String {
-        if cast.isMuted {
+        if deviceManager.isMuted {
             String(localized: "Muted", bundle: .module, comment: "Accessibility label for muted state")
         }
         else {
@@ -38,6 +38,6 @@ private extension CastMuteButton {
     }
 
     private var deviceName: String {
-        CastDevice.name(for: cast.currentDevice)
+        "" // FIXME: CastDevice.name(for: cast.currentDevice)
     }
 }
