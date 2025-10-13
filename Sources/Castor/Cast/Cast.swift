@@ -52,7 +52,7 @@ public final class Cast: NSObject, ObservableObject {
         }
     }
 
-    /// The cast configuration.
+    /// The Cast configuration.
     public var configuration: CastConfiguration {
         didSet {
             player?.configuration = configuration
