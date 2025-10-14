@@ -7,7 +7,7 @@
 import Combine
 import GoogleCast
 
-/// An observable object that manages an active Cast device.
+/// An observable object that manages a Cast device.
 @MainActor
 public final class CastDeviceManager: ObservableObject {
     private let sessionManager: GCKSessionManager
@@ -20,6 +20,11 @@ public final class CastDeviceManager: ObservableObject {
 
     private var currentSession: GCKCastSession? {
         sessionManager.currentCastSession
+    }
+
+    /// The device.
+    public var device: CastDevice? {
+        currentSession?.device.toCastDevice()
     }
 
     /// A Boolean setting whether the audio output of the current device must be muted.

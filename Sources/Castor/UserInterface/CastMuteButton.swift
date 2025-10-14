@@ -38,6 +38,6 @@ private extension CastMuteButton {
     }
 
     private var deviceName: String {
-        "" // FIXME: CastDevice.name(for: cast.currentDevice)
+        CastDevice.name(for: deviceManager.device)
     }
 }
