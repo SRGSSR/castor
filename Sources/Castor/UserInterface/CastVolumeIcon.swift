@@ -6,7 +6,7 @@
 
 import SwiftUI
 
-/// A view that displays an icon reflecting the current volume.
+/// An icon reflecting the current volume.
 ///
 /// > Warning: Adjust the icon size using ``font(_:)``
 public struct CastVolumeIcon: View {

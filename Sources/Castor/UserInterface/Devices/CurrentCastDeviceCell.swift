@@ -17,21 +17,9 @@ struct CurrentCastDeviceCell: View {
             } icon: {
                 CastIcon(cast: cast)
             }
-            volumeSlider()
+            CastVolumeSlider(deviceManager: cast.currentDeviceManager)
             disconnectButton()
         }
-    }
-
-    private var volume: Binding<Float> {
-        .init {
-            deviceManager.isMuted ? 0 : deviceManager.volume
-        } set: { newValue in
-            deviceManager.volume = newValue
-        }
-    }
-
-    private var deviceManager: CastDeviceManager {
-        cast.currentDeviceManager
     }
 
     private func descriptionView(for device: CastDevice) -> some View {
@@ -49,20 +37,6 @@ struct CurrentCastDeviceCell: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .accessibilityElement()
         .accessibilityLabel(accessibilityLabel)
-    }
-
-    private func volumeSlider() -> some View {
-        Slider(value: volume, in: deviceManager.volumeRange) {
-            Text("Volume", bundle: .module, comment: "Volume slider label")
-        } minimumValueLabel: {
-            CastMuteButton(deviceManager: deviceManager)
-                .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
-                .toAnyView()
-        } maximumValueLabel: {
-            EmptyView()
-                .toAnyView()
-        }
-        .disabled(!deviceManager.canAdjustVolume)
     }
 
     private func disconnectButton() -> some View {

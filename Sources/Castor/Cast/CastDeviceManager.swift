@@ -7,7 +7,7 @@
 import Combine
 import GoogleCast
 
-/// An observable object that manages a device.
+/// An observable object that manages an active Cast device.
 @MainActor
 public final class CastDeviceManager: ObservableObject {
     private let sessionManager: GCKSessionManager

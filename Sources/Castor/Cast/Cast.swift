@@ -46,7 +46,7 @@ public final class Cast: NSObject, ObservableObject {
             __multizoneDevices.bind(to: currentSession)
         }
     }
-    
+
     /// The current device manager.
     public let currentDeviceManager: CastDeviceManager
 
