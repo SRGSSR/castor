@@ -11,13 +11,13 @@ struct CurrentCastDeviceCell: View {
     @ObservedObject var cast: Cast
 
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
             Label {
                 descriptionView(for: device)
             } icon: {
                 CastIcon(cast: cast)
             }
-            CastVolumeSlider(deviceManager: cast.currentDeviceManager)
+            volumeSlider()
             disconnectButton()
         }
     }
@@ -43,8 +43,12 @@ struct CurrentCastDeviceCell: View {
         Button(action: cast.endSession) {
             Text("Disconnect", bundle: .module, comment: "Label of the button to disconnect from a Cast receiver")
         }
-        .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
-        .padding(.bottom)
+        // Trick to avoid tapping on the entire cell.
+        .buttonStyle(.borderless)
+    }
+
+    private func volumeSlider() -> some View {
+        CastVolumeSlider(deviceManager: cast.currentDeviceManager)
     }
 }
 
