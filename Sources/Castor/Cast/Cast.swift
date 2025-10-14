@@ -80,7 +80,7 @@ public final class Cast: NSObject, ObservableObject {
         _devices
     }
 
-    /// The list of multizone devices discovered on the local network.
+    /// The list of multi-zone devices discovered on the local network.
     public var multizoneDevices: [CastMultizoneDevice] {
         _multizoneDevices.count > 1 ? _multizoneDevices : []
     }

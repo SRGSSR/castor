@@ -27,7 +27,7 @@ public final class CastDeviceManager: ObservableObject {
         currentSession?.device.toCastDevice()
     }
 
-    /// A Boolean setting whether the audio output of the current device must be muted.
+    /// A Boolean setting whether the audio output of the device must be muted.
     public var isMuted: Bool {
         get {
             _isMuted || _volume == 0
@@ -41,7 +41,7 @@ public final class CastDeviceManager: ObservableObject {
         }
     }
 
-    /// The audio output volume of the current device.
+    /// The audio output volume of the device.
     ///
     /// Valid values range from 0 (silent) to 1 (maximum volume).
     public var volume: Float {
@@ -54,17 +54,17 @@ public final class CastDeviceManager: ObservableObject {
         }
     }
 
-    /// The allowed range for the volume of the current device.
+    /// The allowed range for the volume of the device.
     public var volumeRange: ClosedRange<Float> {
         currentSession?.traits?.volumeRange ?? 0...0
     }
 
-    /// A Boolean indicating whether the volume of the current device can be adjusted.
+    /// A Boolean indicating whether the volume of the device can be adjusted.
     public var canAdjustVolume: Bool {
         currentSession?.isFixedVolume == false
     }
 
-    /// A Boolean indicating whether the current device can be muted.
+    /// A Boolean indicating whether the device can be muted.
     public var canMute: Bool {
         currentSession?.supportsMuting == true
     }

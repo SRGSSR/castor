@@ -6,7 +6,9 @@
 
 import GoogleCast
 
-/// An object that represents a multizone Cast receiver device.
+/// An object that represents a multi-zone Cast receiver device.
+///
+/// Multi-zone devices are part of a Cast device group, allowing synchronized playback across multiple receivers.
 public struct CastMultizoneDevice: Hashable {
     let rawDevice: GCKMultizoneDevice
 
