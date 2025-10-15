@@ -5,12 +5,20 @@
 //
 
 import Combine
+import GoogleCast
 
 @MainActor
 public final class CastDeviceManager2: ObservableObject {
-    @MutableReceiverState2(VolumeRecipe2.self)
-    private var _volume
+    @MutableReceiverState2
+    private var _volume: Float = 0
 
-    @MutableReceiverState2(MutedRecipe2.self)
-    private var _isMuted
+    @MutableReceiverState2
+    private var _isMuted = false
+
+    private let service = GCKCastContext.sharedInstance().sessionManager
+
+    init() {
+        __volume.synchronize(using: VolumeRecipe2.self, service: service)
+        __isMuted.synchronize(using: MutedRecipe2.self, service: service)
+    }
 }

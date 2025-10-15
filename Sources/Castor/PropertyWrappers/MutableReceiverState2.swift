@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 @propertyWrapper
-final class MutableReceiverStatePropertyWrapper2<Instance, Value, Service>: NSObject
+final class MutableReceiverStatePropertyWrapper2<Instance, Value>: NSObject
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher, Value: Equatable {
     private weak var enclosingInstance: Instance?
 
@@ -26,8 +26,8 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         set { fatalError("Not available") }
     }
 
-    init<Recipe>(_ recipe: Recipe.Type) where Recipe: MutableReceiverStateRecipe2, Recipe.Value == Value, Recipe.Service == Service {
-        self.value = Recipe.defaultValue
+    init(wrappedValue: Value) {
+        self.value = wrappedValue
     }
 
     static subscript(
@@ -45,8 +45,16 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
             storage.enclosingInstance = instance
         }
     }
+
+    func synchronize<Recipe, Service>(
+        using recipe: Recipe.Type,
+        service: Service
+    ) where Recipe: MutableReceiverStateRecipe2, Recipe.Service == Service, Recipe.Value == Value {
+        value = Recipe.defaultValue
+        // ...
+    }
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias MutableReceiverState2<Value, Service> = MutableReceiverStatePropertyWrapper2<Self, Value, Service> where Value: Equatable
+    typealias MutableReceiverState2<Value> = MutableReceiverStatePropertyWrapper2<Self, Value> where Value: Equatable
 }

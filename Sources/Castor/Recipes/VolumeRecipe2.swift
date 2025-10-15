@@ -9,5 +9,5 @@ import GoogleCast
 final class VolumeRecipe2: NSObject, MutableReceiverStateRecipe2 {
     typealias Service = GCKSessionManager
 
-    static let defaultValue = 0
+    static let defaultValue: Float = 0
 }
