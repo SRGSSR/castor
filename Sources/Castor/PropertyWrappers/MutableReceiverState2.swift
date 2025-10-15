@@ -26,7 +26,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         set { fatalError("Not available") }
     }
 
-    init<Recipe>(_ recipe: Recipe) where Recipe: MutableReceiverStateRecipe2, Recipe.Value == Value {
+    init<Recipe>(_ recipe: Recipe.Type) where Recipe: MutableReceiverStateRecipe2, Recipe.Value == Value, Recipe.Service == Service {
         self.value = Recipe.defaultValue
     }
 

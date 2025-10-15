@@ -5,6 +5,7 @@
 //
 
 protocol MutableReceiverStateRecipe2 {
+    associatedtype Service
     associatedtype Value: Equatable
 
     static var defaultValue: Value { get }
