@@ -17,8 +17,11 @@ public final class CastDeviceManager2: ObservableObject {
 
     private let service = GCKCastContext.sharedInstance().sessionManager
 
-    init() {
-        __volume.synchronize(using: VolumeRecipe2.self, service: service)
-        __isMuted.synchronize(using: MutedRecipe2.self, service: service)
+    init<V, M>(
+        volumeRecipe: V,
+        mutedRecipe: M
+    ) where V: MutableReceiverStateRecipe2, M: MutableReceiverStateRecipe2, V.Value == Float, M.Value == Bool, V.Service == GCKSessionManager, M.Service == GCKSessionManager {
+        __volume.synchronize(using: V.self, service: service)
+        __isMuted.synchronize(using: M.self, service: service)
     }
 }
