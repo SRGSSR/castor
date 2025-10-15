@@ -7,7 +7,7 @@
 import GoogleCast
 
 final class VolumeRecipe2: NSObject, MutableReceiverStateRecipe2 {
-    typealias Service = GCKSessionManager
+    typealias Service = MainDeviceService
 
     static let defaultValue: Float = 0
 }

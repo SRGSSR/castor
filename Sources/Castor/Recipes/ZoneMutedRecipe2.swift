@@ -7,7 +7,7 @@
 import GoogleCast
 
 final class ZoneMutedRecipe2: NSObject, MutableReceiverStateRecipe2 {
-    typealias Service = GCKCastSession
+    typealias Service = ZoneDeviceService
 
     static let defaultValue = false
 }
