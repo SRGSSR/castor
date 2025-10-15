@@ -7,8 +7,11 @@
 import Combine
 import GoogleCast
 
-public protocol CastDeviceService {
+protocol CastDeviceService {
     associatedtype Device
+
+    associatedtype VolumeRecipe: MutableReceiverStateRecipe2 where VolumeRecipe.Service == Self, VolumeRecipe.Value == Float
+    associatedtype MutedRecipe: MutableReceiverStateRecipe2 where MutedRecipe.Service == Self, MutedRecipe.Value == Bool
 
     var device: Device { get }
 
@@ -18,14 +21,10 @@ public protocol CastDeviceService {
     var canMute: Bool { get }
 }
 
-protocol CastDeviceManagerConfiguration2 {
-    associatedtype Service: CastDeviceService
-
-    associatedtype VolumeRecipe: MutableReceiverStateRecipe2 where VolumeRecipe.Service == Service, VolumeRecipe.Value == Float
-    associatedtype MutedRecipe: MutableReceiverStateRecipe2 where MutedRecipe.Service == Service, MutedRecipe.Value == Bool
-}
-
 struct MainDeviceService: CastDeviceService {
+    typealias VolumeRecipe = VolumeRecipe2
+    typealias MutedRecipe = MutedRecipe2
+
     let session: GCKCastSession
 
     var device: GCKDevice {
@@ -46,6 +45,9 @@ struct MainDeviceService: CastDeviceService {
 }
 
 struct ZoneDeviceService: CastDeviceService {
+    typealias VolumeRecipe = ZoneVolumeRecipe2
+    typealias MutedRecipe = ZoneMutedRecipe2
+
     let device: GCKMultizoneDevice
 
     var volumeRange: ClosedRange<Float> {
@@ -59,18 +61,6 @@ struct ZoneDeviceService: CastDeviceService {
     var canMute: Bool {
         true
     }
-}
-
-struct MainConfiguration2: CastDeviceManagerConfiguration2 {
-    typealias Service = MainDeviceService
-    typealias VolumeRecipe = VolumeRecipe2
-    typealias MutedRecipe = MutedRecipe2
-}
-
-struct ZoneConfiguration2: CastDeviceManagerConfiguration2 {
-    typealias Service = ZoneDeviceService
-    typealias VolumeRecipe = ZoneVolumeRecipe2
-    typealias MutedRecipe = ZoneMutedRecipe2
 }
 
 @MainActor
@@ -96,26 +86,17 @@ public final class CastDeviceManager2<Device>: ObservableObject {
         service.canMute 
     }
 
-    init<Configuration, Service>(
-        configuration: Configuration.Type,
-        service: Service
-    ) where Configuration: CastDeviceManagerConfiguration2, Service: CastDeviceService, Configuration.Service == Service, Service.Device == Device {
+    init<Service>(service: Service) where Service: CastDeviceService, Service.Device == Device {
         self.service = service
         self.device = service.device
 
-        __volume.synchronize(using: Configuration.VolumeRecipe.self, service: service)
-        __isMuted.synchronize(using: Configuration.MutedRecipe.self, service: service)
+        __volume.synchronize(using: Service.VolumeRecipe.self, service: service)
+        __isMuted.synchronize(using: Service.MutedRecipe.self, service: service)
     }
 }
 
 @MainActor
 func testInternalCreation() {
-    let _ = CastDeviceManager2(
-        configuration: MainConfiguration2.self,
-        service: MainDeviceService(session: .init())
-    )
-    let _ = CastDeviceManager2(
-        configuration: ZoneConfiguration2.self,
-        service: ZoneDeviceService(device: .init(coder: .init())!)
-    )
+    let _ = CastDeviceManager2(service: MainDeviceService(session: .init()))
+    let _ = CastDeviceManager2(service: ZoneDeviceService(device: .init(coder: .init())!))
 }
