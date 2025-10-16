@@ -13,6 +13,7 @@ protocol ReceiverStateCommonRecipe: AnyObject {
 
     static var defaultValue: Value { get }
 
+    // TODO: Possibly nicer as instance methods
     static func status(from service: Service) -> Status
     static func value(from status: Status) -> Value
 }

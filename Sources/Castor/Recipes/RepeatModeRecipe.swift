@@ -12,7 +12,7 @@ final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
     private let service: GCKRemoteMediaClient
 
     private let update: (GCKMediaStatus?) -> Void
-    private var completion: ((Bool) -> Void)?
+    private let completion: (Bool) -> Void
 
     init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
@@ -47,14 +47,14 @@ extension RepeatModeRecipe: @preconcurrency GCKRemoteMediaClientListener {
 
 extension RepeatModeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion?(true)
+        completion(true)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion?(false)
+        completion(false)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion?(false)
+        completion(false)
     }
 }
