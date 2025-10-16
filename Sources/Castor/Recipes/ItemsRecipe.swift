@@ -12,12 +12,12 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     // FIXME: Remove "weak" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
     private weak var service: GCKRemoteMediaClient?       // Avoid cyclic reference due to the media queue delegate being retained.
 
-    private let update: ([CastPlayerItem]) -> Void
-    private let completion: (Bool) -> Void
+    var update: (([CastPlayerItem]) -> Void)?
+    var completion: ((Bool) -> Void)?
 
     private var items: [CastPlayerItem] {
         didSet {
-            update(items)
+            update?(items)
         }
     }
 
@@ -28,10 +28,8 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         }
     }
 
-    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKRemoteMediaClient) {
         self.service = service
-        self.update = update
-        self.completion = completion
         self.items = Self.status(from: service)
         super.init()
         service.mediaQueue.add(self)        // The delegate is retained.
@@ -43,7 +41,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
 
     func requestUpdate(to value: [CastPlayerItem]) -> Bool {
         guard let service, service.canMakeRequest() else { return false }
-        
+
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
 
@@ -86,21 +84,21 @@ extension ItemsRecipe: @preconcurrency GCKMediaQueueDelegate {
 extension ItemsRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         if requests == 1 {
-            completion(true)
+            completion?(true)
         }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
         if requests == 1 {
-            completion(false)
+            completion?(false)
         }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
         if requests == 1 {
-            completion(false)
+            completion?(false)
         }
         requests -= 1
     }

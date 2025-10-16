@@ -40,11 +40,14 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
     }
 
     func bind(to service: Recipe.Service) {
-        self.recipe = Recipe(service: service) { [weak self] status in
+        let recipe = Recipe(service: service)
+        recipe.update = { [weak self] status in
             self?.update(with: status)
-        } completion: { [weak self] success in
+        }
+        recipe.completion = { [weak self] success in
             self?.completion(success)
         }
+        self.recipe = recipe
         value = Recipe.value(from: service)
     }
 

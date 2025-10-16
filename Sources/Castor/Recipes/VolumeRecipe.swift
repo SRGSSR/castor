@@ -11,13 +11,11 @@ final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
 
     private let service: GCKSessionManager
 
-    private let update: (Float) -> Void
-    private let completion: (Bool) -> Void
+    var update: ((Float) -> Void)?
+    var completion: ((Bool) -> Void)?
 
-    init(service: GCKSessionManager, update: @escaping (Float) -> Void, completion: @escaping (Bool) -> Void) {
+    init(service: GCKSessionManager) {
         self.service = service
-        self.update = update
-        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -41,30 +39,30 @@ extension VolumeRecipe: @preconcurrency GCKSessionManagerListener {
         didReceiveDeviceVolume volume: Float,
         muted: Bool
     ) {
-        update(volume)
+        update?(volume)
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        update(Self.defaultValue)
+        update?(Self.defaultValue)
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
         if error != nil {
-            update(Self.defaultValue)
+            update?(Self.defaultValue)
         }
     }
 }
 
 extension VolumeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion(true)
+        completion?(true)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion(false)
+        completion?(false)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion(false)
+        completion?(false)
     }
 }
