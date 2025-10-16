@@ -106,5 +106,5 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias MutableReceiverState<Recipe: MutableReceiverStateRecipe> = MutableReceiverStatePropertyWrapper<Self, Recipe>
+    typealias MutableReceiverState<Recipe> = MutableReceiverStatePropertyWrapper<Self, Recipe> where Recipe: MutableReceiverStateRecipe
 }
