@@ -13,7 +13,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     private weak var service: GCKRemoteMediaClient?       // Avoid cyclic reference due to the media queue delegate being retained.
 
     private let update: ([CastPlayerItem]) -> Void
-    private var completion: ((Bool) -> Void)?
+    private let completion: (Bool) -> Void
 
     private var items: [CastPlayerItem] {
         didSet {
@@ -86,21 +86,21 @@ extension ItemsRecipe: @preconcurrency GCKMediaQueueDelegate {
 extension ItemsRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         if requests == 1 {
-            completion?(true)
+            completion(true)
         }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
         if requests == 1 {
-            completion?(false)
+            completion(false)
         }
         requests -= 1
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
         if requests == 1 {
-            completion?(false)
+            completion(false)
         }
         requests -= 1
     }

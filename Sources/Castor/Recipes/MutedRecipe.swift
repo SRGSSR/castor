@@ -12,7 +12,7 @@ final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
     private let service: GCKSessionManager
 
     private let update: (Bool) -> Void
-    private var completion: ((Bool) -> Void)?
+    private let completion: (Bool) -> Void
 
     init(service: GCKSessionManager, update: @escaping (Bool) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
@@ -57,14 +57,14 @@ extension MutedRecipe: @preconcurrency GCKSessionManagerListener {
 
 extension MutedRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
-        completion?(true)
+        completion(true)
     }
 
     func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion?(false)
+        completion(false)
     }
 
     func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion?(false)
+        completion(false)
     }
 }
