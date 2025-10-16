@@ -9,16 +9,15 @@ import GoogleCast
 final class MultizoneDevicesRecipe: NSObject, ReceiverStateRecipe {
     static var defaultValue: [CastMultizoneDevice] = []
 
-    private let update: ([CastMultizoneDevice]) -> Void
+    var update: (([CastMultizoneDevice]) -> Void)?
 
     private var devices: [CastMultizoneDevice] = [] {
         didSet {
-            update(devices)
+            update?(devices)
         }
     }
 
-    init(service: GCKCastSession?, update: @escaping ([CastMultizoneDevice]) -> Void) {
-        self.update = update
+    init(service: GCKCastSession?) {
         super.init()
         service?.add(self)
     }

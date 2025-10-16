@@ -9,16 +9,15 @@ import GoogleCast
 final class DevicesRecipe: NSObject, ReceiverStateRecipe {
     static let defaultValue: [CastDevice] = []
 
-    private let update: ([CastDevice]) -> Void
+    var update: (([CastDevice]) -> Void)?
 
     private var devices: [CastDevice] {
         didSet {
-            update(devices)
+            update?(devices)
         }
     }
 
-    init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]) -> Void) {
-        self.update = update
+    init(service: GCKDiscoveryManager) {
         self.devices = Self.status(from: service)
         super.init()
         service.add(self)

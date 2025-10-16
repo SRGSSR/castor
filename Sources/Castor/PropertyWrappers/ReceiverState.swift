@@ -35,7 +35,8 @@ where Recipe: ReceiverStateRecipe, Instance: ObservableObject, Instance.ObjectWi
     }
 
     func bind(to service: Recipe.Service) {
-        let recipe = Recipe(service: service) { [weak self] status in
+        let recipe = Recipe(service: service)
+        recipe.update = { [weak self] status in
             self?.update(with: status)
         }
         self.recipe = recipe

@@ -4,8 +4,8 @@
 //  License information is available from the LICENSE file.
 //
 
-protocol MutableReceiverStateRecipe: ReceiverStateCommonRecipe {
-    init(service: Service, update: @escaping (Status) -> Void, completion: @escaping (Bool) -> Void)
+protocol MutableReceiverStateRecipe: ReceiverStateRecipe {
+    var completion: ((Bool) -> Void)? { get set }
 
     func requestUpdate(to value: Value) -> Bool
 }

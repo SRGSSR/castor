@@ -39,10 +39,10 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         service: Service,
         recipe: Recipe.Type
     ) where Recipe: MutableReceiverStateRecipe, Recipe.Service == Service, Recipe.Value == Value {
-        let recipe = Recipe(service: service) { status in
-
-        } completion: { success in
-
+        let recipe = Recipe(service: service)
+        recipe.update = { _ in
+        }
+        recipe.completion = { _ in
         }
         requestUpdateImp = { value in
             recipe.requestUpdate(to: value)
