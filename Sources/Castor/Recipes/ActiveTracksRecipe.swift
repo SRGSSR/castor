@@ -14,9 +14,10 @@ final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
     private let update: (GCKMediaStatus?) -> Void
     private var completion: ((Bool) -> Void)?
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    init(service: Service, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -29,9 +30,8 @@ final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
         status?.activeTracks() ?? []
     }
 
-    func requestUpdate(to value: [CastMediaTrack], completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: [CastMediaTrack]) -> Bool {
         guard service.canMakeRequest() else { return false }
-        self.completion = completion
         // swiftlint:disable:next legacy_objc_type
         let request = service.setActiveTrackIDs(value.map { NSNumber(value: $0.trackIdentifier) })
         request.delegate = self

@@ -28,9 +28,10 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         }
     }
 
-    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]) -> Void) {
+    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         self.items = Self.status(from: service)
         super.init()
         service.mediaQueue.add(self)        // The delegate is retained.
@@ -40,10 +41,9 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
 
-    func requestUpdate(to value: [CastPlayerItem], completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: [CastPlayerItem]) -> Bool {
         guard let service, service.canMakeRequest() else { return false }
-        self.completion = completion
-
+        
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
 
