@@ -4,9 +4,8 @@
 //  License information is available from the LICENSE file.
 //
 
-import GoogleCast
+protocol MutableReceiverStateRecipe: ReceiverStateCommonRecipe {
+    init(service: Service, update: @escaping (Status) -> Void, completion: @escaping (Bool) -> Void)
 
-protocol MutableReceiverStateRecipe: ReceiverStateRecipe {
-    // TODO: The completion closure possibly does not need to be stored by concrete recipes anymore after refactoring.
-    func requestUpdate(to value: Value, completion: @escaping (Bool) -> Void) -> Bool
+    func requestUpdate(to value: Value) -> Bool
 }

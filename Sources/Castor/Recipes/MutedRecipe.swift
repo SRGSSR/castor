@@ -14,9 +14,10 @@ final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
     private let update: (Bool) -> Void
     private var completion: ((Bool) -> Void)?
 
-    init(service: GCKSessionManager, update: @escaping (Bool) -> Void) {
+    init(service: GCKSessionManager, update: @escaping (Bool) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -25,9 +26,8 @@ final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
         service.currentCastSession?.currentDeviceMuted ?? defaultValue
     }
 
-    func requestUpdate(to value: Bool, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Bool) -> Bool {
         guard let session = service.currentCastSession else { return false }
-        self.completion = completion
         let request = session.setDeviceMuted(value)
         request.delegate = self
         return true

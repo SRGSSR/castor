@@ -14,9 +14,10 @@ final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
     private let update: (Float) -> Void
     private var completion: ((Bool) -> Void)?
 
-    init(service: GCKSessionManager, update: @escaping (Float) -> Void) {
+    init(service: GCKSessionManager, update: @escaping (Float) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -25,9 +26,8 @@ final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
         service.currentCastSession?.currentDeviceVolume ?? defaultValue
     }
 
-    func requestUpdate(to value: Float, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Float) -> Bool {
         guard let session = service.currentCastSession else { return false }
-        self.completion = completion
         let request = session.setDeviceVolume(value)
         request.delegate = self
         return true

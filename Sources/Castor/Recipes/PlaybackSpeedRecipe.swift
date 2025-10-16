@@ -14,9 +14,10 @@ final class PlaybackSpeedRecipe: NSObject, MutableReceiverStateRecipe {
     private let update: (GCKMediaStatus?) -> Void
     private var completion: ((Bool) -> Void)?
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void, completion: @escaping (Bool) -> Void) {
         self.service = service
         self.update = update
+        self.completion = completion
         super.init()
         service.add(self)
     }
@@ -29,9 +30,8 @@ final class PlaybackSpeedRecipe: NSObject, MutableReceiverStateRecipe {
         status?.playbackRate ?? defaultValue
     }
 
-    func requestUpdate(to value: Float, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: Float) -> Bool {
         guard service.canMakeRequest() else { return false }
-        self.completion = completion
         let request = service.setPlaybackRate(value)
         request.delegate = self
         return true
