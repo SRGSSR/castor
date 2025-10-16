@@ -29,7 +29,7 @@ final class ActiveTracksRecipe: NSObject, MutableReceiverStateRecipe {
         status?.activeTracks() ?? []
     }
 
-    func requestUpdate(to value: Value, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: [CastMediaTrack], completion: @escaping (Bool) -> Void) -> Bool {
         guard service.canMakeRequest() else { return false }
         self.completion = completion
         // swiftlint:disable:next legacy_objc_type
