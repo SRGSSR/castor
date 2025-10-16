@@ -12,11 +12,9 @@ import GoogleCast
 public final class CastDeviceManager: ObservableObject {
     private let sessionManager: GCKSessionManager
 
-    @MutableReceiverState(VolumeRecipe.self)
-    private var _volume
+    @MutableReceiverState2 private var _volume: Float
 
-    @MutableReceiverState(MutedRecipe.self)
-    private var _isMuted
+    @MutableReceiverState2 private var _isMuted: Bool
 
     private var currentSession: GCKCastSession? {
         sessionManager.currentCastSession
@@ -72,7 +70,7 @@ public final class CastDeviceManager: ObservableObject {
     init(sessionManager: GCKSessionManager) {
         self.sessionManager = sessionManager
 
-        __volume.bind(to: sessionManager)
-        __isMuted.bind(to: sessionManager)
+        __volume = .init(service: sessionManager, recipe: VolumeRecipe.self)
+        __isMuted = .init(service: sessionManager, recipe: MutedRecipe.self)
     }
 }
