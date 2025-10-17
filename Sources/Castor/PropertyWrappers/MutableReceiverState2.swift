@@ -40,14 +40,34 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         recipe: Recipe.Type
     ) where Recipe: MutableReceiverStateRecipe, Recipe.Service == Service, Recipe.Value == Value {
         let recipe = Recipe(service: service)
-        recipe.update = { _ in
-        }
-        recipe.completion = { _ in
-        }
+
         requestUpdateImp = { value in
             recipe.requestUpdate(to: value)
         }
         value = Recipe.value(from: service)
+
+        super.init()
+
+        recipe.update = { [weak self] status in
+            guard let self, !isRequesting else { return }
+            value = Recipe.value(from: status)
+        }
+        recipe.completion = { [weak self] success in
+            guard let self else { return }
+            guard success else {
+                pendingValue = nil
+                isRequesting = false
+                return
+            }
+            guard let pendingValue else {
+                isRequesting = false
+                return
+            }
+            if recipe.requestUpdate(to: pendingValue) {
+                self.value = pendingValue
+            }
+            self.pendingValue = nil
+        }
     }
 
     private func requestUpdate(to value: Value) {
