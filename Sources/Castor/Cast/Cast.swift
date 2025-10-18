@@ -43,12 +43,22 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            if let currentSession {
+                currentDeviceManager = .init(
+                    service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession),
+                    volumeRecipe: MainVolumeRecipe.self,
+                    mutedRecipe: MainMutedRecipe.self
+                )
+            }
+            else {
+                currentDeviceManager = nil
+            }
             __multizoneDevices.bind(to: currentSession)
         }
     }
 
     /// The current device manager.
-    public let currentDeviceManager: CastDeviceManager
+    public var currentDeviceManager: CastDeviceManager<CastDevice>?
 
     /// The Cast configuration.
     public var configuration: CastConfiguration {
@@ -93,8 +103,6 @@ public final class Cast: NSObject, ObservableObject {
     /// - Parameter configuration: The Cast configuration.
     public init(configuration: CastConfiguration = .init()) {
         self.configuration = configuration
-
-        currentDeviceManager = .init(sessionManager: context.sessionManager)
 
         currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState

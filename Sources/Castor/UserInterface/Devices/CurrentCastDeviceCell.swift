@@ -47,8 +47,11 @@ struct CurrentCastDeviceCell: View {
         .buttonStyle(.borderless)
     }
 
+    @ViewBuilder
     private func volumeSlider() -> some View {
-        CastVolumeSlider(deviceManager: cast.currentDeviceManager)
+        if let deviceManager = cast.currentDeviceManager {
+            CastVolumeSlider(deviceManager: deviceManager)
+        }
     }
 }
 

@@ -6,33 +6,32 @@
 
 import GoogleCast
 
-final class MutedRecipe: NSObject, MutableReceiverStateRecipe {
+final class MainMutedRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue = false
 
-    private let service: GCKSessionManager
+    private let service: MainDeviceService
 
     var update: ((Bool) -> Void)?
     var completion: ((Bool) -> Void)?
 
-    init(service: GCKSessionManager) {
+    init(service: MainDeviceService) {
         self.service = service
         super.init()
         service.add(self)
     }
 
-    static func status(from service: GCKSessionManager) -> Bool {
-        service.currentCastSession?.currentDeviceMuted ?? defaultValue
+    static func status(from service: MainDeviceService) -> Bool {
+        service.isMuted
     }
 
     func requestUpdate(to value: Bool) -> Bool {
-        guard let session = service.currentCastSession else { return false }
-        let request = session.setDeviceMuted(value)
+        let request = service.setMuted(value)
         request.delegate = self
         return true
     }
 }
 
-extension MutedRecipe: @preconcurrency GCKSessionManagerListener {
+extension MainMutedRecipe: @preconcurrency GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -53,7 +52,7 @@ extension MutedRecipe: @preconcurrency GCKSessionManagerListener {
     }
 }
 
-extension MutedRecipe: @preconcurrency GCKRequestDelegate {
+extension MainMutedRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }
