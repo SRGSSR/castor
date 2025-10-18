@@ -13,7 +13,6 @@ public final class CastDeviceManager: ObservableObject {
     private let sessionManager: GCKSessionManager
 
     @MutableReceiverState2 private var _volume: Float
-
     @MutableReceiverState2 private var _isMuted: Bool
 
     private var currentSession: GCKCastSession? {
