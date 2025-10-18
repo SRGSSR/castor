@@ -7,8 +7,8 @@
 import SwiftUI
 
 /// A slider that controls the volume an active Cast device.
-public struct CastVolumeSlider: View {
-    @ObservedObject var deviceManager: CastDeviceManager
+public struct CastVolumeSlider<Device>: View {
+    @ObservedObject var deviceManager: CastDeviceManager<Device>
 
     private var volume: Binding<Float> {
         .init {
@@ -34,7 +34,7 @@ public struct CastVolumeSlider: View {
     }
 
     /// Creates a slider.
-    public init(deviceManager: CastDeviceManager) {
+    public init(deviceManager: CastDeviceManager<Device>) {
         self.deviceManager = deviceManager
     }
 }

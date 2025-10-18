@@ -6,33 +6,32 @@
 
 import GoogleCast
 
-final class VolumeRecipe: NSObject, MutableReceiverStateRecipe {
+final class MainVolumeRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: Float = 0
 
-    private let service: GCKSessionManager
+    private let service: MainDeviceService
 
     var update: ((Float) -> Void)?
     var completion: ((Bool) -> Void)?
 
-    init(service: GCKSessionManager) {
+    init(service: MainDeviceService) {
         self.service = service
         super.init()
         service.add(self)
     }
 
-    static func status(from service: GCKSessionManager) -> Float {
-        service.currentCastSession?.currentDeviceVolume ?? defaultValue
+    static func status(from service: MainDeviceService) -> Float {
+        service.volume
     }
 
     func requestUpdate(to value: Float) -> Bool {
-        guard let session = service.currentCastSession else { return false }
-        let request = session.setDeviceVolume(value)
+        let request = service.setVolume(value)
         request.delegate = self
         return true
     }
 }
 
-extension VolumeRecipe: @preconcurrency GCKSessionManagerListener {
+extension MainVolumeRecipe: @preconcurrency GCKSessionManagerListener {
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -53,7 +52,7 @@ extension VolumeRecipe: @preconcurrency GCKSessionManagerListener {
     }
 }
 
-extension VolumeRecipe: @preconcurrency GCKRequestDelegate {
+extension MainVolumeRecipe: @preconcurrency GCKRequestDelegate {
     func requestDidComplete(_ request: GCKRequest) {
         completion?(true)
     }

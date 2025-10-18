@@ -5,24 +5,17 @@
 //
 
 import Combine
-import GoogleCast
 
 /// An observable object that manages a Cast device.
 @MainActor
-public final class CastDeviceManager: ObservableObject {
-    private let sessionManager: GCKSessionManager
+public final class CastDeviceManager<Device>: ObservableObject {
+    private let service: any DeviceService
 
     @MutableReceiverState2 private var _volume: Float
     @MutableReceiverState2 private var _isMuted: Bool
 
-    private var currentSession: GCKCastSession? {
-        sessionManager.currentCastSession
-    }
-
     /// The device.
-    public var device: CastDevice? {
-        currentSession?.device.toCastDevice()
-    }
+    public let device: Device
 
     /// A Boolean setting whether the audio output of the device must be muted.
     public var isMuted: Bool {
@@ -53,23 +46,31 @@ public final class CastDeviceManager: ObservableObject {
 
     /// The allowed range for the volume of the device.
     public var volumeRange: ClosedRange<Float> {
-        currentSession?.traits?.volumeRange ?? 0...0
+        service.volumeRange
     }
 
     /// A Boolean indicating whether the volume of the device can be adjusted.
     public var canAdjustVolume: Bool {
-        currentSession?.isFixedVolume == false
+        service.canAdjustVolume
     }
 
     /// A Boolean indicating whether the device can be muted.
     public var canMute: Bool {
-        currentSession?.supportsMuting == true
+        service.canMute
     }
 
-    init(sessionManager: GCKSessionManager) {
-        self.sessionManager = sessionManager
+    init<Service, VolumeRecipe, MutedRecipe>(
+        service: Service,
+        volumeRecipe: VolumeRecipe.Type,
+        mutedRecipe: MutedRecipe.Type
+    )
+    where Service: DeviceService, Service.Device == Device,
+    VolumeRecipe: MutableReceiverStateRecipe, VolumeRecipe.Value == Float, VolumeRecipe.Service == Service,
+    MutedRecipe: MutableReceiverStateRecipe, MutedRecipe.Value == Bool, MutedRecipe.Service == Service {
+        self.service = service
+        self.device = service.device
 
-        __volume = .init(service: sessionManager, recipe: VolumeRecipe.self)
-        __isMuted = .init(service: sessionManager, recipe: MutedRecipe.self)
+        __volume = .init(service: service, recipe: VolumeRecipe.self)
+        __isMuted = .init(service: service, recipe: MutedRecipe.self)
     }
 }

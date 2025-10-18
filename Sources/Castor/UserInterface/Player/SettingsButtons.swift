@@ -19,7 +19,9 @@ struct SettingsButtons: View {
                 Spacer()
             }
             SettingsMenu(player: player)
-            CastMuteButton(deviceManager: cast.currentDeviceManager)
+            if let deviceManager = cast.currentDeviceManager {
+                CastMuteButton(deviceManager: deviceManager)
+            }
             CastButton(cast: cast)
         }
         .font(.system(size: 22))

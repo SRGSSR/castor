@@ -9,8 +9,8 @@ import SwiftUI
 /// An icon reflecting the current volume.
 ///
 /// > Warning: Adjust the icon size using ``font(_:)``
-public struct CastVolumeIcon: View {
-    @ObservedObject var deviceManager: CastDeviceManager
+public struct CastVolumeIcon<Device>: View {
+    @ObservedObject var deviceManager: CastDeviceManager<Device>
 
     private var minimumValueImageName: String {
         let volume = deviceManager.volume
@@ -31,7 +31,7 @@ public struct CastVolumeIcon: View {
     }
 
     /// Creates a volume icon.
-    public init(deviceManager: CastDeviceManager) {
+    public init(deviceManager: CastDeviceManager<Device>) {
         self.deviceManager = deviceManager
     }
 
