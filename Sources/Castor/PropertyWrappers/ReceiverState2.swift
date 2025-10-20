@@ -11,6 +11,8 @@ import Foundation
 @propertyWrapper
 final class ReceiverStatePropertyWrapper2<Instance, Value>: NSObject
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+    private let recipe: any ReceiverStateRecipe
+
     private weak var enclosingInstance: Instance?
 
     @Published private var value: Value {
@@ -33,8 +35,9 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         recipe: Recipe.Type
     ) where Recipe: ReceiverStateRecipe, Recipe.Service == Service, Recipe.Value == Value {
         let recipe = Recipe(service: service)
-        value = Recipe.defaultValue
 
+        self.recipe = recipe
+        self.value = Recipe.defaultValue
         super.init()
 
         recipe.update = { [weak self] status in
