@@ -43,14 +43,9 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            if let currentSession {
-                currentDeviceManager = .init(
-                    service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession),
-                )
-            }
-            else {
-                currentDeviceManager = nil
-            }
+            currentDeviceManager = .init(
+                service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession),
+            )
             __multizoneDevices.bind(to: currentSession)
         }
     }

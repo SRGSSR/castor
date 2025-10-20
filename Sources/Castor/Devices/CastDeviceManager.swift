@@ -59,7 +59,9 @@ public final class CastDeviceManager<Device>: ObservableObject {
         service.canMute
     }
 
-    init<Service>(service: Service) where Service: DeviceService, Service.Device == Device {
+    init?<Service>(service: Service?) where Service: DeviceService, Service.Device == Device {
+        guard let service else { return nil }
+
         self.service = service
         self.device = service.device
 

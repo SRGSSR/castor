@@ -37,7 +37,8 @@ struct MainDeviceService: DeviceService {
         session.supportsMuting
     }
 
-    init(sessionManager: GCKSessionManager, session: GCKCastSession) {
+    init?(sessionManager: GCKSessionManager, session: GCKCastSession?) {
+        guard let session else { return nil }
         self.sessionManager = sessionManager
         self.session = session
     }
