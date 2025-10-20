@@ -9,52 +9,71 @@ import Foundation
 
 @MainActor
 @propertyWrapper
-final class MutableReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
-where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    private var recipe: Recipe?
-
+final class MutableReceiverStatePropertyWrapper<Instance, Value>: NSObject
+where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher, Value: Equatable {
     private var isRequesting = false
-    private var pendingValue: Recipe.Value?
+    private var pendingValue: Value?
+
+    private let requestUpdateImp: (Value) -> Bool
 
     private weak var enclosingInstance: Instance?
 
-    @Published private var value: Recipe.Value {
-        willSet {
+    @Published private var value: Value {
+    willSet {
             enclosingInstance?.objectWillChange.send()
         }
     }
 
-    var projectedValue: AnyPublisher<Recipe.Value, Never> {
+    var projectedValue: AnyPublisher<Value, Never> {
         $value.eraseToAnyPublisher()
     }
 
     @available(*, unavailable, message: "This property wrapper can only be applied to classes")
-    var wrappedValue: Recipe.Value {
+    var wrappedValue: Value {
         get { fatalError("Not available") }
         // swiftlint:disable:next unused_setter_value
         set { fatalError("Not available") }
     }
 
-    init(_ recipe: Recipe.Type) {
-        self.value = Recipe.defaultValue
-    }
-
-    func bind(to service: Recipe.Service) {
+    init<Recipe, Service>(
+        service: Service,
+        recipe: Recipe.Type
+    ) where Recipe: MutableReceiverStateRecipe, Recipe.Service == Service, Recipe.Value == Value {
         let recipe = Recipe(service: service)
+
+        requestUpdateImp = { value in
+            recipe.requestUpdate(to: value)
+        }
+        value = Recipe.value(from: service)
+
+        super.init()
+
         recipe.update = { [weak self] status in
-            self?.update(with: status)
+            guard let self, !isRequesting else { return }
+            value = Recipe.value(from: status)
         }
         recipe.completion = { [weak self] success in
-            self?.completion(success)
+            guard let self else { return }
+            guard success else {
+                pendingValue = nil
+                isRequesting = false
+                return
+            }
+            guard let pendingValue else {
+                isRequesting = false
+                return
+            }
+            if recipe.requestUpdate(to: pendingValue) {
+                self.value = pendingValue
+            }
+            self.pendingValue = nil
         }
-        self.recipe = recipe
-        value = Recipe.value(from: service)
     }
 
-    private func requestUpdate(to value: Recipe.Value) {
-        guard self.value != value, let recipe else { return }
+    private func requestUpdate(to value: Value) {
+        guard self.value != value else { return }
         if !isRequesting {
-            guard requestUpdate(to: value, with: recipe) else { return }
+            guard requestUpdateImp(value) else { return }
             isRequesting = true
             self.value = value
         }
@@ -64,36 +83,11 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
         }
     }
 
-    private func requestUpdate(to value: Recipe.Value, with recipe: Recipe) -> Bool {
-        recipe.requestUpdate(to: value)
-    }
-
-    private func update(with status: Recipe.Status?) {
-        guard !isRequesting else { return }
-        value = Recipe.value(from: status)
-    }
-
-    private func completion(_ success: Bool) {
-        guard success else {
-            pendingValue = nil
-            isRequesting = false
-            return
-        }
-        guard let pendingValue else {
-            isRequesting = false
-            return
-        }
-        if let recipe, requestUpdate(to: pendingValue, with: recipe) {
-            self.value = pendingValue
-        }
-        self.pendingValue = nil
-    }
-
     static subscript(
         _enclosingInstance instance: Instance,
-        wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, Recipe.Value>,
+        wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, Value>,
         storage storageKeyPath: ReferenceWritableKeyPath<Instance, MutableReceiverStatePropertyWrapper>
-    ) -> Recipe.Value {
+    ) -> Value {
         get {
             let storage = instance[keyPath: storageKeyPath]
             storage.enclosingInstance = instance
@@ -108,5 +102,5 @@ where Recipe: MutableReceiverStateRecipe, Instance: ObservableObject, Instance.O
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias MutableReceiverState<Recipe> = MutableReceiverStatePropertyWrapper<Self, Recipe> where Recipe: MutableReceiverStateRecipe
+    typealias MutableReceiverState<Value> = MutableReceiverStatePropertyWrapper<Self, Value> where Value: Equatable
 }

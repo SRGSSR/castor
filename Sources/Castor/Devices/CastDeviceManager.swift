@@ -11,8 +11,8 @@ import Combine
 public final class CastDeviceManager<Device>: ObservableObject {
     private let service: any DeviceService
 
-    @MutableReceiverState2 private var _volume: Float
-    @MutableReceiverState2 private var _isMuted: Bool
+    @MutableReceiverState private var _volume: Float
+    @MutableReceiverState private var _isMuted: Bool
 
     /// The device.
     public let device: Device
