@@ -32,19 +32,13 @@ public final class Cast: NSObject, ObservableObject {
 
     private var targetResumeState: CastResumeState?
 
-    @ReceiverState(DevicesRecipe.self)
-    private var _devices
-
+    @ReceiverState2 private var _devices: [CastDevice]
     @CurrentDevice private var _currentDevice: CastDevice?
-
-    @ReceiverState(MultizoneDevicesRecipe.self)
-    private var _multizoneDevices
 
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
             currentDeviceManager = .init(service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession))
-            __multizoneDevices.bind(to: currentSession)
         }
     }
 
@@ -83,7 +77,8 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The list of multi-zone devices discovered on the local network.
     public var multizoneDevices: [CastMultizoneDevice] {
-        _multizoneDevices.count > 1 ? _multizoneDevices : []
+        []
+        // _multizoneDevices.count > 1 ? _multizoneDevices : []
     }
 
     /// The current connection state with a device.
@@ -101,10 +96,9 @@ public final class Cast: NSObject, ObservableObject {
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
         __currentDevice = .init(service: context.sessionManager)
+        __devices = .init(service: context.discoveryManager, recipe: DevicesRecipe.self)
 
         super.init()
-
-        __devices.bind(to: context.discoveryManager)
 
         context.sessionManager.add(self)
 

@@ -17,12 +17,10 @@ import GoogleCast
 public final class CastPlayer: NSObject, ObservableObject {
     let remoteMediaClient: GCKRemoteMediaClient
 
+    @ReceiverState2 var _mediaStatus: GCKMediaStatus?
+
     @MutableReceiverState private var _repeatMode: CastRepeatMode
     @MutableReceiverState private var _currentItemId: GCKMediaQueueItemID
-
-    @ReceiverState(MediaStatusRecipe.self)
-    var _mediaStatus
-
     @MutableReceiverState var _shouldPlay: Bool
     @MutableReceiverState var _playbackSpeed: Float
     @MutableReceiverState var _activeTracks: [CastMediaTrack]
@@ -75,7 +73,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
         __repeatMode = .init(service: remoteMediaClient, recipe: RepeatModeRecipe.self)
         __currentItemId = .init(service: remoteMediaClient, recipe: CurrentItemIdRecipe.self)
-        // TODO: __mediaStatus = ...
+        __mediaStatus = .init(service: remoteMediaClient, recipe: MediaStatusRecipe.self)
         __shouldPlay = .init(service: remoteMediaClient, recipe: ShouldPlayRecipe.self)
         __playbackSpeed = .init(service: remoteMediaClient, recipe: PlaybackSpeedRecipe.self)
         __activeTracks = .init(service: remoteMediaClient, recipe: ActiveTracksRecipe.self)
@@ -85,8 +83,6 @@ public final class CastPlayer: NSObject, ObservableObject {
         super.init()
 
         remoteMediaClient.add(self)
-
-        __mediaStatus.bind(to: remoteMediaClient)
     }
 }
 
