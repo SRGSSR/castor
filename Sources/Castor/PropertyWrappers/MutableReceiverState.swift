@@ -11,6 +11,8 @@ import Foundation
 @propertyWrapper
 final class MutableReceiverStatePropertyWrapper<Instance, Value>: NSObject
 where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher, Value: Equatable {
+    private let recipe: any ReceiverStateRecipe
+
     private var isRequesting = false
     private var pendingValue: Value?
 
@@ -41,10 +43,11 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     ) where Recipe: MutableReceiverStateRecipe, Recipe.Service == Service, Recipe.Value == Value {
         let recipe = Recipe(service: service)
 
-        requestUpdateImp = { value in
+        self.recipe = recipe
+        self.requestUpdateImp = { value in
             recipe.requestUpdate(to: value)
         }
-        value = Recipe.value(from: service)
+        self.value = Recipe.value(from: service)
 
         super.init()
 
