@@ -25,9 +25,15 @@ final class MultizoneMutedRecipe: NSObject, MutableReceiverStateRecipe {
     }
 
     func requestUpdate(to value: Bool) -> Bool {
-        let request = service.setMuted(value)
-        request.delegate = self
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(completeRequest), object: nil)
+        perform(#selector(completeRequest), with: nil, afterDelay: 0.1)
+        _ = service.setMuted(value)
         return true
+    }
+
+    @objc
+    private func completeRequest() {
+        completion?(true)
     }
 }
 
@@ -35,19 +41,5 @@ extension MultizoneMutedRecipe: @preconcurrency GCKCastDeviceStatusListener {
     func castSession(_ castSession: GCKCastSession, didUpdate device: GCKMultizoneDevice) {
         guard device == service.device.rawDevice else { return }
         update?(device.muted)
-    }
-}
-
-extension MultizoneMutedRecipe: @preconcurrency GCKRequestDelegate {
-    func requestDidComplete(_ request: GCKRequest) {
-        completion?(true)
-    }
-
-    func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion?(false)
-    }
-
-    func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion?(false)
     }
 }

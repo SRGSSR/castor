@@ -25,9 +25,15 @@ final class MultizoneVolumeRecipe: NSObject, MutableReceiverStateRecipe {
     }
 
     func requestUpdate(to value: Float) -> Bool {
-        let request = service.setVolume(value)
-        request.delegate = self
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(completeRequest), object: nil)
+        perform(#selector(completeRequest), with: nil, afterDelay: 0.1)
+        _ = service.setVolume(value)
         return true
+    }
+
+    @objc
+    private func completeRequest() {
+        completion?(true)
     }
 }
 
@@ -35,19 +41,5 @@ extension MultizoneVolumeRecipe: @preconcurrency GCKCastDeviceStatusListener {
     func castSession(_ castSession: GCKCastSession, didUpdate device: GCKMultizoneDevice) {
         guard device == service.device.rawDevice else { return }
         update?(device.volumeLevel)
-    }
-}
-
-extension MultizoneVolumeRecipe: @preconcurrency GCKRequestDelegate {
-    func requestDidComplete(_ request: GCKRequest) {
-        completion?(true)
-    }
-
-    func request(_ request: GCKRequest, didAbortWith abortReason: GCKRequestAbortReason) {
-        completion?(false)
-    }
-
-    func request(_ request: GCKRequest, didFailWithError error: GCKError) {
-        completion?(false)
     }
 }
