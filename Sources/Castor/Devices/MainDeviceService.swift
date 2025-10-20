@@ -30,7 +30,7 @@ struct MainDeviceService: DeviceService {
     }
 
     var canAdjustVolume: Bool {
-        session.isFixedVolume
+        !session.isFixedVolume
     }
 
     var canMute: Bool {
