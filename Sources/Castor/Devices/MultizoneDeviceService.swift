@@ -11,10 +11,11 @@ struct MultizoneDeviceService: DeviceService {
     typealias MutedRecipe = MultizoneMutedRecipe
 
     private let session: GCKCastSession
-    private let rawDevice: GCKMultizoneDevice
 
-    var device: CastMultizoneDevice {
-        rawDevice.toCastDevice()
+    let device: CastMultizoneDevice
+
+    private var rawDevice: GCKMultizoneDevice {
+        device.rawDevice
     }
 
     var volume: Float {
@@ -37,9 +38,10 @@ struct MultizoneDeviceService: DeviceService {
         true
     }
 
-    init(session: GCKCastSession, rawDevice: GCKMultizoneDevice) {
+    init?(session: GCKCastSession?, device: CastMultizoneDevice) {
+        guard let session else { return nil }
         self.session = session
-        self.rawDevice = rawDevice
+        self.device = device
     }
 
     func add(_ listener: GCKCastDeviceStatusListener) {

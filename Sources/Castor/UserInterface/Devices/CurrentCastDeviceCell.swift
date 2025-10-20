@@ -13,7 +13,7 @@ struct CurrentCastDeviceCell: View {
     var body: some View {
         VStack(spacing: 20) {
             Label {
-                descriptionView(for: device)
+                descriptionView()
             } icon: {
                 CastIcon(cast: cast)
             }
@@ -22,7 +22,7 @@ struct CurrentCastDeviceCell: View {
         }
     }
 
-    private func descriptionView(for device: CastDevice) -> some View {
+    private func descriptionView() -> some View {
         VStack(alignment: .leading) {
             HStack {
                 Text(deviceName)
