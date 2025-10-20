@@ -17,29 +17,17 @@ import GoogleCast
 public final class CastPlayer: NSObject, ObservableObject {
     let remoteMediaClient: GCKRemoteMediaClient
 
-    @MutableReceiverState2
-    private var _repeatMode: CastRepeatMode
-
-    @MutableReceiverState2
-    private var _currentItemId: GCKMediaQueueItemID
+    @MutableReceiverState private var _repeatMode: CastRepeatMode
+    @MutableReceiverState private var _currentItemId: GCKMediaQueueItemID
 
     @ReceiverState(MediaStatusRecipe.self)
     var _mediaStatus
 
-    @MutableReceiverState2
-    var _shouldPlay: Bool
-
-    @MutableReceiverState2
-    var _playbackSpeed: Float
-
-    @MutableReceiverState2
-    var _activeTracks: [CastMediaTrack]
-
-    @MutableReceiverState2
-    var _targetSeekTime: CMTime?
-
-    @MutableReceiverState2
-    var _items: [CastPlayerItem]
+    @MutableReceiverState var _shouldPlay: Bool
+    @MutableReceiverState var _playbackSpeed: Float
+    @MutableReceiverState var _activeTracks: [CastMediaTrack]
+    @MutableReceiverState var _targetSeekTime: CMTime?
+    @MutableReceiverState var _items: [CastPlayerItem]
 
     /// The current item.
     ///
