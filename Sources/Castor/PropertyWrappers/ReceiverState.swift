@@ -7,6 +7,7 @@
 import Combine
 import Foundation
 
+// TODO : Should perform type erasure here as well.
 @MainActor
 @propertyWrapper
 final class ReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
