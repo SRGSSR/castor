@@ -59,18 +59,11 @@ public final class CastDeviceManager<Device>: ObservableObject {
         service.canMute
     }
 
-    init<Service, VolumeRecipe, MutedRecipe>(
-        service: Service,
-        volumeRecipe: VolumeRecipe.Type,
-        mutedRecipe: MutedRecipe.Type
-    )
-    where Service: DeviceService, Service.Device == Device,
-    VolumeRecipe: MutableReceiverStateRecipe, VolumeRecipe.Value == Float, VolumeRecipe.Service == Service,
-    MutedRecipe: MutableReceiverStateRecipe, MutedRecipe.Value == Bool, MutedRecipe.Service == Service {
+    init<Service>(service: Service) where Service: DeviceService, Service.Device == Device {
         self.service = service
         self.device = service.device
 
-        __volume = .init(service: service, recipe: VolumeRecipe.self)
-        __isMuted = .init(service: service, recipe: MutedRecipe.self)
+        __volume = .init(service: service, recipe: Service.VolumeRecipe.self)
+        __isMuted = .init(service: service, recipe: Service.MutedRecipe.self)
     }
 }

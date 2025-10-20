@@ -46,8 +46,6 @@ public final class Cast: NSObject, ObservableObject {
             if let currentSession {
                 currentDeviceManager = .init(
                     service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession),
-                    volumeRecipe: MainVolumeRecipe.self,
-                    mutedRecipe: MainMutedRecipe.self
                 )
             }
             else {

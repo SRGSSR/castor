@@ -7,6 +7,9 @@
 import GoogleCast
 
 struct MultizoneDeviceService: DeviceService {
+    typealias VolumeRecipe = MultizoneVolumeRecipe
+    typealias MutedRecipe = MultizoneMutedRecipe
+
     private let session: GCKCastSession
     private let rawDevice: GCKMultizoneDevice
 
