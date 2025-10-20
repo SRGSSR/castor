@@ -24,7 +24,8 @@ public struct CastVolumeSlider<Device>: View {
             Text("Volume", bundle: .module, comment: "Volume slider label")
         } minimumValueLabel: {
             CastMuteButton(deviceManager: deviceManager)
-                .buttonStyle(.borderless) // Trick to avoid tapping on the entire cell.
+                // Trick to avoid tapping on the entire cell.
+                .buttonStyle(.borderless)
                 .toAnyView()
         } maximumValueLabel: {
             EmptyView()
