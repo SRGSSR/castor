@@ -55,8 +55,8 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
             guard let self, !isRequesting else { return }
             value = Recipe.value(from: status)
         }
-        recipe.completion = { [weak self] success in
-            guard let self else { return }
+        recipe.completion = { [weak self, weak recipe] success in
+            guard let self, let recipe else { return }
             guard success else {
                 pendingValue = nil
                 isRequesting = false
