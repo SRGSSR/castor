@@ -7,6 +7,9 @@
 import GoogleCast
 
 struct MainDeviceService: DeviceService {
+    typealias VolumeRecipe = MainVolumeRecipe
+    typealias MutedRecipe = MainMutedRecipe
+
     private let sessionManager: GCKSessionManager
     private let session: GCKCastSession
 
