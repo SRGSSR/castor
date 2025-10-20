@@ -17,7 +17,7 @@ import GoogleCast
 public final class CastPlayer: NSObject, ObservableObject {
     let remoteMediaClient: GCKRemoteMediaClient
 
-    @ReceiverState2 var _mediaStatus: GCKMediaStatus?
+    @ReceiverState var _mediaStatus: GCKMediaStatus?
 
     @MutableReceiverState private var _repeatMode: CastRepeatMode
     @MutableReceiverState private var _currentItemId: GCKMediaQueueItemID

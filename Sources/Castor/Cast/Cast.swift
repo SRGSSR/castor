@@ -32,7 +32,7 @@ public final class Cast: NSObject, ObservableObject {
 
     private var targetResumeState: CastResumeState?
 
-    @ReceiverState2 private var _devices: [CastDevice]
+    @ReceiverState private var _devices: [CastDevice]
     @CurrentDevice private var _currentDevice: CastDevice?
 
     private var currentSession: GCKCastSession? {
