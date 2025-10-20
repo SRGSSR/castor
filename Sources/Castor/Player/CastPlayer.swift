@@ -17,29 +17,29 @@ import GoogleCast
 public final class CastPlayer: NSObject, ObservableObject {
     let remoteMediaClient: GCKRemoteMediaClient
 
-    @MutableReceiverState(RepeatModeRecipe.self)
-    private var _repeatMode
+    @MutableReceiverState2
+    private var _repeatMode: CastRepeatMode
 
-    @MutableReceiverState(CurrentItemIdRecipe.self)
-    private var _currentItemId
+    @MutableReceiverState2
+    private var _currentItemId: GCKMediaQueueItemID
 
     @ReceiverState(MediaStatusRecipe.self)
     var _mediaStatus
 
-    @MutableReceiverState(ShouldPlayRecipe.self)
-    var _shouldPlay
+    @MutableReceiverState2
+    var _shouldPlay: Bool
 
-    @MutableReceiverState(PlaybackSpeedRecipe.self)
-    var _playbackSpeed
+    @MutableReceiverState2
+    var _playbackSpeed: Float
 
-    @MutableReceiverState(ActiveTracksRecipe.self)
-    var _activeTracks
+    @MutableReceiverState2
+    var _activeTracks: [CastMediaTrack]
 
-    @MutableReceiverState(TargetSeekTimeRecipe.self)
-    var _targetSeekTime
+    @MutableReceiverState2
+    var _targetSeekTime: CMTime?
 
-    @MutableReceiverState(ItemsRecipe.self)
-    var _items
+    @MutableReceiverState2
+    var _items: [CastPlayerItem]
 
     /// The current item.
     ///
@@ -85,18 +85,20 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
 
+        __repeatMode = .init(service: remoteMediaClient, recipe: RepeatModeRecipe.self)
+        __currentItemId = .init(service: remoteMediaClient, recipe: CurrentItemIdRecipe.self)
+        // TODO: __mediaStatus = ...
+        __shouldPlay = .init(service: remoteMediaClient, recipe: ShouldPlayRecipe.self)
+        __playbackSpeed = .init(service: remoteMediaClient, recipe: PlaybackSpeedRecipe.self)
+        __activeTracks = .init(service: remoteMediaClient, recipe: ActiveTracksRecipe.self)
+        __targetSeekTime = .init(service: remoteMediaClient, recipe: TargetSeekTimeRecipe.self)
+        __items = .init(service: remoteMediaClient, recipe: ItemsRecipe.self)
+
         super.init()
 
         remoteMediaClient.add(self)
 
-        __repeatMode.bind(to: remoteMediaClient)
-        __currentItemId.bind(to: remoteMediaClient)
         __mediaStatus.bind(to: remoteMediaClient)
-        __shouldPlay.bind(to: remoteMediaClient)
-        __playbackSpeed.bind(to: remoteMediaClient)
-        __activeTracks.bind(to: remoteMediaClient)
-        __targetSeekTime.bind(to: remoteMediaClient)
-        __items.bind(to: remoteMediaClient)
     }
 }
 
