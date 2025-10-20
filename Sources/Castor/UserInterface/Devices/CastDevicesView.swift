@@ -55,7 +55,7 @@ struct CastDevicesView: View {
         if !devices.isEmpty {
             Section {
                 ForEach(devices, id: \.self) { device in
-                    Text(CastMultizoneDevice.name(for: device))
+                    MultizoneDeviceCell(device: device, cast: cast)
                 }
             } header: {
                 Text("Paired devices", bundle: .module, comment: "Header for available devices list section")

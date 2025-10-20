@@ -6,7 +6,7 @@
 
 protocol DeviceService {
     associatedtype Device
-    
+
     associatedtype VolumeRecipe: MutableReceiverStateRecipe where VolumeRecipe.Value == Float, VolumeRecipe.Service == Self
     associatedtype MutedRecipe: MutableReceiverStateRecipe where MutedRecipe.Value == Bool, MutedRecipe.Service == Self
 

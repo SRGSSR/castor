@@ -33,6 +33,7 @@ final class MultizoneMutedRecipe: NSObject, MutableReceiverStateRecipe {
 
 extension MultizoneMutedRecipe: @preconcurrency GCKCastDeviceStatusListener {
     func castSession(_ castSession: GCKCastSession, didUpdate device: GCKMultizoneDevice) {
+        guard device == service.device.rawDevice else { return }
         update?(device.muted)
     }
 }

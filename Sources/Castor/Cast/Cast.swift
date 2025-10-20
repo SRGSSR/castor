@@ -43,9 +43,7 @@ public final class Cast: NSObject, ObservableObject {
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            currentDeviceManager = .init(
-                service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession),
-            )
+            currentDeviceManager = .init(service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession))
             __multizoneDevices.bind(to: currentSession)
         }
     }
@@ -137,6 +135,12 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the device is casting; otherwise, `false`.
     public func isCasting(on device: CastDevice) -> Bool {
         _currentDevice == device
+    }
+
+    /// Gets the device manager associated with a multi-zone device.
+    public func multizoneDeviceManager(for device: CastMultizoneDevice) -> CastDeviceManager<CastMultizoneDevice>? {
+        // TODO: Likely create all managers when the device list is updated and cache them in a dictionary.
+        .init(service: MultizoneDeviceService(session: currentSession, device: device))
     }
 }
 

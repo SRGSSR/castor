@@ -33,6 +33,7 @@ final class MultizoneVolumeRecipe: NSObject, MutableReceiverStateRecipe {
 
 extension MultizoneVolumeRecipe: @preconcurrency GCKCastDeviceStatusListener {
     func castSession(_ castSession: GCKCastSession, didUpdate device: GCKMultizoneDevice) {
+        guard device == service.device.rawDevice else { return }
         update?(device.volumeLevel)
     }
 }
