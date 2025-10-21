@@ -38,8 +38,7 @@ struct MultizoneDeviceService: DeviceService {
         true
     }
 
-    init?(session: GCKCastSession?, device: CastMultizoneDevice) {
-        guard let session else { return nil }
+    init(session: GCKCastSession, device: CastMultizoneDevice) {
         self.session = session
         self.device = device
     }
