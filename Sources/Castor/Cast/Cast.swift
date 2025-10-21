@@ -34,6 +34,7 @@ public final class Cast: NSObject, ObservableObject {
 
     @ReceiverState private var _devices: [CastDevice]
     @CurrentDevice private var _currentDevice: CastDevice?
+    @ReceiverState private var _context: CastContext
 
     private var currentSession: GCKCastSession? {
         didSet {
@@ -89,8 +90,9 @@ public final class Cast: NSObject, ObservableObject {
 
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
 
-        __currentDevice = .init(service: context.sessionManager)
         __devices = .init(service: context.discoveryManager, recipe: DevicesRecipe.self)
+        __currentDevice = .init(service: context.sessionManager)
+        __context = .init(service: context, recipe: ContextRecipe.self)
 
         super.init()
 
