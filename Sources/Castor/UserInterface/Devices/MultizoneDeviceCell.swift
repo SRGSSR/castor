@@ -24,8 +24,6 @@ struct MultizoneDeviceCell: View {
 
     @ViewBuilder
     private func volumeSlider() -> some View {
-        if let deviceManager = cast.multizoneDeviceManager(for: device) {
-            CastVolumeSlider(deviceManager: deviceManager)
-        }
+        Text("TODO")
     }
 }

@@ -75,12 +75,6 @@ public final class Cast: NSObject, ObservableObject {
         _devices
     }
 
-    /// The list of multi-zone devices discovered on the local network.
-    public var multizoneDevices: [CastMultizoneDevice] {
-        []
-        // _multizoneDevices.count > 1 ? _multizoneDevices : []
-    }
-
     /// The current connection state with a device.
     @Published public private(set) var connectionState: GCKConnectionState
 
@@ -129,12 +123,6 @@ public final class Cast: NSObject, ObservableObject {
     /// - Returns: `true` if the device is casting; otherwise, `false`.
     public func isCasting(on device: CastDevice) -> Bool {
         _currentDevice == device
-    }
-
-    /// Gets the device manager associated with a multi-zone device.
-    public func multizoneDeviceManager(for device: CastMultizoneDevice) -> CastDeviceManager<CastMultizoneDevice>? {
-        // TODO: Likely create all managers when the device list is updated and cache them in a dictionary.
-        .init(service: MultizoneDeviceService(session: currentSession, device: device))
     }
 }
 
