@@ -4,8 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-// TODO: Rename as Scan
-struct CastContext: Equatable {
+struct Discovery: Equatable {
     let devices: [CastDevice]
     let multizoneDevices: [CastMultizoneDevice]
 }

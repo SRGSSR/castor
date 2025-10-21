@@ -7,9 +7,9 @@
 import GoogleCast
 
 final class ContextRecipe: NSObject, ReceiverStateRecipe {
-    static let defaultValue: CastContext = .init(devices: [], multizoneDevices: [])
+    static let defaultValue: Discovery = .init(devices: [], multizoneDevices: [])
 
-    var update: ((CastContext) -> Void)?
+    var update: ((Discovery) -> Void)?
 
     private var devices: [CastDevice] {
         didSet {
@@ -52,7 +52,7 @@ final class ContextRecipe: NSObject, ReceiverStateRecipe {
         session?.add(self)
     }
 
-    static func status(from service: GCKCastContext) -> CastContext {
+    static func status(from service: GCKCastContext) -> Discovery {
         .init(devices: devices(from: service.discoveryManager), multizoneDevices: [])
     }
 
