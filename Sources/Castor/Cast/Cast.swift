@@ -32,19 +32,8 @@ public final class Cast: NSObject, ObservableObject {
 
     private var targetResumeState: CastResumeState?
 
-    @ReceiverState private var _devices: [CastDevice]
-    @CurrentDevice private var _currentDevice: CastDevice?
     @ReceiverState private var _context: CastContext
-
-    private var currentSession: GCKCastSession? {
-        didSet {
-            player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            currentDeviceManager = .init(service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession))
-        }
-    }
-
-    /// The current device manager.
-    public var currentDeviceManager: CastDeviceManager<CastDevice>?
+    @CurrentDevice private var _currentDevice: CastDevice?
 
     /// The Cast configuration.
     public var configuration: CastConfiguration {
@@ -73,7 +62,13 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The list of devices discovered on the local network.
     public var devices: [CastDevice] {
-        _devices
+        _context.devices
+    }
+
+    /// The list of multi-zone devices discovered on the local network.
+    public var multizoneDevices: [CastMultizoneDevice] {
+        let multizoneDevices = _context.multizoneDevices
+        return multizoneDevices.count > 1 ? multizoneDevices : []
     }
 
     /// The current connection state with a device.
@@ -85,14 +80,10 @@ public final class Cast: NSObject, ObservableObject {
     public init(configuration: CastConfiguration = .init()) {
         self.configuration = configuration
 
-        currentSession = context.sessionManager.currentCastSession
         connectionState = context.sessionManager.connectionState
 
-        player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-
-        __devices = .init(service: context.discoveryManager, recipe: DevicesRecipe.self)
-        __currentDevice = .init(service: context.sessionManager)
         __context = .init(service: context, recipe: ContextRecipe.self)
+        __currentDevice = .init(service: context.sessionManager)
 
         super.init()
 
@@ -126,17 +117,23 @@ public final class Cast: NSObject, ObservableObject {
     public func isCasting(on device: CastDevice) -> Bool {
         _currentDevice == device
     }
+
+    /// The current device manager.
+    public func currentDeviceManager() -> CastDeviceManager<CastDevice>? {
+        guard let session = _context.session else { return nil }
+        return .init(service: MainDeviceService(sessionManager: context.sessionManager, session: session))
+    }
+
+    /// Gets the device manager associated with a multi-zone device.
+    public func multizoneDeviceManager(for device: CastMultizoneDevice) -> CastDeviceManager<CastMultizoneDevice>? {
+        guard let session = _context.session else { return nil }
+        return .init(service: MultizoneDeviceService(session: session, device: device))
+    }
 }
 
 extension Cast: @preconcurrency GCKSessionManagerListener {
     // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
-        currentSession = session
-    }
-
-    // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
-        currentSession = session
         if let resumeState = targetResumeState {
             resume(from: resumeState)
             targetResumeState = nil
@@ -150,20 +147,6 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     }
 
     // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
-        currentSession = session
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(
-        _ sessionManager: GCKSessionManager,
-        didSuspend session: GCKCastSession,
-        with reason: GCKConnectionSuspendReason
-    ) {
-        currentSession = nil
-    }
-
-    // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
         let resumeState = session.remoteMediaClient?.resumeState()
         if currentDevice == nil {
@@ -173,20 +156,6 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
         else {
             targetResumeState = resumeState
         }
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
-        currentSession = sessionManager.currentCastSession
-    }
-
-    // swiftlint:disable:next missing_docs
-    public func sessionManager(
-        _ sessionManager: GCKSessionManager,
-        didFailToStart session: GCKCastSession,
-        withError error: any Error
-    ) {
-        currentSession = nil
     }
 
     private func resume(from state: CastResumeState) {
