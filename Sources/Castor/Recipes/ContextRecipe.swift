@@ -26,11 +26,14 @@ final class ContextRecipe: NSObject, ReceiverStateRecipe {
 
     private var session: GCKCastSession? {
         willSet {
+            guard session != newValue else { return }
+            multizoneDevices = []
             session?.remove(self)
         }
         didSet {
+            guard session != oldValue else { return }
             session?.add(self)
-            multizoneDevices = []
+            update?(.init(devices: devices, multizoneDevices: multizoneDevices, session: session))
         }
     }
 
