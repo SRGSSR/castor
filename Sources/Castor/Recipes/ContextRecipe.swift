@@ -7,20 +7,19 @@
 import GoogleCast
 
 final class ContextRecipe: NSObject, ReceiverStateRecipe {
-    static let defaultValue: CastContext = .init(devices: [], multizoneDevices: [], session: nil)
-
-    // ReceiverStateRecipe requirement: callback to publish status updates
+    static let defaultValue: CastContext = .init(devices: [], multizoneDevices: [])
+    
     var update: ((CastContext) -> Void)?
 
     private var devices: [CastDevice] {
         didSet {
-            update?(.init(devices: devices, multizoneDevices: multizoneDevices, session: session))
+            update?(.init(devices: devices, multizoneDevices: multizoneDevices))
         }
     }
 
     private var multizoneDevices: [CastMultizoneDevice] = [] {
         didSet {
-            update?(.init(devices: devices, multizoneDevices: multizoneDevices, session: session))
+            update?(.init(devices: devices, multizoneDevices: multizoneDevices))
         }
     }
 
@@ -33,16 +32,16 @@ final class ContextRecipe: NSObject, ReceiverStateRecipe {
         didSet {
             guard session != oldValue else { return }
             session?.add(self)
-            update?(.init(devices: devices, multizoneDevices: multizoneDevices, session: session))
         }
     }
 
     init(service: GCKCastContext) {
         let discoveryManager = service.discoveryManager
         let sessionManager = service.sessionManager
+        let session = sessionManager.currentCastSession
 
         self.devices = Self.devices(from: discoveryManager)
-        self.session = sessionManager.currentCastSession
+        self.session = session
 
         super.init()
 
@@ -50,14 +49,11 @@ final class ContextRecipe: NSObject, ReceiverStateRecipe {
         discoveryManager.startDiscovery()
 
         sessionManager.add(self)
+        session?.add(self)
     }
 
     static func status(from service: GCKCastContext) -> CastContext {
-        .init(
-            devices: devices(from: service.discoveryManager),
-            multizoneDevices: [],
-            session: service.sessionManager.currentCastSession
-        )
+        .init(devices: devices(from: service.discoveryManager), multizoneDevices: [])
     }
 
     private static func devices(from discoveryManager: GCKDiscoveryManager) -> [CastDevice] {
@@ -124,7 +120,6 @@ extension ContextRecipe: @preconcurrency GCKSessionManagerListener {
         didFailToStart session: GCKCastSession,
         withError error: any Error
     ) {
-        // TODO: sessionManager.currentCastSession ?
         self.session = nil
     }
 }

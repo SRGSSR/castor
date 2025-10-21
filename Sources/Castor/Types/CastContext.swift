@@ -4,10 +4,8 @@
 //  License information is available from the LICENSE file.
 //
 
-import GoogleCast
-
+// TODO: Rename as Scan
 struct CastContext: Equatable {
     let devices: [CastDevice]
     let multizoneDevices: [CastMultizoneDevice]
-    let session: GCKCastSession?
 }
