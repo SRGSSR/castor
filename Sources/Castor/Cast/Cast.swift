@@ -32,12 +32,14 @@ public final class Cast: NSObject, ObservableObject {
 
     private var targetResumeState: CastResumeState?
 
-    @ReceiverState private var _context: Discovery
+    @ReceiverState private var _devices: [CastDevice]
+    @ReceiverState private var _multizoneDevices: [CastMultizoneDevice]
     @CurrentDevice private var _currentDevice: CastDevice?
 
     private var currentSession: GCKCastSession? {
         didSet {
             player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
         }
     }
 
@@ -68,13 +70,12 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The list of devices discovered on the local network.
     public var devices: [CastDevice] {
-        _context.devices
+        _devices
     }
 
     /// The list of multi-zone devices discovered on the local network.
     public var multizoneDevices: [CastMultizoneDevice] {
-        let multizoneDevices = _context.multizoneDevices
-        return multizoneDevices.count > 1 ? multizoneDevices : []
+        _multizoneDevices.count > 1 ? _multizoneDevices : []
     }
 
     /// The current connection state with a device.
@@ -90,7 +91,8 @@ public final class Cast: NSObject, ObservableObject {
         player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
         connectionState = context.sessionManager.connectionState
 
-        __context = .init(service: context, recipe: ContextRecipe.self)
+        __devices = .init(service: context.discoveryManager, recipe: DevicesRecipe.self)
+        __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
         __currentDevice = .init(service: context.sessionManager)
 
         super.init()
