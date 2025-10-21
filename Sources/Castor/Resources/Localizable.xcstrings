@@ -871,9 +871,6 @@
         }
       }
     },
-    "Paired devices" : {
-      "comment" : "Header for available devices list section"
-    },
     "Pause" : {
       "comment" : "Pause button accessibility label",
       "localizations" : {
@@ -1221,6 +1218,9 @@
           }
         }
       }
+    },
+    "TODO" : {
+
     },
     "Undefined" : {
       "comment" : "Undefined language",
