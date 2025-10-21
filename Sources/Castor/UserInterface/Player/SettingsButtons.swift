@@ -19,7 +19,7 @@ struct SettingsButtons: View {
                 Spacer()
             }
             SettingsMenu(player: player)
-            if let deviceManager = cast.currentDeviceManager {
+            if let deviceManager = cast.currentDeviceManager() {
                 CastMuteButton(deviceManager: deviceManager)
             }
             CastButton(cast: cast)
