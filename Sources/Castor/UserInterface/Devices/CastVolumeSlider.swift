@@ -7,7 +7,7 @@
 import SwiftUI
 
 /// A slider that controls the volume an active Cast device.
-public struct CastVolumeSlider<Device>: View {
+public struct CastVolumeSlider<Device>: View where Device: CastReceiver {
     @ObservedObject var deviceManager: CastDeviceManager<Device>
 
     private var volume: Binding<Float> {
