@@ -10,11 +10,6 @@ import GoogleCast
 public struct CastDevice: Hashable {
     let rawDevice: GCKDevice
 
-    /// The device's friendly name.
-    public var name: String? {
-        rawDevice.friendlyName
-    }
-
     /// The device type.
     public var type: GCKDeviceType {
         rawDevice.type
@@ -36,6 +31,13 @@ public struct CastDevice: Hashable {
     }
 }
 
+extension CastDevice: CastReceiver {
+    // swiftlint:disable:next missing_docs
+    public var name: String? {
+        rawDevice.friendlyName
+    }
+}
+
 extension CastDevice {
     static func imageName(for device: CastDevice) -> String {
         switch device.type {
@@ -48,10 +50,6 @@ extension CastDevice {
         default:
             "tv.and.hifispeaker.fill"
         }
-    }
-
-    static func name(for device: CastDevice?) -> String {
-        device?.name ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
     }
 
     static func route(to device: CastDevice?) -> String {

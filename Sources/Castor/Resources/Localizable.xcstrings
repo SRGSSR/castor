@@ -1222,9 +1222,6 @@
         }
       }
     },
-    "TODO" : {
-
-    },
     "Undefined" : {
       "comment" : "Undefined language",
       "localizations" : {

@@ -8,7 +8,7 @@ import Combine
 
 /// An observable object that manages a Cast device.
 @MainActor
-public final class CastDeviceManager<Device>: ObservableObject {
+public final class CastDeviceManager<Device>: ObservableObject where Device: CastReceiver {
     private let service: any DeviceService
 
     @MutableReceiverState private var _volume: Float

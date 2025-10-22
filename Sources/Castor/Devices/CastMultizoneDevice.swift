@@ -12,11 +12,6 @@ import GoogleCast
 public struct CastMultizoneDevice: Hashable {
     let rawDevice: GCKMultizoneDevice
 
-    /// The device's friendly name.
-    public var name: String? {
-        rawDevice.friendlyName
-    }
-
     fileprivate init(from device: GCKMultizoneDevice) {
         self.rawDevice = device
     }
@@ -27,9 +22,10 @@ public struct CastMultizoneDevice: Hashable {
     }
 }
 
-extension CastMultizoneDevice {
-    static func name(for device: CastMultizoneDevice?) -> String {
-        device?.name ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
+extension CastMultizoneDevice: CastReceiver {
+    // swiftlint:disable:next missing_docs
+    public var name: String? {
+        rawDevice.friendlyName
     }
 }
 
