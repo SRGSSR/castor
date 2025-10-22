@@ -38,7 +38,6 @@ public final class Cast: NSObject, ObservableObject {
 
     private var currentSession: GCKCastSession? {
         didSet {
-            // TODO: Refactor
             if currentSession != oldValue {
                 __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
             }
