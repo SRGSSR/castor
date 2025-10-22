@@ -140,6 +140,7 @@ public final class Cast: NSObject, ObservableObject {
 
     /// Gets the device manager associated with a multi-zone device.
     public func multizoneDeviceManager(for device: CastMultizoneDevice) -> CastDeviceManager<CastMultizoneDevice>? {
+        // TODO: Check that device belongs to the list
         guard let currentSession else { return nil }
         return .init(service: MultizoneDeviceService(session: currentSession, device: device))
     }
