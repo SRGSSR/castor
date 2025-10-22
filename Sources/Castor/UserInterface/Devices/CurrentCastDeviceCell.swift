@@ -60,7 +60,7 @@ struct CurrentCastDeviceCell: View {
             CastVolumeSlider(deviceManager: deviceManager)
         }
         else {
-            volumeSliderPlaceholder()
+            CastVolumeSlider<CastDevice>.placeholder()
         }
     }
 

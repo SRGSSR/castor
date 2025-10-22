@@ -38,4 +38,24 @@ public struct CastVolumeSlider<Device>: View where Device: CastReceiver {
     public init(deviceManager: CastDeviceManager<Device>) {
         self.deviceManager = deviceManager
     }
+
+    static func placeholder() -> some View {
+        Slider(value: .constant(0)) {
+            Text("Volume", bundle: .module, comment: "Volume slider label")
+        } minimumValueLabel: {
+            // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
+            Button(action: {}) {
+                ZStack {
+                    Image(systemName: "speaker.slash.fill")
+                    Image(systemName: "speaker.wave.3.fill")
+                        .hidden()
+                }
+            }
+            .buttonStyle(.borderless)
+            .toAnyView()
+        } maximumValueLabel: {
+            EmptyView()
+                .toAnyView()
+        }
+    }
 }
