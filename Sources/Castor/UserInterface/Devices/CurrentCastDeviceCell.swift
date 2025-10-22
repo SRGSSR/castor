@@ -22,17 +22,24 @@ struct CurrentCastDeviceCell: View {
         }
     }
 
+    private var status: String {
+        if let status = device.status {
+            return status
+        }
+        else {
+            return String(localized: "Not playing", bundle: .module, comment: "Label displayed when no content is being played")
+        }
+    }
+
     private func descriptionView() -> some View {
         VStack(alignment: .leading) {
             HStack {
                 Text(deviceName)
                     .lineLimit(1)
             }
-            if let status = device.status {
-                Text(status)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
+            Text(status)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .accessibilityElement()
@@ -51,6 +58,17 @@ struct CurrentCastDeviceCell: View {
     private func volumeSlider() -> some View {
         if let deviceManager = cast.currentDeviceManager {
             CastVolumeSlider(deviceManager: deviceManager)
+        }
+        else {
+            // Avoid `List` animation glitches by inserting a view with identical size.
+            Slider(value: .constant(0)) {
+                Text(verbatim: "")
+            } minimumValueLabel: {
+                Image(systemName: "speaker.slash.fill")
+            } maximumValueLabel: {
+                Image(systemName: "speaker.slash.fill")
+            }
+            .hidden()
         }
     }
 }
