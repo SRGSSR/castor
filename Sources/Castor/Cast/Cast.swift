@@ -38,8 +38,12 @@ public final class Cast: NSObject, ObservableObject {
 
     private var currentSession: GCKCastSession? {
         didSet {
-            player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
+            if currentSession != oldValue {
+                __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
+            }
+            if currentSession?.remoteMediaClient != player?.remoteMediaClient {
+                player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
+            }
         }
     }
 
