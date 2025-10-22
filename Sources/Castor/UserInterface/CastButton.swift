@@ -32,7 +32,7 @@ public struct CastButton: View {
                     .foregroundColor(nil)
                     .tint(nil)
             }
-            .frame(idealWidth: 375, idealHeight: 500)
+            .frame(idealWidth: 375, idealHeight: 650)
         }
         .onChange(of: isPresented) { newValue in
             isPresenting = newValue
