@@ -133,17 +133,15 @@ public final class Cast: NSObject, ObservableObject {
         _currentDevice == device
     }
 
-    /// The current device manager.
-    public func currentDeviceManager() -> CastDeviceManager<CastDevice>? {
-        guard let currentSession else { return nil }
+    /// Gets the device manager associated with a device.
+    public func deviceManager(for device: CastDevice?) -> CastDeviceManager<CastDevice>? {
+        guard let device, let currentSession else { return nil }
         return .init(service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession))
     }
 
     /// Gets the device manager associated with a multi-zone device.
-    public func multizoneDeviceManager(for device: CastMultizoneDevice) -> CastDeviceManager<CastMultizoneDevice>? {
-        // TODO: Check that device belongs to the list
-        // TODO: Single method to get device manager for any kind of device.
-        guard let currentSession else { return nil }
+    public func deviceManager(for device: CastMultizoneDevice?) -> CastDeviceManager<CastMultizoneDevice>? {
+        guard let device, let currentSession else { return nil }
         return .init(service: MultizoneDeviceService(session: currentSession, device: device))
     }
 }
