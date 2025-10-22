@@ -41,12 +41,6 @@ public final class Cast: NSObject, ObservableObject {
             // TODO: Refactor
             if currentSession != oldValue {
                 __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
-                if let currentSession {
-                    currentDeviceManager = .init(service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession))
-                }
-                else {
-                    currentDeviceManager = nil
-                }
             }
             if currentSession?.remoteMediaClient != player?.remoteMediaClient {
                 player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
@@ -88,9 +82,6 @@ public final class Cast: NSObject, ObservableObject {
     public var multizoneDevices: [CastMultizoneDevice] {
         _multizoneDevices.count > 1 ? _multizoneDevices : []
     }
-
-    /// The current device manager.
-    public var currentDeviceManager: CastDeviceManager<CastDevice>?
 
     /// The current connection state with a device.
     @Published public private(set) var connectionState: GCKConnectionState
@@ -142,7 +133,14 @@ public final class Cast: NSObject, ObservableObject {
         _currentDevice == device
     }
 
+    /// The current device manager.
+    public func currentDeviceManager() -> CastDeviceManager<CastDevice>? {
+        guard let currentSession else { return nil }
+        return .init(service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession))
+    }
+
     /// Gets the device manager associated with a multi-zone device.
+    // TODO: Single method to get device manager for any kind of device.
     public func multizoneDeviceManager(for device: CastMultizoneDevice) -> CastDeviceManager<CastMultizoneDevice>? {
         // TODO: Check that device belongs to the list
         guard let currentSession else { return nil }

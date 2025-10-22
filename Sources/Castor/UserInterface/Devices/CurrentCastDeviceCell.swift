@@ -56,7 +56,7 @@ struct CurrentCastDeviceCell: View {
 
     @ViewBuilder
     private func volumeSlider() -> some View {
-        if let deviceManager = cast.currentDeviceManager {
+        if let deviceManager = cast.currentDeviceManager() {
             CastVolumeSlider(deviceManager: deviceManager)
         }
         else {
