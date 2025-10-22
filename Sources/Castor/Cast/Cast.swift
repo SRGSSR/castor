@@ -29,7 +29,6 @@ public final class Cast: NSObject, ObservableObject {
     weak var delegate: CastDelegate?
 
     private let context = GCKCastContext.sharedInstance()
-
     private var targetResumeState: CastResumeState?
 
     @ReceiverState private var _devices: [CastDevice]
