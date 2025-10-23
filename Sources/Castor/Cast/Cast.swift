@@ -30,6 +30,7 @@ public final class Cast: NSObject, ObservableObject {
 
     private let context = GCKCastContext.sharedInstance()
     private var targetResumeState: CastResumeState?
+    private var cancellables = Set<AnyCancellable>()
 
     @ReceiverState private var _devices: [CastDevice]
     @ReceiverState private var _multizoneDevices: [CastMultizoneDevice]
@@ -73,8 +74,6 @@ public final class Cast: NSObject, ObservableObject {
 
     /// The current connection state with a device.
     @Published public private(set) var connectionState: GCKConnectionState
-
-    private var cancellables = Set<AnyCancellable>()
 
     /// Creates an instance.
     ///

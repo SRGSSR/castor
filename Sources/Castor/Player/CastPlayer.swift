@@ -71,9 +71,9 @@ public final class CastPlayer: NSObject, ObservableObject {
         self.remoteMediaClient = remoteMediaClient
         self.configuration = configuration
 
+        __mediaStatus = .init(service: remoteMediaClient, recipe: MediaStatusRecipe.self)
         __repeatMode = .init(service: remoteMediaClient, recipe: RepeatModeRecipe.self)
         __currentItemId = .init(service: remoteMediaClient, recipe: CurrentItemIdRecipe.self)
-        __mediaStatus = .init(service: remoteMediaClient, recipe: MediaStatusRecipe.self)
         __shouldPlay = .init(service: remoteMediaClient, recipe: ShouldPlayRecipe.self)
         __playbackSpeed = .init(service: remoteMediaClient, recipe: PlaybackSpeedRecipe.self)
         __activeTracks = .init(service: remoteMediaClient, recipe: ActiveTracksRecipe.self)
