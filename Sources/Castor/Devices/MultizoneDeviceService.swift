@@ -44,8 +44,8 @@ struct MultizoneDeviceService: DeviceService {
     }
 
     func add(_ listener: GCKCastDeviceStatusListener) {
-        session.requestMultizoneStatus()
         session.add(listener)
+        session.requestMultizoneStatus()
     }
 
     func setVolume(_ volume: Float) -> GCKRequest {

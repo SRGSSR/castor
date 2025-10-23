@@ -197,11 +197,7 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
     }
 
     // swiftlint:disable:next missing_docs
-    public func sessionManager(
-        _ sessionManager: GCKSessionManager,
-        didFailToStart session: GCKCastSession,
-        withError error: any Error
-    ) {
+    public func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKCastSession, withError error: any Error) {
         currentSession = nil
     }
 
