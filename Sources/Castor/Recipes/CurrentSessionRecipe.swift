@@ -24,7 +24,6 @@ final class CurrentSessionRecipe: NSObject, ReceiverStateRecipe {
     }
 }
 
-// TODO: Factor out as a separate object so that the same logic can be applied in all GCKSessionManagerListener-based code
 extension CurrentSessionRecipe: @preconcurrency GCKSessionManagerListener {
     func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
         update?(session)

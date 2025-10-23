@@ -74,7 +74,7 @@ extension MainMutedRecipe: @preconcurrency GCKSessionManagerListener {
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKSession, withError error: any Error) {
-        currentSession = nil
+        currentSession = sessionManager.currentCastSession
     }
 }
 
