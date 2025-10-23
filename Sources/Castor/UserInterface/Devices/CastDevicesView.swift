@@ -58,7 +58,7 @@ struct CastDevicesView: View {
                     MultizoneDeviceCell(device: device, cast: cast)
                 }
             } header: {
-                Text("Paired devices", bundle: .module, comment: "Header for available devices list section")
+                Text("Paired devices", bundle: .module, comment: "Header for the paired devices list section")
             }
         }
     }
