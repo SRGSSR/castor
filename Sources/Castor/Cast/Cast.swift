@@ -37,12 +37,8 @@ public final class Cast: NSObject, ObservableObject {
 
     private var currentSession: GCKCastSession? {
         didSet {
-            if currentSession != oldValue {
-                __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
-            }
-            if currentSession?.remoteMediaClient != player?.remoteMediaClient {
-                player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
-            }
+            guard currentSession?.remoteMediaClient != player?.remoteMediaClient else { return }
+            player = .init(remoteMediaClient: currentSession?.remoteMediaClient, configuration: configuration)
         }
     }
 
@@ -95,7 +91,7 @@ public final class Cast: NSObject, ObservableObject {
         connectionState = context.sessionManager.connectionState
 
         __devices = .init(service: context.discoveryManager, recipe: DevicesRecipe.self)
-        __multizoneDevices = .init(service: currentSession, recipe: MultizoneDevicesRecipe.self)
+        __multizoneDevices = .init(service: context.sessionManager, recipe: MultizoneDevicesRecipe.self)
         __currentDevice = .init(service: context.sessionManager)
 
         super.init()
@@ -133,14 +129,12 @@ public final class Cast: NSObject, ObservableObject {
 
     /// Gets the device manager associated with a device.
     public func deviceManager(for device: CastDevice?) -> CastDeviceManager<CastDevice>? {
-        guard let currentSession, device == currentDevice else { return nil }
-        return .init(service: MainDeviceService(sessionManager: context.sessionManager, session: currentSession))
+        nil
     }
 
     /// Gets the device manager associated with a multi-zone device.
     public func deviceManager(for device: CastMultizoneDevice?) -> CastDeviceManager<CastMultizoneDevice>? {
-        guard let device, multizoneDevices.contains(device), let currentSession else { return nil }
-        return .init(service: MultizoneDeviceService(session: currentSession, device: device))
+        nil
     }
 }
 

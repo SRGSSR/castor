@@ -9,29 +9,52 @@ import GoogleCast
 final class MainVolumeRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: Float = 0
 
-    private let service: MainDeviceService
+    private let service: GCKSessionManager
 
     var update: ((Float) -> Void)?
     var completion: ((Bool) -> Void)?
 
-    init(service: MainDeviceService) {
+    private var currentSession: GCKCastSession? {
+        didSet {
+            update?(Self.volume(for: currentSession))
+        }
+    }
+
+    init(service: GCKSessionManager) {
         self.service = service
         super.init()
         service.add(self)
     }
 
-    static func status(from service: MainDeviceService) -> Float {
-        service.volume
+    static func status(from service: GCKSessionManager) -> Float {
+        volume(for: service.currentCastSession)
+    }
+
+    private static func volume(for session: GCKCastSession?) -> Float {
+        session?.currentDeviceVolume ?? defaultValue
     }
 
     func requestUpdate(to value: Float) -> Bool {
-        let request = service.setVolume(value)
+        guard let currentSession else { return false }
+        let request = currentSession.setDeviceVolume(value)
         request.delegate = self
         return true
     }
 }
 
 extension MainVolumeRecipe: @preconcurrency GCKSessionManagerListener {
+    func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
+        currentSession = session
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
+        currentSession = session
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didSuspend session: GCKCastSession, with reason: GCKConnectionSuspendReason) {
+        currentSession = nil
+    }
+
     func sessionManager(
         _ sessionManager: GCKSessionManager,
         castSession session: GCKCastSession,
@@ -42,13 +65,15 @@ extension MainVolumeRecipe: @preconcurrency GCKSessionManagerListener {
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
-        update?(Self.defaultValue)
+        currentSession = nil
     }
 
     func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
-        if error != nil {
-            update?(Self.defaultValue)
-        }
+        currentSession = sessionManager.currentCastSession
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKSession, withError error: any Error) {
+        currentSession = nil
     }
 }
 

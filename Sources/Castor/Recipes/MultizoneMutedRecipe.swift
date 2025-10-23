@@ -14,20 +14,32 @@ final class MultizoneMutedRecipe: NSObject, MutableReceiverStateRecipe {
     var update: ((Bool) -> Void)?
     var completion: ((Bool) -> Void)?
 
+    private var currentSession: GCKCastSession? {
+        willSet {
+            guard currentSession != newValue else { return }
+            currentSession?.remove(self)
+        }
+        didSet {
+            guard currentSession != oldValue else { return }
+            currentSession?.add(self)
+        }
+    }
+
     init(service: MultizoneDeviceService) {
         self.service = service
         super.init()
-        service.add(self)
+        service.sessionManager.add(self)
     }
 
     static func status(from service: MultizoneDeviceService) -> Bool {
-        service.isMuted
+        service.device.muted
     }
 
     func requestUpdate(to value: Bool) -> Bool {
+        guard let currentSession else { return false }
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(completeRequest), object: nil)
         perform(#selector(completeRequest), with: nil, afterDelay: 0.1)
-        _ = service.setMuted(value)
+        currentSession.setDeviceMuted(value, for: service.device)
         return true
     }
 
@@ -37,9 +49,35 @@ final class MultizoneMutedRecipe: NSObject, MutableReceiverStateRecipe {
     }
 }
 
+extension MultizoneMutedRecipe: @preconcurrency GCKSessionManagerListener {
+    func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKCastSession) {
+        currentSession = session
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didResumeCastSession session: GCKCastSession) {
+        currentSession = session
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didSuspend session: GCKCastSession, with reason: GCKConnectionSuspendReason) {
+        currentSession = nil
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, willEnd session: GCKCastSession) {
+        currentSession = nil
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
+        currentSession = sessionManager.currentCastSession
+    }
+
+    func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKSession, withError error: any Error) {
+        currentSession = nil
+    }
+}
+
 extension MultizoneMutedRecipe: @preconcurrency GCKCastDeviceStatusListener {
     func castSession(_ castSession: GCKCastSession, didUpdate device: GCKMultizoneDevice) {
-        guard device == service.device.rawDevice else { return }
+        guard device == service.device else { return }
         update?(device.muted)
     }
 }
