@@ -36,9 +36,4 @@ private extension CastMuteButton {
             String(localized: "Unmuted", bundle: .module, comment: "Accessibility label for unmuted state")
         }
     }
-
-    private var deviceName: String {
-        // TODO:
-        ""
-    }
 }
