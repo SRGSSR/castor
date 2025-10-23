@@ -22,24 +22,17 @@ struct CurrentCastDeviceCell: View {
         }
     }
 
-    private var status: String {
-        if let status = device.status {
-            return status
-        }
-        else {
-            return String(localized: "Not playing", bundle: .module, comment: "Label displayed when no content is being played")
-        }
-    }
-
     private func descriptionView() -> some View {
         VStack(alignment: .leading) {
             HStack {
                 Text(deviceName)
                     .lineLimit(1)
             }
-            Text(status)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            if let status = device.status {
+                Text(status)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .accessibilityElement()
