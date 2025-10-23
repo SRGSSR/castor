@@ -37,10 +37,6 @@ public struct CastDevice: Hashable {
 }
 
 extension CastDevice {
-    static func name(for device: Self?) -> String {
-        device?.name ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
-    }
-
     static func imageName(for device: CastDevice) -> String {
         switch device.type {
         case .TV:
@@ -52,6 +48,10 @@ extension CastDevice {
         default:
             "tv.and.hifispeaker.fill"
         }
+    }
+
+    static func name(for device: Self?) -> String {
+        device?.name ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
     }
 
     static func route(to device: Self?) -> String {

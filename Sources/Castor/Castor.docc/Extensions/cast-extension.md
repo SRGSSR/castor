@@ -22,8 +22,7 @@
 
 ### Controlling the Volume
 
-- ``deviceManager(for:)->CastDeviceManager<CastDevice>?``
-- ``deviceManager(for:)->CastDeviceManager<CastMultizoneDevice>?``
+- ``deviceManager(forMultizoneDevice:)``
 
 ### Managing the Playback
 

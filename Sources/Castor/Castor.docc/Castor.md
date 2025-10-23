@@ -46,7 +46,6 @@ The Castor framework integrates seamlessly with SwiftUI, leveraging its declarat
 - ``CastDeviceManager``
 - ``CastMultizoneDevice``
 - ``CastResumeState``
-- ``CastReceiver``
 
 ### Playback
 

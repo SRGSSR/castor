@@ -125,7 +125,9 @@ public final class Cast: NSObject, ObservableObject {
         _currentDevice == device
     }
 
-    /// Gets a device manager for the current device or one of its associated multi-zone devices.
+    /// Gets a device manager associated with a device.
+    ///
+    /// - Parameter multizoneDevice: The multi-zone device to retrieve a device manager for, or `nil` for the main device.
     public func deviceManager(forMultizoneDevice multizoneDevice: CastMultizoneDevice? = nil) -> CastDeviceManager {
         .init(sessionManager: context.sessionManager, multizoneDevice: multizoneDevice)
     }

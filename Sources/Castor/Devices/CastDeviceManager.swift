@@ -58,7 +58,7 @@ public final class CastDeviceManager: ObservableObject {
     }
 
     init(sessionManager: GCKSessionManager, multizoneDevice: CastMultizoneDevice?) {
-        // Use the session to extract device capabilities, including for associated multi-zone devices.
+        // Use the current session to extract device capabilities, including for associated multi-zone devices.
         __currentSession = .init(service: sessionManager, recipe: CurrentSessionRecipe.self)
 
         if let multizoneDevice {

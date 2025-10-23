@@ -4,6 +4,7 @@
 
 ### Getting Device Information
 
+- ``name``
 - ``status``
 - ``type``
 
