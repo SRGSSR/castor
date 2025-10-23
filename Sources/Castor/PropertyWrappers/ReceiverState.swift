@@ -37,7 +37,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         let recipe = Recipe(service: service)
 
         self.recipe = recipe
-        self.value = Recipe.defaultValue
+        self.value = Recipe.value(from: service)
         super.init()
 
         recipe.update = { [weak self] status in

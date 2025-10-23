@@ -31,6 +31,8 @@ public final class Cast: NSObject, ObservableObject {
     private let context = GCKCastContext.sharedInstance()
     private var targetResumeState: CastResumeState?
 
+    // TODO: Use CurrentDeviceRecipe to sync current session
+
     @ReceiverState private var _devices: [CastDevice]
     @ReceiverState private var _multizoneDevices: [CastMultizoneDevice]
     @CurrentDevice private var _currentDevice: CastDevice?

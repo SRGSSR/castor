@@ -10,6 +10,8 @@ import GoogleCast
 /// An observable object that manages a Cast device.
 @MainActor
 public final class CastDeviceManager: ObservableObject {
+    @ReceiverState private var _currentSession: GCKCastSession?
+
     @MutableReceiverState private var _volume: Float
     @MutableReceiverState private var _isMuted: Bool
 
@@ -42,23 +44,23 @@ public final class CastDeviceManager: ObservableObject {
 
     /// The allowed range for the volume of the device.
     public var volumeRange: ClosedRange<Float> {
-        // TODO:
-        0...0
+        GCKCastSession.volumeRange(for: _currentSession)
     }
 
     /// A Boolean indicating whether the volume of the device can be adjusted.
     public var canAdjustVolume: Bool {
-        // TODO:
-        false
+        GCKCastSession.canAdjustVolume(for: _currentSession)
     }
 
     /// A Boolean indicating whether the device can be muted.
     public var canMute: Bool {
-        // TODO: Use another recipe to synchronize device capabilities? (
-        false
+        GCKCastSession.canMute(for: _currentSession)
     }
 
     init(sessionManager: GCKSessionManager, multizoneDevice: CastMultizoneDevice?) {
+        // Use the session to extract device capabilities, including for associated multi-zone devices.
+        __currentSession = .init(service: sessionManager, recipe: CurrentSessionRecipe.self)
+
         if let multizoneDevice {
             let service = MultizoneDeviceService(device: multizoneDevice, sessionManager: sessionManager)
             __volume = .init(service: service, recipe: MultizoneVolumeRecipe.self)
