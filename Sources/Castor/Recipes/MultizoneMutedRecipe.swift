@@ -27,19 +27,20 @@ final class MultizoneMutedRecipe: NSObject, MutableReceiverStateRecipe {
 
     init(service: MultizoneDeviceService) {
         self.service = service
+        self.currentSession = service.sessionManager.currentCastSession
         super.init()
         service.sessionManager.add(self)
     }
 
     static func status(from service: MultizoneDeviceService) -> Bool {
-        service.device.muted
+        service.rawDevice.muted
     }
 
     func requestUpdate(to value: Bool) -> Bool {
         guard let currentSession else { return false }
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(completeRequest), object: nil)
         perform(#selector(completeRequest), with: nil, afterDelay: 0.1)
-        currentSession.setDeviceMuted(value, for: service.device)
+        currentSession.setDeviceMuted(value, for: service.rawDevice)
         return true
     }
 
@@ -77,7 +78,7 @@ extension MultizoneMutedRecipe: @preconcurrency GCKSessionManagerListener {
 
 extension MultizoneMutedRecipe: @preconcurrency GCKCastDeviceStatusListener {
     func castSession(_ castSession: GCKCastSession, didUpdate device: GCKMultizoneDevice) {
-        guard device == service.device else { return }
+        guard device == service.rawDevice else { return }
         update?(device.muted)
     }
 }

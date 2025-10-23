@@ -13,19 +13,12 @@ struct MultizoneDeviceCell: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             descriptionView()
-            volumeSlider()
+            CastVolumeSlider(deviceManager: cast.deviceManager(forMultizoneDevice: device))
         }
     }
 
     private func descriptionView() -> some View {
         Text(CastMultizoneDevice.name(for: device))
             .lineLimit(1)
-    }
-
-    @ViewBuilder
-    private func volumeSlider() -> some View {
-        if let deviceManager = cast.deviceManager(for: device) {
-            CastVolumeSlider(deviceManager: deviceManager)
-        }
     }
 }

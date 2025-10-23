@@ -127,14 +127,9 @@ public final class Cast: NSObject, ObservableObject {
         _currentDevice == device
     }
 
-    /// Gets the device manager associated with a device.
-    public func deviceManager(for device: CastDevice?) -> CastDeviceManager<CastDevice>? {
-        nil
-    }
-
-    /// Gets the device manager associated with a multi-zone device.
-    public func deviceManager(for device: CastMultizoneDevice?) -> CastDeviceManager<CastMultizoneDevice>? {
-        nil
+    /// Gets a device manager for the current device or one of its associated multi-zone devices.
+    public func deviceManager(forMultizoneDevice multizoneDevice: CastMultizoneDevice? = nil) -> CastDeviceManager {
+        .init(sessionManager: context.sessionManager, multizoneDevice: multizoneDevice)
     }
 }
 
@@ -192,6 +187,7 @@ extension Cast: @preconcurrency GCKSessionManagerListener {
 
     // swiftlint:disable:next missing_docs
     public func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKCastSession, withError error: any Error) {
+        // TODO: sessionManager.currentCastSession?
         currentSession = nil
     }
 

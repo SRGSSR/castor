@@ -22,6 +22,7 @@ final class MainMutedRecipe: NSObject, MutableReceiverStateRecipe {
 
     init(service: GCKSessionManager) {
         self.service = service
+        self.currentSession = service.currentCastSession
         super.init()
         service.add(self)
     }

@@ -7,6 +7,10 @@
 import GoogleCast
 
 struct MultizoneDeviceService {
-    let device: GCKMultizoneDevice
+    let device: CastMultizoneDevice
     let sessionManager: GCKSessionManager
+
+    var rawDevice: GCKMultizoneDevice {
+        device.rawDevice
+    }
 }

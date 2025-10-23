@@ -7,8 +7,8 @@
 import SwiftUI
 
 /// A mute button.
-public struct CastMuteButton<Device>: View where Device: CastReceiver {
-    @ObservedObject var deviceManager: CastDeviceManager<Device>
+public struct CastMuteButton: View {
+    @ObservedObject var deviceManager: CastDeviceManager
 
     // swiftlint:disable:next missing_docs
     public var body: some View {
@@ -22,7 +22,7 @@ public struct CastMuteButton<Device>: View where Device: CastReceiver {
     }
 
     /// Creates a mute button.
-    public init(deviceManager: CastDeviceManager<Device>) {
+    public init(deviceManager: CastDeviceManager) {
         self.deviceManager = deviceManager
     }
 }
@@ -38,6 +38,7 @@ private extension CastMuteButton {
     }
 
     private var deviceName: String {
-        Device.name(for: deviceManager.device)
+        // TODO:
+        ""
     }
 }

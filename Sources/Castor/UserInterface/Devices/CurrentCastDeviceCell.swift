@@ -17,7 +17,7 @@ struct CurrentCastDeviceCell: View {
             } icon: {
                 CastIcon(cast: cast)
             }
-            volumeSlider()
+            CastVolumeSlider(deviceManager: cast.deviceManager())
             disconnectButton()
         }
     }
@@ -52,33 +52,6 @@ struct CurrentCastDeviceCell: View {
         }
         // Trick to avoid tapping on the entire cell.
         .buttonStyle(.borderless)
-    }
-
-    @ViewBuilder
-    private func volumeSlider() -> some View {
-        if let deviceManager = cast.deviceManager(for: device) {
-            CastVolumeSlider(deviceManager: deviceManager)
-        }
-        else {
-            CastVolumeSlider<CastDevice>.placeholder()
-        }
-    }
-
-    private func volumeSliderPlaceholder() -> some View {
-        Slider(value: .constant(0)) {
-            Text("Volume", bundle: .module, comment: "Volume slider label")
-        } minimumValueLabel: {
-            // https://stackoverflow.com/questions/78766259/sf-symbol-replace-animation-size-is-off
-            ZStack {
-                Image(systemName: "speaker.slash.fill")
-                Image(systemName: "speaker.wave.3.fill")
-                    .hidden()
-            }
-            .toAnyView()
-        } maximumValueLabel: {
-            EmptyView()
-                .toAnyView()
-        }
     }
 }
 

@@ -5,17 +5,13 @@
 //
 
 import Combine
+import GoogleCast
 
 /// An observable object that manages a Cast device.
 @MainActor
-public final class CastDeviceManager<Device>: ObservableObject where Device: CastReceiver {
-    private let service: any DeviceService
-
+public final class CastDeviceManager: ObservableObject {
     @MutableReceiverState private var _volume: Float
     @MutableReceiverState private var _isMuted: Bool
-
-    /// The device.
-    public let device: Device
 
     /// A Boolean setting whether the audio output of the device must be muted.
     public var isMuted: Bool {
@@ -46,26 +42,31 @@ public final class CastDeviceManager<Device>: ObservableObject where Device: Cas
 
     /// The allowed range for the volume of the device.
     public var volumeRange: ClosedRange<Float> {
-        service.volumeRange
+        // TODO:
+        0...0
     }
 
     /// A Boolean indicating whether the volume of the device can be adjusted.
     public var canAdjustVolume: Bool {
-        service.canAdjustVolume
+        // TODO:
+        false
     }
 
     /// A Boolean indicating whether the device can be muted.
     public var canMute: Bool {
-        service.canMute
+        // TODO: Use another recipe to synchronize device capabilities? (
+        false
     }
 
-    init?<Service>(service: Service?) where Service: DeviceService, Service.Device == Device {
-        guard let service else { return nil }
-
-        self.service = service
-        self.device = service.device
-
-        __volume = .init(service: service, recipe: Service.VolumeRecipe.self)
-        __isMuted = .init(service: service, recipe: Service.MutedRecipe.self)
+    init(sessionManager: GCKSessionManager, multizoneDevice: CastMultizoneDevice?) {
+        if let multizoneDevice {
+            let service = MultizoneDeviceService(device: multizoneDevice, sessionManager: sessionManager)
+            __volume = .init(service: service, recipe: MultizoneVolumeRecipe.self)
+            __isMuted = .init(service: service, recipe: MultizoneMutedRecipe.self)
+        }
+        else {
+            __volume = .init(service: sessionManager, recipe: MainVolumeRecipe.self)
+            __isMuted = .init(service: sessionManager, recipe: MainMutedRecipe.self)
+        }
     }
 }

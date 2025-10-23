@@ -15,6 +15,7 @@ final class MultizoneDevicesRecipe: NSObject, ReceiverStateRecipe {
         willSet {
             guard currentSession != newValue else { return }
             currentSession?.remove(self)
+            devices = []
         }
         didSet {
             guard currentSession != oldValue else { return }
