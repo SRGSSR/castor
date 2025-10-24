@@ -13,7 +13,9 @@ protocol ReceiverStateRecipe: AnyObject {
 
     static var defaultValue: Value { get }
 
-    init(service: Service, update: @escaping (Status) -> Void)
+    var update: ((Status) -> Void)? { get set }
+
+    init(service: Service)
 
     static func status(from service: Service) -> Status
     static func value(from status: Status) -> Value

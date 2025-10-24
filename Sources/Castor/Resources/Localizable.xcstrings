@@ -871,6 +871,35 @@
         }
       }
     },
+    "Paired devices" : {
+      "comment" : "Header for the paired devices list section",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekoppelte Geräte"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils jumelés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivi associati"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apparats colliads"
+          }
+        }
+      }
+    },
     "Pause" : {
       "comment" : "Pause button accessibility label",
       "localizations" : {

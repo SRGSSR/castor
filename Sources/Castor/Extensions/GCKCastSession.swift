@@ -7,11 +7,18 @@
 import GoogleCast
 
 extension GCKCastSession {
-    var supportsMuting: Bool {
-        traits?.supportsMuting == true
+    static func canMute(for session: GCKCastSession?) -> Bool {
+        guard let traits = session?.traits else { return false }
+        return traits.supportsMuting
     }
 
-    var isFixedVolume: Bool {
-        traits?.isFixedVolume() == true
+    static func canAdjustVolume(for session: GCKCastSession?) -> Bool {
+        guard let traits = session?.traits else { return false }
+        return !traits.isFixedVolume()
+    }
+
+    static func volumeRange(for session: GCKCastSession?) -> ClosedRange<Float> {
+        guard let traits = session?.traits else { return 0...0 }
+        return traits.volumeRange
     }
 }
