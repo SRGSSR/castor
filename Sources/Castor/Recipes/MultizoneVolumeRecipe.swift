@@ -26,10 +26,16 @@ final class MultizoneVolumeRecipe: NSObject, MutableReceiverStateRecipe {
     }
 
     init(service: MultizoneDeviceService) {
+        let sessionManager = service.sessionManager
+        let session = sessionManager.currentCastSession
+
         self.service = service
-        self.currentSession = service.sessionManager.currentCastSession
+        self.currentSession = session
+
         super.init()
-        service.sessionManager.add(self)
+
+        sessionManager.add(self)
+        session?.add(self)
     }
 
     static func status(from service: MultizoneDeviceService) -> Float {
