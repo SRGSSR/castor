@@ -50,13 +50,9 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         wrapped wrappedKeyPath: KeyPath<Instance, Value>,
         storage storageKeyPath: KeyPath<Instance, ReceiverStatePropertyWrapper>
     ) -> Value {
-        get {
-            let storage = instance[keyPath: storageKeyPath]
-            storage.enclosingInstance = instance
-            return storage.value
-        }
-        // swiftlint:disable:next unused_setter_value
-        set {}
+        let storage = instance[keyPath: storageKeyPath]
+        storage.enclosingInstance = instance
+        return storage.value
     }
 }
 
