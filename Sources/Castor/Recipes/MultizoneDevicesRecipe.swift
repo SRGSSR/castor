@@ -20,6 +20,7 @@ final class MultizoneDevicesRecipe: NSObject, ReceiverStateRecipe {
         didSet {
             guard currentSession != oldValue else { return }
             currentSession?.add(self)
+            currentSession?.requestMultizoneStatus()
         }
     }
 
@@ -31,8 +32,11 @@ final class MultizoneDevicesRecipe: NSObject, ReceiverStateRecipe {
 
     init(service: GCKSessionManager) {
         super.init()
+
         service.add(self)
+
         service.currentCastSession?.add(self)
+        service.currentCastSession?.requestMultizoneStatus()
     }
 
     static func status(from service: GCKSessionManager) -> [CastMultizoneDevice] {

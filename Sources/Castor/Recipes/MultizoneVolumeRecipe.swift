@@ -22,6 +22,7 @@ final class MultizoneVolumeRecipe: NSObject, MutableReceiverStateRecipe {
         didSet {
             guard currentSession != oldValue else { return }
             currentSession?.add(self)
+            currentSession?.requestMultizoneStatus()
         }
     }
 
@@ -35,7 +36,9 @@ final class MultizoneVolumeRecipe: NSObject, MutableReceiverStateRecipe {
         super.init()
 
         sessionManager.add(self)
+
         session?.add(self)
+        session?.requestMultizoneStatus()
     }
 
     static func status(from service: MultizoneDeviceService) -> Float {
