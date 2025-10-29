@@ -1,8 +1,8 @@
-# ``Castor/CastMuteButton``
+# ``Castor/CastVolumeSlider``
 
 ## Topics
 
-### Creating a Button
+### Creating a Slider
 
 - ``init(deviceManager:)``
 

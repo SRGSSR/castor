@@ -9,17 +9,15 @@ import GoogleCast
 final class DevicesRecipe: NSObject, ReceiverStateRecipe {
     static let defaultValue: [CastDevice] = []
 
-    private let update: ([CastDevice]) -> Void
+    var update: (([CastDevice]) -> Void)?
 
-    private var devices: [CastDevice] {
+    private var devices: [CastDevice] = [] {
         didSet {
-            update(devices)
+            update?(devices)
         }
     }
 
-    init(service: GCKDiscoveryManager, update: @escaping ([CastDevice]) -> Void) {
-        self.update = update
-        self.devices = Self.status(from: service)
+    init(service: GCKDiscoveryManager) {
         super.init()
         service.add(self)
         service.startDiscovery()
@@ -35,23 +33,19 @@ final class DevicesRecipe: NSObject, ReceiverStateRecipe {
 }
 
 extension DevicesRecipe: @preconcurrency GCKDiscoveryManagerListener {
-    // swiftlint:disable:next missing_docs
-    public func didInsert(_ device: GCKDevice, at index: UInt) {
+    func didInsert(_ device: GCKDevice, at index: UInt) {
         devices.insert(device.toCastDevice(), at: Int(index))
     }
 
-    // swiftlint:disable:next missing_docs
-    public func didRemove(_ device: GCKDevice, at index: UInt) {
+    func didRemove(_ device: GCKDevice, at index: UInt) {
         devices.remove(at: Int(index))
     }
 
-    // swiftlint:disable:next missing_docs
-    public func didUpdate(_ device: GCKDevice, at index: UInt, andMoveTo newIndex: UInt) {
+    func didUpdate(_ device: GCKDevice, at index: UInt, andMoveTo newIndex: UInt) {
         devices.move(from: Int(index), to: Int(index))
     }
 
-    // swiftlint:disable:next missing_docs
-    public func didUpdate(_ device: GCKDevice, at index: UInt) {
+    func didUpdate(_ device: GCKDevice, at index: UInt) {
         devices.remove(at: Int(index))
         devices.insert(device.toCastDevice(), at: Int(index))
     }

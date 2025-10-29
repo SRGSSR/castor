@@ -121,7 +121,7 @@ struct SettingsView: View {
                         .tag(receiver)
                 }
             } label: {
-                Text("Name")
+                Text("Type")
                 Text("Updating this setting will exit the application.")
                     .font(.footnote)
             }

@@ -6,15 +6,15 @@
 
 import SwiftUI
 
-/// A view that displays an icon reflecting the current volume.
+/// An icon reflecting the current volume.
 ///
 /// > Warning: Adjust the icon size using ``font(_:)``
 public struct CastVolumeIcon: View {
-    @ObservedObject var cast: Cast
+    @ObservedObject var deviceManager: CastDeviceManager
 
     private var minimumValueImageName: String {
-        let volume = cast.volume
-        if cast.isMuted || volume == 0 {
+        let volume = deviceManager.volume
+        if deviceManager.isMuted || volume == 0 {
             return "speaker.slash.fill"
         }
         else {
@@ -31,8 +31,8 @@ public struct CastVolumeIcon: View {
     }
 
     /// Creates a volume icon.
-    public init(cast: Cast) {
-        self.cast = cast
+    public init(deviceManager: CastDeviceManager) {
+        self.deviceManager = deviceManager
     }
 
     private func largestShape() -> some View {

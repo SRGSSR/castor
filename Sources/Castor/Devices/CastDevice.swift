@@ -50,11 +50,11 @@ extension CastDevice {
         }
     }
 
-    static func name(for device: CastDevice?) -> String {
+    static func name(for device: Self?) -> String {
         device?.name ?? String(localized: "Unknown", bundle: .module, comment: "Generic name for a Cast device")
     }
 
-    static func route(to device: CastDevice?) -> String {
+    static func route(to device: Self?) -> String {
         String(localized: "Connected to \(name(for: device))", bundle: .module, comment: "Connected receiver (device name as wildcard)")
     }
 }

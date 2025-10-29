@@ -4,7 +4,7 @@
 
 ### Creating an Icon
 
-- ``init(cast:)``
+- ``init(deviceManager:)``
 
 ### Getting the Body
 

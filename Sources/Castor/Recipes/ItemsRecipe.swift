@@ -12,12 +12,12 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     // FIXME: Remove "weak" if the Google Cast SDK is updated to avoid the media queue strongly retaining its delegate.
     private weak var service: GCKRemoteMediaClient?       // Avoid cyclic reference due to the media queue delegate being retained.
 
-    private let update: ([CastPlayerItem]) -> Void
-    private var completion: ((Bool) -> Void)?
+    var update: (([CastPlayerItem]) -> Void)?
+    var completion: ((Bool) -> Void)?
 
     private var items: [CastPlayerItem] {
         didSet {
-            update(items)
+            update?(items)
         }
     }
 
@@ -28,9 +28,8 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         }
     }
 
-    init(service: GCKRemoteMediaClient, update: @escaping ([CastPlayerItem]) -> Void) {
+    init(service: GCKRemoteMediaClient) {
         self.service = service
-        self.update = update
         self.items = Self.status(from: service)
         super.init()
         service.mediaQueue.add(self)        // The delegate is retained.
@@ -40,9 +39,8 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
 
-    func requestUpdate(to value: [CastPlayerItem], completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: [CastPlayerItem]) -> Bool {
         guard let service, service.canMakeRequest() else { return false }
-        self.completion = completion
 
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)

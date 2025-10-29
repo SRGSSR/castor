@@ -9,58 +9,53 @@ import Foundation
 
 @MainActor
 @propertyWrapper
-final class ReceiverStatePropertyWrapper<Instance, Recipe>: NSObject
-where Recipe: ReceiverStateRecipe, Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-    private(set) var recipe: Recipe?
+final class ReceiverStatePropertyWrapper<Instance, Value>: NSObject
+where Instance: ObservableObject, Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+    private let recipe: any ReceiverStateRecipe
 
     private weak var enclosingInstance: Instance?
 
-    @Published private var value: Recipe.Value {
+    @Published private var value: Value {
         willSet {
             enclosingInstance?.objectWillChange.send()
         }
     }
 
-    var projectedValue: AnyPublisher<Recipe.Value, Never> {
+    var projectedValue: AnyPublisher<Value, Never> {
         $value.eraseToAnyPublisher()
     }
 
     @available(*, unavailable, message: "This property wrapper can only be applied to classes")
-    var wrappedValue: Recipe.Value {
+    var wrappedValue: Value {
         fatalError("Not available")
     }
 
-    init(_ recipe: Recipe.Type) {
-        self.value = Recipe.defaultValue
-    }
+    init<Recipe, Service>(
+        service: Service,
+        recipe: Recipe.Type
+    ) where Recipe: ReceiverStateRecipe, Recipe.Service == Service, Recipe.Value == Value {
+        let recipe = Recipe(service: service)
 
-    func bind(to service: Recipe.Service) {
-        let recipe = Recipe(service: service) { [weak self] status in
-            self?.update(with: status)
-        }
         self.recipe = recipe
-        value = Recipe.value(from: service)
-    }
+        self.value = Recipe.value(from: service)
+        super.init()
 
-    private func update(with status: Recipe.Status?) {
-        value = Recipe.value(from: status)
+        recipe.update = { [weak self] status in
+            self?.value = Recipe.value(from: status)
+        }
     }
 
     static subscript(
         _enclosingInstance instance: Instance,
-        wrapped wrappedKeyPath: KeyPath<Instance, Recipe.Value>,
+        wrapped wrappedKeyPath: KeyPath<Instance, Value>,
         storage storageKeyPath: KeyPath<Instance, ReceiverStatePropertyWrapper>
-    ) -> Recipe.Value {
-        get {
-            let storage = instance[keyPath: storageKeyPath]
-            storage.enclosingInstance = instance
-            return storage.value
-        }
-        // swiftlint:disable:next unused_setter_value
-        set {}
+    ) -> Value {
+        let storage = instance[keyPath: storageKeyPath]
+        storage.enclosingInstance = instance
+        return storage.value
     }
 }
 
 extension ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher {
-    typealias ReceiverState<Recipe: ReceiverStateRecipe> = ReceiverStatePropertyWrapper<Self, Recipe>
+    typealias ReceiverState<Value> = ReceiverStatePropertyWrapper<Self, Value>
 }

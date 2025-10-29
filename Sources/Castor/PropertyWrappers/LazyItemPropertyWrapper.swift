@@ -54,13 +54,9 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         wrapped wrappedKeyPath: KeyPath<Instance, GCKMediaQueueItem?>,
         storage storageKeyPath: KeyPath<Instance, LazyItemPropertyWrapper>
     ) -> GCKMediaQueueItem? {
-        get {
-            let wrapper = instance[keyPath: storageKeyPath]
-            wrapper.enclosingInstance = instance
-            return wrapper.value
-        }
-        // swiftlint:disable:next unused_setter_value
-        set {}
+        let wrapper = instance[keyPath: storageKeyPath]
+        wrapper.enclosingInstance = instance
+        return wrapper.value
     }
 }
 
