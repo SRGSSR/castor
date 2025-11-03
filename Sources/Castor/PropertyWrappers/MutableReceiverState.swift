@@ -14,7 +14,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     private var isRequesting = false
     private var pendingValue: Value?
 
-    private let requestUpdateImp: (Value) -> Bool
+    private let requestUpdateToValue: (Value) -> Bool
 
     private weak var enclosingInstance: Instance?
 
@@ -40,8 +40,8 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         recipe: Recipe.Type
     ) where Recipe: MutableReceiverStateRecipe, Recipe.Service == Service, Recipe.Value == Value {
         let recipe = Recipe(service: service)
-        
-        self.requestUpdateImp = { value in
+
+        self.requestUpdateToValue = { value in
             recipe.requestUpdate(to: value)
         }
         self.value = Recipe.value(from: service)
@@ -73,7 +73,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
     private func requestUpdate(to value: Value) {
         guard self.value != value else { return }
         if !isRequesting {
-            guard requestUpdateImp(value) else { return }
+            guard requestUpdateToValue(value) else { return }
             isRequesting = true
             self.value = value
         }
