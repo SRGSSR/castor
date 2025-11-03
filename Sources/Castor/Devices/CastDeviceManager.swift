@@ -44,17 +44,20 @@ public final class CastDeviceManager: ObservableObject {
 
     /// The allowed range for the volume of the device.
     public var volumeRange: ClosedRange<Float> {
-        GCKCastSession.volumeRange(for: _currentSession)
+        guard let traits = _currentSession?.traits else { return 0...0 }
+        return traits.volumeRange
     }
 
     /// A Boolean indicating whether the volume of the device can be adjusted.
     public var canAdjustVolume: Bool {
-        GCKCastSession.canAdjustVolume(for: _currentSession)
+        guard let traits = _currentSession?.traits else { return false }
+        return !traits.isFixedVolume()
     }
 
     /// A Boolean indicating whether the device can be muted.
     public var canMute: Bool {
-        GCKCastSession.canMute(for: _currentSession)
+        guard let traits = _currentSession?.traits else { return false }
+        return traits.supportsMuting
     }
 
     init(sessionManager: GCKSessionManager, multizoneDevice: CastMultizoneDevice?) {
