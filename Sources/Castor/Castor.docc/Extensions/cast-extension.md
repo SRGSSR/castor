@@ -16,13 +16,13 @@
 - ``isCasting(on:)``
 - ``startSession(with:)``
 
+### Managing Paired Devices
+
+- ``multizoneDevices``
+
 ### Controlling the Volume
 
-- ``canAdjustVolume``
-- ``canMute``
-- ``isMuted``
-- ``volume``
-- ``volumeRange``
+- ``deviceManager(forMultizoneDevice:)``
 
 ### Managing the Playback
 

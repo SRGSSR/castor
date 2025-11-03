@@ -11,12 +11,11 @@ final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
 
     private let service: GCKRemoteMediaClient
 
-    private let update: (GCKMediaStatus?) -> Void
-    private var completion: ((Bool) -> Void)?
+    var update: ((GCKMediaStatus?) -> Void)?
+    var completion: ((Bool) -> Void)?
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    init(service: GCKRemoteMediaClient) {
         self.service = service
-        self.update = update
         super.init()
         service.add(self)
     }
@@ -30,9 +29,8 @@ final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
         return mode
     }
 
-    func requestUpdate(to value: CastRepeatMode, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: CastRepeatMode) -> Bool {
         guard service.canMakeRequest() else { return false }
-        self.completion = completion
         let request = service.queueSetRepeatMode(value.rawMode())
         request.delegate = self
         return true
@@ -41,7 +39,7 @@ final class RepeatModeRecipe: NSObject, MutableReceiverStateRecipe {
 
 extension RepeatModeRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        update(mediaStatus)
+        update?(mediaStatus)
     }
 }
 

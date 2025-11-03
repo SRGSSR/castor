@@ -11,12 +11,11 @@ final class CurrentItemIdRecipe: NSObject, MutableReceiverStateRecipe {
 
     private let service: GCKRemoteMediaClient
 
-    private let update: (GCKMediaStatus?) -> Void
-    private var completion: ((Bool) -> Void)?
+    var update: ((GCKMediaStatus?) -> Void)?
+    var completion: ((Bool) -> Void)?
 
-    init(service: GCKRemoteMediaClient, update: @escaping (GCKMediaStatus?) -> Void) {
+    init(service: GCKRemoteMediaClient) {
         self.service = service
-        self.update = update
         super.init()
         service.add(self)
     }
@@ -30,9 +29,8 @@ final class CurrentItemIdRecipe: NSObject, MutableReceiverStateRecipe {
         return status.loadingItemID != kGCKMediaQueueInvalidItemID ? status.loadingItemID : status.currentItemID
     }
 
-    func requestUpdate(to value: GCKMediaQueueItemID, completion: @escaping (Bool) -> Void) -> Bool {
+    func requestUpdate(to value: GCKMediaQueueItemID) -> Bool {
         guard service.canMakeRequest() else { return false }
-        self.completion = completion
         let request = service.queueJumpToItem(withID: value)
         request.delegate = self
         return true
@@ -41,7 +39,7 @@ final class CurrentItemIdRecipe: NSObject, MutableReceiverStateRecipe {
 
 extension CurrentItemIdRecipe: @preconcurrency GCKRemoteMediaClientListener {
     func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
-        update(mediaStatus)
+        update?(mediaStatus)
     }
 }
 

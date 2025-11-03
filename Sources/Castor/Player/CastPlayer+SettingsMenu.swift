@@ -73,10 +73,10 @@ private struct MediaSelectionMenuContent: View {
 }
 
 private struct SettingsMenuContent: View {
-    @ObservedObject var player: CastPlayer
-
     let speeds: Set<Float>
     let action: (CastSettingsUpdate) -> Void
+
+    @ObservedObject var player: CastPlayer
 
     var body: some View {
         playbackSpeedMenu()
@@ -145,7 +145,7 @@ public extension CastPlayer {
         speeds: Set<Float> = [0.5, 1, 1.25, 1.5, 2],
         action: @escaping (_ update: CastSettingsUpdate) -> Void = { _ in }
     ) -> some View {
-        SettingsMenuContent(player: self, speeds: speeds, action: action)
+        SettingsMenuContent(speeds: speeds, action: action, player: self)
     }
 
     /// Returns content for a playback speed menu.
