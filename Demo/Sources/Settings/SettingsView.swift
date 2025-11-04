@@ -50,6 +50,7 @@ struct SettingsView: View {
             playerSection()
             skipsSection()
             receiverSection()
+            debuggingSection()
             versionSection()
         }
         .onChange(of: receiver) { _ in exit(0) }
@@ -131,6 +132,17 @@ struct SettingsView: View {
         }
     }
 
+    private func debuggingSection() -> some View {
+        Section {
+            Button(action: simulateMemoryWarning) {
+                Text("Simulate memory warning")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        } header: {
+            Text("Debugging")
+        }
+    }
+
     private func versionSection() -> some View {
         Section {
             LabeledContent("Application", value: "\(version), build \(buildVersion)")
@@ -158,6 +170,10 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity)
         .accessibilityElement()
         .accessibilityLabel("Made with love in Switzerland")
+    }
+
+    private func simulateMemoryWarning() {
+        UIApplication.shared.perform(Selector(("_performMemoryWarning")))
     }
 }
 
