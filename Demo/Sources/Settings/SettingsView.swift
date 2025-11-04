@@ -51,6 +51,7 @@ struct SettingsView: View {
             skipsSection()
             receiverSection()
             debuggingSection()
+            linksSection()
             versionSection()
         }
         .onChange(of: receiver) { _ in exit(0) }
@@ -140,6 +141,20 @@ struct SettingsView: View {
             }
         } header: {
             Text("Debugging")
+        }
+    }
+
+    private func linksSection() -> some View {
+        Section("Links") {
+            Button("Website") { UIApplication.shared.open(.website) }
+            Button("Source code") { UIApplication.shared.open(.apple) }
+            Button("GitHub project") { UIApplication.shared.open(.project) }
+                .swipeActions {
+                    Button("Documentation") { UIApplication.shared.open(.documentation) }
+                        .tint(.purple)
+                }
+            Button("Swift Package Index") { UIApplication.shared.open(.swiftPackageIndex) }
+            Button("Pillarbox (Player SDK)") { UIApplication.shared.open(.pillarbox) }
         }
     }
 
