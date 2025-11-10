@@ -8,7 +8,7 @@ import Foundation
 import UIKit
 
 enum ProjectLink {
-    case apple
+    case castor
     case documentation
     case pillarbox
     case project
@@ -17,7 +17,7 @@ enum ProjectLink {
 
     var url: URL {
         switch self {
-        case .apple:
+        case .castor:
             Self.gitHubBaseUrl().appending(path: "srgssr/castor")
         case .documentation:
             Self.gitHubBaseUrl().appending(path: "srgssr/pillarbox-documentation")

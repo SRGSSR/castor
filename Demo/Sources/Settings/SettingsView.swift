@@ -147,7 +147,7 @@ struct SettingsView: View {
     private func linksSection() -> some View {
         Section("Links") {
             Button("Website") { UIApplication.shared.open(.website) }
-            Button("Source code") { UIApplication.shared.open(.apple) }
+            Button("Source code") { UIApplication.shared.open(.castor) }
             Button("GitHub project") { UIApplication.shared.open(.project) }
                 .swipeActions {
                     Button("Documentation") { UIApplication.shared.open(.documentation) }
