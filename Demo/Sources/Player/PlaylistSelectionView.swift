@@ -61,7 +61,7 @@ struct PlaylistSelectionView: View {
         }
     }
 
-    private func section(_ titleKey: LocalizedStringKey, medias: [Media]) -> some View {
+    private func section(_ titleKey: LocalizedStringResource, medias: [Media]) -> some View {
         Section(titleKey) {
             ForEach(medias) { media in
                 Text(media.title)
@@ -96,7 +96,7 @@ extension PlaylistSelectionView {
         case insertAfter
         case append
 
-        var name: LocalizedStringKey {
+        var name: LocalizedStringResource {
             switch self {
             case .prepend:
                 "Prepend"

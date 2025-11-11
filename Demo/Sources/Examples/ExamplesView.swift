@@ -57,7 +57,7 @@ struct ExamplesView: View {
         }
     }
 
-    private func section(_ titleKey: LocalizedStringKey, medias: [Media]) -> some View {
+    private func section(_ titleKey: LocalizedStringResource, medias: [Media]) -> some View {
         Section(titleKey) {
             ForEach(medias) { media in
                 button(for: media)

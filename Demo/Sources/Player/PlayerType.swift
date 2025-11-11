@@ -11,7 +11,7 @@ enum PlayerType: Int, CaseIterable {
     case standard
     case unified
 
-    var name: LocalizedStringKey {
+    var name: LocalizedStringResource {
         switch self {
         case .standard:
             "Standard"
