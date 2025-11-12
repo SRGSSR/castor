@@ -9,7 +9,7 @@ import PillarboxPlayer
 import SwiftUI
 
 extension CastRepeatMode {
-    var name: LocalizedStringKey {
+    var name: LocalizedStringResource {
         switch self {
         case .off:
             "Off"
