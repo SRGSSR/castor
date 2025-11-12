@@ -50,6 +50,8 @@ struct SettingsView: View {
             playerSection()
             skipsSection()
             receiverSection()
+            debuggingSection()
+            linksSection()
             versionSection()
         }
         .onChange(of: receiver) { _ in exit(0) }
@@ -131,6 +133,31 @@ struct SettingsView: View {
         }
     }
 
+    private func debuggingSection() -> some View {
+        Section {
+            Button(action: simulateMemoryWarning) {
+                Text("Simulate memory warning")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        } header: {
+            Text("Debugging")
+        }
+    }
+
+    private func linksSection() -> some View {
+        Section("Links") {
+            Button("Website") { UIApplication.shared.open(.website) }
+            Button("Source code") { UIApplication.shared.open(.castor) }
+            Button("GitHub project") { UIApplication.shared.open(.project) }
+                .swipeActions {
+                    Button("Documentation") { UIApplication.shared.open(.documentation) }
+                        .tint(.purple)
+                }
+            Button("Swift Package Index") { UIApplication.shared.open(.swiftPackageIndex) }
+            Button("Pillarbox (Player SDK)") { UIApplication.shared.open(.pillarbox) }
+        }
+    }
+
     private func versionSection() -> some View {
         Section {
             LabeledContent("Application", value: "\(version), build \(buildVersion)")
@@ -158,6 +185,10 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity)
         .accessibilityElement()
         .accessibilityLabel("Made with love in Switzerland")
+    }
+
+    private func simulateMemoryWarning() {
+        UIApplication.shared.perform(Selector(("_performMemoryWarning")))
     }
 }
 

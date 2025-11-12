@@ -37,7 +37,13 @@
     "DASH URLs" : {
 
     },
+    "Debugging" : {
+
+    },
     "Displays touches for presentation purposes." : {
+
+    },
+    "Documentation" : {
 
     },
     "DRM enabled" : {
@@ -47,6 +53,9 @@
 
     },
     "Forward by" : {
+
+    },
+    "GitHub project" : {
 
     },
     "HLS URLs" : {
@@ -65,6 +74,9 @@
 
     },
     "Library" : {
+
+    },
+    "Links" : {
 
     },
     "Made with " : {
@@ -91,6 +103,9 @@
     "Open settings" : {
 
     },
+    "Pillarbox (Player SDK)" : {
+
+    },
     "Player" : {
 
     },
@@ -112,16 +127,25 @@
     "Settings" : {
 
     },
+    "Simulate memory warning" : {
+
+    },
     "Skips" : {
 
     },
     "Smart navigation" : {
 
     },
+    "Source code" : {
+
+    },
     "SRG SSR" : {
 
     },
     "Standard" : {
+
+    },
+    "Swift Package Index" : {
 
     },
     "Tap to retry" : {
@@ -174,6 +198,9 @@
       }
     },
     "Version information" : {
+
+    },
+    "Website" : {
 
     }
   },
