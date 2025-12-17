@@ -45,17 +45,29 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
 
-        requests += 2
+        requests += 1
 
-        let removedIds = Array(Set(previousIds).subtracting(currentIds))
-        let removeRequest = service.queueRemoveItems(withIDs: removedIds)
-        removeRequest.delegate = self
+        let removedIds = Array(Set(previousIds).subtracting(Set(currentIds)))
+        if !removedIds.isEmpty {
+            let removeRequest = service.queueRemoveItems(withIDs: removedIds)
+            removeRequest.delegate = self
+        }
 
-        let reorderRequest = service.queueReorderItems(
-            withIDs: currentIds,
-            insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
-        )
-        reorderRequest.delegate = self
+        let hasMoves = currentIds.difference(from: previousIds).inferringMoves().contains { change in
+            switch change {
+            case let .remove(offset: _, element: _, associatedWith: associatedWith):
+                return associatedWith != nil
+            default:
+                break
+            }
+            return false
+        }
+
+        if hasMoves && !currentIds.isEmpty {
+            let reorderRequest = service.queueReorderItems(withIDs: currentIds, insertBeforeItemWithID: kGCKMediaQueueInvalidItemID)
+            reorderRequest.delegate = self
+        }
+
         return true
     }
 }
