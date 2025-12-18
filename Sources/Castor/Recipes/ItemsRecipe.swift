@@ -39,6 +39,7 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func requestUpdate(to value: [CastPlayerItem]) -> Bool {
         guard let service, service.canMakeRequest() else { return false }
 
@@ -46,12 +47,6 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         let currentIds = value.map(\.idNumber)
 
         let removedIds = Array(Set(previousIds).subtracting(Set(currentIds)))
-        if !removedIds.isEmpty {
-            requests += 1
-            let removeRequest = service.queueRemoveItems(withIDs: removedIds)
-            removeRequest.delegate = self
-        }
-
         let hasMoves = currentIds.difference(from: previousIds).inferringMoves().contains { change in
             switch change {
             case let .remove(offset: _, element: _, associatedWith: associatedWith):
@@ -62,12 +57,17 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
             return false
         }
 
+        if !removedIds.isEmpty { requests += 1 }
+        if hasMoves && !currentIds.isEmpty { requests += 1 }
+
+        if !removedIds.isEmpty {
+            let removeRequest = service.queueRemoveItems(withIDs: removedIds)
+            removeRequest.delegate = self
+        }
         if hasMoves && !currentIds.isEmpty {
-            requests += 1
             let reorderRequest = service.queueReorderItems(withIDs: currentIds, insertBeforeItemWithID: kGCKMediaQueueInvalidItemID)
             reorderRequest.delegate = self
         }
-
         return true
     }
 }
