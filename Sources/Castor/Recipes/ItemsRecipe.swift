@@ -39,23 +39,35 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         service.mediaQueue.itemIDs().map { .init(id: $0, queue: service.mediaQueue) }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func requestUpdate(to value: [CastPlayerItem]) -> Bool {
         guard let service, service.canMakeRequest() else { return false }
 
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
 
-        requests += 2
+        let removedIds = Array(Set(previousIds).subtracting(Set(currentIds)))
+        let hasMoves = currentIds.difference(from: previousIds).inferringMoves().contains { change in
+            switch change {
+            case let .remove(offset: _, element: _, associatedWith: associatedWith):
+                return associatedWith != nil
+            default:
+                break
+            }
+            return false
+        }
 
-        let removedIds = Array(Set(previousIds).subtracting(currentIds))
-        let removeRequest = service.queueRemoveItems(withIDs: removedIds)
-        removeRequest.delegate = self
+        if !removedIds.isEmpty { requests += 1 }
+        if hasMoves && !currentIds.isEmpty { requests += 1 }
 
-        let reorderRequest = service.queueReorderItems(
-            withIDs: currentIds,
-            insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
-        )
-        reorderRequest.delegate = self
+        if !removedIds.isEmpty {
+            let removeRequest = service.queueRemoveItems(withIDs: removedIds)
+            removeRequest.delegate = self
+        }
+        if hasMoves && !currentIds.isEmpty {
+            let reorderRequest = service.queueReorderItems(withIDs: currentIds, insertBeforeItemWithID: kGCKMediaQueueInvalidItemID)
+            reorderRequest.delegate = self
+        }
         return true
     }
 }
