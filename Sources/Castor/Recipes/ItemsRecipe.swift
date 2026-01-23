@@ -5,6 +5,7 @@
 //
 
 import GoogleCast
+import OrderedCollections
 
 final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
     static let defaultValue: [CastPlayerItem] = []
@@ -45,17 +46,20 @@ final class ItemsRecipe: NSObject, MutableReceiverStateRecipe {
         let previousIds = items.map(\.idNumber)
         let currentIds = value.map(\.idNumber)
 
-        requests += 2
-
         let removedIds = Array(Set(previousIds).subtracting(currentIds))
         let removeRequest = service.queueRemoveItems(withIDs: removedIds)
         removeRequest.delegate = self
+        requests += 1
 
-        let reorderRequest = service.queueReorderItems(
-            withIDs: currentIds,
-            insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
-        )
-        reorderRequest.delegate = self
+        let remainingPreviousIds = Array(OrderedSet(previousIds).subtracting(removedIds))
+        if currentIds != remainingPreviousIds {
+            let reorderRequest = service.queueReorderItems(
+                withIDs: currentIds,
+                insertBeforeItemWithID: kGCKMediaQueueInvalidItemID
+            )
+            reorderRequest.delegate = self
+            requests += 1
+        }
         return true
     }
 }
