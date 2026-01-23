@@ -64,7 +64,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
                 return
             }
             if recipe.requestUpdate(to: pendingValue) {
-                self.value = pendingValue
+                value = pendingValue
             }
             self.pendingValue = nil
         }
