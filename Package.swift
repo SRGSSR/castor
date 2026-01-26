@@ -14,13 +14,15 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/SRGSSR/google-cast-sdk.git", .upToNextMinor(from: "4.8.3"))
+        .package(url: "https://github.com/SRGSSR/google-cast-sdk.git", .upToNextMinor(from: "4.8.3")),
+        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.0.0"))
     ],
     targets: [
         .target(
             name: "Castor",
             dependencies: [
-                .product(name: "GoogleCast", package: "google-cast-sdk")
+                .product(name: "GoogleCast", package: "google-cast-sdk"),
+                .product(name: "OrderedCollections", package: "swift-collections")
             ],
             resources: [
                 .process("Resources")
