@@ -75,6 +75,7 @@ private struct RemoteSettingsMenu: View {
         Menu {
             player.standardSettingsMenu()
             RemoteRepeatModeMenu(player: player)
+            DeviceMenu()
         } label: {
             Image(systemName: "ellipsis.circle")
                 .font(.system(size: 20))
