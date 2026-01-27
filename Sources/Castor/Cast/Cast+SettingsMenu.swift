@@ -13,18 +13,20 @@ private struct DeviceMenuContent: View {
 
     var body: some View {
         Picker("Devices", selection: selection) {
-            ForEach(devices, id: \.self) { device in
+            ForEach(cast.devices, id: \.self) { device in
                 DeviceCell(device: device)
                     .tag(device)
             }
         }
         .pickerStyle(.inline)
-    }
 
-    private var devices: [CastDevice?] {
-        var devices: [CastDevice?] = [nil]
-        devices.append(contentsOf: cast.devices)
-        return devices
+        if cast.currentDevice != nil {
+            Button {
+                cast.endSession()
+            } label: {
+                Text("Disconnect")
+            }
+        }
     }
 
     private var selection: Binding<CastDevice?> {
@@ -32,9 +34,6 @@ private struct DeviceMenuContent: View {
             cast.currentDevice
         } set: { newValue in
             cast.currentDevice = newValue
-            if newValue == nil {
-                cast.endSession()
-            }
             action(newValue)
         }
     }
