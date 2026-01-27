@@ -12,6 +12,9 @@ import SwiftUI
 struct UnifiedPlayerView: View {
     let media: Media?
 
+    @AppStorage(UserDefaults.DemoSettingKey.routePicker)
+    private var routePicker: RoutePicker = .button
+
     @EnvironmentObject private var cast: Cast
     @State private var model = PlayerViewModel()
     @State private var isUserInterfaceHidden = false
@@ -74,7 +77,9 @@ private extension UnifiedPlayerView {
     func topTrailingButtons() -> some View {
         HStack(spacing: 20) {
             addButton()
-            CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
+            if routePicker == .button {
+                CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
+            }
         }
         .padding()
         .contentShape(.rect)

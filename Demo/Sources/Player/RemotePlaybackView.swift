@@ -69,13 +69,18 @@ private struct RemoteTimeBar: View {
 }
 
 private struct RemoteSettingsMenu: View {
+    @AppStorage(UserDefaults.DemoSettingKey.routePicker)
+        private var routePicker: RoutePicker = .button
+
     let player: CastPlayer
 
     var body: some View {
         Menu {
             player.standardSettingsMenu()
             RemoteRepeatModeMenu(player: player)
-            DeviceMenu()
+            if routePicker == .menu {
+                DeviceMenu()
+            }
         } label: {
             Image(systemName: "ellipsis.circle")
                 .font(.system(size: 20))
