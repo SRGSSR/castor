@@ -132,6 +132,7 @@ private struct LocalSettingsMenu: View {
             player.standardSettingsMenu()
             LocalRepeatModeMenu(player: player)
             DeviceMenu()
+            RoutePickerView.menu()
         } label: {
             Image(systemName: "ellipsis.circle")
                 .font(.system(size: 20))

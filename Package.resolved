@@ -1,5 +1,5 @@
 {
-  "originHash" : "9e505055bddf52c6b05947e5297f2cd6f450a799ab063c82cc9a4dd71d7dbbb5",
+  "originHash" : "8b8a1d27e1fe3303484d77214470f3c1764677bc6406d2f94437ef6510754512",
   "pins" : [
     {
       "identity" : "comscore-swift-package-manager",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "revision" : "f79d9d00325f6a39a671abc86ceeb2bcca9fc48c",
-        "version" : "15.0.0"
+        "branch" : "main",
+        "revision" : "fe184a6b376048d5dc29704f24fb516726eb919a"
       }
     },
     {
