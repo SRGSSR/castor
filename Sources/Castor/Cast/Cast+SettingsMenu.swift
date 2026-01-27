@@ -32,6 +32,9 @@ private struct DeviceMenuContent: View {
             cast.currentDevice
         } set: { newValue in
             cast.currentDevice = newValue
+            if newValue == nil {
+                cast.endSession()
+            }
             action(newValue)
         }
     }
