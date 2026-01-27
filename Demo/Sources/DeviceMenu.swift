@@ -13,27 +13,21 @@ struct DeviceMenu: View {
 
     var body: some View {
         Menu {
-            Menu {
-                cast.deviceMenu()
-            } label: {
-                // Magic: https://stackoverflow.com/questions/76976180/how-can-i-have-a-subtitle-in-a-menu-in-swiftui
-                Button(action: {}) {
-                    Text("Cast")
-                    if let currentDevice = cast.currentDevice {
-                        Text(currentDevice.name ?? "Untitled")
-                    }
-                    if let image = GCKUICastButton().imageView?.image {
-                      Image(uiImage: image)
-                    }
-                    else {
-                        Image(systemName: "tv.badge.wifi")
-                    }
-                }
-            }
+            cast.deviceMenu()
         } label: {
-            Image(systemName: "ellipsis.circle")
-                .font(.system(size: 20))
-                .tint(.accent)
+            Label {
+                Text("Cast")
+            } icon: {
+                CastIcon(cast: cast)
+            }
+            currentDevice()
+        }
+    }
+
+    @ViewBuilder
+    private func currentDevice() -> some View {
+        if let currentDevice = cast.currentDevice {
+            Text(currentDevice.name ?? "Untitled")
         }
     }
 }
