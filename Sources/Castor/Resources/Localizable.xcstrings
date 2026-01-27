@@ -465,6 +465,9 @@
         }
       }
     },
+    "Devices" : {
+
+    },
     "Disconnect" : {
       "comment" : "Label of the button to disconnect from a Cast receiver",
       "localizations" : {
@@ -812,9 +815,6 @@
           }
         }
       }
-    },
-    "Devices" : {
-
     },
     "Off" : {
       "comment" : "Media selection option",
@@ -1250,9 +1250,6 @@
           }
         }
       }
-    },
-    "This device" : {
-
     },
     "Undefined" : {
       "comment" : "Undefined language",

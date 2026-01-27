@@ -7,14 +7,13 @@
 import SwiftUI
 
 private struct DeviceCell: View {
-    let device: CastDevice?
+    let device: CastDevice
 
     var body: some View {
-        if let device {
+        Label {
             Text(device.name ?? "Unnamed receiver")
-        }
-        else {
-            Text("This device")
+        } icon: {
+            Image(systemName: CastDevice.imageName(for: device))
         }
     }
 }
@@ -36,6 +35,7 @@ private struct DeviceMenuContent: View {
         if cast.currentDevice != nil {
             Button(role: .destructive) {
                 cast.endSession()
+                action(nil)
             } label: {
                 Text("Disconnect")
             }
