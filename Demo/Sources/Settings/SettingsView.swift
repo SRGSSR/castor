@@ -23,6 +23,9 @@ struct SettingsView: View {
     @AppStorage(UserDefaults.DemoSettingKey.smartNavigationEnabled)
     private var isSmartNavigationEnabled = true
 
+    @AppStorage(UserDefaults.DemoSettingKey.routePicker)
+    private var routePicker: RoutePicker = .button
+
     @AppStorage(UserDefaults.DemoSettingKey.backwardSkipInterval)
     private var backwardSkipInterval: TimeInterval = 10
 
@@ -91,6 +94,11 @@ struct SettingsView: View {
                 Text("Smart navigation")
                 Text("Improves playlist navigation so that it feels more natural.")
                     .font(.footnote)
+            }
+            Picker("Route picker", selection: $routePicker) {
+                ForEach(RoutePicker.allCases, id: \.self) { picker in
+                    Text(picker.name).tag(picker)
+                }
             }
         } header: {
              Text("Player")

@@ -12,6 +12,7 @@ extension UserDefaults {
         static let presenterModeEnabled = "presenterModeEnabled"
         static let playerType = "playerType"
         static let smartNavigationEnabled = "smartNavigationEnabled"
+        static let routePicker = "routePicker"
         static let backwardSkipInterval = "backwardSkipInterval"
         static let forwardSkipInterval = "forwardSkipInterval"
     }
@@ -30,6 +31,10 @@ extension UserDefaults {
 
     @objc dynamic var smartNavigationEnabled: Bool {
         bool(forKey: DemoSettingKey.smartNavigationEnabled)
+    }
+
+    @objc dynamic var routePicker: RoutePicker {
+        .init(rawValue: integer(forKey: DemoSettingKey.routePicker)) ?? .button
     }
 
     @objc dynamic var backwardSkipInterval: TimeInterval {
