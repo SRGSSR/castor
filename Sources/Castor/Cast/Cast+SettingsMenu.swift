@@ -6,6 +6,19 @@
 
 import SwiftUI
 
+private struct DeviceCell: View {
+    let device: CastDevice?
+
+    var body: some View {
+        if let device {
+            Text(device.name ?? "Unnamed receiver")
+        }
+        else {
+            Text("This device")
+        }
+    }
+}
+
 private struct DeviceMenuContent: View {
     let action: (CastDevice?) -> Void
 
@@ -21,7 +34,7 @@ private struct DeviceMenuContent: View {
         .pickerStyle(.inline)
 
         if cast.currentDevice != nil {
-            Button {
+            Button(role: .destructive) {
                 cast.endSession()
             } label: {
                 Text("Disconnect")
@@ -35,19 +48,6 @@ private struct DeviceMenuContent: View {
         } set: { newValue in
             cast.currentDevice = newValue
             action(newValue)
-        }
-    }
-}
-
-private struct DeviceCell: View {
-    let device: CastDevice?
-
-    var body: some View {
-        if let device {
-            Text(device.name ?? "Unnamed receiver")
-        }
-        else {
-            Text("This device")
         }
     }
 }
