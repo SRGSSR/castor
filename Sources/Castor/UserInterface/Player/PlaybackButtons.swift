@@ -7,9 +7,9 @@
 import SwiftUI
 
 struct PlaybackButtons: View {
-    @EnvironmentObject private var cast: Cast
     @ObservedObject var player: CastPlayer
     let layout: PlaybackButtonsLayout
+    let cast: Cast
 
     @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
 
