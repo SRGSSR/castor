@@ -98,7 +98,7 @@ private struct _CastPlayerView: View {
         VStack(alignment: .leading) {
             informationTitle()
             if let device {
-                Text("Connected to \(device.name ?? "receiver")", bundle: .module, comment: "Connected receiver (device name as wildcard)")
+                Text(CastDevice.route(to: device))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
