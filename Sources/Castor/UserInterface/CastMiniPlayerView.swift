@@ -43,6 +43,9 @@ private struct _CastMiniPlayerView: View {
 }
 
 /// A mini Cast player view.
+///
+/// This view has no padding or intrinsic height. You may need to add padding or explicitly set a height when integrating
+/// it into your view hierarchy.
 public struct CastMiniPlayerView: View {
     @ObservedObject private var cast: Cast
 
