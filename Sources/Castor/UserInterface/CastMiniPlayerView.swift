@@ -75,14 +75,12 @@ private extension _CastMiniPlayerView {
         Text(CastAsset.description(for: asset))
             .font(.subheadline)
             .bold()
-            .lineLimit(1)
     }
 
     private func subtitle() -> some View {
         Text(CastDevice.route(to: cast.currentDevice))
             .foregroundStyle(.secondary)
             .font(.subheadline)
-            .lineLimit(1)
     }
 }
 
