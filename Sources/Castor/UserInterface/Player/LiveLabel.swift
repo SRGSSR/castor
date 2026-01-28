@@ -19,7 +19,7 @@ struct LiveLabel: View {
     }
 
     var body: some View {
-        Group {
+        ZStack {
             if player.streamType == .live {
                 Text(String(localized: "Live", bundle: .module, comment: "Short label associated with live content").uppercased())
                     .font(.footnote)

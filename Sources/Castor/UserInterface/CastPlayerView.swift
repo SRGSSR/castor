@@ -22,7 +22,7 @@ private struct _CastPlayerView: View {
 
     var body: some View {
         // swiftlint:disable:next closure_body_length
-        Group {
+        ZStack {
             if verticalSizeClass == .compact {
                 HStack(spacing: 0) {
                     VStack {
@@ -116,7 +116,7 @@ private struct _CastPlayerView: View {
     }
 
     private func informationTitle() -> some View {
-        Group {
+        ZStack {
             if player.items.isEmpty {
                 Text("Not playing", bundle: .module, comment: "Label displayed when no content is being played")
                     .foregroundStyle(.secondary)

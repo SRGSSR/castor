@@ -32,7 +32,7 @@ struct PlaybackButtons: View {
     }
 
     private func backwardButton() -> some View {
-        Group {
+        ZStack {
             switch layout {
             case .navigation:
                 PreviousItemButton(player: player)
@@ -48,7 +48,7 @@ struct PlaybackButtons: View {
     }
 
     private func forwardButton() -> some View {
-        Group {
+        ZStack {
             switch layout {
             case .navigation:
                 NextItemButton(player: player)
