@@ -28,6 +28,7 @@ private struct _CastMiniPlayerView: View {
     private func infoView(for asset: CastAsset?) -> some View {
         ViewThatFits(in: .vertical) {
             regularInfoView(for: asset)
+            regularInfoView(for: asset, lineLimit: 1)
             compactInfoView(for: asset)
         }
         .accessibilityElement()
@@ -59,11 +60,12 @@ public struct CastMiniPlayerView: View {
 }
 
 private extension _CastMiniPlayerView {
-    func regularInfoView(for asset: CastAsset?) -> some View {
+    func regularInfoView(for asset: CastAsset?, lineLimit: Int? = nil) -> some View {
         VStack(alignment: .leading) {
             title(for: asset)
             subtitle()
         }
+        .lineLimit(lineLimit)
     }
 
     func compactInfoView(for asset: CastAsset?) -> some View {
