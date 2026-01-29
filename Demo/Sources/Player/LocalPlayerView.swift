@@ -10,6 +10,9 @@ import SwiftUI
 struct LocalPlayerView: View {
     let media: Media
 
+    @AppStorage(UserDefaults.DemoSettingKey.routePicker)
+    private var routePicker: RoutePicker = .button
+
     @EnvironmentObject private var cast: Cast
     @StateObject private var model = PlayerViewModel()
     @State private var isUserInterfaceHidden = false
@@ -64,7 +67,9 @@ private extension LocalPlayerView {
     func topTrailingButtons() -> some View {
         HStack(spacing: 20) {
             addButton()
-            CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
+            if routePicker == .button {
+                CastButton(cast: cast, isPresenting: $isPresentingDeviceSelection)
+            }
         }
         .padding()
         .contentShape(.rect)

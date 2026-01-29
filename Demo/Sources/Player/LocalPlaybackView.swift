@@ -125,12 +125,19 @@ private struct LocalErrorView: View {
 }
 
 private struct LocalSettingsMenu: View {
+    @AppStorage(UserDefaults.DemoSettingKey.routePicker)
+    private var routePicker: RoutePicker = .button
+
     let player: Player
 
     var body: some View {
         Menu {
             player.standardSettingsMenu()
             LocalRepeatModeMenu(player: player)
+            if routePicker == .menu {
+                DeviceMenu()
+                player.routePickerMenu()
+            }
         } label: {
             Image(systemName: "ellipsis.circle")
                 .font(.system(size: 20))
