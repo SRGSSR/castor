@@ -34,12 +34,12 @@ struct PlaybackButton: View {
 }
 
 private extension PlaybackButton {
-    var accessibilityLabel: String {
+    var accessibilityLabel: LocalizedStringResource {
         if player.shouldPlay {
-            String(localized: "Pause", bundle: .module, comment: "Pause button accessibility label")
+            LocalizedStringResource("Pause", bundle: .module, comment: "Pause button accessibility label")
         }
         else {
-            String(localized: "Play", bundle: .module, comment: "Play button accessibility label")
+            LocalizedStringResource("Play", bundle: .module, comment: "Play button accessibility label")
         }
     }
 }

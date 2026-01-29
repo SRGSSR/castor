@@ -7,9 +7,10 @@
 import SwiftUI
 
 struct SettingsButtons: View {
-    @EnvironmentObject private var cast: Cast
     @ObservedObject var player: CastPlayer
     @Binding var isPlaylistPresented: Bool
+    let cast: Cast
+
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {

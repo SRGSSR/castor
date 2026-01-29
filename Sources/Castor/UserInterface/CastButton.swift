@@ -47,12 +47,16 @@ public struct CastButton: View {
 }
 
 private extension CastButton {
-    var accessibilityHint: String {
+    var accessibilityHint: LocalizedStringResource {
         switch cast.connectionState {
         case .connected, .connecting:
-            String(localized: "Manages the Cast session", bundle: .module, comment: "Accessibility hint associated with the Cast button when connected")
+            LocalizedStringResource("Manages the Cast session", bundle: .module, comment: "Accessibility hint associated with the Cast button when connected")
         default:
-            String(localized: "Connects to a Cast device", bundle: .module, comment: "Accessibility hint associated with the Cast button when not connected")
+            LocalizedStringResource(
+                "Connects to a Cast device",
+                bundle: .module,
+                comment: "Accessibility hint associated with the Cast button when not connected"
+            )
         }
     }
 }

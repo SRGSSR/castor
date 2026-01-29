@@ -28,12 +28,12 @@ public struct CastMuteButton: View {
 }
 
 private extension CastMuteButton {
-    var accessibilityLabel: String {
+    var accessibilityLabel: LocalizedStringResource {
         if deviceManager.isMuted {
-            String(localized: "Muted", bundle: .module, comment: "Accessibility label for muted state")
+            LocalizedStringResource("Muted", bundle: .module, comment: "Accessibility label for muted state")
         }
         else {
-            String(localized: "Unmuted", bundle: .module, comment: "Accessibility label for unmuted state")
+            LocalizedStringResource("Unmuted", bundle: .module, comment: "Accessibility label for unmuted state")
         }
     }
 }

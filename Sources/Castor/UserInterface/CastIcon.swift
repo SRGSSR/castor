@@ -45,22 +45,22 @@ public struct CastIcon: View {
 }
 
 private extension CastIcon {
-    var accessibilityLabel: String {
+    var accessibilityLabel: LocalizedStringResource {
         switch cast.connectionState {
         case .connecting:
-            String(
-                localized: "Connecting to \(deviceName)",
+            LocalizedStringResource(
+                "Connecting to \(deviceName)",
                 bundle: .module,
                 comment: "Cast icon accessibility label when connecting to a receiver device (device name as wildcard)"
             )
         case .connected:
-            String(
-                localized: "Connected to \(deviceName)",
+            LocalizedStringResource(
+                "Connected to \(deviceName)",
                 bundle: .module,
                 comment: "Cast icon accessibility label when connected to a receiver device (device name as wildcard)"
             )
         default:
-            String(localized: "Not casting", bundle: .module, comment: "Cast icon accessibility label when not connected to a receiver device")
+            LocalizedStringResource("Not casting", bundle: .module, comment: "Cast icon accessibility label when not connected to a receiver device")
         }
     }
 

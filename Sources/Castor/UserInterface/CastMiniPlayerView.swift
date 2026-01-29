@@ -28,6 +28,7 @@ private struct _CastMiniPlayerView: View {
     private func infoView(for asset: CastAsset?) -> some View {
         ViewThatFits(in: .vertical) {
             regularInfoView(for: asset)
+            regularInfoView(for: asset, lineLimit: 1)
             compactInfoView(for: asset)
         }
         .accessibilityElement()
@@ -42,6 +43,9 @@ private struct _CastMiniPlayerView: View {
 }
 
 /// A mini Cast player view.
+///
+/// This view has no padding or intrinsic height. You may need to add padding or explicitly set a height when integrating
+/// it into your view hierarchy.
 public struct CastMiniPlayerView: View {
     @ObservedObject private var cast: Cast
 
@@ -59,11 +63,12 @@ public struct CastMiniPlayerView: View {
 }
 
 private extension _CastMiniPlayerView {
-    func regularInfoView(for asset: CastAsset?) -> some View {
+    func regularInfoView(for asset: CastAsset?, lineLimit: Int? = nil) -> some View {
         VStack(alignment: .leading) {
             title(for: asset)
             subtitle()
         }
+        .lineLimit(lineLimit)
     }
 
     func compactInfoView(for asset: CastAsset?) -> some View {
@@ -75,14 +80,12 @@ private extension _CastMiniPlayerView {
         Text(CastAsset.description(for: asset))
             .font(.subheadline)
             .bold()
-            .lineLimit(1)
     }
 
     private func subtitle() -> some View {
         Text(CastDevice.route(to: cast.currentDevice))
             .foregroundStyle(.secondary)
             .font(.subheadline)
-            .lineLimit(1)
     }
 }
 

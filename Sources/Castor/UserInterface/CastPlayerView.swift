@@ -14,6 +14,7 @@ private enum GeometryEffectIdentifier: Hashable {
 private struct _CastPlayerView: View {
     @ObservedObject var player: CastPlayer
     let device: CastDevice?
+    let cast: Cast
 
     @State private var isPlaylistPresented = false
     @Namespace var namespace
@@ -21,7 +22,7 @@ private struct _CastPlayerView: View {
 
     var body: some View {
         // swiftlint:disable:next closure_body_length
-        Group {
+        ZStack {
             if verticalSizeClass == .compact {
                 HStack(spacing: 0) {
                     VStack {
@@ -31,7 +32,7 @@ private struct _CastPlayerView: View {
                         }
                         .frame(height: 100)
                         Spacer()
-                        ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
+                        ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented, cast: cast)
                     }
                     if !player.items.isEmpty {
                         PlaylistView(player: player)
@@ -60,7 +61,7 @@ private struct _CastPlayerView: View {
                         informationView()
                             .padding(.horizontal)
                     }
-                    ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented)
+                    ControlsView(player: player, isPlaylistPresented: $isPlaylistPresented, cast: cast)
                 }
                 .animation(.default, value: isPlaylistPresented)
             }
@@ -97,7 +98,7 @@ private struct _CastPlayerView: View {
         VStack(alignment: .leading) {
             informationTitle()
             if let device {
-                Text("Connected to \(device.name ?? "receiver")", bundle: .module, comment: "Connected receiver (device name as wildcard)")
+                Text(CastDevice.route(to: device))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -115,7 +116,7 @@ private struct _CastPlayerView: View {
     }
 
     private func informationTitle() -> some View {
-        Group {
+        ZStack {
             if player.items.isEmpty {
                 Text("Not playing", bundle: .module, comment: "Label displayed when no content is being played")
                     .foregroundStyle(.secondary)
@@ -136,7 +137,7 @@ public struct CastPlayerView: View {
     public var body: some View {
         ZStack {
             if let player = cast.player {
-                _CastPlayerView(player: player, device: cast.currentDevice)
+                _CastPlayerView(player: player, device: cast.currentDevice, cast: cast)
             }
             else if let deviceName = cast.currentDevice?.name {
                 loadingView(with: deviceName)

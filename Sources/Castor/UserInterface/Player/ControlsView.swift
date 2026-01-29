@@ -9,6 +9,8 @@ import SwiftUI
 struct ControlsView: View {
     let player: CastPlayer
     @Binding var isPlaylistPresented: Bool
+    let cast: Cast
+
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     private var layout: PlaybackButtonsLayout {
@@ -19,8 +21,8 @@ struct ControlsView: View {
         VStack {
             SliderView(player: player)
             VStack(spacing: 50) {
-                PlaybackButtons(player: player, layout: layout)
-                SettingsButtons(player: player, isPlaylistPresented: $isPlaylistPresented)
+                PlaybackButtons(player: player, layout: layout, cast: cast)
+                SettingsButtons(player: player, isPlaylistPresented: $isPlaylistPresented, cast: cast)
             }
         }
         .padding()

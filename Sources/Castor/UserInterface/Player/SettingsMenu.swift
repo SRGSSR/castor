@@ -22,7 +22,7 @@ struct SettingsMenu: View {
 }
 
 private extension SettingsMenu {
-    var accessibilityLabel: String {
-        String(localized: "Settings", bundle: .module, comment: "Settings button accessibility label")
+    var accessibilityLabel: LocalizedStringResource {
+        LocalizedStringResource("Settings", bundle: .module, comment: "Settings button accessibility label")
     }
 }
