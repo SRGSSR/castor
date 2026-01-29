@@ -40,7 +40,7 @@ private extension SliderView {
                 if let time = FormattedTime(time: progressTracker.time, duration: progressTracker.timeRange.duration) {
                     label(
                         text: time.positional,
-                        accessibilityLabel: String(localized: "\(time.full) elapsed", bundle: .module, comment: "Elapsed time accessibility label")
+                        accessibilityLabel: LocalizedStringResource("\(time.full) elapsed", bundle: .module, comment: "Elapsed time accessibility label")
                     )
                 }
             },
@@ -48,7 +48,7 @@ private extension SliderView {
                 if let time = FormattedTime(duration: progressTracker.timeRange.duration) {
                     label(
                         text: time.positional,
-                        accessibilityLabel: String(localized: "\(time.full) total", bundle: .module, comment: "Total time accessibility label")
+                        accessibilityLabel: LocalizedStringResource("\(time.full) total", bundle: .module, comment: "Total time accessibility label")
                     )
                 }
             }
@@ -66,7 +66,7 @@ private extension SliderView {
     }
 
     @ViewBuilder
-    func label(text: String, accessibilityLabel: String) -> some View {
+    func label(text: String, accessibilityLabel: LocalizedStringResource) -> some View {
         Text(text)
             .font(.caption)
             .monospacedDigit()

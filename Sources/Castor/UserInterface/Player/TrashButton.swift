@@ -12,8 +12,8 @@ struct TrashButton: View {
 
     @State private var isPresented = false
 
-    private var label: String {
-        String(localized: "Delete all", bundle: .module, comment: "Button to delete all items from a playlist")
+    private var label: LocalizedStringResource {
+        LocalizedStringResource("Delete all", bundle: .module, comment: "Button to delete all items from a playlist")
     }
 
     var body: some View {

@@ -56,14 +56,14 @@ struct RepeatModeButton: View {
 }
 
 private extension RepeatModeButton {
-    var accessibilityLabel: String {
+    var accessibilityLabel: LocalizedStringResource {
         switch player.repeatMode {
         case .off:
-            String(localized: "Repeat, Off", bundle: .module, comment: "Repeat off mode accessibility label")
+            LocalizedStringResource("Repeat, Off", bundle: .module, comment: "Repeat off mode accessibility label")
         case .one:
-            String(localized: "Repeat, One", bundle: .module, comment: "Repeat one mode accessibility label")
+            LocalizedStringResource("Repeat, One", bundle: .module, comment: "Repeat one mode accessibility label")
         case .all:
-            String(localized: "Repeat, All", bundle: .module, comment: "Repeat all accessibility label")
+            LocalizedStringResource("Repeat, All", bundle: .module, comment: "Repeat all accessibility label")
         }
     }
 }

@@ -19,7 +19,7 @@ struct NextItemButton: View {
 }
 
 private extension NextItemButton {
-    var accessibilityLabel: String {
-        String(localized: "Next", bundle: .module, comment: "Next item button accessibility label")
+    var accessibilityLabel: LocalizedStringResource {
+        LocalizedStringResource("Next", bundle: .module, comment: "Next item button accessibility label")
     }
 }

@@ -10,8 +10,8 @@ struct ShuffleButton: View {
     @ObservedObject var player: CastPlayer
     let style: ButtonStyle
 
-    private var label: String {
-        String(localized: "Shuffle", bundle: .module, comment: "Shuffle button accessibility label")
+    private var label: LocalizedStringResource {
+        LocalizedStringResource("Shuffle", bundle: .module, comment: "Shuffle button accessibility label")
     }
 
     var body: some View {

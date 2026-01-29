@@ -20,12 +20,12 @@ struct PlaylistButton: View {
 }
 
 private extension PlaylistButton {
-    var accessibilityLabel: String {
+    var accessibilityLabel: LocalizedStringResource {
         if isPlaylistPresented {
-            String(localized: "Hide playlist", bundle: .module, comment: "Playlist button accessibility label")
+            LocalizedStringResource("Hide playlist", bundle: .module, comment: "Playlist button accessibility label")
         }
         else {
-            String(localized: "Show playlist", bundle: .module, comment: "Playlist button accessibility label")
+            LocalizedStringResource("Show playlist", bundle: .module, comment: "Playlist button accessibility label")
         }
     }
 }
