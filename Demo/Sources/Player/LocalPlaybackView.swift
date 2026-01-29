@@ -136,7 +136,7 @@ private struct LocalSettingsMenu: View {
             LocalRepeatModeMenu(player: player)
             if routePicker == .menu {
                 DeviceMenu()
-                RoutePickerView.menu()
+                player.routePickerMenu()
             }
         } label: {
             Image(systemName: "ellipsis.circle")
