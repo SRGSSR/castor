@@ -465,9 +465,6 @@
         }
       }
     },
-    "Devices" : {
-
-    },
     "Disconnect" : {
       "comment" : "Label of the button to disconnect from a Cast receiver",
       "localizations" : {

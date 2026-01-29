@@ -24,7 +24,7 @@ private struct DeviceMenuContent: View {
     @EnvironmentObject var cast: Cast
 
     var body: some View {
-        Picker("Devices", selection: selection) {
+        Picker("Cast to", selection: selection) {
             ForEach(cast.devices, id: \.self) { device in
                 DeviceCell(device: device)
                     .tag(device)
