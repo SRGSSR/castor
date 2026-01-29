@@ -70,7 +70,7 @@ private struct RemoteTimeBar: View {
 
 private struct RemoteSettingsMenu: View {
     @AppStorage(UserDefaults.DemoSettingKey.routePicker)
-        private var routePicker: RoutePicker = .button
+    private var routePicker: RoutePicker = .button
 
     let player: CastPlayer
 
