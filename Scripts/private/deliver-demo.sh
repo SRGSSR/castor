@@ -12,7 +12,7 @@ function usage {
 function install_tools {
     curl -Ssf https://pkgx.sh | sh &> /dev/null
     set -a
-    eval "$(pkgx +ruby@3.3.0 +bundle +rsvg-convert)"
+    eval "$(pkgx +ruby@3.3.0 +bundle +magick)"
     set +a
 }
 
@@ -36,5 +36,5 @@ install_tools
 echo -e "Delivering demo $CONFIGURATION build"
 bundle config set path '.bundle'
 bundle install
-bundle exec fastlane "deliver_demo_${CONFIGURATION}"
+pkgx +rsvg-convert bundle exec fastlane "deliver_demo_${CONFIGURATION}"
 echo "... done."
