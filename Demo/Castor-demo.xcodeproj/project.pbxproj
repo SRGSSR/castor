@@ -530,8 +530,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SRGSSR/pillarbox-apple";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.1.0;
 			};
 		};
 		6F93E37F2D9C0CEA00B412AA /* XCRemoteSwiftPackageReference "ShowTime" */ = {
