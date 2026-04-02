@@ -11,17 +11,9 @@ import Testing
 @Suite
 struct CollectionTests {
     @Test
-    func valid_index() {
+    func safe_index() {
         #expect([1, 2, 3][safeIndex: 0] == 1)
-    }
-
-    @Test
-    func negative_index() {
         #expect([1, 2, 3][safeIndex: -1] == nil)
-    }
-
-    @Test
-    func invalid_index() {
         #expect([1, 2, 3][safeIndex: 3] == nil)
     }
 }

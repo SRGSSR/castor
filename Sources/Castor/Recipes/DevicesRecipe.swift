@@ -46,6 +46,7 @@ extension DevicesRecipe: @preconcurrency GCKDiscoveryManagerListener {
     }
 
     func didUpdate(_ device: GCKDevice, at index: UInt) {
-        devices[safeIndex: Int(index)] = device.toCastDevice()
+        devices.remove(at: Int(index))
+        devices.insert(device.toCastDevice(), at: Int(index))
     }
 }
