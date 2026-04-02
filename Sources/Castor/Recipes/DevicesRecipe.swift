@@ -42,7 +42,7 @@ extension DevicesRecipe: @preconcurrency GCKDiscoveryManagerListener {
     }
 
     func didUpdate(_ device: GCKDevice, at index: UInt, andMoveTo newIndex: UInt) {
-        devices.move(from: Int(index), to: Int(index))
+        devices.move(from: Int(index), to: Int(newIndex))
     }
 
     func didUpdate(_ device: GCKDevice, at index: UInt) {
