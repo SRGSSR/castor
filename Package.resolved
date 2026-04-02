@@ -1,6 +1,51 @@
 {
-  "originHash" : "f0f098da8a05eabe44e13e39b50fd2a7dee985de3f8cd833e2c88f8c07648680",
+  "originHash" : "af0bdd1cfa3287096b3a3da74d05798f1d96506d7707342d9f33f5f62b190a83",
   "pins" : [
+    {
+      "identity" : "commanders-act-apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SRGSSR/commanders-act-apple.git",
+      "state" : {
+        "revision" : "bed2a1fb87885bc535a2c8a7de891b8f2ae820ed",
+        "version" : "5.4.19"
+      }
+    },
+    {
+      "identity" : "comscore-swift-package-manager",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/comScore/Comscore-Swift-Package-Manager.git",
+      "state" : {
+        "revision" : "f123be6aae5864c4eb7def5e9f1be9710fe1d782",
+        "version" : "6.16.0"
+      }
+    },
+    {
+      "identity" : "cwlcatchexception",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlCatchException.git",
+      "state" : {
+        "revision" : "07b2ba21d361c223e25e3c1e924288742923f08c",
+        "version" : "2.2.1"
+      }
+    },
+    {
+      "identity" : "cwlpreconditiontesting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+      "state" : {
+        "revision" : "0139c665ebb45e6a9fbdb68aabfd7c39f3fe0071",
+        "version" : "2.2.2"
+      }
+    },
+    {
+      "identity" : "difference",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzysztofzablocki/Difference.git",
+      "state" : {
+        "revision" : "02fe1111edc8318c4f8a0da96336fcbcc201f38b",
+        "version" : "1.0.1"
+      }
+    },
     {
       "identity" : "google-cast-sdk",
       "kind" : "remoteSourceControl",
@@ -8,6 +53,33 @@
       "state" : {
         "revision" : "516f7111116bc412230309636842d3bbf77efdd8",
         "version" : "4.8.4"
+      }
+    },
+    {
+      "identity" : "nimble",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Quick/Nimble.git",
+      "state" : {
+        "revision" : "cc945f7bdf3b485adedc315e18685c065059b4ca",
+        "version" : "13.8.0"
+      }
+    },
+    {
+      "identity" : "pillarbox-apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SRGSSR/pillarbox-apple",
+      "state" : {
+        "revision" : "38c22ce3880cb782bf89cbd689a509b245f59fe1",
+        "version" : "17.0.0"
+      }
+    },
+    {
+      "identity" : "showtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KaneCheshire/ShowTime.git",
+      "state" : {
+        "revision" : "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
+        "version" : "2.5.3"
       }
     },
     {
