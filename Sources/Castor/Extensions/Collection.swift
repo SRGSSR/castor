@@ -8,7 +8,6 @@ import Foundation
 
 extension Collection {
     subscript(safeIndex index: Index) -> Element? {
-        guard indices.contains(index) else { return nil }
-        return self[index]
+        indices.contains(index) ? self[index] : nil
     }
 }
