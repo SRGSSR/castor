@@ -49,7 +49,7 @@ struct Media: Hashable, Identifiable {
         case let .urn(urn):
             return .urn(urn)
         case let .url(url, configuration: _):
-            return .simple(url: url, metadata: self)
+            return .simple(url: url, metadata: playerMetadata)
         }
     }
 
@@ -72,7 +72,7 @@ struct Media: Hashable, Identifiable {
     }
 }
 
-extension Media: AssetMetadata {
+extension Media {
     private var imageSource: ImageSource {
         guard let imageUrl else { return .none }
         return .url(standardResolution: imageUrl)
