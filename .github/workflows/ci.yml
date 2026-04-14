@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-26
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  #  v6.0.2
 
       - name: Run the quality check
         run: make check-quality
@@ -22,13 +22,13 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  #  v6.0.2
 
       - name: Run test
         run: make test
 
       - name: Publish report
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386  #  v6.4.0
         if: always()
         with:
           report_paths: 'fastlane/test_output/*.xml'
@@ -40,7 +40,7 @@ jobs:
     runs-on: macos-26
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  #  v6.0.2
 
       - name: Skip plugin validation
         run: |
