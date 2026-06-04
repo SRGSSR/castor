@@ -48,7 +48,7 @@ extension UserDefaults {
 
 extension UserDefaults {
     static func registerDefaults() {
-        UserDefaults.standard.register(defaults: [
+        standard.register(defaults: [
             DemoSettingKey.smartNavigationEnabled: true,
             DemoSettingKey.presenterModeEnabled: false,
             DemoSettingKey.backwardSkipInterval: 10,
