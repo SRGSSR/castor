@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "revision" : "8bd5dd0c92a9178e060b6e8a05d09b998a10c47c",
-        "version" : "18.0.0"
+        "revision" : "b5151bbf2b544c2a55611c42b3b2274172a9738e",
+        "version" : "18.0.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
       "state" : {
-        "revision" : "6675bc0ff86e61436e615df6fc5174e043e57924",
-        "version" : "1.4.1"
+        "revision" : "a0cb0954ecb21e4e31b0070e6ed5674e8556685a",
+        "version" : "1.6.0"
       }
     }
   ],
