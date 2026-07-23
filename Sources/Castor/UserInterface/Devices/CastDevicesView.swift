@@ -54,7 +54,7 @@ struct CastDevicesView: View {
         let devices = cast.multizoneDevices
         if !devices.isEmpty {
             Section {
-                ForEach(devices, id: \.self) { device in
+                ForEach(devices) { device in
                     MultizoneDeviceCell(device: device, cast: cast)
                 }
             } header: {
@@ -68,7 +68,7 @@ struct CastDevicesView: View {
         let devices = cast.devices.filter { $0 != cast.currentDevice }
         if !devices.isEmpty {
             Section {
-                ForEach(devices, id: \.self) { device in
+                ForEach(devices) { device in
                     CastDeviceCell(device: device, cast: cast)
                 }
             } header: {

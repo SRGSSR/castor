@@ -7,8 +7,13 @@
 import GoogleCast
 
 /// An object that represents a Cast receiver device.
-public struct CastDevice: Hashable {
+public struct CastDevice: Hashable, Identifiable {
     let rawDevice: GCKDevice
+
+    // swiftlint:disable:next missing_docs
+    public var id: String {
+        rawDevice.deviceID
+    }
 
     /// The device's friendly name.
     public var name: String? {

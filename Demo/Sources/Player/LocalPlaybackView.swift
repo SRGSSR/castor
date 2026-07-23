@@ -244,7 +244,7 @@ struct LocalPlaybackView: View {
     }
 
     private func playlist() -> some View {
-        List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
+        List($model.entries, editActions: .all, selection: $model.currentEntry) { $entry in
             LocalItemCell(media: entry.media)
         }
     }

@@ -166,7 +166,7 @@ struct RemotePlaybackView: View {
     }
 
     private func playlist() -> some View {
-        List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
+        List($player.items, editActions: .all, selection: $player.currentItem) { $item in
             RemoteItemCell(item: item)
         }
     }

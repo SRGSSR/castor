@@ -20,6 +20,7 @@ struct PlaylistView: View {
     }
 
     private func list() -> some View {
+        // TODO: Remove `id: \.self` when Pillarbox is updated to 19+.
         List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
             ItemCell(item: item)
         }
