@@ -9,8 +9,13 @@ import GoogleCast
 /// An object that represents a multi-zone Cast receiver device.
 ///
 /// Multi-zone devices are part of a Cast device group, allowing synchronized playback across multiple receivers.
-public struct CastMultizoneDevice: Hashable {
+public struct CastMultizoneDevice: Hashable, Identifiable {
     let rawDevice: GCKMultizoneDevice
+
+    // swiftlint:disable:next missing_docs
+    public var id: String {
+        rawDevice.deviceID
+    }
 
     /// The device's friendly name.
     public var name: String? {
