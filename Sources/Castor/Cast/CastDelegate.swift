@@ -5,6 +5,7 @@
 //
 
 /// A protocol for handling events related to a cast session.
+@MainActor
 public protocol CastDelegate: AnyObject {
     /// Invoked when a Cast session has been established.
     func castStartSession()
