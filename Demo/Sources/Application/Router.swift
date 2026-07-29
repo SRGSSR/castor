@@ -32,7 +32,6 @@ extension Router {
             }
         }
 
-        @MainActor
         @ViewBuilder
         func view() -> some View {
             switch self {
