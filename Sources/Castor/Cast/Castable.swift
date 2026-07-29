@@ -5,6 +5,7 @@
 //
 
 /// A protocol that defines a castable context.
+@MainActor
 public protocol Castable: AnyObject {
     /// Invoked when a Cast session has been established.
     ///
