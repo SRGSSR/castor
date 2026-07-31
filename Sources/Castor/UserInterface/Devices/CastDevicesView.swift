@@ -10,11 +10,12 @@ import SwiftUI
 struct CastDevicesView: View {
     @ObservedObject var cast: Cast
     @Environment(\.dismiss) private var dismiss
+    let color: Color
 
     var body: some View {
         ZStack {
             if cast.devices.isEmpty {
-                EmptyDevicesView()
+                EmptyDevicesView(color: color)
             }
             else {
                 devicesList()
@@ -42,7 +43,7 @@ struct CastDevicesView: View {
     private func currentDeviceSection() -> some View {
         if let currentDevice = cast.currentDevice {
             Section {
-                CurrentCastDeviceCell(device: currentDevice, cast: cast)
+                CurrentCastDeviceCell(device: currentDevice, cast: cast, color: color)
             } header: {
                 Text("Current device", bundle: .module, comment: "Header for displaying current device information")
             }
@@ -55,7 +56,7 @@ struct CastDevicesView: View {
         if !devices.isEmpty {
             Section {
                 ForEach(devices) { device in
-                    MultizoneDeviceCell(device: device, cast: cast)
+                    MultizoneDeviceCell(device: device, cast: cast, color: color)
                 }
             } header: {
                 Text("Paired devices", bundle: .module, comment: "Header for the paired devices list section")
@@ -69,7 +70,7 @@ struct CastDevicesView: View {
         if !devices.isEmpty {
             Section {
                 ForEach(devices) { device in
-                    CastDeviceCell(device: device, cast: cast)
+                    CastDeviceCell(device: device, cast: cast, color: color)
                 }
             } header: {
                 Text("Available devices", bundle: .module, comment: "Header for available devices list section")

@@ -9,6 +9,7 @@ import SwiftUI
 struct CastDeviceCell: View {
     let device: CastDevice
     let cast: Cast
+    let color: Color
 
     var body: some View {
         Button {
@@ -18,6 +19,7 @@ struct CastDeviceCell: View {
                 descriptionView(for: device)
             } icon: {
                 Image(systemName: CastDevice.imageName(for: device))
+                    .foregroundStyle(color)
             }
             .contentShape(.rect)
         }
