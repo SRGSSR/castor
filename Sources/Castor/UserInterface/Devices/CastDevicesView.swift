@@ -78,11 +78,15 @@ struct CastDevicesView: View {
         }
     }
 
+    @ViewBuilder
     private func closeButton() -> some View {
-        Button {
-            dismiss()
-        } label: {
-            Text("Close", bundle: .module, comment: "Close button")
+        if #available(iOS 26.0, *) {
+            Button(role: .close, action: dismiss.callAsFunction)
+        }
+        else {
+            Button(action: dismiss.callAsFunction) {
+                Text("Close", bundle: .module, comment: "Close button")
+            }
         }
     }
 
