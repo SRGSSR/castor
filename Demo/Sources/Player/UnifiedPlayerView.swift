@@ -94,9 +94,7 @@ private extension UnifiedPlayerView {
     }
 
     func closeButton() -> some View {
-        Button {
-            dismiss()
-        } label: {
+        Button(action: dismiss.callAsFunction) {
             Image(systemName: "xmark")
         }
         .padding()

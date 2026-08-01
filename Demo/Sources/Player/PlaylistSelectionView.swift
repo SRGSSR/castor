@@ -27,7 +27,7 @@ struct PlaylistSelectionView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel", action: cancel)
+                Button("Cancel", action: dismiss.callAsFunction)
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button("Add", action: add)
@@ -75,10 +75,6 @@ struct PlaylistSelectionView: View {
             LabeledContent("Multiplier", value: "×\(multiplier)")
         }
         .padding()
-    }
-
-    private func cancel() {
-        dismiss()
     }
 
     private func add() {
