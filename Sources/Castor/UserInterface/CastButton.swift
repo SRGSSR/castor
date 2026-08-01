@@ -42,6 +42,11 @@ public struct CastButton: View {
     }
 
     /// Creates a Cast button.
+    /// 
+    /// - Parameters:
+    ///   - cast: The Cast object.
+    ///   - color: The color to apply to the button icon and devices view.
+    ///   - isPresenting: A binding that indicates whether the popover is presented.
     public init(cast: Cast, color: Color = .accentColor, isPresenting: Binding<Bool> = .constant(false)) {
         self.cast = cast
         self.color = color
