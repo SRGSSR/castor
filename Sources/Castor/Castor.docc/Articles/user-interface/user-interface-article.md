@@ -15,8 +15,6 @@ Integrate the Cast experience into your application.
 
 Castor includes several built-in views to cover common Cast use cases.
 
-> Tip: By default, the provided views use the `.accentColor`. You can change this color using the `.foregroundStyle` modifier, but note that this will not affect the color within the child views or a ``SwiftUI/Slider`` color. To update the default `accentColor` in the view displayed by the ``CastButton``, use the `.tint` modifier.
-
 ### Cast button
 
 ``CastButton`` is a SwiftUI view that displays a receiver selection popover (or a modal sheet, depending on the available width) and automatically reflects the current connection state.

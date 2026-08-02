@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct EmptyDevicesView: View {
+    let color: Color
+
     var body: some View {
         UnavailableView {
             Label {
@@ -23,6 +25,7 @@ struct EmptyDevicesView: View {
             if canOpenSettings() {
                 Button(action: openSettings) {
                     Text("Open Settings", bundle: .module, comment: "Open settings button accessibility label")
+                        .foregroundStyle(color)
                 }
             }
         }
@@ -59,5 +62,5 @@ private extension EmptyDevicesView {
 }
 
 #Preview {
-    EmptyDevicesView()
+    EmptyDevicesView(color: .accentColor)
 }

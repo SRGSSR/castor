@@ -9,6 +9,7 @@ import SwiftUI
 struct CurrentCastDeviceCell: View {
     let device: CastDevice
     @ObservedObject var cast: Cast
+    let color: Color
 
     var body: some View {
         VStack(spacing: 20) {
@@ -16,8 +17,10 @@ struct CurrentCastDeviceCell: View {
                 descriptionView()
             } icon: {
                 CastIcon(cast: cast)
+                    .foregroundStyle(color)
             }
             CastVolumeSlider(deviceManager: cast.deviceManager())
+                .tint(color)
             disconnectButton()
         }
     }
@@ -42,6 +45,7 @@ struct CurrentCastDeviceCell: View {
     private func disconnectButton() -> some View {
         Button(action: cast.endSession) {
             Text("Disconnect", bundle: .module, comment: "Label of the button to disconnect from a Cast receiver")
+                .foregroundStyle(color)
         }
         // Trick to avoid tapping on the entire cell.
         .buttonStyle(.borderless)

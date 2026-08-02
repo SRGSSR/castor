@@ -16,6 +16,7 @@ public struct CastButton: View {
     @Binding private var isPresenting: Bool
 
     @State private var isPresented = false
+    private let color: Color
 
     // swiftlint:disable:next missing_docs
     public var body: some View {
@@ -23,11 +24,12 @@ public struct CastButton: View {
             isPresented = true
         } label: {
             CastIcon(cast: cast)
+                .foregroundStyle(color)
         }
         .accessibilityHint(accessibilityHint)
         .popover(isPresented: $isPresented) {
             NavigationStack {
-                CastDevicesView(cast: cast)
+                CastDevicesView(cast: cast, color: color)
                     .font(nil)
                     .foregroundColor(nil)
                     .tint(nil)
@@ -40,8 +42,14 @@ public struct CastButton: View {
     }
 
     /// Creates a Cast button.
-    public init(cast: Cast, isPresenting: Binding<Bool> = .constant(false)) {
+    /// 
+    /// - Parameters:
+    ///   - cast: The Cast object.
+    ///   - color: The color to apply to the button icon and devices view.
+    ///   - isPresenting: A binding that indicates whether the popover is presented.
+    public init(cast: Cast, color: Color = .accentColor, isPresenting: Binding<Bool> = .constant(false)) {
         self.cast = cast
+        self.color = color
         _isPresenting = isPresenting
     }
 }

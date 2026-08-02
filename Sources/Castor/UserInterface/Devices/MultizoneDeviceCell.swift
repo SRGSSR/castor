@@ -9,11 +9,13 @@ import SwiftUI
 struct MultizoneDeviceCell: View {
     let device: CastMultizoneDevice
     let cast: Cast
+    let color: Color
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             descriptionView()
             CastVolumeSlider(deviceManager: cast.deviceManager(forMultizoneDevice: device))
+                .tint(color)
         }
     }
 
