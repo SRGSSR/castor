@@ -5,13 +5,14 @@
 //
 
 /// A protocol for handling events related to a cast session.
-@MainActor
 public protocol CastDelegate: AnyObject {
     /// Invoked when a Cast session has been established.
+    @MainActor
     func castStartSession()
 
     /// Invoked when the Cast session is about to stop.
     ///
     /// - Parameter state: The state immediately before the Cast session ends.
+    @MainActor
     func castEndSession(with state: CastResumeState?)
 }
