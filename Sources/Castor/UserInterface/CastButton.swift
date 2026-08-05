@@ -24,7 +24,6 @@ public struct CastButton: View {
             isPresented = true
         } label: {
             CastIcon(cast: cast)
-                .foregroundStyle(color)
         }
         .accessibilityHint(accessibilityHint)
         .popover(isPresented: $isPresented) {
@@ -45,7 +44,7 @@ public struct CastButton: View {
     /// 
     /// - Parameters:
     ///   - cast: The Cast object.
-    ///   - color: The color to apply to the button icon and devices view.
+    ///   - color: The color to apply to the devices view.
     ///   - isPresenting: A binding that indicates whether the popover is presented.
     public init(cast: Cast, color: Color = .accentColor, isPresenting: Binding<Bool> = .constant(false)) {
         self.cast = cast
