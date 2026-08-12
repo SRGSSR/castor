@@ -9,13 +9,13 @@ import GoogleCast
 /// The configuration associated with a URL-based asset.
 public struct CastAssetURLConfiguration {
     /// The MIME type of the asset.
-    public let mimeType: String?
+    public var mimeType: String?
 
     /// The audio segment format (HLS streams only).
-    public let hlsAudioSegmentFormat: GCKHLSSegmentFormat
+    public var hlsAudioSegmentFormat: GCKHLSSegmentFormat
 
     /// The video segment format (HLS streams only).
-    public let hlsVideoSegmentFormat: GCKHLSVideoSegmentFormat
+    public var hlsVideoSegmentFormat: GCKHLSVideoSegmentFormat
 
     /// Creates a configuration for a URL-based asset.
     ///
