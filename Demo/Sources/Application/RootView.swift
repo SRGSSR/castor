@@ -86,7 +86,7 @@ struct RootView: View {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func miniPlayer() -> some View {
         if let player = cast.player {
             MiniPlayer(player: player)

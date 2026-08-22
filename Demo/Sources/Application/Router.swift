@@ -32,7 +32,7 @@ extension Router {
             }
         }
 
-        @ViewBuilder
+        @ContentBuilder
         func view() -> some View {
             switch self {
             case let .localPlayer(media: media):

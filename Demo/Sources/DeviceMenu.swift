@@ -24,7 +24,7 @@ struct DeviceMenu: View {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func currentDevice() -> some View {
         if let currentDevice = cast.currentDevice {
             Text(currentDevice.name ?? "Untitled")
