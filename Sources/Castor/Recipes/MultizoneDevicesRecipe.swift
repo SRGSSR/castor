@@ -61,7 +61,7 @@ extension MultizoneDevicesRecipe: @preconcurrency GCKSessionManagerListener {
         currentSession = nil
     }
 
-    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
+    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: any Error?) {
         currentSession = sessionManager.currentCastSession
     }
 
