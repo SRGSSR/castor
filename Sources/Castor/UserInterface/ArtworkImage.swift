@@ -12,12 +12,12 @@ struct ArtworkImage: View {
     var body: some View {
         Rectangle()
             .fill(.primary.opacity(0.2))
-            .aspectRatio(contentMode: .fit)
+            .scaledToFit()
             .overlay {
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
                 } placeholder: {
                     EmptyView()
                 }

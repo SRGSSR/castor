@@ -253,7 +253,7 @@ struct LocalPlaybackView: View {
         LazyImage(source: player.metadata.imageSource) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .scaledToFit()
         }
         .opacity(player.mediaType == .audio ? 1 : 0)
     }
