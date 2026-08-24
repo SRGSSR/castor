@@ -175,7 +175,7 @@ struct RemotePlaybackView: View {
         AsyncImage(url: player.currentAsset?.metadata?.imageUrl()) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .scaledToFit()
         } placeholder: {
             EmptyView()
         }

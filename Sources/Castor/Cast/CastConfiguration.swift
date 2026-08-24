@@ -11,13 +11,13 @@ import AVFoundation
 /// The configuration defines behaviors set when the ``Cast`` object is created and cannot be changed afterwards.
 public struct CastConfiguration {
     /// The navigation mode.
-    public let navigationMode: CastNavigationMode
-
-    /// The forward skip interval in seconds.
-    public let forwardSkipInterval: TimeInterval
+    public var navigationMode: CastNavigationMode
 
     /// The backward skip interval in seconds.
-    public let backwardSkipInterval: TimeInterval
+    public var backwardSkipInterval: TimeInterval
+
+    /// The forward skip interval in seconds.
+    public var forwardSkipInterval: TimeInterval
 
     /// Creates a configuration.
     ///
