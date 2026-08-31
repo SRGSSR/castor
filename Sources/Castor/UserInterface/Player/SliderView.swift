@@ -55,7 +55,7 @@ private extension SliderView {
         )
     }
 
-    @ViewBuilder
+    @ContentBuilder
     func skipToDefaultButton() -> some View {
         if player.streamType == .live {
             Button(action: player.skipToDefault) {
@@ -65,7 +65,7 @@ private extension SliderView {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     func label(text: String, accessibilityLabel: LocalizedStringResource) -> some View {
         Text(text)
             .font(.caption)

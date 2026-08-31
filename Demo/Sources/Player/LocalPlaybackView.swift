@@ -51,7 +51,7 @@ private struct LocalTimeBar: View {
         .bind(progressTracker, to: player)
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func label(withText text: String?) -> some View {
         if let text {
             Text(text)
@@ -220,7 +220,7 @@ struct LocalPlaybackView: View {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func controls() -> some View {
         ZStack {
             LocalPaybackButton(player: player)
