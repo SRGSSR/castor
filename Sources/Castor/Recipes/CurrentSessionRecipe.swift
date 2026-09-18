@@ -41,7 +41,7 @@ extension CurrentSessionRecipe: @preconcurrency GCKSessionManagerListener {
         update?(nil)
     }
 
-    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
+    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: any Error?) {
         update?(sessionManager.currentCastSession)
     }
 
