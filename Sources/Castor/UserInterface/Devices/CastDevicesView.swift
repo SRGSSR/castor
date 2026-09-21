@@ -39,7 +39,7 @@ struct CastDevicesView: View {
         .animation(.default, value: cast.currentDevice)
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func currentDeviceSection() -> some View {
         if let currentDevice = cast.currentDevice {
             Section {
@@ -50,7 +50,7 @@ struct CastDevicesView: View {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func multizoneDevicesSection() -> some View {
         let devices = cast.multizoneDevices
         if !devices.isEmpty {
@@ -64,7 +64,7 @@ struct CastDevicesView: View {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func availableDevicesSection() -> some View {
         let devices = cast.devices.filter { $0 != cast.currentDevice }
         if !devices.isEmpty {
@@ -78,7 +78,7 @@ struct CastDevicesView: View {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func closeButton() -> some View {
         if #available(iOS 26.0, *) {
             Button(role: .close, action: dismiss.callAsFunction)
@@ -90,7 +90,7 @@ struct CastDevicesView: View {
         }
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func statusView() -> some View {
         switch cast.connectionState {
         case .connecting:

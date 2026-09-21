@@ -57,7 +57,7 @@ private struct RemoteTimeBar: View {
         .bind(progressTracker, to: player)
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func label(withText text: String?) -> some View {
         if let text {
             Text(text)
@@ -132,7 +132,7 @@ struct RemotePlaybackView: View {
         .background(.black)
     }
 
-    @ViewBuilder
+    @ContentBuilder
     private func playbackButton() -> some View {
         if player.isBusy {
             ProgressView()

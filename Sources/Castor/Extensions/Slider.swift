@@ -20,9 +20,9 @@ public extension Slider {
     ///   - onEditingChanged: A closure called when editing begins or ends.
     init(
         progressTracker: CastProgressTracker,
-        @ViewBuilder label: () -> Label,
-        @ViewBuilder minimumValueLabel: () -> ValueLabel,
-        @ViewBuilder maximumValueLabel: () -> ValueLabel,
+        @ContentBuilder label: () -> Label,
+        @ContentBuilder minimumValueLabel: () -> ValueLabel,
+        @ContentBuilder maximumValueLabel: () -> ValueLabel,
         onEditingChanged: @escaping (Bool) -> Void = { _ in }
     ) {
         self.init(
@@ -50,7 +50,7 @@ public extension Slider where ValueLabel == EmptyView {
     ///   - onEditingChanged: A closure called when editing begins or ends.
     init(
         progressTracker: CastProgressTracker,
-        @ViewBuilder label: () -> Label,
+        @ContentBuilder label: () -> Label,
         onEditingChanged: @escaping (Bool) -> Void = { _ in }
     ) {
         self.init(

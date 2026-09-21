@@ -63,7 +63,7 @@ where Instance: ObservableObject, Instance.ObjectWillChangePublisher == Observab
         value = Self.device(from: session)
     }
 
-    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: (any Error)?) {
+    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKCastSession, withError error: any Error?) {
         if let targetValue {
             service.startSession(with: targetValue.rawDevice)
             self.targetValue = nil
