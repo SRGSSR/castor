@@ -20,7 +20,7 @@ struct PlaylistView: View {
     }
 
     private func list() -> some View {
-        List($player.items, editActions: .all, selection: $player.currentItem) { $item in
+        List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
             ItemCell(item: item)
         }
         .listStyle(.plain)
