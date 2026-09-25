@@ -2,21 +2,12 @@
   "originHash" : "b370d0c62110af917d5cbd1d8b402c352f58b78c1b23fa07be4f96e314081fac",
   "pins" : [
     {
-      "identity" : "commanders-act-apple",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SRGSSR/commanders-act-apple.git",
-      "state" : {
-        "revision" : "bed2a1fb87885bc535a2c8a7de891b8f2ae820ed",
-        "version" : "5.4.19"
-      }
-    },
-    {
       "identity" : "comscore-swift-package-manager",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/comScore/Comscore-Swift-Package-Manager.git",
       "state" : {
-        "revision" : "f123be6aae5864c4eb7def5e9f1be9710fe1d782",
-        "version" : "6.16.0"
+        "revision" : "966992952a84510ac3a086d745f1681302b5cb26",
+        "version" : "6.17.0"
       }
     },
     {
@@ -56,6 +47,15 @@
       }
     },
     {
+      "identity" : "iosv5-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CommandersAct/iOSV5-spm.git",
+      "state" : {
+        "revision" : "e28f6bcb00d15d9ca113d45074bab27ddb853e1e",
+        "version" : "5.5.1"
+      }
+    },
+    {
       "identity" : "nimble",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Quick/Nimble.git",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "revision" : "b5151bbf2b544c2a55611c42b3b2274172a9738e",
-        "version" : "18.0.1"
+        "revision" : "e75dba7925e089dc0899fc731f36e52fc0dbd6e5",
+        "version" : "19.0.0"
       }
     },
     {
