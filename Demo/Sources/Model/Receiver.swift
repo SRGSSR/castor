@@ -24,7 +24,7 @@ enum Receiver: Int, CaseIterable {
         case .srgssr:
             "1AC2931D"
         case .amtins:
-            "EB05B588"
+            "1F3EDAA7"
         case .androidTv:
             "5718ACDA"
         }
@@ -39,7 +39,7 @@ enum Receiver: Int, CaseIterable {
         case .srgssr:
             "SRG SSR"
         case .amtins:
-            "amtins"
+            "WK"
         case .androidTv:
             "Android TV"
         }

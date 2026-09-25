@@ -20,6 +20,9 @@ struct ItemCell: View {
         .accessibilityElement()
         .accessibilityLabel(title)
         .onAppear(perform: item.fetch)
+        .onAppear {
+            print("--> \(item.asset?.customData?.jsonObject)")
+        }
     }
 
     private var title: String {
