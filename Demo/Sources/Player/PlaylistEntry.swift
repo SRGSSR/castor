@@ -11,9 +11,7 @@ struct PlaylistEntry: Hashable, Identifiable {
     let media: Media
     let item: PlayerItem
 
-    var id: UUID {
-        media.id
-    }
+    var id: Self { self }
 
     init(media: Media) {
         self.media = media
