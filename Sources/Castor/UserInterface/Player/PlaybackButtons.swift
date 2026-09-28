@@ -69,7 +69,7 @@ struct PlaybackButtons: View {
             Image(systemName: "backward.end.fill")
             Image(systemName: "forward.end.fill")
             Image(systemName: "gobackward.minus")
-            Image(systemName: "gobackward.plus")
+            Image(systemName: "goforward.plus")
         }
         .hidden()
     }
