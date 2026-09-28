@@ -7,11 +7,9 @@
 import Foundation
 import PillarboxPlayer
 
-struct PlaylistEntry: Hashable, Identifiable {
+struct PlaylistEntry: Hashable {
     let media: Media
     let item: PlayerItem
-
-    var id: Self { self }
 
     init(media: Media) {
         self.media = media
