@@ -112,11 +112,12 @@ private struct RemoteRepeatModeMenu: View {
 
 struct RemotePlaybackView: View {
     @ObservedObject var player: CastPlayer
+    @State private var listSelection: ListSelection = .playlist
 
     var body: some View {
         VStack(spacing: 0) {
             mainView()
-            playlist()
+            bottomView()
         }
         .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -130,6 +131,33 @@ struct RemotePlaybackView: View {
         .aspectRatio(16 / 9, contentMode: .fit)
         .frame(maxWidth: .infinity)
         .background(.black)
+    }
+
+    @ContentBuilder
+    private func bottomView() -> some View {
+        if !player.chapters.isEmpty {
+            VStack(spacing: 0) {
+                Picker(selection: $listSelection) {
+                    ForEach(ListSelection.allCases, id: \.self) { selection in
+                        Text(selection.name).tag(selection)
+                    }
+                } label: {
+                    EmptyView()
+                }
+                .pickerStyle(.segmented)
+                .padding()
+
+                switch listSelection {
+                case .playlist:
+                    playlist()
+                case .chapters:
+                    chapterList()
+                }
+            }
+        }
+        else {
+            playlist()
+        }
     }
 
     @ContentBuilder
@@ -169,6 +197,10 @@ struct RemotePlaybackView: View {
         List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
             RemoteItemCell(item: item)
         }
+    }
+
+    private func chapterList() -> some View {
+        Color.pink
     }
 
     private func artwork() -> some View {
