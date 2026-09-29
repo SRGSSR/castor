@@ -8,7 +8,7 @@ import CoreMedia
 import PillarboxPlayer
 import SwiftUI
 
-struct ChapterList: View {
+struct LocalChapterList: View {
     @ObservedObject var player: Player
     @StateObject private var progressTracker = ProgressTracker(interval: .init(value: 1, timescale: 1))
 
