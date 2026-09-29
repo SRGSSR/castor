@@ -278,7 +278,7 @@ struct LocalPlaybackView: View {
     }
 
     private func chapterList() -> some View {
-        Color.purple
+        ChapterList(player: player)
     }
 
     private func artwork() -> some View {
