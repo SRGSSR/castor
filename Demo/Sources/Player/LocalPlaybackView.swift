@@ -173,6 +173,7 @@ struct LocalPlaybackView: View {
     @Binding var isUserInterfaceHidden: Bool
 
     @StateObject private var visibilityTracker = VisibilityTracker()
+    @State private var listSelection: ListSelection = .playlist
 
     var areControlsHidden: Bool {
         visibilityTracker.isUserInterfaceHidden || player.error != nil || player.items.isEmpty
@@ -181,7 +182,7 @@ struct LocalPlaybackView: View {
     var body: some View {
         VStack(spacing: 0) {
             mainView()
-            playlist()
+            bottomView()
         }
         .onChange(of: visibilityTracker.isUserInterfaceHidden) { newValue in
             isUserInterfaceHidden = newValue
@@ -211,6 +212,33 @@ struct LocalPlaybackView: View {
         .overlay(content: controls)
         .onTapGesture(perform: visibilityTracker.toggle)
         .accessibilityAddTraits(.isButton)
+    }
+
+    @ContentBuilder
+    private func bottomView() -> some View {
+        if !player.metadata.chapters.isEmpty {
+            VStack(spacing: 0) {
+                Picker(selection: $listSelection) {
+                    ForEach(ListSelection.allCases, id: \.self) { selection in
+                        Text(selection.name).tag(selection)
+                    }
+                } label: {
+                    EmptyView()
+                }
+                .pickerStyle(.segmented)
+                .padding()
+
+                switch listSelection {
+                case .playlist:
+                    playlist()
+                case .chapters:
+                    chapterList()
+                }
+            }
+        }
+        else {
+            playlist()
+        }
     }
 
     private func playerView() -> some View {
@@ -247,6 +275,10 @@ struct LocalPlaybackView: View {
         List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
             LocalItemCell(media: entry.media)
         }
+    }
+
+    private func chapterList() -> some View {
+        Color.purple
     }
 
     private func artwork() -> some View {
