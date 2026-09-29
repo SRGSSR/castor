@@ -4,7 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-import Foundation
+import CoreMedia
 
 struct Chapter: Decodable {
     let identifier: String
@@ -12,4 +12,11 @@ struct Chapter: Decodable {
     let posterUrl: URL
     let startTime: Double
     let endTime: Double
+
+    var timeRange: CMTimeRange {
+        .init(
+            start: .init(value: CMTimeValue(startTime), timescale: 1000),
+            end: .init(value: CMTimeValue(endTime), timescale: 1000)
+        )
+    }
 }

@@ -200,7 +200,7 @@ struct RemotePlaybackView: View {
     }
 
     private func chapterList() -> some View {
-        Color.pink
+        RemoteChapterList(player: player)
     }
 
     private func artwork() -> some View {
