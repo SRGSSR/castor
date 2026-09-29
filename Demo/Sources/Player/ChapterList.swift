@@ -23,9 +23,9 @@ struct ChapterList: View {
     private var currentChapterTimeRange: Binding<CMTimeRange?> {
         .init {
             currentChapter?.timeRange
-        } set: { timeRange in
+        } set: { [weak player] timeRange in
             guard let chapter = chapters.first(where: { $0.timeRange == timeRange }) else { return }
-            player.seek(to: chapter)
+            player?.seek(to: chapter)
         }
     }
 
