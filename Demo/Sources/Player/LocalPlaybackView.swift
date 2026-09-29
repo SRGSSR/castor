@@ -269,9 +269,15 @@ struct LocalPlaybackView: View {
         .background(Color(uiColor: .systemGroupedBackground))
     }
 
+    @ContentBuilder
     private func playlist() -> some View {
-        List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
-            LocalItemCell(media: entry.media)
+        if !model.entries.isEmpty {
+            List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
+                LocalItemCell(media: entry.media)
+            }
+        }
+        else {
+            MissingPlaylistView()
         }
     }
 

@@ -191,9 +191,15 @@ struct RemotePlaybackView: View {
         .background(Color(uiColor: .systemGroupedBackground))
     }
 
+    @ContentBuilder
     private func playlist() -> some View {
-        List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
-            RemoteItemCell(item: item)
+        if !player.items.isEmpty {
+            List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
+                RemoteItemCell(item: item)
+            }
+        }
+        else {
+            MissingPlaylistView()
         }
     }
 
