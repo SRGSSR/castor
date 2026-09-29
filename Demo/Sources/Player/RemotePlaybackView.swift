@@ -133,31 +133,15 @@ struct RemotePlaybackView: View {
         .background(.black)
     }
 
-    @ContentBuilder
     private func bottomView() -> some View {
-        if !player.chapters.isEmpty {
-            VStack(spacing: 0) {
-                Picker(selection: $listSelection) {
-                    ForEach(ListSelection.allCases, id: \.self) { selection in
-                        Text(selection.name).tag(selection)
-                    }
-                } label: {
-                    EmptyView()
-                }
-                .pickerStyle(.segmented)
-                .padding()
-                .background(Color(uiColor: .systemGroupedBackground))
-
-                switch listSelection {
-                case .playlist:
-                    playlist()
-                case .chapters:
-                    chapterList()
-                }
+        VStack(spacing: 0) {
+            listSelectionView()
+            switch listSelection {
+            case .playlist:
+                playlist()
+            case .chapters:
+                chapterList()
             }
-        }
-        else {
-            playlist()
         }
     }
 
@@ -194,14 +178,33 @@ struct RemotePlaybackView: View {
         .frame(maxHeight: .infinity, alignment: .bottom)
     }
 
+    private func listSelectionView() -> some View {
+        Picker(selection: $listSelection) {
+            ForEach(ListSelection.allCases, id: \.self) { selection in
+                Text(selection.name).tag(selection)
+            }
+        } label: {
+            EmptyView()
+        }
+        .pickerStyle(.segmented)
+        .padding()
+        .background(Color(uiColor: .systemGroupedBackground))
+    }
+
     private func playlist() -> some View {
         List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
             RemoteItemCell(item: item)
         }
     }
 
+    @ContentBuilder
     private func chapterList() -> some View {
-        RemoteChapterList(player: player)
+        if !player.chapters.isEmpty {
+            RemoteChapterList(player: player)
+        }
+        else {
+            MissingChapterView()
+        }
     }
 
     private func artwork() -> some View {

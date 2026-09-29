@@ -214,31 +214,15 @@ struct LocalPlaybackView: View {
         .accessibilityAddTraits(.isButton)
     }
 
-    @ContentBuilder
     private func bottomView() -> some View {
-        if !player.metadata.chapters.isEmpty {
-            VStack(spacing: 0) {
-                Picker(selection: $listSelection) {
-                    ForEach(ListSelection.allCases, id: \.self) { selection in
-                        Text(selection.name).tag(selection)
-                    }
-                } label: {
-                    EmptyView()
-                }
-                .pickerStyle(.segmented)
-                .padding()
-                .background(Color(uiColor: .systemGroupedBackground))
-
-                switch listSelection {
-                case .playlist:
-                    playlist()
-                case .chapters:
-                    chapterList()
-                }
+        VStack(spacing: 0) {
+            listSelectionView()
+            switch listSelection {
+            case .playlist:
+                playlist()
+            case .chapters:
+                chapterList()
             }
-        }
-        else {
-            playlist()
         }
     }
 
@@ -272,14 +256,33 @@ struct LocalPlaybackView: View {
         .frame(maxHeight: .infinity, alignment: .bottom)
     }
 
+    private func listSelectionView() -> some View {
+        Picker(selection: $listSelection) {
+            ForEach(ListSelection.allCases, id: \.self) { selection in
+                Text(selection.name).tag(selection)
+            }
+        } label: {
+            EmptyView()
+        }
+        .pickerStyle(.segmented)
+        .padding()
+        .background(Color(uiColor: .systemGroupedBackground))
+    }
+
     private func playlist() -> some View {
         List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
             LocalItemCell(media: entry.media)
         }
     }
 
+    @ContentBuilder
     private func chapterList() -> some View {
-        LocalChapterList(player: player)
+        if !player.metadata.chapters.isEmpty {
+            LocalChapterList(player: player)
+        }
+        else {
+            MissingChapterView()
+        }
     }
 
     private func artwork() -> some View {
