@@ -171,9 +171,9 @@ struct LocalPlaybackView: View {
     @ObservedObject var model: PlayerViewModel
     @ObservedObject var player: Player
     @Binding var isUserInterfaceHidden: Bool
+    @Binding var listSelection: ListSelection
 
     @StateObject private var visibilityTracker = VisibilityTracker()
-    @State private var listSelection: ListSelection = .playlist
 
     var areControlsHidden: Bool {
         visibilityTracker.isUserInterfaceHidden || player.error != nil || player.items.isEmpty

@@ -18,6 +18,7 @@ struct UnifiedPlayerView: View {
     @EnvironmentObject private var cast: Cast
     @State private var model = PlayerViewModel()
     @State private var isUserInterfaceHidden = false
+    @State private var listSelection: ListSelection = .playlist
 
     @State private var isPresentingDeviceSelection = false
     @State private var isPlaylistSelectionPresented = false
@@ -30,10 +31,10 @@ struct UnifiedPlayerView: View {
     var body: some View {
         ZStack {
             if let remotePlayer = cast.player {
-                RemotePlaybackView(player: remotePlayer)
+                RemotePlaybackView(player: remotePlayer, listSelection: $listSelection)
             }
             else {
-                LocalPlaybackView(model: model, player: model.player, isUserInterfaceHidden: $isUserInterfaceHidden)
+                LocalPlaybackView(model: model, player: model.player, isUserInterfaceHidden: $isUserInterfaceHidden, listSelection: $listSelection)
             }
         }
         .animation(.default, value: cast.player)

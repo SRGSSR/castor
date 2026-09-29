@@ -16,6 +16,7 @@ struct LocalPlayerView: View {
     @EnvironmentObject private var cast: Cast
     @StateObject private var model = PlayerViewModel()
     @State private var isUserInterfaceHidden = false
+    @State private var listSelection: ListSelection = .playlist
 
     @State private var isPresentingDeviceSelection = false
     @State private var isPlaylistSelectionPresented = false
@@ -27,7 +28,7 @@ struct LocalPlayerView: View {
     }
 
     var body: some View {
-        LocalPlaybackView(model: model, player: model.player, isUserInterfaceHidden: $isUserInterfaceHidden)
+        LocalPlaybackView(model: model, player: model.player, isUserInterfaceHidden: $isUserInterfaceHidden, listSelection: $listSelection)
             .overlay(alignment: .top, content: topBar)
             .sheet(isPresented: $isPlaylistSelectionPresented) {
                 NavigationStack {

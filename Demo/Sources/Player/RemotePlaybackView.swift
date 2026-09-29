@@ -112,7 +112,7 @@ private struct RemoteRepeatModeMenu: View {
 
 struct RemotePlaybackView: View {
     @ObservedObject var player: CastPlayer
-    @State private var listSelection: ListSelection = .playlist
+    @Binding var listSelection: ListSelection
 
     var body: some View {
         VStack(spacing: 0) {
