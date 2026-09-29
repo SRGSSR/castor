@@ -227,6 +227,7 @@ struct LocalPlaybackView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
+                .background(Color(uiColor: .systemGroupedBackground))
 
                 switch listSelection {
                 case .playlist:
