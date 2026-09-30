@@ -171,6 +171,7 @@ struct LocalPlaybackView: View {
     @ObservedObject var model: PlayerViewModel
     @ObservedObject var player: Player
     @Binding var isUserInterfaceHidden: Bool
+    @Binding var listMode: ListMode
 
     @StateObject private var visibilityTracker = VisibilityTracker()
 
@@ -181,7 +182,7 @@ struct LocalPlaybackView: View {
     var body: some View {
         VStack(spacing: 0) {
             mainView()
-            playlist()
+            bottomView()
         }
         .onChange(of: visibilityTracker.isUserInterfaceHidden) { newValue in
             isUserInterfaceHidden = newValue
@@ -211,6 +212,18 @@ struct LocalPlaybackView: View {
         .overlay(content: controls)
         .onTapGesture(perform: visibilityTracker.toggle)
         .accessibilityAddTraits(.isButton)
+    }
+
+    private func bottomView() -> some View {
+        VStack(spacing: 0) {
+            ListModeView(listMode: $listMode)
+            switch listMode {
+            case .playlist:
+                playlist()
+            case .chapters:
+                chapterList()
+            }
+        }
     }
 
     private func playerView() -> some View {
@@ -243,9 +256,25 @@ struct LocalPlaybackView: View {
         .frame(maxHeight: .infinity, alignment: .bottom)
     }
 
+    @ContentBuilder
     private func playlist() -> some View {
-        List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
-            LocalItemCell(media: entry.media)
+        if !model.entries.isEmpty {
+            List($model.entries, id: \.self, editActions: .all, selection: $model.currentEntry) { $entry in
+                LocalItemCell(media: entry.media)
+            }
+        }
+        else {
+            MissingListView(title: "No playlist")
+        }
+    }
+
+    @ContentBuilder
+    private func chapterList() -> some View {
+        if !player.metadata.chapters.isEmpty {
+            LocalChapterList(player: player)
+        }
+        else {
+            MissingListView(title: "No chapters")
         }
     }
 

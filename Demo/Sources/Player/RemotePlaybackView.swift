@@ -112,11 +112,12 @@ private struct RemoteRepeatModeMenu: View {
 
 struct RemotePlaybackView: View {
     @ObservedObject var player: CastPlayer
+    @Binding var listMode: ListMode
 
     var body: some View {
         VStack(spacing: 0) {
             mainView()
-            playlist()
+            bottomView()
         }
         .animation(.default, value: player.items)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -130,6 +131,18 @@ struct RemotePlaybackView: View {
         .aspectRatio(16 / 9, contentMode: .fit)
         .frame(maxWidth: .infinity)
         .background(.black)
+    }
+
+    private func bottomView() -> some View {
+        VStack(spacing: 0) {
+            ListModeView(listMode: $listMode)
+            switch listMode {
+            case .playlist:
+                playlist()
+            case .chapters:
+                chapterList()
+            }
+        }
     }
 
     @ContentBuilder
@@ -165,9 +178,25 @@ struct RemotePlaybackView: View {
         .frame(maxHeight: .infinity, alignment: .bottom)
     }
 
+    @ContentBuilder
     private func playlist() -> some View {
-        List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
-            RemoteItemCell(item: item)
+        if !player.items.isEmpty {
+            List($player.items, id: \.self, editActions: .all, selection: $player.currentItem) { $item in
+                RemoteItemCell(item: item)
+            }
+        }
+        else {
+            MissingListView(title: "No playlist")
+        }
+    }
+
+    @ContentBuilder
+    private func chapterList() -> some View {
+        if !player.chapters.isEmpty {
+            RemoteChapterList(player: player)
+        }
+        else {
+            MissingListView(title: "No chapters")
         }
     }
 
