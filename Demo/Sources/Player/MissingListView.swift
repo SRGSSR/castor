@@ -6,11 +6,13 @@
 
 import SwiftUI
 
-struct MissingChapterView: View {
+struct MissingListView: View {
+    let title: String
+
     var body: some View {
         UnavailableView {
             Label {
-                Text("No chapters")
+                Text(title)
             } icon: {
                 Image(systemName: "list.bullet")
             }

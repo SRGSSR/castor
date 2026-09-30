@@ -199,7 +199,7 @@ struct RemotePlaybackView: View {
             }
         }
         else {
-            MissingPlaylistView()
+            MissingListView(title: "No playlist")
         }
     }
 
@@ -209,7 +209,7 @@ struct RemotePlaybackView: View {
             RemoteChapterList(player: player)
         }
         else {
-            MissingChapterView()
+            MissingListView(title: "No chapters")
         }
     }
 

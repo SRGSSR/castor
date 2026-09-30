@@ -277,7 +277,7 @@ struct LocalPlaybackView: View {
             }
         }
         else {
-            MissingPlaylistView()
+            MissingListView(title: "No playlist")
         }
     }
 
@@ -287,7 +287,7 @@ struct LocalPlaybackView: View {
             LocalChapterList(player: player)
         }
         else {
-            MissingChapterView()
+            MissingListView(title: "No chapters")
         }
     }
 
