@@ -34,6 +34,7 @@ public struct CastButton: View {
                     .tint(nil)
             }
             .frame(idealWidth: 375, idealHeight: 650)
+            .presentationBackground16_4(.thickMaterial)
         }
         .onChange(of: isPresented) { newValue in
             isPresenting = newValue

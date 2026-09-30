@@ -6,6 +6,21 @@
 
 import SwiftUI
 
+// swiftlint:disable:next type_name
+private struct PresentationBackground16_4<S>: ViewModifier where S: ShapeStyle {
+    let style: S
+
+    func body(content: Content) -> some View {
+        if #available(iOS 16.4, *) {
+            content
+                .presentationBackground(style)
+        }
+        else {
+            content
+        }
+    }
+}
+
 private struct GeometryGroup17: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 17.0, *) {
@@ -65,6 +80,10 @@ extension View {
 
     func redacted(_ condition: Bool) -> some View {
         redacted(reason: condition ? .placeholder : .init())
+    }
+
+    func presentationBackground16_4<S>(_ style: S) -> some View where S: ShapeStyle {
+        modifier(PresentationBackground16_4(style: style))
     }
 
     func geometryGroup17() -> some View {
