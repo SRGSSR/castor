@@ -7,7 +7,6 @@
 import SwiftUI
 
 @available(iOS, introduced: 16.0, deprecated: 17.0, message: "Use `ContentUnavailableView`")
-@available(tvOS, introduced: 16.0, deprecated: 17.0, message: "Use `ContentUnavailableView`")
 private struct ContentUnavailableViewOS16<Label, Description>: View where Label: View, Description: View {
     let label: () -> Label
     let description: () -> Description
@@ -59,7 +58,7 @@ struct UnavailableView<Label, Description>: View where Label: View, Description:
     let description: () -> Description
 
     var body: some View {
-        if #available(iOS 17.0, tvOS 17.0, *) {
+        if #available(iOS 17.0, *) {
             ContentUnavailableView(label: label, description: description)
         }
         else {
@@ -88,7 +87,7 @@ struct UnavailableView<Label, Description>: View where Label: View, Description:
     }
 }
 
-@available(iOS 17, tvOS 17, *)
+@available(iOS 17, *)
 #Preview("17.0+") {
     ContentUnavailableView {
         Label {
