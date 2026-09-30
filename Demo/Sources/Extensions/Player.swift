@@ -26,6 +26,6 @@ extension Player {
 
 extension CastPlayer {
     var chapters: [Chapter] {
-        currentAsset?.customData?.chapters() ?? []
+        currentAsset?.customData?.chapters ?? []
     }
 }

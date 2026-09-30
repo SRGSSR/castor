@@ -11,7 +11,7 @@ extension CastCustomData {
         let chapters: [Chapter]
     }
 
-    func chapters() -> [Chapter] {
+    var chapters: [Chapter] {
         decoded(as: CustomData.self)?.chapters ?? []
     }
 }
