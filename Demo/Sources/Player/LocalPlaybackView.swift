@@ -216,7 +216,7 @@ struct LocalPlaybackView: View {
 
     private func bottomView() -> some View {
         VStack(spacing: 0) {
-            listModeView()
+            ListModeView(listMode: $listMode)
             switch listMode {
             case .playlist:
                 playlist()
@@ -254,19 +254,6 @@ struct LocalPlaybackView: View {
         }
         .padding()
         .frame(maxHeight: .infinity, alignment: .bottom)
-    }
-
-    private func listModeView() -> some View {
-        Picker(selection: $listMode) {
-            ForEach(ListMode.allCases, id: \.self) { selection in
-                Text(selection.name).tag(selection)
-            }
-        } label: {
-            EmptyView()
-        }
-        .pickerStyle(.segmented)
-        .padding()
-        .background(Color(uiColor: .systemGroupedBackground))
     }
 
     @ContentBuilder
