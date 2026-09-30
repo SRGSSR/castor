@@ -22,7 +22,7 @@ struct RemoteChapterList: View {
             currentChapter?.timeRange
         } set: { [weak player] timeRange in
             guard let player, let chapter = player.chapters.first(where: { $0.timeRange == timeRange }) else { return }
-            player.seek(to: chapter.timeRange.start)
+            player.seek(to: chapter.timeRange.start + CMTime(value: 1, timescale: 10))
         }
     }
 
