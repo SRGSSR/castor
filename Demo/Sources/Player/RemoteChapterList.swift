@@ -17,7 +17,7 @@ struct RemoteChapterList: View {
         player.chapters.first { $0.timeRange.containsTime(progressTracker.time) }
     }
 
-    private var currentChapterTimeRange: Binding<CMTimeRange?> {
+    private var currentChapterSelection: Binding<CMTimeRange?> {
         .init {
             currentChapter?.timeRange
         } set: { [weak player] timeRange in
@@ -27,7 +27,7 @@ struct RemoteChapterList: View {
     }
 
     var body: some View {
-        List(player.chapters, id: \.timeRange, selection: currentChapterTimeRange) { chapter in
+        List(player.chapters, id: \.timeRange, selection: currentChapterSelection) { chapter in
             HStack(spacing: 10) {
                 artworkView(for: chapter)
                 Text(chapter.title)

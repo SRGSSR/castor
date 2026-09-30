@@ -20,7 +20,7 @@ struct LocalChapterList: View {
         chapters.first { $0.timeRange.containsTime(progressTracker.time) }
     }
 
-    private var currentChapterTimeRange: Binding<CMTimeRange?> {
+    private var currentChapterSelection: Binding<CMTimeRange?> {
         .init {
             currentChapter?.timeRange
         } set: { [weak player] timeRange in
@@ -30,7 +30,7 @@ struct LocalChapterList: View {
     }
 
     var body: some View {
-        List(chapters, id: \.timeRange, selection: currentChapterTimeRange) { chapter in
+        List(chapters, id: \.timeRange, selection: currentChapterSelection) { chapter in
             HStack(spacing: 10) {
                 artworkView(for: chapter)
                 Text(chapter.title ?? "-")
