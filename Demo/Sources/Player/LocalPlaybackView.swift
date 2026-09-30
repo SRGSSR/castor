@@ -171,7 +171,7 @@ struct LocalPlaybackView: View {
     @ObservedObject var model: PlayerViewModel
     @ObservedObject var player: Player
     @Binding var isUserInterfaceHidden: Bool
-    @Binding var listSelection: ListSelection
+    @Binding var listMode: ListMode
 
     @StateObject private var visibilityTracker = VisibilityTracker()
 
@@ -216,8 +216,8 @@ struct LocalPlaybackView: View {
 
     private func bottomView() -> some View {
         VStack(spacing: 0) {
-            listSelectionView()
-            switch listSelection {
+            listModeView()
+            switch listMode {
             case .playlist:
                 playlist()
             case .chapters:
@@ -256,9 +256,9 @@ struct LocalPlaybackView: View {
         .frame(maxHeight: .infinity, alignment: .bottom)
     }
 
-    private func listSelectionView() -> some View {
-        Picker(selection: $listSelection) {
-            ForEach(ListSelection.allCases, id: \.self) { selection in
+    private func listModeView() -> some View {
+        Picker(selection: $listMode) {
+            ForEach(ListMode.allCases, id: \.self) { selection in
                 Text(selection.name).tag(selection)
             }
         } label: {

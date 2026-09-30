@@ -6,7 +6,7 @@
 
 import Foundation
 
-enum ListSelection: Hashable, CaseIterable {
+enum ListMode: Hashable, CaseIterable {
     case playlist
     case chapters
 
