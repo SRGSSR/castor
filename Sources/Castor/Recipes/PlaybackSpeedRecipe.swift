@@ -43,7 +43,7 @@ extension PlaybackSpeedRecipe: @preconcurrency GCKRemoteMediaClientListener {
         if let mediaStatus, mediaStatus.mediaInformation?.streamType == .live, mediaStatus.playbackRate != Self.defaultValue {
             client.setPlaybackRate(Self.defaultValue)
         }
-        else {
+        else if mediaStatus?.playbackRate != 0 {
             update?(mediaStatus)
         }
     }
