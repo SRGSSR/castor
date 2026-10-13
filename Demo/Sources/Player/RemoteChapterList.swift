@@ -11,7 +11,7 @@ import SwiftUI
 
 struct RemoteChapterList: View {
     @ObservedObject var player: CastPlayer
-    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
+    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
 
     private var currentChapter: StandardChapter? {
         player.chapters.first { $0.timeRange.containsTime(progressTracker.time) }
