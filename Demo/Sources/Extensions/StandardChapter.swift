@@ -5,14 +5,12 @@
 //
 
 import CoreMedia
+import PillarboxPlayer
+import PillarboxStandardConnector
 
-struct Chapter: Decodable {
-    let identifier: String
-    let title: String
-    let posterUrl: URL
-    let startTime: Double
-    let endTime: Double
+typealias StandardChapter = PlayerData<EmptyCustomData>.Chapter
 
+extension StandardChapter {
     var timeRange: CMTimeRange {
         .init(
             start: .init(value: CMTimeValue(startTime), timescale: 1000),
