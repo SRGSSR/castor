@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "revision" : "e75dba7925e089dc0899fc731f36e52fc0dbd6e5",
-        "version" : "19.0.0"
+        "branch" : "main",
+        "revision" : "b9fc6bb566029b729284cc4db9089e47e31551a9"
       }
     },
     {

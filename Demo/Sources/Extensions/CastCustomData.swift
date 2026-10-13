@@ -5,13 +5,11 @@
 //
 
 import Castor
+import PillarboxPlayer
+import PillarboxStandardConnector
 
 extension CastCustomData {
-    private struct CustomData: Decodable {
-        let chapters: [Chapter]
-    }
-
-    var chapters: [Chapter] {
-        decoded(as: CustomData.self)?.chapters ?? []
+    var playerData: PlayerData<EmptyCustomData>? {
+        decoded(as: PlayerData.self)
     }
 }

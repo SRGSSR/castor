@@ -11,9 +11,9 @@ import SwiftUI
 
 struct RemoteChapterList: View {
     @ObservedObject var player: CastPlayer
-    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 10))
+    @StateObject private var progressTracker = CastProgressTracker(interval: .init(value: 1, timescale: 1))
 
-    private var currentChapter: Chapter? {
+    private var currentChapter: StandardChapter? {
         player.chapters.first { $0.timeRange.containsTime(progressTracker.time) }
     }
 
@@ -36,7 +36,7 @@ struct RemoteChapterList: View {
         .bind(progressTracker, to: player)
     }
 
-    private func artworkView(for chapter: Chapter) -> some View {
+    private func artworkView(for chapter: StandardChapter) -> some View {
         Rectangle()
             .foregroundStyle(.quaternary)
             .aspectRatio(16 / 9, contentMode: .fit)
