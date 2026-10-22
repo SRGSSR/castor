@@ -144,7 +144,7 @@ let kHlsUrlMedias: [Media] = [
         metadataType: .musicTrack,
         imageUrl: "https://img.rts.ch/audio/2010/image/924h3y-25865853.image?w=640&h=640",
         type: .url("https://stxt-audiostreaming.akamaized.net/hls/live/2117380/couleur3/master.m3u8")
-    )
+    ),
 ]
 
 let kMP3UrlMedias: [Media] = [
@@ -171,7 +171,7 @@ let kMP3UrlMedias: [Media] = [
         metadataType: .musicTrack,
         imageUrl: "https://static.wixstatic.com/media/7b176c_f543664008a447f3b2adbb1d231b21e1~mv2.jpg",
         type: .url("http://streaming.aoip.international:8000/cr-gilsdorf")
-    )
+    ),
 ]
 
 let kDashUrlMedias: [Media] = [
@@ -184,7 +184,7 @@ let kDashUrlMedias: [Media] = [
         title: "Live",
         imageUrl: "https://website-storage.unified-streaming.com/images/_1200x630_crop_center-center_none/default-facebook.png",
         type: .url("https://demo.unified-streaming.com/k8s/live/stable/live.isml/.mpd?time_shift=300")
-    )
+    ),
 ]
 
 let kUrnMedias: [Media] = [
@@ -207,7 +207,7 @@ let kUrnMedias: [Media] = [
     .init(
         title: "Bonjour la Suisse (5/5) - Que du bonheur?",
         type: .urn("urn:rts:video:8806923")
-    )
+    ),
 ]
 
 private let kAppleImageUrl = URL(
