@@ -27,12 +27,12 @@ struct FormattedTime {
 private extension FormattedTime {
     private static let shortFormatters: [DateComponentsFormatter.UnitsStyle: DateComponentsFormatter] = [
         .positional: shortFormatter(unitsStyle: .positional),
-        .full: shortFormatter(unitsStyle: .full)
+        .full: shortFormatter(unitsStyle: .full),
     ]
 
     private static let longFormatters: [DateComponentsFormatter.UnitsStyle: DateComponentsFormatter] = [
         .positional: longFormatter(unitsStyle: .positional),
-        .full: longFormatter(unitsStyle: .full)
+        .full: longFormatter(unitsStyle: .full),
     ]
 
     private static func shortFormatter(unitsStyle: DateComponentsFormatter.UnitsStyle) -> DateComponentsFormatter {

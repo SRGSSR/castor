@@ -52,7 +52,7 @@ extension UserDefaults {
             DemoSettingKey.smartNavigationEnabled: true,
             DemoSettingKey.presenterModeEnabled: false,
             DemoSettingKey.backwardSkipInterval: 10,
-            DemoSettingKey.forwardSkipInterval: 10
+            DemoSettingKey.forwardSkipInterval: 10,
         ])
     }
 }
