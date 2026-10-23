@@ -11,3 +11,7 @@
 
 - ``fetch()``
 - ``isFetched``
+
+### Comparing Items
+
+- ``==(_:_:)``

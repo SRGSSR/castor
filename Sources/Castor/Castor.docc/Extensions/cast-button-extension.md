@@ -4,7 +4,7 @@
 
 ### Creating a Button
 
-- ``init(cast:isPresenting:)``
+- ``init(cast:color:isPresenting:)``
 
 ### Getting the Body
 

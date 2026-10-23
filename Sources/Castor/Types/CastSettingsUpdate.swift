@@ -6,7 +6,7 @@
 
 import AVFoundation
 
-/// A settings update.
+/// A settings update made from a settings menu.
 public enum CastSettingsUpdate {
     /// Playback speed.
     case playbackSpeed(Float)

@@ -31,7 +31,6 @@ public struct CastCustomData {
     /// - Parameters:
     ///   - type: The type to decode to.
     ///   - decoder: The decoder to use.
-    ///
     /// - Returns: The decoded value, or `nil` if decoding fails.
     public func decoded<T>(as type: T.Type, using decoder: JSONDecoder = .init()) -> T? where T: Decodable {
         guard let jsonObject, JSONSerialization.isValidJSONObject(jsonObject),
@@ -43,7 +42,10 @@ public struct CastCustomData {
 }
 
 public extension Encodable {
-    /// Produces custom data using the provided encoder.
+    /// Encodes the value as custom data.
+    ///
+    /// - Parameter encoder: The encoder to use.
+    /// - Returns: The custom data, which contains no value if encoding fails.
     func encoded(using encoder: JSONEncoder) -> CastCustomData {
         .init(with: self, using: encoder)
     }

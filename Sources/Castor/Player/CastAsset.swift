@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-/// An object representing an asset that can be played by a `CastPlayer`.
+/// An object representing an asset that can be played by a ``CastPlayer``.
 public struct CastAsset {
     private let rawMediaInformation: GCKMediaInformation
 
@@ -50,7 +50,8 @@ public struct CastAsset {
     ///   - entity: An entity for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
-    ///     to convert an `Encodable` value into a `CastCustomData`.
+    ///     to convert an `Encodable` value into ``CastCustomData``.
+    /// - Returns: The asset.
     ///
     /// An entity is the suggested property to use in your implementation for both your sender and receiver apps.
     /// It is a deep link URL that represents a single media item and that your receiver should be able to handle.
@@ -63,8 +64,8 @@ public struct CastAsset {
     /// - Parameters:
     ///   - entity: An entity for the content to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - customData: Optional custom data to associate with the asset, encoded using the default `JSONEncoder`.
-    ///     to convert an `Encodable` value into a `CastCustomData`.
+    ///   - customData: Custom data to associate with the asset, encoded using a default `JSONEncoder`.
+    /// - Returns: The asset.
     ///
     /// An entity is the suggested property to use in your implementation for both your sender and receiver apps.
     /// It is a deep link URL that represents a single media item and that your receiver should be able to handle.
@@ -78,7 +79,8 @@ public struct CastAsset {
     ///   - identifier: The identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
-    ///     to convert an `Encodable` value into a `CastCustomData`.
+    ///     to convert an `Encodable` value into ``CastCustomData``.
+    /// - Returns: The asset.
     public static func identifier(_ identifier: String, metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .identifier(identifier), metadata: metadata, customData: customData)
     }
@@ -88,7 +90,8 @@ public struct CastAsset {
     /// - Parameters:
     ///   - identifier: The identifier for the content to be played.
     ///   - metadata: The metadata associated with the asset.
-    ///   - customData: Optional custom data to associate with the asset, encoded using the default `JSONEncoder`.
+    ///   - customData: Custom data to associate with the asset, encoded using a default `JSONEncoder`.
+    /// - Returns: The asset.
     public static func identifier<T>(_ identifier: String, metadata: CastMetadata?, customData: T) -> Self where T: Encodable {
         .init(kind: .identifier(identifier), metadata: metadata, customData: customData.encoded(using: JSONEncoder()))
     }
@@ -100,9 +103,10 @@ public struct CastAsset {
     ///   - configuration: The configuration for the asset.
     ///   - metadata: The metadata associated with the asset.
     ///   - customData: Optional custom data to associate with the asset. Use `Encodable.encoded(using:)`
-    ///     to convert an `Encodable` value into a `CastCustomData`.
+    ///     to convert an `Encodable` value into ``CastCustomData``.
+    /// - Returns: The asset.
     ///
-    /// Some assets require additional configuration to be played successfully. Provide these using the
+    /// Some assets require additional configuration to be played successfully. Provide it using the
     /// `configuration` parameter.
     public static func url(_ url: URL, configuration: CastAssetURLConfiguration = .init(), metadata: CastMetadata?, customData: CastCustomData? = nil) -> Self {
         .init(kind: .url(url, configuration: configuration), metadata: metadata, customData: customData)
@@ -114,9 +118,10 @@ public struct CastAsset {
     ///   - url: The URL of the content to be played.
     ///   - configuration: The configuration for the asset.
     ///   - metadata: The metadata associated with the asset.
-    ///   - customData: Optional custom data to associate with the asset, encoded using the default `JSONEncoder`.
+    ///   - customData: Custom data to associate with the asset, encoded using a default `JSONEncoder`.
+    /// - Returns: The asset.
     ///
-    /// Some assets require additional configuration to be played successfully. Provide these using the
+    /// Some assets require additional configuration to be played successfully. Provide it using the
     /// `configuration` parameter.
     public static func url<T>(
         _ url: URL,
@@ -168,8 +173,8 @@ public extension CastAsset {
 
         /// URL.
         ///
-        /// Some assets require additional configuration to be played successfully. Provide these using the
-        /// `configuration` parameter.
+        /// Some assets require additional configuration to be played successfully. Provide it using the
+        /// `configuration` associated value.
         case url(URL, configuration: CastAssetURLConfiguration)
 
         func mediaInformationBuilder() -> GCKMediaInformationBuilder {

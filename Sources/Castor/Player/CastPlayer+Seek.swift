@@ -10,7 +10,7 @@ public extension CastPlayer {
     /// Checks whether it is possible to seek to a specific time.
     ///
     /// - Parameter time: The target time to seek to.
-    /// - Returns: `true` if seeking to the specified time is possible.
+    /// - Returns: `true` if seeking to the specified time is possible; otherwise, `false`.
     func canSeek(to time: CMTime) -> Bool {
         let seekableTimeRange = seekableTimeRange()
         guard seekableTimeRange.isValidAndNotEmpty else { return false }

@@ -8,9 +8,9 @@ import CoreMedia
 import GoogleCast
 
 public extension CastPlayer {
-    /// Checks whether it is possible to return to the previous content.
+    /// Checks whether it is possible to return to the previous item.
     ///
-    /// - Returns: `true` if returning to the previous content is possible.
+    /// - Returns: `true` if returning to the previous item is possible; otherwise, `false`.
     ///
     /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
@@ -19,7 +19,7 @@ public extension CastPlayer {
         canReturnToItem(before: currentItem, in: items, streamType: streamType)
     }
 
-    /// Returns to the previous content in the queue.
+    /// Returns to the previous item in the queue.
     ///
     /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
@@ -33,9 +33,9 @@ public extension CastPlayer {
         }
     }
 
-    /// Checks whether it is possible to move to the next content in the queue.
+    /// Checks whether it is possible to advance to the next item in the queue.
     ///
-    /// - Returns: `true` if moving to the next content is possible.
+    /// - Returns: `true` if advancing to the next item is possible; otherwise, `false`.
     ///
     /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///
@@ -44,7 +44,7 @@ public extension CastPlayer {
         canAdvanceToItem(after: currentItem, in: items)
     }
 
-    /// Moves to the next content in the queue.
+    /// Advances to the next item in the queue.
     ///
     /// When ``CastPlayer/repeatMode`` is set to ``CastRepeatMode/all``, this method wraps around both ends of the queue.
     ///

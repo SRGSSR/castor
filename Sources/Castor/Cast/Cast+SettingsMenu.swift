@@ -53,11 +53,14 @@ private struct DeviceMenuContent: View {
 }
 
 public extension Cast {
-    /// Returns content for a playback speed menu.
+    /// Returns content for a device selection menu.
     ///
-    /// - Parameters:
-    ///    - speeds: The offered playback speeds.
-    ///    - action: The action to perform when the user interacts with an item from the menu.
+    /// The menu lists the devices discovered on the local network and lets the user select the device to cast to. When a
+    /// session is active, the menu also offers a button to disconnect from the current device.
+    ///
+    /// - Parameter action: The action to perform when the user selects a device or disconnects. The device is `nil` on
+    ///   disconnection.
+    /// - Returns: The menu content.
     ///
     /// The returned view is meant to be used as content of a `Menu`. Using it for any other purpose has undefined
     /// behavior.
