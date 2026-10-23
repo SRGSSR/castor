@@ -6,7 +6,7 @@
 
 import GoogleCast
 
-/// An image representing the item.
+/// An image representing an item.
 public struct CastImage {
     let rawImage: GCKImage?
 

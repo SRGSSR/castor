@@ -11,7 +11,7 @@ public struct CastMediaSelectionPreference {
         case on(languages: [String])
     }
 
-    /// Disabled.
+    /// A preference that disables media selection.
     ///
     /// Some options may still be forced where applicable.
     public static var off: Self {
@@ -24,10 +24,11 @@ public struct CastMediaSelectionPreference {
         self.kind = kind
     }
 
-    /// Enabled.
+    /// Returns a preference that enables media selection for a list of languages.
     ///
     /// - Parameter languages: An ordered list of language identifiers preferred for selection. Languages should be
     ///   specified using RFC 1766 tags.
+    /// - Returns: The preference.
     public static func on(languages: String...) -> Self {
         .init(kind: .on(languages: languages))
     }

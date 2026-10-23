@@ -6,7 +6,7 @@
 
 import SwiftUI
 
-/// A mute button.
+/// A button that mutes or unmutes a Cast device.
 public struct CastMuteButton: View {
     @ObservedObject var deviceManager: CastDeviceManager
 
@@ -22,6 +22,8 @@ public struct CastMuteButton: View {
     }
 
     /// Creates a mute button.
+    ///
+    /// - Parameter deviceManager: The manager of the device to control.
     public init(deviceManager: CastDeviceManager) {
         self.deviceManager = deviceManager
     }

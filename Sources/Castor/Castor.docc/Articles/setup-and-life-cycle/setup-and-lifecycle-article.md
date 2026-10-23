@@ -17,7 +17,7 @@ An App ID allows a Cast-enabled application to identify and communicate with an 
 
 ### Obtain an App ID
 
-Each product should have its own dedicated receiver registered with a specific App ID in the [Google Cast Developer Console](https://developers.google.com/cast/codelabs/cast-receiver#3). Do not share the same App ID across products, as this can cause conflicts and degrade the user experience.  
+Each product should have its own dedicated receiver registered with a specific App ID in the [Google Cast Developer Console](https://developers.google.com/cast/codelabs/cast-receiver#3). Do not share the same App ID across products, as this can cause conflicts and degrade the user experience.
 
 During early development, you can use Google’s default receiver (App ID `CC1AD845`) to start building your sender while your dedicated receiver is in progress. Switch to your own receiver as soon as possible to ensure full functionality and a consistent experience.
 
@@ -33,7 +33,7 @@ After obtaining your App ID, configure the _Info.plist_ file accordingly:
 </array>
 
 <key>NSLocalNetworkUsageDescription</key>
-<string>${PRODUCT_NAME} uses the local network to discover Cast-enabled devices on your WiFi network.</string>
+<string>${PRODUCT_NAME} uses the local network to discover Cast-enabled devices on your Wi-Fi network.</string>
 ```
 
 These entries are required for iOS to allow local network access and device discovery using _Bonjour_.
@@ -42,14 +42,14 @@ These entries are required for iOS to allow local network access and device disc
 
 Next, the Google Cast SDK must be initialized at application launch.
 
-Here is an example of initialization in the `UIApplicationDelegate`. Two approaches are shown, using the default Cast receiver and a custom Cast receiver identifier.
+Here is an example of initialization in the `UIApplicationDelegate`. Two approaches are shown: one using the default Cast receiver and one using the App ID of a custom receiver.
 
 <!-- markdownlint-disable MD046 -->
 @TabNavigator {
     @Tab("Default Receiver") {
         Shows how to initialize the Google Cast SDK using the default Cast receiver.
 
-        ```swift 
+        ```swift
         import GoogleCast
 
         final class AppDelegate: NSObject, UIApplicationDelegate {
@@ -98,7 +98,7 @@ Here is an example of initialization in the `UIApplicationDelegate`. Two approac
 
 ## Lifecycle management
 
-Once the project is properly configured and the Google Cast SDK is initialized, the next step is to integrate ``Castor`` itself. ``Castor`` provides a high-level abstraction around the `GoogleCast` SDK, centralizing the logic for discovery, connection, and session management through its core component: the ``Cast`` object.
+Once the project is properly configured and the Google Cast SDK is initialized, the next step is to integrate ``Castor`` itself. ``Castor`` provides a high-level abstraction around the Google Cast SDK, centralizing the logic for discovery, connection, and session management through its core component: the ``Cast`` object.
 
 ### Initialization
 
@@ -106,12 +106,12 @@ The ``Cast`` object is the central entry point of the Castor library. It acts as
 
 A ``Cast`` instance is responsible for:
 
-- Discovering and managing available devices on the local network  
-- Starting and ending sessions with a selected device  
-- Exposing the active session and its connection state  
-- Controlling volume and mute state on the receiver  
-- Handling media playback through the associated ``CastPlayer``  
-- Notifying the application about lifecycle events via its delegate.
+- Discovering and managing available devices on the local network
+- Starting and ending sessions with a selected device
+- Exposing the active session and its connection state
+- Controlling volume and mute state on the receiver
+- Handling media playback through the associated ``CastPlayer``
+- Notifying the application about lifecycle events via its delegate
 
 By storing the ``Cast`` instance at the top level of your application as a [`StateObject`](https://developer.apple.com/documentation/swiftui/stateobject), you ensure that session management and device discovery remain active throughout the app lifecycle. Injecting it into SwiftUI's environment using [`environmentObject(_:)`](https://developer.apple.com/documentation/swiftui/view/environmentobject(_:)) allows any child view to access it via [`@EnvironmentObject`](https://developer.apple.com/documentation/swiftui/environmentobject).
 
@@ -134,10 +134,10 @@ struct MyApp: App {
 
 ### Establish a session
 
-Once your ``Cast`` object is initialized and available in your SwiftUI views, you can start a ``Cast`` session in two main ways:
+Once your ``Cast`` object is initialized and available in your SwiftUI views, you can start a Cast session in two main ways:
 
 1. Using the ``CastButton``: This button automatically displays available devices and allows the user to initiate a session by selecting a device.
-2. Manually listing devices: You can access the list of available devices via the ``Cast`` object and start a session programmatically using ``Cast/startSession(with:)``.
+2. Manually listing devices: You can access the list of available devices via ``Cast/devices`` and start a session programmatically using ``Cast/startSession(with:)``.
 
 ### Handle session events
 
@@ -150,7 +150,7 @@ By using both protocols, you can clearly separate responsibilities:
 
 #### Delegate
 
-This protocol is designed for global session handling, often implemented by a top-level object like a router. Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session stops, so your app can decide how to handle playback resumption.
+This protocol is designed for global session handling, often implemented by a top-level object like a router. Its ``CastDelegate/castEndSession(with:)`` method provides a ``CastResumeState`` when a session ends, so your app can decide how to handle playback resumption.
 
 Attach a delegate to a ``Cast`` instance using the ``SwiftUICore/View/supportsCast(_:with:)-(_,CastDelegate)`` modifier, typically at the root view of your application.
 
@@ -159,7 +159,7 @@ Attach a delegate to a ``Cast`` instance using the ``SwiftUICore/View/supportsCa
 This protocol is designed for playback-related contexts, typically views or objects that manage media playback. It is commonly implemented by models underlying local player views, enabling playback to be transferred between sender and receiver:
 
 - **Session start**: ``Castable/castStartSession()`` returns a ``CastResumeState`` that allows transfer of local playback to a Cast receiver, including synchronization of position, audio selection, and subtitle tracks.
-- **Session end**: ``Castable/castEndSession(with:)`` receivers the ``CastResumeState`` to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
+- **Session end**: ``Castable/castEndSession(with:)`` receives the ``CastResumeState`` to synchronize playback in the opposite direction, from the remote Cast session back to the local player.
 
 To define a local playback context, apply the ``SwiftUICore/View/supportsCast(_:with:)-(_,Castable)`` modifier to a player view hierarchy, passing the ``Castable`` object as a parameter.
 

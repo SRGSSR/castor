@@ -136,8 +136,9 @@ public extension CastPlayer {
     /// Returns content for a standard player settings menu.
     ///
     /// - Parameters:
-    ///    - speeds: The available playback speeds.
-    ///    - action: The action to perform when the user selects an item from the menu.
+    ///   - speeds: The available playback speeds.
+    ///   - action: The action to perform when the user selects an item from the menu.
+    /// - Returns: The menu content.
     ///
     /// The returned view is intended for use as the content of a `Menu`. Using it for other purposes may result in
     /// undefined behavior.
@@ -151,8 +152,9 @@ public extension CastPlayer {
     /// Returns content for a playback speed menu.
     ///
     /// - Parameters:
-    ///    - speeds: The available playback speeds.
-    ///    - action: The action to perform when the user selects an item from the menu.
+    ///   - speeds: The available playback speeds.
+    ///   - action: The action to perform when the user selects an item from the menu.
+    /// - Returns: The menu content.
     ///
     /// The returned view is intended for use as the content of a `Menu`. Using it for other purposes may result in
     /// undefined behavior.
@@ -166,8 +168,9 @@ public extension CastPlayer {
     /// Returns content for a media selection menu.
     ///
     /// - Parameters:
-    ///    - characteristic: The media characteristic for which selection is made.
-    ///    - action: The action to perform when the user selects an item from the menu.
+    ///   - characteristic: The media characteristic whose options the menu lists.
+    ///   - action: The action to perform when the user selects an item from the menu.
+    /// - Returns: The menu content.
     ///
     /// The returned view is intended for use as the content of a `Menu`. Using it for other purposes may result in
     /// undefined behavior.

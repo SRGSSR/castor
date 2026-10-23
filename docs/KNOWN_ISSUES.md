@@ -17,7 +17,7 @@ No workaround is available yet.
 
 When calling `CastPlayerItem.fetch()` to lazily load metadata for items in a scrollable view, updates are not delivered until scrolling stops.
 
-Additionally, scrolling for an extended period during metadata fetching may cause the cast session to be suspended.
+Additionally, scrolling for an extended period during metadata fetching may cause the Cast session to be suspended.
 
 ### Workaround
 
@@ -33,7 +33,7 @@ No workaround is available yet.
 
 ## Long playlists cannot be loaded
 
-Google Cast imposes a 64 kB [limit](https://developers.google.com/cast/docs/media/messages) on message payloads. This restriction can prevent very large playlists from loading. Because each playlist entry may contain varying amounts of metadata, it’s difficult to define a precise maximum number of items that will fit within this limit.
+Google Cast imposes a 64 kB [limit](https://developers.google.com/cast/docs/media/messages) on message payloads. This restriction can prevent very large playlists from loading. Because each playlist entry may contain varying amounts of metadata, it's difficult to define a precise maximum number of items that will fit within this limit.
 
 ### Workaround
 

@@ -40,7 +40,7 @@ In SwiftUI, use a ``CastProgressTracker`` to efficiently manage and observe prog
 
 ### Use SwiftUI property wrappers wisely
 
- [Proper use](https://developer.apple.com/documentation/swiftui/model-data) of SwiftUI property wrappers ensures efficient UI updates. Below are common patterns associated with player observation:
+[Proper use](https://developer.apple.com/documentation/swiftui/model-data) of SwiftUI property wrappers ensures efficient UI updates. Below are common patterns associated with player observation:
 
 1. **Player Neither Owned nor Observed:** Pass the player as a constant:
 

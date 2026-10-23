@@ -22,7 +22,9 @@ public extension CastPlayer {
         assets.map { $0.rawItem() }
     }
 
-    /// Loads player items from the specified assets and starts playback.
+    /// Loads player items from the specified assets.
+    ///
+    /// Playback starts automatically unless ``CastLoadOptions/shouldPlay`` is `false`.
     ///
     /// - Parameters:
     ///   - assets: The assets to load as player items.
@@ -44,7 +46,9 @@ public extension CastPlayer {
         remoteMediaClient.loadMedia(with: loadRequestDataBuilder.build())
     }
 
-    /// Loads a player item from the specified asset and starts playback.
+    /// Loads a player item from the specified asset.
+    ///
+    /// Playback starts automatically unless ``CastLoadOptions/shouldPlay`` is `false`.
     ///
     /// - Parameters:
     ///   - asset: The asset to load as a player item.
@@ -58,6 +62,7 @@ public extension CastPlayer {
     /// - Parameters:
     ///   - assets: The assets to insert as player items.
     ///   - beforeItem: The item before which the new items should be inserted. Pass `nil` to insert at the front of the queue.
+    /// - Returns: `true` if the items were inserted; otherwise, `false`.
     @discardableResult
     func insertItems(from assets: [CastAsset], before beforeItem: CastPlayerItem?) -> Bool {
         if let beforeItem {
@@ -75,6 +80,7 @@ public extension CastPlayer {
     /// - Parameters:
     ///   - assets: The assets to insert as player items.
     ///   - afterItem: The item after which the new items should be inserted. Pass `nil` to insert at the end of the queue.
+    /// - Returns: `true` if the items were inserted; otherwise, `false`.
     @discardableResult
     func insertItems(from assets: [CastAsset], after afterItem: CastPlayerItem?) -> Bool {
         if let afterItem {
@@ -93,6 +99,7 @@ public extension CastPlayer {
     /// - Parameters:
     ///   - asset: The asset to insert as a player item.
     ///   - afterItem: The item after which the new item should be inserted. Pass `nil` to insert at the end of the queue.
+    /// - Returns: `true` if the item was inserted; otherwise, `false`.
     @discardableResult
     func insertItem(from asset: CastAsset, after afterItem: CastPlayerItem?) -> Bool {
         insertItems(from: [asset], after: afterItem)
@@ -103,6 +110,7 @@ public extension CastPlayer {
     /// - Parameters:
     ///   - asset: The asset to insert as a player item.
     ///   - beforeItem: The item before which the new item should be inserted. Pass `nil` to insert at the front of the queue.
+    /// - Returns: `true` if the item was inserted; otherwise, `false`.
     @discardableResult
     func insertItem(from asset: CastAsset, before beforeItem: CastPlayerItem?) -> Bool {
         insertItems(from: [asset], before: beforeItem)

@@ -9,14 +9,14 @@ import CoreMedia
 public extension CastPlayer {
     /// Checks whether skipping backward is possible.
     ///
-    /// - Returns: `true` if skipping backward is allowed.
+    /// - Returns: `true` if skipping backward is possible; otherwise, `false`.
     func canSkipBackward() -> Bool {
         seekableTimeRange().isValidAndNotEmpty
     }
 
     /// Checks whether skipping forward is possible.
     ///
-    /// - Returns: `true` if skipping forward is allowed.
+    /// - Returns: `true` if skipping forward is possible; otherwise, `false`.
     func canSkipForward() -> Bool {
         let seekableTimeRange = seekableTimeRange()
         guard seekableTimeRange.isValidAndNotEmpty else { return false }
@@ -26,7 +26,8 @@ public extension CastPlayer {
 
     /// Checks whether skipping in the specified direction is possible.
     ///
-    /// - Returns: `true` if skipping in that direction is allowed.
+    /// - Parameter skip: The direction in which to skip.
+    /// - Returns: `true` if skipping in that direction is possible; otherwise, `false`.
     func canSkip(_ skip: CastSkip) -> Bool {
         switch skip {
         case .backward:
