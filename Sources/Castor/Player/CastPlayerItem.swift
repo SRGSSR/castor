@@ -25,7 +25,7 @@ public final class CastPlayerItem: ObservableObject, Identifiable {
 
     /// The asset associated with the item.
     ///
-    /// Must be retrieved by calling `fetch()`, for example when a view displaying the item appears.
+    /// Available only after calling ``CastPlayerItem/fetch()``, for example when a view displaying the item appears.
     public var asset: CastAsset? {
         .init(rawMediaInformation: rawItem?.mediaInformation)
     }

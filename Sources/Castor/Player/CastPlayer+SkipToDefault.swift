@@ -7,12 +7,12 @@
 import CoreMedia
 
 public extension CastPlayer {
-    /// Checks whether the current player item can be returned to its default position.
+    /// Checks whether it is possible to skip to the default position of the current item.
     ///
-    /// - Returns: `true` if skipping to the default position is possible.
+    /// - Returns: `true` if skipping to the default position is possible; otherwise, `false`.
     ///
     /// For a livestream with DVR support, this method can be used to determine whether the stream is currently
-    /// playing at the live edge.
+    /// playing at the live edge, in which case it returns `false`.
     func canSkipToDefault() -> Bool {
         switch streamType {
         case .live where seekableTimeRange().isValidAndNotEmpty:
@@ -26,9 +26,9 @@ public extension CastPlayer {
         }
     }
 
-    /// Returns the current item to its default position.
+    /// Skips to the default position of the current item.
     ///
-    /// For a livestream with DVR support, the default position corresponds to the live edge.
+    /// For on-demand content, the default position is the start. For a livestream with DVR support, it is the live edge.
     func skipToDefault() {
         switch streamType {
         case .live:

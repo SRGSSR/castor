@@ -8,12 +8,16 @@ import CoreMedia
 import GoogleCast
 
 public extension CastPlayer {
-    /// The current playback time.
+    /// Returns the current playback time.
+    ///
+    /// - Returns: The current time.
     func time() -> CMTime {
         remoteMediaClient.time()
     }
 
-    /// The time range within which seeking is possible.
+    /// Returns the time range within which seeking is possible.
+    ///
+    /// - Returns: The seekable time range.
     func seekableTimeRange() -> CMTimeRange {
         remoteMediaClient.seekableTimeRange()
     }

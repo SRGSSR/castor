@@ -38,7 +38,7 @@ struct ContentView: View {
 
 ### Mini and expanded views
 
-> Important: These views will not be displayed unless a connection to a receiver device has been established and a content is loaded.
+> Important: These views will not be displayed unless a connection to a receiver device has been established and content is loaded.
 
 <!-- markdownlint-disable MD046 -->
 @TabNavigator {
@@ -85,15 +85,15 @@ struct ContentView: View {
 
 ## Custom views
 
-If the provided views don't meet your needs, you can create your own custom views from scratch:  
+If the provided views don't meet your needs, you can create your own custom views from scratch:
 
-- To implement a Cast device selection list, use ``Cast``. With it, you can list available devices and start or end a session.  
+- To implement a Cast device selection list, use ``Cast``. With it, you can list available devices and start or end a session.
 - Once a session is established, the ``Cast`` object exposes a ``Cast/player`` property that provides a ``CastPlayer`` instance. You can use this instance to manage the player state and the item list.
 
-When building a user interface, you can also use ``CastIcon`` to display the Cast connection state, or ``CastProgressTracker`` to handle playback position—for example, in combination with ``SwiftUI/Slider``.  
+When building a user interface, you can also use ``CastIcon`` to display the Cast connection state, or ``CastProgressTracker`` to handle playback position—for example, in combination with a [`Slider`](https://developer.apple.com/documentation/swiftui/slider).
 
 ## Google Cast SDK views
 
-The Google Cast SDK provides default views for sender applications, such as the Cast button and mini or expanded player UIs. While these views are fully functional, their appearance is somewhat outdated and they can be difficult to customize. For more details, see the [Google Cast iOS Sender UI customization guide](https://developers.google.com/cast/docs/ios_sender/customize_ui#style_hierarchy).  
+The Google Cast SDK provides default views for sender applications, such as the Cast button and mini or expanded player UIs. While these views are fully functional, their appearance is somewhat outdated and they can be difficult to customize. For more details, see the [Google Cast iOS Sender UI customization guide](https://developers.google.com/cast/docs/ios_sender/customize_ui#style_hierarchy).
 
 > Tip: To use these views in SwiftUI, wrap them with `UIViewRepresentable` or `UIViewControllerRepresentable`.

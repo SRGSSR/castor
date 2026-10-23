@@ -8,7 +8,7 @@
 public protocol Castable: AnyObject {
     /// Invoked when a Cast session has been established.
     ///
-    /// - Returns: The current state.
+    /// - Returns: The state from which playback should resume on the receiver, or `nil` to load nothing.
     @MainActor
     func castStartSession() -> CastResumeState?
 

@@ -14,10 +14,10 @@ public struct CastLoadOptions {
 
     /// The time at which playback should start.
     ///
-    /// `.invalid` for the default position.
+    /// A value of `.invalid` means the default position.
     public let time: CMTime
 
-    /// A Boolean value that indicates whether the player should automatically play content when possible.
+    /// A Boolean value indicating whether the player should automatically play content when possible.
     public let shouldPlay: Bool
 
     /// The playback speed to apply.
@@ -29,10 +29,10 @@ public struct CastLoadOptions {
     /// Creates loading options.
     ///
     /// - Parameters:
-    ///   - index: The index of the item at which playback should start.
+    ///   - index: The index of the item at which playback should start. Negative values are replaced with 0.
     ///   - time: The time at which playback should start. Use `.invalid` for the default position.
-    ///   - shouldPlay: A Boolean value that indicates whether the player should automatically play content when possible.
-    ///   - playbackSpeed: The playback speed to apply.
+    ///   - shouldPlay: A Boolean value indicating whether the player should automatically play content when possible.
+    ///   - playbackSpeed: The playback speed to apply, clamped to the 0.5–2 range.
     ///   - repeatMode: The mode that determines how the player repeats playback of items in its queue.
     public init(
         index: Int = 0,

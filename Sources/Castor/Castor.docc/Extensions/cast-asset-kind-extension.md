@@ -2,8 +2,8 @@
 
 ## Topics
 
-### Creating Asset Kinds
+### Getting Asset Kinds
 
-``entity(_:)``
-``identifier(_:)``
-``url(_:configuration:)``
+- ``entity(_:)``
+- ``identifier(_:)``
+- ``url(_:configuration:)``

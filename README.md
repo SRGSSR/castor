@@ -10,7 +10,7 @@ Castor is an SDK for easy [Google Cast](https://developers.google.com/cast) inte
 # Features
 
 - Ready-made standard player, mini player, and device selection views for effortless integration.
-- First-class integration with SwiftUI for effortless custom view integration.
+- First-class SwiftUI integration for building custom views.
 - APIs for device discovery and playback management, focusing on fast and responsive UI updates.
 - Built-in support for transitions between local and remote playback.
 - Playlist management.
@@ -29,7 +29,7 @@ From left to right:
 
 - Screenshot 1: Standard device selection view.
 - Screenshot 2: Standard mini player view.
-- Screenshots 3, 4 and 5: Standard player view, including playlist management and playback settings menu.
+- Screenshots 3, 4, and 5: Standard player view, including playlist management and playback settings menu.
 
 # Compatibility
 
@@ -41,10 +41,10 @@ The library can be integrated using [Swift Package Manager](https://swift.org/pa
 
 # Documentation
 
-Castor documentation includes articles, tutorials and an API reference to help you learn more about available features and how to integrate them into your application.
+Castor documentation includes articles, tutorials, and an API reference to help you learn more about available features and how to integrate them into your application.
 
 > [!TIP]
-> If you discover errors in the documentation or if some documentation is missing please file a dedicated [issue](https://github.com/SRGSSR/castor/issues/new/choose). You can also directly submit documentation improvements via [pull requests](https://github.com/SRGSSR/castor/compare).
+> If you discover errors in the documentation or if some documentation is missing, please file a dedicated [issue](https://github.com/SRGSSR/castor/issues/new/choose). You can also directly submit documentation improvements via [pull requests](https://github.com/SRGSSR/castor/compare).
 
 ## DocC documentation
 
@@ -55,7 +55,7 @@ Documentation is available as a [DocC](https://developer.apple.com/documentation
 Documentation for Castor can also be found online on [Swift Package Index](https://swiftpackageindex.com/SRGSSR/castor/documentation/castor).
 
 > [!TIP]
-> Documentation available from the above link opens for the latest tag. Use Swift Package Index navigation top bar to quickly switch to another tag or `main`.
+> Documentation available from the above link opens for the latest tag. Use the Swift Package Index navigation bar at the top to quickly switch to another tag or `main`.
 
 ## Miscellaneous documentation
 
@@ -66,17 +66,17 @@ Further documentation is also available by following the links below:
 
 # Plugins
 
-The package provides a single plugin which automatically inserts correct versioning information into binaries. This plugin must be trusted interactively when a project integrating Castor is built using Xcode for the first time.
+The package provides a single plugin that automatically inserts correct versioning information into binaries. This plugin must be trusted interactively when a project integrating Castor is built using Xcode for the first time.
 
-On a continuous integration server you must trust plugins automatically by setting an appropriate default:
+On a continuous integration server, you must trust plugins automatically by setting an appropriate default:
 
 ```shell
 defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
 ```
 
-If you are using Xcode Cloud this can be achieved with a [custom build script](https://developer.apple.com/documentation/xcode/writing-custom-build-scripts).
+If you are using Xcode Cloud, this can be achieved with a [custom build script](https://developer.apple.com/documentation/xcode/writing-custom-build-scripts).
 
-If your project is built with `xcodebuild` directly the same effect can be achieved by passing the `-skipPackagePluginValidation` option.
+If your project is built with `xcodebuild` directly, the same effect can be achieved by passing the `-skipPackagePluginValidation` option.
 
 > [!IMPORTANT]
 > Build services such as GitHub Actions, Bitrise, CircleCI, and Travis CI often provide caching mechanisms to accelerate CI/CD pipelines, including caching Swift package sources. Castor leverages Git tags from its package repository to automatically determine the correct version. However, this process depends on having up-to-date local tags, which may not be guaranteed when a package cache is used.
@@ -85,7 +85,7 @@ If your project is built with `xcodebuild` directly the same effect can be achie
 
 # Contributing
 
-If you want to contribute to the project have a look at our [contributing guide](docs/CONTRIBUTING.md).
+If you want to contribute to the project, have a look at our [contributing guide](docs/CONTRIBUTING.md).
 
 # License
 

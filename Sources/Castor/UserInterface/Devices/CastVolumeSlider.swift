@@ -6,7 +6,7 @@
 
 import SwiftUI
 
-/// A slider that controls the volume an active Cast device.
+/// A slider that controls the volume of a Cast device.
 public struct CastVolumeSlider: View {
     @ObservedObject var deviceManager: CastDeviceManager
 
@@ -34,7 +34,9 @@ public struct CastVolumeSlider: View {
         .disabled(!deviceManager.canAdjustVolume)
     }
 
-    /// Creates a slider.
+    /// Creates a volume slider.
+    ///
+    /// - Parameter deviceManager: The manager of the device to control.
     public init(deviceManager: CastDeviceManager) {
         self.deviceManager = deviceManager
     }
