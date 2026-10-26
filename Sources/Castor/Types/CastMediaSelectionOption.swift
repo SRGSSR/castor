@@ -13,7 +13,7 @@ public enum CastMediaSelectionOption: Hashable {
 
     /// Enabled.
     ///
-    /// You can extract `AVMediaSelectionOption` characteristics for display.
+    /// The associated track provides information for display, such as its name and language.
     case on(CastMediaTrack)
 
     /// A display-friendly name.

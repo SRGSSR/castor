@@ -14,6 +14,8 @@ import Foundation
 ///   - ``CastPlayer/advanceToNextItem()``
 public enum CastNavigationMode: Equatable {
     /// Immediate navigation.
+    ///
+    /// Makes ``CastPlayer/returnToPreviousItem()`` always return to the previous item.
     case immediate
 
     /// Smart navigation.

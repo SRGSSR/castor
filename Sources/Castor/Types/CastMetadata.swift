@@ -64,11 +64,14 @@ public struct CastMetadata {
         }
     }
 
-    /// The image URL that matches a set of hints.
+    /// Returns the image URL that matches a set of hints.
     ///
     /// If no hints are provided, the first image is returned if available. To use hints, implement a `GCKUIImagePicker`
     /// and associate it with your `GCKCastContext`. For more information, see the
     /// [official documentation](https://developers.google.com/cast/docs/ios_sender/advanced#override_image_selection_and_caching).
+    ///
+    /// - Parameter hints: The hints used to select the image, or `nil` to select the first image.
+    /// - Returns: The URL of the selected image, or `nil` if no image matches.
     public func imageUrl(matching hints: CastImageHints? = nil) -> URL? {
         if let hints {
             return GCKCastContext.sharedInstance().imagePicker?.getImageWith(hints.rawImageHints, from: rawMetadata)?.url

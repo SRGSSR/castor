@@ -11,11 +11,11 @@ Play audio and video content with ease.
 
 Use a ``CastPlayer`` to manage playback of one or more media assets sequentially, and receive automatic updates about playback state changes.
 
-> Important: ``CastPlayer`` cannot be instantiated manually, it must be retrieved from the ``Cast`` object.
+> Important: ``CastPlayer`` cannot be instantiated manually; it must be retrieved from the ``Cast`` object through its ``Cast/player`` property.
 
 ## Load content
 
-Content that can be played in the ``Cast`` universe is represented by a ``CastAsset``. Assets can take one of three forms:
+Content that can be played on a Cast receiver is represented by a ``CastAsset``. Assets can take one of three forms:
 
 - **Entity**: A deep link URL that represents a single media item, which your receiver must be able to handle.
 - **Identifier**: A unique ID that represents a single media item, which your receiver must be able to handle.
@@ -25,7 +25,7 @@ You can load one or several items from media assets. Since ``CastPlayer`` confor
 
 > Tip: For more details on observing player state updates, refer to the <doc:state-observation-article> article.
 
-When an asset is loaded, the player automatically starts in the playing state. There is no need to explicitly call ``CastPlayer/play()``. This behavior is intentional, loading a content is considered a strong playback intent.
+When an asset is loaded, the player automatically starts in the playing state. There is no need to explicitly call ``CastPlayer/play()``. This behavior is intentional: loading content is considered a strong playback intent. To load content without starting playback, pass ``CastLoadOptions`` with ``CastLoadOptions/shouldPlay`` set to `false`.
 
 @TabNavigator {
     @Tab("Single Item") {
@@ -70,17 +70,17 @@ When an asset is loaded, the player automatically starts in the playing state. T
 
 ### Asset handling considerations
 
-A Google Cast product experience requires a receiver [associated with an App ID](<doc:setup-and-lifecycle-article>) that is registered with all participating sender applications. Client applications typically target iOS, but may also target Android, and must be able to handle the same types of assets.  
+A Google Cast product experience requires a receiver [associated with an App ID](<doc:setup-and-lifecycle-article>) that is registered with all participating sender applications. Client applications typically target iOS, but may also target Android, and must be able to handle the same types of assets.
 
-When designing the contract between sender and receiver, carefully choose whether to use entities, identifiers, or URLs so that all content can be played on every client. For example, never use URL assets to exchange DASH URLs if any client cannot handle them. In such cases, use an identifier or an entity instead, and let each client retrieve a resource it can play.  
+When designing the contract between sender and receiver, carefully choose whether to use entities, identifiers, or URLs so that all content can be played on every client. For example, never use URL assets to exchange DASH URLs if any client cannot handle them. In such cases, use an identifier or an entity instead, and let each client retrieve a resource it can play.
 
-> Warning: Playing a media URL directly on a Cast receiver can be unreliable. For example, attempting to play an HLS URL may fail because the receiver often requires additional details—such as the MIME type and the types of audio and video segments—to handle the stream correctly. Provide this information using the ``CastAsset/url(_:configuration:metadata:customData:)-6xskn`` initializer with a ``CastAssetURLConfiguration``.
+> Warning: Playing a media URL directly on a Cast receiver can be unreliable. For example, attempting to play an HLS URL may fail because the receiver often requires additional details—such as the MIME type and the types of audio and video segments—to handle the stream correctly. Provide this information using the ``CastAsset/url(_:configuration:metadata:customData:)-(_,_,_,CastCustomData?)`` factory method with a ``CastAssetURLConfiguration``.
 
 ## Playlist
 
 The ``CastPlayer`` supports queue-based playback, allowing you to manage multiple media assets in a playlist. You can load multiple assets at once, append or prepend items, and navigate through the queue with ease.
 
-### Managing items
+### Manage items
 
 The playback queue can be accessed via the ``CastPlayer/items`` property. You can modify the queue using the API to append, prepend, insert, or remove items as needed.
 
@@ -93,7 +93,7 @@ The playback queue can be accessed via the ``CastPlayer/items`` property. You ca
         player.appendItem(from: .url(URL(string: "https://server.com/stream_5.m3u8")!, metadata: nil))
         ```
     }
-    
+
     @Tab("Insert Items") {
         Insert before or after a specific item in the queue.
 
@@ -102,7 +102,7 @@ The playback queue can be accessed via the ``CastPlayer/items`` property. You ca
         player.insertItem(from: .url(URL(string: "https://server.com/stream_6.m3u8")!, metadata: nil), after: player.items.last)
         ```
     }
-    
+
     @Tab("Remove Items") {
         Remove a specific item or clear the entire queue.
 
@@ -113,7 +113,7 @@ The playback queue can be accessed via the ``CastPlayer/items`` property. You ca
     }
 }
 
-### Navigating items
+### Navigate between items
 
 You can programmatically navigate through the playlist, moving forward to the next item or backward to the previous item as needed.
 
@@ -121,7 +121,7 @@ You can programmatically navigate through the playlist, moving forward to the ne
 
 @TabNavigator {
     @Tab("Next Item") {
-        Checks whether we can advance, and if so, moves to the next item.
+        Check whether the player can advance and, if so, move to the next item.
 
         ```swift
         if player.canAdvanceToNextItem() {
@@ -129,9 +129,9 @@ You can programmatically navigate through the playlist, moving forward to the ne
         }
         ```
     }
-    
+
     @Tab("Previous Item") {
-        Checks whether we can return, and if so, moves to the previous item.
+        Check whether the player can return and, if so, move to the previous item.
 
         ```swift
         if player.canReturnToPreviousItem() {

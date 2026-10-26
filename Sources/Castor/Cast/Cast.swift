@@ -17,7 +17,7 @@ import SwiftUI
 ///
 /// Create and store a `Cast` instance in your top-level application view, then use ``SwiftUICore/View/supportsCast(_:with:)-(_,CastDelegate)``
 /// to register a delegate. The delegate can respond to session start and end events by presenting or dismissing views related
-/// to the current cast session, typically through a router.
+/// to the current Cast session, typically through a router.
 ///
 /// Once a session is established, use ``Cast/player`` to load content and control playback.
 @MainActor
@@ -124,9 +124,10 @@ public final class Cast: NSObject, ObservableObject {
         _currentDevice == device
     }
 
-    /// Gets a device manager associated with a device.
+    /// Returns a device manager for the main device or for one of its multi-zone devices.
     ///
     /// - Parameter multizoneDevice: The multi-zone device to retrieve a device manager for, or `nil` for the main device.
+    /// - Returns: The device manager.
     public func deviceManager(forMultizoneDevice multizoneDevice: CastMultizoneDevice? = nil) -> CastDeviceManager {
         .init(sessionManager: context.sessionManager, multizoneDevice: multizoneDevice)
     }

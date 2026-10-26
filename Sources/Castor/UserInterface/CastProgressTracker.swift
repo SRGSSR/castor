@@ -15,7 +15,7 @@ public final class CastProgressTracker: ObservableObject {
 
     /// The player to attach.
     ///
-    /// Use `View.bind(_:to:)` when working with SwiftUI.
+    /// Use ``SwiftUICore/View/bind(_:to:)`` when working with SwiftUI.
     @Published public var player: CastPlayer?
 
     /// A Boolean value indicating whether the user is currently interacting with and changing the progress value.

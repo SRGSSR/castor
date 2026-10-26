@@ -29,7 +29,7 @@ public final class CastPlayer: NSObject, ObservableObject {
 
     /// The current item.
     ///
-    /// Setting this property to `nil` or to an item that does not belong to the list has no effect.
+    /// Setting this property to `nil` or to an item that does not belong to the queue has no effect.
     ///
     /// > Important: Use ``CastPlayer/currentAsset`` to access metadata for the current item.
     public var currentItem: CastPlayerItem? {

@@ -19,7 +19,7 @@ public extension CastPlayer {
     /// - Parameter characteristic: The media characteristic to query.
     /// - Returns: The list of options available for the specified characteristic.
     ///
-    /// Use `mediaSelectionCharacteristics` to retrieve the available characteristics.
+    /// Use ``CastPlayer/mediaSelectionCharacteristics`` to retrieve the available characteristics.
     func mediaSelectionOptions(for characteristic: AVMediaCharacteristic) -> [CastMediaSelectionOption] {
         Self.mediaSelectionOptions(from: _mediaStatus, for: characteristic)
     }
@@ -27,9 +27,9 @@ public extension CastPlayer {
     /// Returns the currently selected media option for a given characteristic.
     ///
     /// - Parameter characteristic: The media characteristic to query.
-    /// - Returns: The currently selected option.
+    /// - Returns: The currently selected option, or ``CastMediaSelectionOption/off`` if it is not among the available options.
     ///
-    /// Use `mediaSelectionCharacteristics` to retrieve the available characteristics.
+    /// Use ``CastPlayer/mediaSelectionCharacteristics`` to retrieve the available characteristics.
     func selectedMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         let options = mediaSelectionOptions(for: characteristic)
         let currentOption = currentMediaOption(for: characteristic)
@@ -40,9 +40,9 @@ public extension CastPlayer {
     ///
     /// - Parameters:
     ///   - mediaOption: The option to select.
-    ///   - characteristic: The characteristic.
+    ///   - characteristic: The media characteristic for which the option is selected.
     ///
-    /// You can use `mediaSelectionCharacteristics` to retrieve available characteristics. This method does nothing when
+    /// Use ``CastPlayer/mediaSelectionCharacteristics`` to retrieve the available characteristics. This method does nothing when
     /// attempting to set an option that is not supported.
     func select(mediaOption: CastMediaSelectionOption, for characteristic: AVMediaCharacteristic) {
         var activeTracks = _activeTracks
@@ -56,7 +56,7 @@ public extension CastPlayer {
         _activeTracks = activeTracks
     }
 
-    /// A binding to read and update the current media selection for a given characteristic.
+    /// Returns a binding to read and update the current media selection for a given characteristic.
     ///
     /// - Parameter characteristic: The media characteristic to bind.
     /// - Returns: A binding representing the current selection.
@@ -73,8 +73,8 @@ public extension CastPlayer {
     /// - Parameter characteristic: The media characteristic to query.
     /// - Returns: The currently applied option.
     ///
-    /// Unlike `selectedMediaOption(for:)`, this method reflects the actual selection applied by
-    /// `select(mediaOption:for:)`, including `.automatic` and `.off` options.
+    /// Unlike ``CastPlayer/selectedMediaOption(for:)``, this method returns the option actually applied, for example with
+    /// ``CastPlayer/select(mediaOption:for:)``, even if it is not among the available options.
     func currentMediaOption(for characteristic: AVMediaCharacteristic) -> CastMediaSelectionOption {
         switch characteristic {
         case .audible, .legible:

@@ -4,7 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-/// A skip.
+/// A skip direction.
 public enum CastSkip {
     /// Backward skip.
     case backward

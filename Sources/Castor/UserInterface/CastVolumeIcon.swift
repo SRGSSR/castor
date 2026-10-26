@@ -6,9 +6,9 @@
 
 import SwiftUI
 
-/// An icon reflecting the current volume.
+/// An icon reflecting the current volume of a Cast device.
 ///
-/// > Warning: Adjust the icon size using ``font(_:)``
+/// > Warning: Adjust the icon size using [`font(_:)`](https://developer.apple.com/documentation/swiftui/view/font(_:)).
 public struct CastVolumeIcon: View {
     @ObservedObject var deviceManager: CastDeviceManager
 
@@ -31,6 +31,8 @@ public struct CastVolumeIcon: View {
     }
 
     /// Creates a volume icon.
+    ///
+    /// - Parameter deviceManager: The manager of the device whose volume is reflected.
     public init(deviceManager: CastDeviceManager) {
         self.deviceManager = deviceManager
     }

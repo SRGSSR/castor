@@ -4,6 +4,7 @@
 
 ### Getting Device Information
 
+- ``id``
 - ``name``
 
 ### Comparing Devices

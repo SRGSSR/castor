@@ -4,7 +4,7 @@
 //  License information is available from the LICENSE file.
 //
 
-/// A protocol for handling events related to a cast session.
+/// A protocol for handling events related to a Cast session.
 public protocol CastDelegate: AnyObject {
     /// Invoked when a Cast session has been established.
     @MainActor

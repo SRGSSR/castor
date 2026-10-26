@@ -2,9 +2,8 @@
 
 ## Topics
 
-### Getting Device Information
+### Controlling the Volume
 
-- ``device``
 - ``isMuted``
 - ``volume``
 - ``volumeRange``

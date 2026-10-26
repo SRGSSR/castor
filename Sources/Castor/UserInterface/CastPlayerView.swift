@@ -129,7 +129,7 @@ private struct _CastPlayerView: View {
     }
 }
 
-/// A Cast player view.
+/// A view that displays the content being cast and provides playback controls.
 public struct CastPlayerView: View {
     @ObservedObject private var cast: Cast
 

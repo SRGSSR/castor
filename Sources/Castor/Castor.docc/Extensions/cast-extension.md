@@ -34,4 +34,4 @@
 
 ### Integrating with SwiftUI Menus
 
-- ``Cast/deviceMenu(action:)``
+- ``deviceMenu(action:)``

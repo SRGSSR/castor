@@ -32,7 +32,7 @@ public struct CastResumeState {
 }
 
 public extension CastResumeState {
-    /// The set of media characteristics that have an available media selection.
+    /// The set of media characteristics for which a media selection language has been set.
     var mediaSelectionCharacteristics: Set<AVMediaCharacteristic> {
         Set(mediaSelectionLanguages.keys)
     }
@@ -49,6 +49,7 @@ public extension CastResumeState {
     /// Returns the media selection language for a given media characteristic.
     ///
     /// - Parameter characteristic: The media characteristic to query.
+    /// - Returns: The language code, specified using RFC 1766 tags, or `nil` if no language has been set.
     func mediaSelectionLanguage(for characteristic: AVMediaCharacteristic) -> String? {
         mediaSelectionLanguages[characteristic]
     }
