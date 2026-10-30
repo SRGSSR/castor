@@ -14,10 +14,22 @@ public struct CastConfiguration {
     public var navigationMode: CastNavigationMode
 
     /// The backward skip interval in seconds.
-    public var backwardSkipInterval: TimeInterval
+    ///
+    /// Must be greater than zero.
+    public var backwardSkipInterval: TimeInterval {
+        didSet {
+            assert(backwardSkipInterval > 0)
+        }
+    }
 
     /// The forward skip interval in seconds.
-    public var forwardSkipInterval: TimeInterval
+    ///
+    /// Must be greater than zero.
+    public var forwardSkipInterval: TimeInterval {
+        didSet {
+            assert(forwardSkipInterval > 0)
+        }
+    }
 
     /// Creates a configuration.
     ///
