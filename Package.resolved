@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/comScore/Comscore-Swift-Package-Manager.git",
       "state" : {
-        "revision" : "966992952a84510ac3a086d745f1681302b5cb26",
-        "version" : "6.17.0"
+        "revision" : "a375bfe4f686b1d329fa2f028b92cf856687c81e",
+        "version" : "6.18.0"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/google-cast-sdk.git",
       "state" : {
-        "revision" : "516f7111116bc412230309636842d3bbf77efdd8",
-        "version" : "4.8.4"
+        "revision" : "887df6bfbae15e2887556a7268806649ead37fe9",
+        "version" : "4.8.6"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SRGSSR/pillarbox-apple",
       "state" : {
-        "branch" : "main",
-        "revision" : "b9fc6bb566029b729284cc4db9089e47e31551a9"
+        "revision" : "8cda81cf90b7e898f6bbca51f426157a5ee1ea7a",
+        "version" : "20.0.0"
       }
     },
     {
