@@ -32,7 +32,7 @@ struct EmptyDevicesView: View {
     }
 
     private var imageName: String {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17, *) {
             return "tv.badge.wifi.fill"
         }
         else {

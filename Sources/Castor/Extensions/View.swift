@@ -23,7 +23,7 @@ private struct PresentationBackground16_4<S>: ViewModifier where S: ShapeStyle {
 
 private struct GeometryGroup17: ViewModifier {
     func body(content: Content) -> some View {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17, *) {
             content
                 .geometryGroup()
         }

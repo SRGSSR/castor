@@ -80,7 +80,7 @@ struct CastDevicesView: View {
 
     @ContentBuilder
     private func closeButton() -> some View {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26, *) {
             Button(role: .close, action: dismiss.callAsFunction)
         }
         else {

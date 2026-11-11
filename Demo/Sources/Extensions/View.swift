@@ -8,7 +8,7 @@ import SwiftUI
 
 private struct PulseSymbolEffect17: ViewModifier {
     func body(content: Content) -> some View {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17, *) {
             content
                 .symbolEffect(.pulse)
         }
