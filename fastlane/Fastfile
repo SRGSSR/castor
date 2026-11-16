@@ -13,7 +13,7 @@ TESTFLIGHT_PLATFORMS = {
 }.freeze
 
 DEVICES = {
-  ios: 'iPhone 16'
+  ios: 'iPhone 18 Pro'
 }.freeze
 
 ICON_GLOBS = {
@@ -176,6 +176,7 @@ def run_package_tests(platform_id, scheme_name)
   run_tests(
     scheme: scheme_name,
     device: DEVICES[platform_id],
+    ensure_devices_found: true,
     package_path: '.',
     result_bundle: true,
     number_of_retries: 3,
