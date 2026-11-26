@@ -17,17 +17,17 @@ struct RemoteChapterList: View {
         player.chapters.first { $0.timeRange.containsTime(progressTracker.time) }
     }
 
-    private var currentChapterSelection: Binding<CMTimeRange?> {
+    private var currentChapterSelection: Binding<StandardChapter.ID?> {
         .init {
-            currentChapter?.timeRange
-        } set: { [weak player] timeRange in
-            guard let player, let chapter = player.chapters.first(where: { $0.timeRange == timeRange }) else { return }
+            currentChapter?.id
+        } set: { [weak player] id in
+            guard let player, let chapter = player.chapters.first(where: { $0.id == id }) else { return }
             player.seek(to: chapter.timeRange.start + CMTime(value: 1, timescale: 10))
         }
     }
 
     var body: some View {
-        List(player.chapters, id: \.timeRange, selection: currentChapterSelection) { chapter in
+        List(player.chapters, selection: currentChapterSelection) { chapter in
             HStack(spacing: 10) {
                 artworkView(for: chapter)
                 Text(chapter.title)
